@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle de Aulas: Liberar e Concluir</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .lesson-container.locked .lesson-label,
+        .lesson-container.locked .lesson-complete-button {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+        .lesson-container.completed .lesson-label {
+            text-decoration: line-through;
+            color: #9CA3AF;
+        }
+        .lesson-release-toggle:disabled ~ .lesson-label,
+        .lesson-release-toggle:disabled + div {
+            cursor: not-allowed;
+        }
+        .lesson-container.completed .lesson-complete-button {
+            cursor: not-allowed;
+        }
+        .year-blue .lesson-release-toggle:checked + div { background-color: #2563EB; }
+        .year-green .lesson-release-toggle:checked + div { background-color: #16A34A; }
+        .year-purple .lesson-release-toggle:checked + div { background-color: #9333EA; }
+
+        .dot {
+            transform: translateX(0);
+            transition: transform 0.2s ease-in-out;
+        }
+        /* Corrigido: Usando o seletor de irmão geral (~) para mover o ponto */
+        .lesson-release-toggle:checked ~ .dot {
+            transform: translateX(100%);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 p-4 sm:p-6 lg:p-8">
+    <div class="max-w-7xl mx-auto">
+        <header class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-800">Painel de Liberação de Aulas</h1>
+            <p class="text-gray-600 mt-1">Libere as aulas e marque as que foram concluídas pelo aluno.</p>
+        </header>
+
+        <div class="space-y-12">
+            <!-- ANO 1 -->
+            <div class="year-blue">
+                <h2 class="text-2xl font-semibold text-gray-700 border-l-4 border-blue-500 pl-3 mb-6">1º Ano</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+                    <!-- Gerar 4 bimestres para o Ano 1 -->
+                    <div class="bg-white rounded-xl shadow-md p-5 bimester-container">
+                        <h3 class="font-bold text-lg text-gray-800 mb-1">1º Bimestre</h3>
+                        <p class="text-sm text-gray-500 mb-4 progress-text">0/5 Aulas concluídas</p>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5 mb-4"><div class="bg-blue-500 h-2.5 rounded-full progress-bar" style="width: 0%"></div></div>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between lesson-container"><label class="flex items-center"><div class="relative"><input type="checkbox" class="sr-only lesson-release-toggle"><div class="block bg-gray-300 w-10 h-6 rounded-full transition-colors"></div><div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full"></div></div><div class="ml-3 text-sm font-medium text-gray-700 lesson-label cursor-pointer">Aula 1</div></label><button class="lesson-complete-button"><svg class="w-6 h-6 text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button></div>
+                            <div class="flex items-center justify-between lesson-container"><label class="flex items-center"><div class="relative"><input type="checkbox" class="sr-only lesson-release-toggle"><div class="block bg-gray-300 w-10 h-6 rounded-full transition-colors"></div><div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full"></div></div><div class="ml-3 text-sm font-medium text-gray-700 lesson-label cursor-pointer">Aula 2</div></label><button class="lesson-complete-button"><svg class="w-6 h-6 text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button></div>
+                            <div class="flex items-center justify-between lesson-container"><label class="flex items-center"><div class="relative"><input type="checkbox" class="sr-only lesson-release-toggle"><div class="block bg-gray-300 w-10 h-6 rounded-full transition-colors"></div><div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full"></div></div><div class="ml-3 text-sm font-medium text-gray-700 lesson-label cursor-pointer">Aula 3</div></label><button class="lesson-complete-button"><svg class="w-6 h-6 text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button></div>
+                            <div class="flex items-center justify-between lesson-container"><label class="flex items-center"><div class="relative"><input type="checkbox" class="sr-only lesson-release-toggle"><div class="block bg-gray-300 w-10 h-6 rounded-full transition-colors"></div><div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full"></div></div><div class="ml-3 text-sm font-medium text-gray-700 lesson-label cursor-pointer">Aula 4</div></label><button class="lesson-complete-button"><svg class="w-6 h-6 text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button></div>
+                            <div class="flex items-center justify-between lesson-container"><label class="flex items-center"><div class="relative"><input type="checkbox" class="sr-only lesson-release-toggle"><div class="block bg-gray-300 w-10 h-6 rounded-full transition-colors"></div><div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full"></div></div><div class="ml-3 text-sm font-medium text-gray-700 lesson-label cursor-pointer">Aula 5</div></label><button class="lesson-complete-button"><svg class="w-6 h-6 text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button></div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-md p-5 bimester-container">
+                        <h3 class="font-bold text-lg text-gray-800 mb-1">2º Bimestre</h3>
+                        <p class="text-sm text-gray-500 mb-4 progress-text">0/5 Aulas concluídas</p>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5 mb-4"><div class="bg-blue-500 h-2.5 rounded-full progress-bar" style="width: 0%"></div></div>
+                        <div class="space-y-3">
+                             <div class="flex items-center justify-between lesson-container"><label class="flex items-center"><div class="relative"><input type="checkbox" class="sr-only lesson-release-toggle"><div class="block bg-gray-300 w-10 h-6 rounded-full transition-colors"></div><div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full"></div></div><div class="ml-3 text-sm font-medium text-gray-700 lesson-label cursor-pointer">Aula 1</div></label><button class="lesson-complete-button"><svg class="w-6 h-6 text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button></div>
+                            <div class="flex items-center justify-between lesson-container"><label class="flex items-center"><div class="relative"><input type="checkbox" class="sr-only lesson-release-toggle"><div class="block bg-gray-300 w-10 h-6 rounded-full transition-colors"></div><div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full"></div></div><div class="ml-3 text-sm font-medium text-gray-700 lesson-label cursor-pointer">Aula 2</div></label><button class="lesson-complete-button"><svg class="w-6 h-6 text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button></div>
+                            <div class="flex items-center justify-between lesson-container"><label class="flex items-center"><div class="relative"><input type="checkbox" class="sr-only lesson-release-toggle"><div class="block bg-gray-300 w-10 h-6 rounded-full transition-colors"></div><div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full"></div></div><div class="ml-3 text-sm font-medium text-gray-700 lesson-label cursor-pointer">Aula 3</div></label><button class="lesson-complete-button"><svg class="w-6 h-6 text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button></div>
+                            <div class="flex items-center justify-between lesson-container"><label class="flex items-center"><div class="relative"><input type="checkbox" class="sr-only lesson-release-toggle"><div class="block bg-gray-300 w-10 h-6 rounded-full transition-colors"></div><div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full"></div></div><div class="ml-3 text-sm font-medium text-gray-700 lesson-label cursor-pointer">Aula 4</div></label><button class="lesson-complete-button"><svg class="w-6 h-6 text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button></div>
+                            <div class="flex items-center justify-between lesson-container"><label class="flex items-center"><div class="relative"><input type="checkbox" class="sr-only lesson-release-toggle"><div class="block bg-gray-300 w-10 h-6 rounded-full transition-colors"></div><div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full"></div></div><div class="ml-3 text-sm font-medium text-gray-700 lesson-label cursor-pointer">Aula 5</div></label><button class="lesson-complete-button"><svg class="w-6 h-6 text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button></div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-md p-5 bimester-container">
+                        <h3 class="font-bold text-lg text-gray-800 mb-1">3º Bimestre</h3>
+                        <p class="text-sm text-gray-500 mb-4 progress-text">0/5 Aulas concluídas</p>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5 mb-4"><div class="bg-blue-500 h-2.5 rounded-full progress-bar" style="width: 0%"></div></div>
+                        <div class="space-y-3">
+                           <div class="flex items-center justify-between lesson-container"><label class="flex items-center"><div class="relative"><input type="checkbox" class="sr-only lesson-release-toggle"><div class="block bg-gray-300 w-10 h-6 rounded-full transition-colors"></div><div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full"></div></div><div class="ml-3 text-sm font-medium text-gray-700 lesson-label cursor-pointer">Aula 1</div></label><button class="lesson-complete-button"><svg class="w-6 h-6 text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button></div>
+                            <div class="flex items-center justify-between lesson-container"><label class="flex items-center"><div class="relative"><input type="checkbox" class="sr-only lesson-release-toggle"><div class="block bg-gray-300 w-10 h-6 rounded-full transition-colors"></div><div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full"></div></div><div class="ml-3 text-sm font-medium text-gray-700 lesson-label cursor-pointer">Aula 2</div></label><button class="lesson-complete-button"><svg class="w-6 h-6 text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button></div>
+                            <div class="flex items-center justify-between lesson-container"><label class="flex items-center"><div class="relative"><input type="checkbox" class="sr-only lesson-release-toggle"><div class="block bg-gray-300 w-10 h-6 rounded-full transition-colors"></div><div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full"></div></div><div class="ml-3 text-sm font-medium text-gray-700 lesson-label cursor-pointer">Aula 3</div></label><button class="lesson-complete-button"><svg class="w-6 h-6 text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button></div>
+                            <div class="flex items-center justify-between lesson-container"><label class="flex items-center"><div class="relative"><input type="checkbox" class="sr-only lesson-release-toggle"><div class="block bg-gray-300 w-10 h-6 rounded-full transition-colors"></div><div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full"></div></div><div class="ml-3 text-sm font-medium text-gray-700 lesson-label cursor-pointer">Aula 4</div></label><button class="lesson-complete-button"><svg class="w-6 h-6 text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button></div>
+                            <div class="flex items-center justify-between lesson-container"><label class="flex items-center"><div class="relative"><input type="checkbox" class="sr-only lesson-release-toggle"><div class="block bg-gray-300 w-10 h-6 rounded-full transition-colors"></div><div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full"></div></div><div class="ml-3 text-sm font-medium text-gray-700 lesson-label cursor-pointer">Aula 5</div></label><button class="lesson-complete-button"><svg class="w-6 h-6 text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button></div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-md p-5 bimester-container">
+                        <h3 class="font-bold text-lg text-gray-800 mb-1">4º Bimestre</h3>
+                        <p class="text-sm text-gray-500 mb-4 progress-text">0/5 Aulas concluídas</p>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5 mb-4"><div class="bg-blue-500 h-2.5 rounded-full progress-bar" style="width: 0%"></div></div>
+                        <div class="space-y-3">
+                           <div class="flex items-center justify-between lesson-container"><label class="flex items-center"><div class="relative"><input type="checkbox" class="sr-only lesson-release-toggle"><div class="block bg-gray-300 w-10 h-6 rounded-full transition-colors"></div><div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full"></div></div><div class="ml-3 text-sm font-medium text-gray-700 lesson-label cursor-pointer">Aula 1</div></label><button class="lesson-complete-button"><svg class="w-6 h-6 text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button></div>
+                            <div class="flex items-center justify-between lesson-container"><label class="flex items-center"><div class="relative"><input type="checkbox" class="sr-only lesson-release-toggle"><div class="block bg-gray-300 w-10 h-6 rounded-full transition-colors"></div><div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full"></div></div><div class="ml-3 text-sm font-medium text-gray-700 lesson-label cursor-pointer">Aula 2</div></label><button class="lesson-complete-button"><svg class="w-6 h-6 text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button></div>
+                            <div class="flex items-center justify-between lesson-container"><label class="flex items-center"><div class="relative"><input type="checkbox" class="sr-only lesson-release-toggle"><div class="block bg-gray-300 w-10 h-6 rounded-full transition-colors"></div><div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full"></div></div><div class="ml-3 text-sm font-medium text-gray-700 lesson-label cursor-pointer">Aula 3</div></label><button class="lesson-complete-button"><svg class="w-6 h-6 text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button></div>
+                            <div class="flex items-center justify-between lesson-container"><label class="flex items-center"><div class="relative"><input type="checkbox" class="sr-only lesson-release-toggle"><div class="block bg-gray-300 w-10 h-6 rounded-full transition-colors"></div><div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full"></div></div><div class="ml-3 text-sm font-medium text-gray-700 lesson-label cursor-pointer">Aula 4</div></label><button class="lesson-complete-button"><svg class="w-6 h-6 text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button></div>
+                            <div class="flex items-center justify-between lesson-container"><label class="flex items-center"><div class="relative"><input type="checkbox" class="sr-only lesson-release-toggle"><div class="block bg-gray-300 w-10 h-6 rounded-full transition-colors"></div><div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full"></div></div><div class="ml-3 text-sm font-medium text-gray-700 lesson-label cursor-pointer">Aula 5</div></label><button class="lesson-complete-button"><svg class="w-6 h-6 text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ANO 2 -->
+            <div class="year-green">
+                <h2 class="text-2xl font-semibold text-gray-700 border-l-4 border-green-500 pl-3 mb-6">2º Ano</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+                     <div class="bg-white rounded-xl shadow-md p-5 bimester-container">
+                        <h3 class="font-bold text-lg text-gray-800 mb-1">1º Bimestre</h3>
+                        <p class="text-sm text-gray-500 mb-4 progress-text">0/5 Aulas concluídas</p>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5 mb-4"><div class="bg-green-500 h-2.5 rounded-full progress-bar" style="width: 0%"></div></div>
+                        <div class="space-y-3">
+                           <div class="flex items-center justify-between lesson-container"><label class="flex items-center"><div class="relative"><input type="checkbox" class="sr-only lesson-release-toggle"><div class="block bg-gray-300 w-10 h-6 rounded-full transition-colors"></div><div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full"></div></div><div class="ml-3 text-sm font-medium text-gray-700 lesson-label cursor-pointer">Aula 1</div></label><button class="lesson-complete-button"><svg class="w-6 h-6 text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button></div>
+                            <div class="flex items-center justify-between lesson-container"><label class="flex items-center"><div class="relative"><input type="checkbox" class="sr-only lesson-release-toggle"><div class="block bg-gray-300 w-10 h-6 rounded-full transition-colors"></div><div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full"></div></div><div class="ml-3 text-sm font-medium text-gray-700 lesson-label cursor-pointer">Aula 2</div></label><button class="lesson-complete-button"><svg class="w-6 h-6 text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button></div>
+                            <div class="flex items-center justify-between lesson-container"><label class="flex items-center"><div class="relative"><input type="checkbox" class="sr-only lesson-release-toggle"><div class="block bg-gray-300 w-10 h-6 rounded-full transition-colors"></div><div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full"></div></div><div class="ml-3 text-sm font-medium text-gray-700 lesson-label cursor-pointer">Aula 3</div></label><button class="lesson-complete-button"><svg class="w-6 h-6 text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button></div>
+                            <div class="flex items-center justify-between lesson-container"><label class="flex items-center"><div class="relative"><input type="checkbox" class="sr-only lesson-release-toggle"><div class="block bg-gray-300 w-10 h-6 rounded-full transition-colors"></div><div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full"></div></div><div class="ml-3 text-sm font-medium text-gray-700 lesson-label cursor-pointer">Aula 4</div></label><button class="lesson-complete-button"><svg class="w-6 h-6 text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button></div>
+                            <div class="flex items-center justify-between lesson-container"><label class="flex items-center"><div class="relative"><input type="checkbox" class="sr-only lesson-release-toggle"><div class="block bg-gray-300 w-10 h-6 rounded-full transition-colors"></div><div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full"></div></div><div class="ml-3 text-sm font-medium text-gray-700 lesson-label cursor-pointer">Aula 5</div></label><button class="lesson-complete-button"><svg class="w-6 h-6 text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button></div>
+                        </div>
+                    </div>
+                     <div class="bg-white rounded-xl shadow-md p-5 bimester-container">
+                        <h3 class="font-bold text-lg text-gray-800 mb-1">2º Bimestre</h3>
+                        <p class="text-sm text-gray-500 mb-4 progress-text">0/5 Aulas concluídas</p>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5 mb-4"><div class="bg-green-500 h-2.5 rounded-full progress-bar" style="width: 0%"></div></div>
+                        <div class="space-y-3">
+                           <div class="flex items-center justify-between lesson-container"><label class="flex items-center"><div class="relative"><input type="checkbox" class="sr-only lesson-release-toggle"><div class="block bg-gray-300 w-10 h-6 rounded-full transition-colors"></div><div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full"></div></div><div class="ml-3 text-sm font-medium text-gray-700 lesson-label cursor-pointer">Aula 1</div></label><button class="lesson-complete-button"><svg class="w-6 h-6 text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button></div>
+                            <div class="flex items-center justify-between lesson-container"><label class="flex items-center"><div class="relative"><input type="checkbox" class="sr-only lesson-release-toggle"><div class="block bg-gray-300 w-10 h-6 rounded-full transition-colors"></div><div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full"></div></div><div class="ml-3 text-sm font-medium text-gray-700 lesson-label cursor-pointer">Aula 2</div></label><button class="lesson-complete-button"><svg class="w-6 h-6 text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button></div>
+                            <div class="flex items-center justify-between lesson-container"><label class="flex items-center"><div class="relative"><input type="checkbox" class="sr-only lesson-release-toggle"><div class="block bg-gray-300 w-10 h-6 rounded-full transition-colors"></div><div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full"></div></div><div class="ml-3 text-sm font-medium text-gray-700 lesson-label cursor-pointer">Aula 3</div></label><button class="lesson-complete-button"><svg class="w-6 h-6 text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button></div>
+                            <div class="flex items-center justify-between lesson-container"><label class="flex items-center"><div class="relative"><input type="checkbox" class="sr-only lesson-release-toggle"><div class="block bg-gray-300 w-10 h-6 rounded-full transition-colors"></div><div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full"></div></div><div class="ml-3 text-sm font-medium text-gray-700 lesson-label cursor-pointer">Aula 4</div></label><button class="lesson-complete-button"><svg class="w-6 h-6 text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button></div>
+                            <div class="flex items-center justify-between lesson-container"><label class="flex items-center"><div class="relative"><input type="checkbox" class="sr-only lesson-release-toggle"><div class="block bg-gray-300 w-10 h-6 rounded-full transition-colors"></div><div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full"></div></div><div class="ml-3 text-sm font-medium text-gray-700 lesson-label cursor-pointer">Aula 5</div></label><button class="lesson-complete-button"><svg class="w-6 h-6 text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button></div>
+                        </div>
+                    </div>
+                     <div class="bg-white rounded-xl shadow-md p-5 bimester-container">
+                        <h3 class="font-bold text-lg text-gray-800 mb-1">3º Bimestre</h3>
+                        <p class="text-sm text-gray-500 mb-4 progress-text">0/5 Aulas concluídas</p>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5 mb-4"><div class="bg-green-500 h-2.5 rounded-full progress-bar" style="width: 0%"></div></div>
+                        <div class="space-y-3">
+                           <div class="flex items-center justify-between lesson-container"><label class="flex items-center"><div class="relative"><input type="checkbox" class="sr-only lesson-release-toggle"><div class="block bg-gray-300 w-10 h-6 rounded-full transition-colors"></div><div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full"></div></div><div class="ml-3 text-sm font-medium text-gray-700 lesson-label cursor-pointer">Aula 1</div></label><button class="lesson-complete-button"><svg class="w-6 h-6 text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button></div>
+                            <div class="flex items-center justify-between lesson-container"><label class="flex items-center"><div class="relative"><input type="checkbox" class="sr-only lesson-release-toggle"><div class="block bg-gray-300 w-10 h-6 rounded-full transition-colors"></div><div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full"></div></div><div class="ml-3 text-sm font-medium text-gray-700 lesson-label cursor-pointer">Aula 2</div></label><button class="lesson-complete-button"><svg class="w-6 h-6 text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button></div>
+                            <div class="flex items-center justify-between lesson-container"><label class="flex items-center"><div class="relative"><input type="checkbox" class="sr-only lesson-release-toggle"><div class="block bg-gray-300 w-10 h-6 rounded-full transition-colors"></div><div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full"></div></div><div class="ml-3 text-sm font-medium text-gray-700 lesson-label cursor-pointer">Aula 3</div></label><button class="lesson-complete-button"><svg class="w-6 h-6 text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button></div>
+                            <div class="flex items-center justify-between lesson-container"><label class="flex items-center"><div class="relative"><input type="checkbox" class="sr-only lesson-release-toggle"><div class="block bg-gray-300 w-10 h-6 rounded-full transition-colors"></div><div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full"></div></div><div class="ml-3 text-sm font-medium text-gray-700 lesson-label cursor-pointer">Aula 4</div></label><button class="lesson-complete-button"><svg class="w-6 h-6 text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button></div>
+                            <div class="flex items-center justify-between lesson-container"><label class="flex items-center"><div class="relative"><input type="checkbox" class="sr-only lesson-release-toggle"><div class="block bg-gray-300 w-10 h-6 rounded-full transition-colors"></div><div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full"></div></div><div class="ml-3 text-sm font-medium text-gray-700 lesson-label cursor-pointer">Aula 5</div></label><button class="lesson-complete-button"><svg class="w-6 h-6 text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button></div>
+                        </div>
+                    </div>
+                     <div class="bg-white rounded-xl shadow-md p-5 bimester-container">
+                        <h3 class="font-bold text-lg text-gray-800 mb-1">4º Bimestre</h3>
+                        <p class="text-sm text-gray-500 mb-4 progress-text">0/5 Aulas concluídas</p>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5 mb-4"><div class="bg-green-500 h-2.5 rounded-full progress-bar" style="width: 0%"></div></div>
+                        <div class="space-y-3">
+                           <div class="flex items-center justify-between lesson-container"><label class="flex items-center"><div class="relative"><input type="checkbox" class="sr-only lesson-release-toggle"><div class="block bg-gray-300 w-10 h-6 rounded-full transition-colors"></div><div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full"></div></div><div class="ml-3 text-sm font-medium text-gray-700 lesson-label cursor-pointer">Aula 1</div></label><button class="lesson-complete-button"><svg class="w-6 h-6 text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button></div>
+                            <div class="flex items-center justify-between lesson-container"><label class="flex items-center"><div class="relative"><input type="checkbox" class="sr-only lesson-release-toggle"><div class="block bg-gray-300 w-10 h-6 rounded-full transition-colors"></div><div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full"></div></div><div class="ml-3 text-sm font-medium text-gray-700 lesson-label cursor-pointer">Aula 2</div></label><button class="lesson-complete-button"><svg class="w-6 h-6 text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button></div>
+                            <div class="flex items-center justify-between lesson-container"><label class="flex items-center"><div class="relative"><input type="checkbox" class="sr-only lesson-release-toggle"><div class="block bg-gray-300 w-10 h-6 rounded-full transition-colors"></div><div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full"></div></div><div class="ml-3 text-sm font-medium text-gray-700 lesson-label cursor-pointer">Aula 3</div></label><button class="lesson-complete-button"><svg class="w-6 h-6 text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button></div>
+                            <div class="flex items-center justify-between lesson-container"><label class="flex items-center"><div class="relative"><input type="checkbox" class="sr-only lesson-release-toggle"><div class="block bg-gray-300 w-10 h-6 rounded-full transition-colors"></div><div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full"></div></div><div class="ml-3 text-sm font-medium text-gray-700 lesson-label cursor-pointer">Aula 4</div></label><button class="lesson-complete-button"><svg class="w-6 h-6 text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button></div>
+                            <div class="flex items-center justify-between lesson-container"><label class="flex items-center"><div class="relative"><input type="checkbox" class="sr-only lesson-release-toggle"><div class="block bg-gray-300 w-10 h-6 rounded-full transition-colors"></div><div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full"></div></div><div class="ml-3 text-sm font-medium text-gray-700 lesson-label cursor-pointer">Aula 5</div></label><button class="lesson-complete-button"><svg class="w-6 h-6 text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ANO 3 -->
+            <div class="year-purple">
+                <h2 class="text-2xl font-semibold text-gray-700 border-l-4 border-purple-500 pl-3 mb-6">3º Ano</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+                    <div class="bg-white rounded-xl shadow-md p-5 bimester-container">
+                        <h3 class="font-bold text-lg text-gray-800 mb-1">1º Bimestre</h3>
+                        <p class="text-sm text-gray-500 mb-4 progress-text">0/5 Aulas concluídas</p>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5 mb-4"><div class="bg-purple-500 h-2.5 rounded-full progress-bar" style="width: 0%"></div></div>
+                        <div class="space-y-3">
+                           <div class="flex items-center justify-between lesson-container"><label class="flex items-center"><div class="relative"><input type="checkbox" class="sr-only lesson-release-toggle"><div class="block bg-gray-300 w-10 h-6 rounded-full transition-colors"></div><div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full"></div></div><div class="ml-3 text-sm font-medium text-gray-700 lesson-label cursor-pointer">Aula 1</div></label><button class="lesson-complete-button"><svg class="w-6 h-6 text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button></div>
+                            <div class="flex items-center justify-between lesson-container"><label class="flex items-center"><div class="relative"><input type="checkbox" class="sr-only lesson-release-toggle"><div class="block bg-gray-300 w-10 h-6 rounded-full transition-colors"></div><div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full"></div></div><div class="ml-3 text-sm font-medium text-gray-700 lesson-label cursor-pointer">Aula 2</div></label><button class="lesson-complete-button"><svg class="w-6 h-6 text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button></div>
+                            <div class="flex items-center justify-between lesson-container"><label class="flex items-center"><div class="relative"><input type="checkbox" class="sr-only lesson-release-toggle"><div class="block bg-gray-300 w-10 h-6 rounded-full transition-colors"></div><div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full"></div></div><div class="ml-3 text-sm font-medium text-gray-700 lesson-label cursor-pointer">Aula 3</div></label><button class="lesson-complete-button"><svg class="w-6 h-6 text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button></div>
+                            <div class="flex items-center justify-between lesson-container"><label class="flex items-center"><div class="relative"><input type="checkbox" class="sr-only lesson-release-toggle"><div class="block bg-gray-300 w-10 h-6 rounded-full transition-colors"></div><div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full"></div></div><div class="ml-3 text-sm font-medium text-gray-700 lesson-label cursor-pointer">Aula 4</div></label><button class="lesson-complete-button"><svg class="w-6 h-6 text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button></div>
+                            <div class="flex items-center justify-between lesson-container"><label class="flex items-center"><div class="relative"><input type="checkbox" class="sr-only lesson-release-toggle"><div class="block bg-gray-300 w-10 h-6 rounded-full transition-colors"></div><div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full"></div></div><div class="ml-3 text-sm font-medium text-gray-700 lesson-label cursor-pointer">Aula 5</div></label><button class="lesson-complete-button"><svg class="w-6 h-6 text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button></div>
+                        </div>
+                    </div>
+                     <div class="bg-white rounded-xl shadow-md p-5 bimester-container">
+                        <h3 class="font-bold text-lg text-gray-800 mb-1">2º Bimestre</h3>
+                        <p class="text-sm text-gray-500 mb-4 progress-text">0/5 Aulas concluídas</p>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5 mb-4"><div class="bg-purple-500 h-2.5 rounded-full progress-bar" style="width: 0%"></div></div>
+                        <div class="space-y-3">
+                           <div class="flex items-center justify-between lesson-container"><label class="flex items-center"><div class="relative"><input type="checkbox" class="sr-only lesson-release-toggle"><div class="block bg-gray-300 w-10 h-6 rounded-full transition-colors"></div><div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full"></div></div><div class="ml-3 text-sm font-medium text-gray-700 lesson-label cursor-pointer">Aula 1</div></label><button class="lesson-complete-button"><svg class="w-6 h-6 text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button></div>
+                            <div class="flex items-center justify-between lesson-container"><label class="flex items-center"><div class="relative"><input type="checkbox" class="sr-only lesson-release-toggle"><div class="block bg-gray-300 w-10 h-6 rounded-full transition-colors"></div><div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full"></div></div><div class="ml-3 text-sm font-medium text-gray-700 lesson-label cursor-pointer">Aula 2</div></label><button class="lesson-complete-button"><svg class="w-6 h-6 text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button></div>
+                            <div class="flex items-center justify-between lesson-container"><label class="flex items-center"><div class="relative"><input type="checkbox" class="sr-only lesson-release-toggle"><div class="block bg-gray-300 w-10 h-6 rounded-full transition-colors"></div><div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full"></div></div><div class="ml-3 text-sm font-medium text-gray-700 lesson-label cursor-pointer">Aula 3</div></label><button class="lesson-complete-button"><svg class="w-6 h-6 text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button></div>
+                            <div class="flex items-center justify-between lesson-container"><label class="flex items-center"><div class="relative"><input type="checkbox" class="sr-only lesson-release-toggle"><div class="block bg-gray-300 w-10 h-6 rounded-full transition-colors"></div><div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full"></div></div><div class="ml-3 text-sm font-medium text-gray-700 lesson-label cursor-pointer">Aula 4</div></label><button class="lesson-complete-button"><svg class="w-6 h-6 text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button></div>
+                            <div class="flex items-center justify-between lesson-container"><label class="flex items-center"><div class="relative"><input type="checkbox" class="sr-only lesson-release-toggle"><div class="block bg-gray-300 w-10 h-6 rounded-full transition-colors"></div><div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full"></div></div><div class="ml-3 text-sm font-medium text-gray-700 lesson-label cursor-pointer">Aula 5</div></label><button class="lesson-complete-button"><svg class="w-6 h-6 text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button></div>
+                        </div>
+                    </div>
+                     <div class="bg-white rounded-xl shadow-md p-5 bimester-container">
+                        <h3 class="font-bold text-lg text-gray-800 mb-1">3º Bimestre</h3>
+                        <p class="text-sm text-gray-500 mb-4 progress-text">0/5 Aulas concluídas</p>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5 mb-4"><div class="bg-purple-500 h-2.5 rounded-full progress-bar" style="width: 0%"></div></div>
+                        <div class="space-y-3">
+                           <div class="flex items-center justify-between lesson-container"><label class="flex items-center"><div class="relative"><input type="checkbox" class="sr-only lesson-release-toggle"><div class="block bg-gray-300 w-10 h-6 rounded-full transition-colors"></div><div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full"></div></div><div class="ml-3 text-sm font-medium text-gray-700 lesson-label cursor-pointer">Aula 1</div></label><button class="lesson-complete-button"><svg class="w-6 h-6 text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button></div>
+                            <div class="flex items-center justify-between lesson-container"><label class="flex items-center"><div class="relative"><input type="checkbox" class="sr-only lesson-release-toggle"><div class="block bg-gray-300 w-10 h-6 rounded-full transition-colors"></div><div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full"></div></div><div class="ml-3 text-sm font-medium text-gray-700 lesson-label cursor-pointer">Aula 2</div></label><button class="lesson-complete-button"><svg class="w-6 h-6 text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button></div>
+                            <div class="flex items-center justify-between lesson-container"><label class="flex items-center"><div class="relative"><input type="checkbox" class="sr-only lesson-release-toggle"><div class="block bg-gray-300 w-10 h-6 rounded-full transition-colors"></div><div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full"></div></div><div class="ml-3 text-sm font-medium text-gray-700 lesson-label cursor-pointer">Aula 3</div></label><button class="lesson-complete-button"><svg class="w-6 h-6 text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button></div>
+                            <div class="flex items-center justify-between lesson-container"><label class="flex items-center"><div class="relative"><input type="checkbox" class="sr-only lesson-release-toggle"><div class="block bg-gray-300 w-10 h-6 rounded-full transition-colors"></div><div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full"></div></div><div class="ml-3 text-sm font-medium text-gray-700 lesson-label cursor-pointer">Aula 4</div></label><button class="lesson-complete-button"><svg class="w-6 h-6 text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button></div>
+                            <div class="flex items-center justify-between lesson-container"><label class="flex items-center"><div class="relative"><input type="checkbox" class="sr-only lesson-release-toggle"><div class="block bg-gray-300 w-10 h-6 rounded-full transition-colors"></div><div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full"></div></div><div class="ml-3 text-sm font-medium text-gray-700 lesson-label cursor-pointer">Aula 5</div></label><button class="lesson-complete-button"><svg class="w-6 h-6 text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button></div>
+                        </div>
+                    </div>
+                     <div class="bg-white rounded-xl shadow-md p-5 bimester-container">
+                        <h3 class="font-bold text-lg text-gray-800 mb-1">4º Bimestre</h3>
+                        <p class="text-sm text-gray-500 mb-4 progress-text">0/5 Aulas concluídas</p>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5 mb-4"><div class="bg-purple-500 h-2.5 rounded-full progress-bar" style="width: 0%"></div></div>
+                        <div class="space-y-3">
+                           <div class="flex items-center justify-between lesson-container"><label class="flex items-center"><div class="relative"><input type="checkbox" class="sr-only lesson-release-toggle"><div class="block bg-gray-300 w-10 h-6 rounded-full transition-colors"></div><div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full"></div></div><div class="ml-3 text-sm font-medium text-gray-700 lesson-label cursor-pointer">Aula 1</div></label><button class="lesson-complete-button"><svg class="w-6 h-6 text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button></div>
+                            <div class="flex items-center justify-between lesson-container"><label class="flex items-center"><div class="relative"><input type="checkbox" class="sr-only lesson-release-toggle"><div class="block bg-gray-300 w-10 h-6 rounded-full transition-colors"></div><div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full"></div></div><div class="ml-3 text-sm font-medium text-gray-700 lesson-label cursor-pointer">Aula 2</div></label><button class="lesson-complete-button"><svg class="w-6 h-6 text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button></div>
+                            <div class="flex items-center justify-between lesson-container"><label class="flex items-center"><div class="relative"><input type="checkbox" class="sr-only lesson-release-toggle"><div class="block bg-gray-300 w-10 h-6 rounded-full transition-colors"></div><div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full"></div></div><div class="ml-3 text-sm font-medium text-gray-700 lesson-label cursor-pointer">Aula 3</div></label><button class="lesson-complete-button"><svg class="w-6 h-6 text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button></div>
+                            <div class="flex items-center justify-between lesson-container"><label class="flex items-center"><div class="relative"><input type="checkbox" class="sr-only lesson-release-toggle"><div class="block bg-gray-300 w-10 h-6 rounded-full transition-colors"></div><div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full"></div></div><div class="ml-3 text-sm font-medium text-gray-700 lesson-label cursor-pointer">Aula 4</div></label><button class="lesson-complete-button"><svg class="w-6 h-6 text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button></div>
+                            <div class="flex items-center justify-between lesson-container"><label class="flex items-center"><div class="relative"><input type="checkbox" class="sr-only lesson-release-toggle"><div class="block bg-gray-300 w-10 h-6 rounded-full transition-colors"></div><div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full"></div></div><div class="ml-3 text-sm font-medium text-gray-700 lesson-label cursor-pointer">Aula 5</div></label><button class="lesson-complete-button"><svg class="w-6 h-6 text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const allLessons = Array.from(document.querySelectorAll('.lesson-container'));
+            const allBimesters = document.querySelectorAll('.bimester-container');
+
+            const updateAllProgressBars = () => {
+                allBimesters.forEach(bimester => {
+                    updateProgress(bimester);
+                });
+            };
+
+            const updateLessonVisuals = (lessonEl) => {
+                const releaseToggle = lessonEl.querySelector('.lesson-release-toggle');
+                const releaseLabel = lessonEl.querySelector('label');
+                const completeButton = lessonEl.querySelector('.lesson-complete-button');
+                const completeSvg = completeButton.querySelector('svg');
+
+                if (lessonEl.classList.contains('completed')) {
+                    releaseToggle.disabled = true;
+                    releaseLabel.setAttribute('title', 'Essa aula é impossível desativar, pois já foi concluída pelo aluno.');
+                } else {
+                    releaseToggle.disabled = false;
+                    releaseLabel.removeAttribute('title');
+                }
+
+                if (releaseToggle.checked) {
+                    lessonEl.classList.remove('locked');
+                } else {
+                    lessonEl.classList.add('locked');
+                }
+
+                if (lessonEl.classList.contains('completed')) {
+                    completeSvg.classList.remove('text-gray-300');
+                    completeSvg.classList.add('text-green-500');
+                } else {
+                    completeSvg.classList.remove('text-green-500');
+                    completeSvg.classList.add('text-gray-300');
+                }
+            };
+
+            allLessons.forEach((lesson, clickedIndex) => {
+                const releaseToggle = lesson.querySelector('.lesson-release-toggle');
+                const completeButton = lesson.querySelector('.lesson-complete-button');
+                const releaseLabel = lesson.querySelector('label');
+
+                releaseLabel.addEventListener('click', (e) => {
+                    if (releaseToggle.disabled) {
+                        e.preventDefault();
+                    } else {
+                       releaseToggle.checked = !releaseToggle.checked;
+                       const changeEvent = new Event('change', { 'bubbles': true });
+                       releaseToggle.dispatchEvent(changeEvent);
+                    }
+                });
+
+
+                releaseToggle.addEventListener('change', () => {
+                    if (releaseToggle.checked) {
+                        for (let i = 0; i <= clickedIndex; i++) {
+                            allLessons[i].querySelector('.lesson-release-toggle').checked = true;
+                        }
+                    } else {
+                        for (let i = clickedIndex; i < allLessons.length; i++) {
+                            const subsequentLesson = allLessons[i];
+                            if (!subsequentLesson.classList.contains('completed')) {
+                                subsequentLesson.querySelector('.lesson-release-toggle').checked = false;
+                            }
+                        }
+                    }
+                    allLessons.forEach(updateLessonVisuals);
+                    updateAllProgressBars();
+                });
+
+                completeButton.addEventListener('click', () => {
+                    if (!lesson.classList.contains('locked') && !lesson.classList.contains('completed')) {
+                        lesson.classList.add('completed');
+                        updateLessonVisuals(lesson);
+                        const parentBimester = lesson.closest('.bimester-container');
+                        updateProgress(parentBimester);
+                    }
+                });
+
+                updateLessonVisuals(lesson);
+            });
+
+            const updateProgress = (bimesterContainer) => {
+                const completedLessons = bimesterContainer.querySelectorAll('.lesson-container.completed').length;
+                const totalLessons = bimesterContainer.querySelectorAll('.lesson-container').length;
+                const progressBar = bimesterContainer.querySelector('.progress-bar');
+                const progressText = bimesterContainer.querySelector('.progress-text');
+                const percentage = totalLessons > 0 ? (completedLessons / totalLessons) * 100 : 0;
+                
+                progressBar.style.width = `${percentage}%`;
+                progressText.textContent = `${completedLessons}/${totalLessons} Aulas concluídas`;
+            };
+            
+            updateAllProgressBars();
+        });
+    </script>
+</body>
+</html>
