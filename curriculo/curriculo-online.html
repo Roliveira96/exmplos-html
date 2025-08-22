@@ -174,6 +174,8 @@
             transform: scale(0.9);
             transition: transform 0.3s ease-in-out;
             position: relative;
+            max-height: 90vh; /* Limita a altura do modal */
+            overflow-y: auto; /* Adiciona scroll se o conteúdo for muito grande */
         }
         .modal-overlay.open .modal-content {
             transform: scale(1);
@@ -223,7 +225,6 @@
 
         <!-- Seção de Links Sociais (agora como botões horizontais) -->
         <section class="mb-12 p-8 bg-indigo-50 rounded-2xl shadow-xl fade-in">
-            <!-- Removido o título "Links" -->
             <div class="flex flex-wrap justify-center gap-4 mt-4">
                 <a href="https://www.linkedin.com/in/ricardodeoliveira96/" target="_blank" class="flex items-center bg-indigo-600 text-white py-3 px-6 rounded-full font-semibold shadow-md hover:bg-indigo-700 transition duration-300 ease-in-out transform hover:scale-105">
                     <i class="fab fa-linkedin fa-lg mr-2"></i> LinkedIn
@@ -249,63 +250,12 @@
             </p>
         </section>
 
-        <!-- Seção de Experiência Profissional -->
+        <!-- Seção de Experiência Profissional (Cards com Modal) -->
         <section class="mb-12 p-8 bg-white rounded-2xl shadow-xl fade-in">
             <h2 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-5">Experiência Profissional</h2>
             <div class="section-separator"></div>
-
-            <div class="mb-8 p-6 bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.01] transition-all duration-300 ease-in-out border border-gray-200 relative overflow-hidden mt-8">
-                <span class="experience-card-left-border"></span>
-                <h3 class="text-2xl sm:text-3xl font-semibold text-indigo-700 pl-4 relative z-10">GT Group, São Paulo</h3>
-                <p class="text-gray-600 text-lg mb-2 pl-4 relative z-10">Desde 2023 até o momento</p>
-                <p class="text-lg text-gray-700 pl-4 relative z-10">
-                    <span class="font-medium text-indigo-600">Desenvolvedor Back-end Sênior em Go</span>, com ampla experiência na criação e manutenção de sistemas web. Especializado em <span class="font-medium text-indigo-600">arquitetura de APIs, modelagem de banco de dados e levantamento de requisitos</span>. Responsável pela liderança de equipe, organização de projetos e análise de sistemas, garantindo a entrega de soluções eficientes.
-                </p>
-            </div>
-
-            <div class="mb-8 p-6 bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.01] transition-all duration-300 ease-in-out border border-gray-200 relative overflow-hidden">
-                <span class="experience-card-left-border"></span>
-                <h3 class="text-2xl sm:text-3xl font-semibold text-indigo-700 pl-4 relative z-10">K13 Agência Web, Guarapuava</h3>
-                <p class="text-gray-600 text-lg mb-2 pl-4 relative z-10">Desde 2020 até 2023</p>
-                <p class="text-lg text-gray-700 pl-4 relative z-10">
-                    Comecei minha carreira em TI como <span class="font-medium text-indigo-600">Gestor de Suporte Técnico</span>, onde adquiri sólidos conhecimentos em redes e gerenciamento de servidores web. Posteriormente, migrei para a área de desenvolvimento, atuando como <span class="font-medium text-indigo-600">Desenvolvedor Back-end PHP</span>, com experiência em <span class="font-medium text-indigo-600">WordPress, Laravel e PHP puro</span> na criação e manutenção de sistemas web.
-                </p>
-            </div>
-
-            <div class="mb-8 p-6 bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.01] transition-all duration-300 ease-in-out border border-gray-200 relative overflow-hidden">
-                <span class="experience-card-left-border"></span>
-                <h3 class="text-2xl sm:text-3xl font-semibold text-indigo-700 pl-4 relative z-10">Grafis Encadernadora, Guarapuava</h3>
-                <p class="text-gray-600 text-lg mb-2 pl-4 relative z-10">Desde 2018 até 2019</p>
-                <p class="text-lg text-gray-700 pl-4 relative z-10">
-                    <span class="font-medium text-indigo-600">Laboratorista Digital</span> responsável por diversos tipos de impressão, incluindo <span class="font-medium text-indigo-600">fotos para fotolivros e revelações fotográficas</span>. Experiência na operação de equipamentos e garantia da qualidade final dos produtos.
-                </p>
-            </div>
-
-            <div class="mb-8 p-6 bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.01] transition-all duration-300 ease-in-out border border-gray-200 relative overflow-hidden">
-                <span class="experience-card-left-border"></span>
-                <h3 class="text-2xl sm:text-3xl font-semibold text-indigo-700 pl-4 relative z-10">Colégio Estadual Floriano Peixoto, Laranjeiras do Sul</h3>
-                <p class="text-gray-600 text-lg mb-2 pl-4 relative z-10">Desde 2016 a 2017</p>
-                <p class="text-lg text-gray-700 pl-4 relative z-10">
-                    <span class="font-medium text-indigo-600">Instrutor técnico</span> especializado nas disciplinas de <span class="font-medium text-indigo-600">Banco de Dados, Desenvolvimento Web I e Lógica de Programação</span>. Responsável por capacitar alunos de curso técnico pós-médio, preparando-os com habilidades essenciais para o mercado de trabalho.
-                </p>
-            </div>
-
-            <div class="mb-8 p-6 bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.01] transition-all duration-300 ease-in-out border border-gray-200 relative overflow-hidden">
-                <span class="experience-card-left-border"></span>
-                <h3 class="text-2xl sm:text-3xl font-semibold text-indigo-700 pl-4 relative z-10">RioNet Informática, Rio Bonito do Iguaçu</h3>
-                <p class="text-gray-600 text-lg mb-2 pl-4 relative z-10">Desde 2015 à 2016</p>
-                <p class="text-lg text-gray-700 pl-4 relative z-10">
-                    <span class="font-medium text-indigo-600">Técnico de Suporte e Infraestrutura de TI</span>. Responsável por <span class="font-medium text-indigo-600">instalação de sistemas operacionais e softwares</span>, além de atuar na <span class="font-medium text-indigo-600">infraestrutura de redes</span>, incluindo instalação e configuração de roteadores, switches e antenas wireless para clientes.
-                </p>
-            </div>
-
-            <div class="mb-8 p-6 bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.01] transition-all duration-300 ease-in-out border border-gray-200 relative overflow-hidden">
-                <span class="experience-card-left-border"></span>
-                <h3 class="text-2xl sm:text-3xl font-semibold text-indigo-700 pl-4 relative z-10">Sorvetes Milk Money, Rio Bonito do Iguaçu</h3>
-                <p class="text-gray-600 text-lg mb-2 pl-4 relative z-10">Desde 2010 à 2015</p>
-                <p class="text-lg text-gray-700 pl-4 relative z-10">
-                    Profissional multifuncional com experiência em <span class="font-medium text-indigo-600">vendas, fabricação e gestão de fábrica</span>. Responsável pela supervisão do processo de produção, controle de qualidade, planejamento de vendas e gestão de equipe, garantindo a eficiência operacional e o cumprimento de metas.
-                </p>
+            <div id="experience-container" class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+                <!-- As experiências serão carregadas aqui via JavaScript -->
             </div>
         </section>
 
@@ -349,13 +299,14 @@
         </footer>
     </div>
 
-    <!-- Modal de Detalhes da Competência -->
-    <div id="skillModal" class="modal-overlay">
+    <!-- Modal de Detalhes (unificado para Competências e Experiências) -->
+    <div id="generalModal" class="modal-overlay">
         <div class="modal-content">
             <button class="modal-close-button" id="closeModal">&times;</button>
-            <h3 id="modalSkillName" class="text-3xl font-bold text-indigo-800 mb-4"></h3>
-            <p id="modalSkillDescription" class="text-lg text-gray-700 mb-4"></p>
-            <p id="modalSkillWhatIDo" class="text-lg text-gray-700 mb-6"></p>
+            <h3 id="modalTitle" class="text-3xl font-bold text-indigo-800 mb-4"></h3>
+            <p id="modalSubTitle" class="text-xl text-gray-600 mb-4"></p>
+            <p id="modalDescription" class="text-lg text-gray-700 mb-4"></p>
+            <ul id="modalResponsibilities" class="list-disc list-inside text-lg text-gray-700 ml-4 mb-6 space-y-2"></ul>
             <button id="readContentButton" class="bg-indigo-600 text-white py-3 px-6 rounded-lg font-semibold shadow-md hover:bg-indigo-700 transition duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center space-x-2">
                 <i class="fas fa-volume-up mr-2"></i> Ler Conteúdo
             </button>
@@ -454,37 +405,130 @@
                 progressBar.style.width = `${progress}%`;
             });
 
+            // Dados das Experiências Profissionais
+            const experienceData = [
+                {
+                    type: 'experience',
+                    company: 'GT Group, São Paulo',
+                    role: 'Desenvolvedor Back-end Sênior em Go',
+                    duration: 'Desde 2023 até o momento',
+                    summary: 'Ampla experiência na criação e manutenção de sistemas web, especializado em arquitetura de APIs e modelagem de banco de dados.',
+                    description: 'Na GT Group, atuo como Desenvolvedor Back-end Sênior em Go, liderando o desenvolvimento e a manutenção de sistemas web robustos. Minhas responsabilidades incluem:',
+                    responsibilities: [
+                        'Liderança de equipe e organização de projetos.',
+                        'Arquitetura de APIs e microserviços.',
+                        'Modelagem e otimização de banco de dados (PostgreSQL).',
+                        'Levantamento de requisitos e análise de sistemas.',
+                        'Integração de sistemas com Inteligência Artificial.',
+                        'Garantia da entrega de soluções eficientes e escaláveis.'
+                    ]
+                },
+                {
+                    type: 'experience',
+                    company: 'K13 Agência Web, Guarapuava',
+                    role: 'Gestor de Suporte Técnico / Desenvolvedor Back-end PHP',
+                    duration: 'Desde 2020 até 2023',
+                    summary: 'Iniciei como Gestor de Suporte, migrando para desenvolvimento Back-end PHP com WordPress, Laravel e PHP puro.',
+                    description: 'Na K13 Agência Web, comecei minha carreira em TI como Gestor de Suporte Técnico, adquirindo sólidos conhecimentos em redes e gerenciamento de servidores web. Posteriormente, migrei para a área de desenvolvimento, atuando como Desenvolvedor Back-end PHP. Minhas responsabilidades e aprendizados incluíram:',
+                    responsibilities: [
+                        'Gestão e suporte técnico a clientes.',
+                        'Gerenciamento de servidores web.',
+                        'Desenvolvimento e manutenção de sistemas web em PHP.',
+                        'Experiência com WordPress e Laravel.',
+                        'Criação de soluções personalizadas em PHP puro.'
+                    ]
+                },
+                {
+                    type: 'experience',
+                    company: 'Grafis Encadernadora, Guarapuava',
+                    role: 'Laboratorista Digital',
+                    duration: 'Desde 2018 até 2019',
+                    summary: 'Responsável por diversos tipos de impressão digital, incluindo fotos para fotolivros e revelações fotográficas.',
+                    description: 'Na Grafis Encadernadora, atuei como Laboratorista Digital, sendo responsável por:',
+                    responsibilities: [
+                        'Operação de equipamentos de impressão digital.',
+                        'Processamento e impressão de fotos para fotolivros.',
+                        'Realização de revelações fotográficas.',
+                        'Garantia da qualidade final dos produtos impressos.'
+                    ]
+                },
+                {
+                    type: 'experience',
+                    company: 'Colégio Estadual Floriano Peixoto, Laranjeiras do Sul',
+                    role: 'Instrutor Técnico',
+                    duration: 'Desde 2016 a 2017',
+                    summary: 'Instrutor técnico especializado em Banco de Dados, Desenvolvimento Web I e Lógica de Programação.',
+                    description: 'No Colégio Estadual Floriano Peixoto, fui Instrutor Técnico nas seguintes disciplinas:',
+                    responsibilities: [
+                        'Banco de Dados.',
+                        'Desenvolvimento Web I.',
+                        'Lógica de Programação.',
+                        'Capacitação de alunos de curso técnico pós-médio.',
+                        'Preparação de alunos com habilidades essenciais para o mercado de trabalho.'
+                    ]
+                },
+                {
+                    type: 'experience',
+                    company: 'RioNet Informática, Rio Bonito do Iguaçu',
+                    role: 'Técnico de Suporte e Infraestrutura de TI',
+                    duration: 'Desde 2015 à 2016',
+                    summary: 'Responsável por instalação de sistemas, softwares e atuação na infraestrutura de redes para clientes.',
+                    description: 'Na RioNet Informática, minhas funções como Técnico de Suporte e Infraestrutura de TI incluíam:',
+                    responsibilities: [
+                        'Instalação de sistemas operacionais e softwares.',
+                        'Atuação na infraestrutura de redes.',
+                        'Instalação e configuração de roteadores, switches e antenas wireless para clientes.',
+                        'Suporte técnico e manutenção de equipamentos.'
+                    ]
+                },
+                {
+                    type: 'experience',
+                    company: 'Sorvetes Milk Money, Rio Bonito do Iguaçu',
+                    role: 'Profissional Multifuncional',
+                    duration: 'Desde 2010 à 2015',
+                    summary: 'Experiência em vendas, fabricação e gestão de fábrica, garantindo eficiência operacional e cumprimento de metas.',
+                    description: 'Na Sorvetes Milk Money, atuei em diversas frentes, o que me proporcionou uma visão completa do negócio. Minhas responsabilidades abrangiam:',
+                    responsibilities: [
+                        'Vendas e atendimento ao cliente.',
+                        'Fabricação dos produtos, com controle de qualidade.',
+                        'Gestão da fábrica e supervisão do processo de produção.',
+                        'Planejamento de vendas e gestão de equipe.',
+                        'Garantia da eficiência operacional e cumprimento de metas.'
+                    ]
+                },
+            ];
+
 
             // Carregamento dinâmico das competências em cards agrupados
             const groupedSkillsData = [
                 {
                     groupName: 'Linguagens & Frameworks',
                     skills: [
-                        { name: 'HTML', iconClass: 'fab fa-html5', colorClass: 'text-orange-500',
+                        { type: 'skill', name: 'HTML', iconClass: 'fab fa-html5', colorClass: 'text-orange-500',
                             description: 'HTML (HyperText Markup Language) é a linguagem de marcação padrão para criar páginas web e seus aplicativos.',
                             whatIDo: 'Utilizo HTML para estruturar o conteúdo de websites, garantindo acessibilidade e semântica corretas.' },
-                        { name: 'JavaScript', iconClass: 'fab fa-js', colorClass: 'text-yellow-500',
+                        { type: 'skill', name: 'JavaScript', iconClass: 'fab fa-js', colorClass: 'text-yellow-500',
                             description: 'JavaScript é uma linguagem de programação interpretada que permite criar conteúdo interativo em páginas web.',
                             whatIDo: 'Desenvolvo funcionalidades dinâmicas e interativas para websites, aprimorando a experiência do usuário.' },
-                        { name: 'CSS', iconClass: 'fab fa-css3-alt', colorClass: 'text-blue-500',
+                        { type: 'skill', name: 'CSS', iconClass: 'fab fa-css3-alt', colorClass: 'text-blue-500',
                             description: 'CSS (Cascading Style Sheets) é uma linguagem de estilo usada para descrever a apresentação de um documento escrito em HTML.',
                             whatIDo: 'Crio e aplico estilos visuais atraentes e responsivos para websites, utilizando as melhores práticas de design.' },
-                        { name: 'PHP', iconClass: 'fab fa-php', colorClass: 'text-purple-600',
+                        { type: 'skill', name: 'PHP', iconClass: 'fab fa-php', colorClass: 'text-purple-600',
                             description: 'PHP é uma linguagem de script de uso geral, especialmente adequada para desenvolvimento web.',
                             whatIDo: 'Desenvolvo e mantenho aplicações web robustas e escaláveis usando PHP, com experiência em frameworks como Laravel.' },
-                        { name: 'Java', iconClass: 'fab fa-java', colorClass: 'text-red-600',
+                        { type: 'skill', name: 'Java', iconClass: 'fab fa-java', colorClass: 'text-red-600',
                             description: 'Java é uma linguagem de programação orientada a objetos, multiplataforma, amplamente utilizada para aplicações empresariais e Android.',
                             whatIDo: 'Desenvolvo soluções backend e aplicativos Android utilizando a linguagem Java, focando em performance e segurança.' },
-                        { name: 'GoLang', iconClass: 'fas fa-code', colorClass: 'text-blue-700',
+                        { type: 'skill', name: 'GoLang', iconClass: 'fas fa-code', colorClass: 'text-blue-700',
                             description: 'Go (ou Golang) é uma linguagem de programação de código aberto desenvolvida pelo Google, focada em simplicidade, desempenho e concorrência.',
                             whatIDo: 'Especializado em desenvolvimento backend com Go, construindo microsserviços eficientes e sistemas de alta performance.' },
-                        { name: 'Angular', iconClass: 'fab fa-angular', colorClass: 'text-red-600',
+                        { type: 'skill', name: 'Angular', iconClass: 'fab fa-angular', colorClass: 'text-red-600',
                             description: 'Angular é um framework de código aberto para a construção de aplicações web e móveis, mantido pelo Google.',
                             whatIDo: 'Crio interfaces de usuário dinâmicas e ricas em recursos para aplicações web utilizando o framework Angular.' },
-                        { name: 'JavaWeb', iconClass: 'fab fa-java', colorClass: 'text-orange-600',
+                        { type: 'skill', name: 'JavaWeb', iconClass: 'fab fa-java', colorClass: 'text-orange-600',
                             description: 'JavaWeb refere-se às tecnologias baseadas em Java para o desenvolvimento de aplicações web, como servlets e JSPs.',
                             whatIDo: 'Desenvolvo e implemento aplicações web empresariais utilizando tecnologias JavaWeb, garantindo robustez e escalabilidade.' },
-                        { name: 'Android', iconClass: 'fab fa-android', colorClass: 'text-green-700',
+                        { type: 'skill', name: 'Android', iconClass: 'fab fa-android', colorClass: 'text-green-700',
                             description: 'Android é um sistema operacional móvel desenvolvido pelo Google, amplamente utilizado em smartphones e tablets.',
                             whatIDo: 'Crio aplicativos para a plataforma Android, desde o design da interface até a implementação de funcionalidades complexas.' },
                     ]
@@ -492,10 +536,10 @@
                 {
                     groupName: 'Bancos de Dados',
                     skills: [
-                        { name: 'MySQL', iconClass: 'fas fa-database', colorClass: 'text-indigo-600',
+                        { type: 'skill', name: 'MySQL', iconClass: 'fas fa-database', colorClass: 'text-indigo-600',
                             description: 'MySQL é um sistema de gerenciamento de banco de dados relacional (SGBDR) popular e de código aberto.',
                             whatIDo: 'Projeto, implemento e gerencio bancos de dados MySQL, otimizando consultas e garantindo a integridade dos dados.' },
-                        { name: 'PostgreSQL', iconClass: 'fas fa-database', colorClass: 'text-indigo-700',
+                        { type: 'skill', name: 'PostgreSQL', iconClass: 'fas fa-database', colorClass: 'text-indigo-700',
                             description: 'PostgreSQL é um poderoso sistema de banco de dados objeto-relacional de código aberto, conhecido por sua robustez e flexibilidade.',
                             whatIDo: 'Trabalho com modelagem, otimização e manutenção de bancos de dados PostgreSQL em ambientes de alta demanda.' },
                     ]
@@ -503,10 +547,10 @@
                 {
                     groupName: 'Controle de Versão & APIs',
                     skills: [
-                        { name: 'Git', iconClass: 'fab fa-git-alt', colorClass: 'text-red-700',
+                        { type: 'skill', name: 'Git', iconClass: 'fab fa-git-alt', colorClass: 'text-red-700',
                             description: 'Git é um sistema de controle de versão distribuído que rastreia mudanças no código-fonte durante o desenvolvimento de software.',
                             whatIDo: 'Utilizo Git para controle de versão em todos os projetos, garantindo colaboração eficiente e gerenciamento de código.' },
-                        { name: 'RESTful', iconClass: 'fas fa-exchange-alt', colorClass: 'text-green-600',
+                        { type: 'skill', name: 'RESTful', iconClass: 'fas fa-exchange-alt', colorClass: 'text-green-600',
                             description: 'RESTful (Representational State Transfer) é um estilo arquitetural para sistemas distribuídos, como web services, baseados no protocolo HTTP.',
                             whatIDo: 'Desenvolvo APIs RESTful robustas e bem documentadas, facilitando a comunicação entre diferentes sistemas e plataformas.' },
                     ]
@@ -514,13 +558,13 @@
                 {
                     groupName: 'Gerência de Servidores & Cloud',
                     skills: [
-                        { name: 'WHM/Cpanel', iconClass: 'fas fa-cogs', colorClass: 'text-blue-800',
+                        { type: 'skill', name: 'WHM/Cpanel', iconClass: 'fas fa-cogs', colorClass: 'text-blue-800',
                             description: 'WHM (Web Host Manager) e cPanel são painéis de controle de hospedagem web que simplificam a gerência de servidores e sites.',
                             whatIDo: 'Gerencio servidores e contas de hospedagem, configurando ambientes e otimizando o desempenho de websites.' },
-                        { name: 'AWS', iconClass: 'fab fa-aws', colorClass: 'text-orange-400',
+                        { type: 'skill', name: 'AWS', iconClass: 'fab fa-aws', colorClass: 'text-orange-400',
                             description: 'Amazon Web Services (AWS) é uma plataforma de serviços em nuvem abrangente e amplamente adotada.',
                             whatIDo: 'Implemento e gerencio soluções escaláveis na nuvem AWS, incluindo EC2, S3, RDS e Lambda.' },
-                        { name: 'Kubernetes', iconClass: 'fas fa-cubes', colorClass: 'text-blue-400',
+                        { type: 'skill', name: 'Kubernetes', iconClass: 'fas fa-cubes', colorClass: 'text-blue-400',
                             description: 'Kubernetes é um sistema de orquestração de contêineres de código aberto para automatizar a implantação, escalonamento e gerenciamento de aplicações.',
                             whatIDo: 'Trabalho com a orquestração de contêineres utilizando Kubernetes, garantindo a alta disponibilidade e escalabilidade de aplicações.' },
                     ]
@@ -528,13 +572,13 @@
                 {
                     groupName: 'Sistemas Operacionais',
                     skills: [
-                        { name: 'Linux', iconClass: 'fab fa-linux', colorClass: 'text-yellow-700',
+                        { type: 'skill', name: 'Linux', iconClass: 'fab fa-linux', colorClass: 'text-yellow-700',
                             description: 'Linux é uma família de sistemas operacionais de código aberto baseados no kernel Linux.',
                             whatIDo: 'Possuo conhecimento avançado em ambientes Linux para desenvolvimento, administração de servidores e automação.' },
-                        { name: 'MacOS', iconClass: 'fab fa-apple', colorClass: 'text-gray-700',
+                        { type: 'skill', name: 'MacOS', iconClass: 'fab fa-apple', colorClass: 'text-gray-700',
                             description: 'macOS é o sistema operacional desenvolvido pela Apple para seus computadores Macintosh.',
                             whatIDo: 'Utilizo MacOS como principal ambiente de desenvolvimento, aproveitando sua integração e ferramentas para software.' },
-                        { name: 'Windows', iconClass: 'fab fa-windows', colorClass: 'text-blue-700',
+                        { type: 'skill', name: 'Windows', iconClass: 'fab fa-windows', colorClass: 'text-blue-700',
                             description: 'Microsoft Windows é uma família de sistemas operacionais gráficos desenvolvidos pela Microsoft.',
                             whatIDo: 'Tenho proficiência em ambientes Windows para desenvolvimento e suporte técnico, garantindo compatibilidade e funcionalidade.' },
                     ]
@@ -542,22 +586,22 @@
                 {
                     groupName: 'Infraestrutura de Redes',
                     skills: [
-                        { name: 'Redes', iconClass: 'fas fa-network-wired', colorClass: 'text-gray-600',
+                        { type: 'skill', name: 'Redes', iconClass: 'fas fa-network-wired', colorClass: 'text-gray-600',
                             description: 'Infraestrutura de redes abrange o hardware e software para comunicação entre sistemas.',
                             whatIDo: 'Projeto e implemento soluções de rede, incluindo roteamento, segmentação e configuração de dispositivos.' },
-                        { name: 'DNS Servers', iconClass: 'fas fa-server', colorClass: 'text-blue-600',
+                        { type: 'skill', name: 'DNS Servers', iconClass: 'fas fa-server', colorClass: 'text-blue-600',
                             description: 'Servidores DNS (Domain Name System) traduzem nomes de domínio em endereços IP.',
                             whatIDo: 'Configuro e gerencio servidores DNS para garantir a resolução de nomes eficiente e confiável.' },
-                        { name: 'Apache2', iconClass: 'fas fa-server', colorClass: 'text-red-400',
+                        { type: 'skill', name: 'Apache2', iconClass: 'fas fa-server', colorClass: 'text-red-400',
                             description: 'Apache HTTP Server (Apache2) é um servidor web de código aberto, um dos mais usados globalmente.',
                             whatIDo: 'Configuro e otimizo servidores Apache2 para hospedagem de aplicações web, garantindo performance e segurança.' },
-                        { name: 'Firewall', iconClass: 'fas fa-shield-alt', colorClass: 'text-green-500',
+                        { type: 'skill', name: 'Firewall', iconClass: 'fas fa-shield-alt', colorClass: 'text-green-500',
                             description: 'Um firewall é um sistema de segurança de rede que monitora e controla o tráfego de rede.',
                             whatIDo: 'Implemento e gerencio firewalls para proteger sistemas e redes contra acessos não autorizados e ameaças cibernéticas.' },
-                        { name: 'Exim', iconClass: 'fas fa-envelope-open-text', colorClass: 'text-blue-500',
+                        { type: 'skill', name: 'Exim', iconClass: 'fas fa-envelope-open-text', colorClass: 'text-blue-500',
                             description: 'Exim é um agente de transporte de e-mail (MTA) de código aberto para sistemas Unix-like.',
                             whatIDo: 'Configuro e mantenho servidores Exim para gerenciar o fluxo de e-mails em ambientes de hospedagem.' },
-                        { name: 'Wireless/Networking', iconClass: 'fas fa-wifi', colorClass: 'text-indigo-500',
+                        { type: 'skill', name: 'Wireless/Networking', iconClass: 'fas fa-wifi', colorClass: 'text-indigo-500',
                             description: 'Conhecimento em tecnologias sem fio e de rede para conectividade e comunicação.',
                             whatIDo: 'Instalo e configuro roteadores, switches e antenas wireless, otimizando a conectividade e a segurança da rede.' },
                     ]
@@ -565,22 +609,22 @@
                 {
                     groupName: 'Ferramentas Google',
                     skills: [
-                        { name: 'Google Docs', iconClass: 'fas fa-file-alt', colorClass: 'text-blue-500',
+                        { type: 'skill', name: 'Google Docs', iconClass: 'fas fa-file-alt', colorClass: 'text-blue-500',
                             description: 'Google Docs é um processador de texto baseado em nuvem, parte do Google Workspace.',
                             whatIDo: 'Utilizo Google Docs para criação e colaboração em documentos, facilitando a produtividade e o trabalho em equipe.' },
-                        { name: 'Google Analytics', iconClass: 'fab fa-google', colorClass: 'text-red-500',
+                        { type: 'skill', name: 'Google Analytics', iconClass: 'fab fa-google', colorClass: 'text-red-500',
                             description: 'Google Analytics é um serviço de análise da web que rastreia e relata o tráfego do website.',
                             whatIDo: 'Analiso dados de tráfego e comportamento do usuário em websites para otimizar a performance e as estratégias digitais.' },
-                        { name: 'Google Admin', iconClass: 'fab fa-google', colorClass: 'text-blue-600',
+                        { type: 'skill', name: 'Google Admin', iconClass: 'fab fa-google', colorClass: 'text-blue-600',
                             description: 'Google Admin Console é a ferramenta para gerenciar serviços do Google Workspace para uma organização.',
                             whatIDo: 'Administro contas e serviços do Google Workspace, garantindo a segurança e o funcionamento das ferramentas corporativas.' },
-                        { name: 'Google Console', iconClass: 'fab fa-google', colorClass: 'text-green-600',
+                        { type: 'skill', name: 'Google Console', iconClass: 'fab fa-google', colorClass: 'text-green-600',
                             description: 'Google Cloud Console é a interface web para gerenciar recursos e serviços do Google Cloud Platform.',
                             whatIDo: 'Gerencio projetos e recursos na Google Cloud Platform, implementando e monitorando soluções em nuvem.' },
-                        { name: 'Google Cloud', iconClass: 'fab fa-google', colorClass: 'text-purple-600',
+                        { type: 'skill', name: 'Google Cloud', iconClass: 'fab fa-google', colorClass: 'text-purple-600',
                             description: 'Google Cloud Platform (GCP) é um conjunto de serviços de computação em nuvem oferecido pelo Google.',
                             whatIDo: 'Desenvolvo e implemento soluções escaláveis e resilientes utilizando os diversos serviços da Google Cloud Platform.' },
-                        { name: 'Search Console', iconClass: 'fab fa-google', colorClass: 'text-orange-600',
+                        { type: 'skill', name: 'Search Console', iconClass: 'fab fa-google', colorClass: 'text-orange-600',
                             description: 'Google Search Console é um serviço que ajuda a monitorar e manter a presença do seu site nos resultados da Pesquisa Google.',
                             whatIDo: 'Otimizo a visibilidade de websites na pesquisa Google, monitorando o desempenho e identificando oportunidades de melhoria de SEO.' },
                     ]
@@ -588,10 +632,10 @@
                 {
                     groupName: 'Outras Ferramentas & IA',
                     skills: [
-                        { name: 'JetBrains (IDEs)', iconClass: 'fas fa-terminal', colorClass: 'text-blue-900',
+                        { type: 'skill', name: 'JetBrains (IDEs)', iconClass: 'fas fa-terminal', colorClass: 'text-blue-900',
                             description: 'JetBrains oferece uma suíte de IDEs (Integrated Development Environments) para diversas linguagens de programação, como GoLand e IntelliJ IDEA.',
                             whatIDo: 'Utilizo as IDEs da JetBrains para desenvolvimento, aproveitando seus recursos avançados para aumentar a produtividade e a qualidade do código.' },
-                        { name: 'Ferramentas de IA (Gemini, GPT, LL Studio)', iconClass: 'fas fa-brain', colorClass: 'text-purple-800',
+                        { type: 'skill', name: 'Ferramentas de IA (Gemini, GPT, LL Studio)', iconClass: 'fas fa-brain', colorClass: 'text-purple-800',
                             description: 'Ferramentas de Inteligência Artificial como Gemini, GPT e LL Studio são utilizadas para geração de texto, análise e automação.',
                             whatIDo: 'Integro e utilizo ferramentas de IA para otimizar processos de desenvolvimento, gerar conteúdo e explorar soluções inovadoras.' },
                     ]
@@ -599,49 +643,84 @@
                 {
                     groupName: 'Outras Qualificações',
                     skills: [
-                        { name: 'Habilitação A/B', iconClass: 'fas fa-car', colorClass: 'text-gray-800',
+                        { type: 'skill', name: 'Habilitação A/B', iconClass: 'fas fa-car', colorClass: 'text-gray-800',
                             description: 'Possuo habilitação para dirigir veículos das categorias A (motocicleta) e B (automóvel).',
                             whatIDo: 'Flexibilidade e autonomia para deslocamentos, seja para o trabalho ou outras necessidades.' },
                     ]
                 },
             ];
 
+            const experienceContainer = document.getElementById('experience-container');
             const skillsContainer = document.getElementById('skills-container');
-            const skillModal = document.getElementById('skillModal');
+            const generalModal = document.getElementById('generalModal');
             const closeModalButton = document.getElementById('closeModal');
-            const modalSkillName = document.getElementById('modalSkillName');
-            const modalSkillDescription = document.getElementById('modalSkillDescription');
-            const modalSkillWhatIDo = document.getElementById('modalSkillWhatIDo');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalSubTitle = document.getElementById('modalSubTitle');
+            const modalDescription = document.getElementById('modalDescription');
+            const modalResponsibilities = document.getElementById('modalResponsibilities');
             const readContentButton = document.getElementById('readContentButton');
             const audioPlayer = document.getElementById('audioPlayer');
 
-            // Função para abrir o modal
-            function openModal(skill) {
-                modalSkillName.textContent = skill.name;
-                modalSkillDescription.textContent = skill.description;
-                modalSkillWhatIDo.textContent = skill.whatIDo;
-                skillModal.classList.add('open');
-                // Adiciona a classe para impedir o scroll no body
+            // Função para abrir o modal de forma genérica
+            function openModal(item) {
+                modalTitle.textContent = item.name || item.role; // Título pode ser nome da skill ou cargo da experiência
+                modalDescription.textContent = item.description || item.summary; // Descrição pode ser de skill ou resumo da experiência
+                modalSubTitle.textContent = item.company ? `${item.company} (${item.duration})` : ''; // Subtítulo para experiências
+
+                // Limpa responsabilidades anteriores
+                modalResponsibilities.innerHTML = '';
+                if (item.responsibilities && item.responsibilities.length > 0) {
+                    item.responsibilities.forEach(resp => {
+                        const li = document.createElement('li');
+                        li.textContent = resp;
+                        modalResponsibilities.appendChild(li);
+                    });
+                    modalResponsibilities.style.display = 'block'; // Mostra a lista
+                } else {
+                    modalResponsibilities.style.display = 'none'; // Esconde se não houver responsabilidades
+                }
+
+                generalModal.classList.add('open');
                 document.body.style.overflow = 'hidden';
             }
 
             // Função para fechar o modal
             function closeModal() {
-                skillModal.classList.remove('open');
-                // Remove a classe para permitir o scroll no body
+                generalModal.classList.remove('open');
                 document.body.style.overflow = '';
-                // Para qualquer áudio que esteja tocando
                 audioPlayer.pause();
                 audioPlayer.currentTime = 0;
             }
 
-            // Event listener para fechar o modal
+            // Event listeners para fechar o modal
             closeModalButton.addEventListener('click', closeModal);
-            skillModal.addEventListener('click', (e) => {
-                if (e.target === skillModal) {
+            generalModal.addEventListener('click', (e) => {
+                if (e.target === generalModal) {
                     closeModal();
                 }
             });
+
+            // Carregamento das experiências no HTML
+            if (experienceContainer) {
+                experienceData.forEach(exp => {
+                    const experienceCard = document.createElement('div');
+                    experienceCard.className = `p-6 bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.01] transition-all duration-300 ease-in-out border border-gray-200 relative overflow-hidden group`;
+                    experienceCard.innerHTML = `
+                        <span class="experience-card-left-border"></span>
+                        <div class="relative z-10">
+                            <h3 class="text-xl sm:text-2xl font-semibold text-indigo-700 mb-1">${exp.role}</h3>
+                            <p class="text-gray-600 text-lg mb-1">${exp.company}</p>
+                            <p class="text-gray-500 text-base mb-3">${exp.duration}</p>
+                            <p class="text-gray-700 mb-4">${exp.summary}</p>
+                            <button class="bg-indigo-500 text-white py-2 px-4 rounded-lg font-semibold text-sm hover:bg-indigo-600 transition duration-300 ease-in-out transform hover:scale-105">
+                                Ver Mais
+                            </button>
+                        </div>
+                    `;
+                    experienceCard.querySelector('button').addEventListener('click', () => openModal(exp));
+                    experienceContainer.appendChild(experienceCard);
+                });
+            }
 
             // Carregamento das competências no HTML
             if (skillsContainer) {
@@ -670,7 +749,15 @@
 
             // Função para ler o conteúdo do modal (TTS)
             readContentButton.addEventListener('click', async () => {
-                const textToRead = `${modalSkillName.textContent}. ${modalSkillDescription.textContent}. ${modalSkillWhatIDo.textContent}`;
+                let textToRead = `${modalTitle.textContent}. `;
+                if (modalSubTitle.textContent) {
+                    textToRead += `${modalSubTitle.textContent}. `;
+                }
+                textToRead += `${modalDescription.textContent}. `;
+                if (modalResponsibilities.style.display !== 'none') {
+                    textToRead += 'Principais Responsabilidades: ' + Array.from(modalResponsibilities.children).map(li => li.textContent).join(', ') + '.';
+                }
+
                 readContentButton.disabled = true;
                 readContentButton.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Lendo...`;
 
@@ -719,11 +806,14 @@
                         };
                     } else {
                         console.error("Erro: Estrutura de resposta de áudio inesperada ou mimeType não suportado.", result);
-                        alert("Não foi possível gerar o áudio. Tente novamente.");
+                        // alert("Não foi possível gerar o áudio. Tente novamente."); // Removido alert
+                        // Melhor usar uma mensagem no console ou em um elemento da UI para não bloquear o iframe
+                        console.log("Mensagem ao usuário: Não foi possível gerar o áudio. Tente novamente.");
                     }
                 } catch (error) {
                     console.error("Erro ao chamar a API TTS:", error);
-                    alert("Ocorreu um erro ao tentar ler o conteúdo. Verifique o console.");
+                    // alert("Ocorreu um erro ao tentar ler o conteúdo. Verifique o console."); // Removido alert
+                    console.log("Mensagem ao usuário: Ocorreu um erro ao tentar ler o conteúdo. Verifique o console.");
                 } finally {
                     readContentButton.disabled = false;
                     readContentButton.innerHTML = `<i class="fas fa-volume-up mr-2"></i> Ler Conteúdo`;
