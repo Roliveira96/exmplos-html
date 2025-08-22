@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criador de Pesquisas</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Estilos personalizados para o corpo da página e fonte */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Estilos para o modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-content {
+            background-color: #fff;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            width: 90%;
+            max-height: 90vh; /* Limita a altura do modal */
+            overflow-y: auto; /* Adiciona scroll se o conteúdo for grande */
+            position: relative;
+            transform: translateY(-20px);
+            transition: transform 0.3s ease;
+        }
+        .modal-overlay.show .modal-content {
+            transform: translateY(0);
+        }
+        .modal-close-button {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 p-4">
+    <div class="min-h-screen flex items-center justify-center p-4 font-sans">
+        <div class="bg-white shadow-xl rounded-lg p-8 max-w-3xl w-full">
+            <h1 class="text-3xl font-extrabold text-gray-800 mb-6 text-center">
+                Criador de Pesquisas
+            </h1>
+
+            <!-- Título da Pesquisa -->
+            <div class="mb-6 p-4 bg-blue-50 rounded-lg shadow-sm">
+                <label for="surveyTitle" class="block text-blue-700 text-lg font-bold mb-2">
+                    Título da Pesquisa:
+                </label>
+                <input
+                    type="text"
+                    id="surveyTitle"
+                    onkeyup="updateSurveyTitle(this.value)"
+                    class="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500"
+                    placeholder="Ex: Pesquisa de Satisfação Anual"
+                />
+            </div>
+
+            <!-- Contêiner para Módulos -->
+            <div id="modulesContainer">
+                <!-- Módulos serão inseridos aqui pelo JavaScript -->
+            </div>
+
+            <button
+                onclick="addModule()"
+                class="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:shadow-outline transition duration-300 ease-in-out transform hover:scale-105"
+            >
+                Adicionar Módulo
+            </button>
+
+            <button
+                onclick="openSurveyModal()"
+                class="mt-4 w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:shadow-outline transition duration-300 ease-in-out transform hover:scale-105"
+            >
+                Visualizar Pesquisa
+            </button>
+
+            <div class="mt-8 pt-6 border-t-2 border-gray-200">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">
+                    Estrutura da Pesquisa (JSON):
+                </h3>
+                <pre id="surveyStructureJson" class="bg-gray-800 text-white p-4 rounded-lg overflow-auto text-sm">
+                    {}
+                </pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Visualização da Pesquisa -->
+    <div id="surveyModalOverlay" class="modal-overlay">
+        <div class="modal-content">
+            <button onclick="closeSurveyModal()" class="modal-close-button">&times;</button>
+            <h2 id="modalSurveyTitle" class="text-2xl font-bold text-gray-800 mb-4 text-center"></h2>
+            <div id="modalSurveyContent">
+                <!-- Conteúdo da pesquisa será carregado aqui -->
+            </div>
+            <div class="mt-8 pt-6 border-t-2 border-gray-200">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">Suas Respostas (Prévia):</h3>
+                <pre id="modalAnswersJson" class="bg-gray-800 text-white p-4 rounded-lg overflow-auto text-sm">
+                    {}
+                </pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Define os tipos de pergunta disponíveis
+        const QuestionType = {
+            YES_NO: 'yes_no',
+            RATING_1_5: 'rating_1_5',
+            DESCRIPTION: 'description',
+        };
+
+        // Estado global para a pesquisa que está sendo criada
+        let survey = {
+            id: 'nova-pesquisa', // Um ID real seria gerado no backend ou com UUID
+            title: '',
+            modules: [],
+        };
+
+        // Estado para as respostas dentro do modal de visualização
+        let modalAnswers = {};
+
+        // Função para atualizar o JSON exibido
+        function updateJsonDisplay() {
+            document.getElementById('surveyStructureJson').textContent = JSON.stringify(survey, null, 2);
+        }
+
+        // Função para atualizar o título da pesquisa
+        function updateSurveyTitle(newTitle) {
+            survey.title = newTitle;
+            updateJsonDisplay();
+        }
+
+        // Função para adicionar um novo módulo
+        function addModule() {
+            const newModule = {
+                id: Date.now(),
+                name: '',
+                questions: [],
+            };
+            survey.modules.push(newModule);
+            renderModules();
+            updateJsonDisplay();
+        }
+
+        // Função para remover um módulo
+        function removeModule(moduleId) {
+            survey.modules = survey.modules.filter(module => module.id !== moduleId);
+            renderModules();
+            updateJsonDisplay();
+        }
+
+        // Função para atualizar o nome de um módulo
+        function updateModuleName(moduleId, newName) {
+            const moduleIndex = survey.modules.findIndex(module => module.id === moduleId);
+            if (moduleIndex !== -1) {
+                survey.modules[moduleIndex].name = newName;
+                updateJsonDisplay();
+            }
+        }
+
+        // Função para adicionar uma nova pergunta a um módulo
+        function addQuestion(moduleId) {
+            const moduleIndex = survey.modules.findIndex(module => module.id === moduleId);
+            if (moduleIndex !== -1) {
+                const newQuestion = {
+                    id: Date.now(),
+                    text: '',
+                    type: QuestionType.YES_NO, // Tipo padrão: Sim/Não
+                };
+                survey.modules[moduleIndex].questions.push(newQuestion);
+                renderModules();
+                updateJsonDisplay();
+            }
+        }
+
+        // Função para remover uma pergunta de um módulo
+        function removeQuestion(moduleId, questionId) {
+            const moduleIndex = survey.modules.findIndex(module => module.id === moduleId);
+            if (moduleIndex !== -1) {
+                survey.modules[moduleIndex].questions = survey.modules[moduleIndex].questions.filter(question => question.id !== questionId);
+                renderModules();
+                updateJsonDisplay();
+            }
+        }
+
+        // Função para atualizar o texto de uma pergunta
+        function updateQuestionText(moduleId, questionId, newText) {
+            const moduleIndex = survey.modules.findIndex(module => module.id === moduleId);
+            if (moduleIndex !== -1) {
+                const questionIndex = survey.modules[moduleIndex].questions.findIndex(question => question.id === questionId);
+                if (questionIndex !== -1) {
+                    survey.modules[moduleIndex].questions[questionIndex].text = newText;
+                    updateJsonDisplay();
+                }
+            }
+        }
+
+        // Função para atualizar o tipo de uma pergunta
+        function updateQuestionType(moduleId, questionId, newType) {
+            const moduleIndex = survey.modules.findIndex(module => module.id === moduleId);
+            if (moduleIndex !== -1) {
+                const questionIndex = survey.modules[moduleIndex].questions.findIndex(question => question.id === questionId);
+                if (questionIndex !== -1) {
+                    survey.modules[moduleIndex].questions[questionIndex].type = newType;
+                    updateJsonDisplay();
+                }
+            }
+        }
+
+        // Função para renderizar todos os módulos e suas perguntas
+        function renderModules() {
+            const modulesContainer = document.getElementById('modulesContainer');
+            modulesContainer.innerHTML = ''; // Limpa o contêiner antes de renderizar novamente
+
+            survey.modules.forEach(module => {
+                const moduleDiv = document.createElement('div');
+                moduleDiv.className = 'mb-8 p-6 bg-purple-50 rounded-lg shadow-md border border-purple-200';
+                moduleDiv.innerHTML = `
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-2xl font-bold text-purple-700">
+                            Módulo:
+                        </h2>
+                        <button
+                            onclick="removeModule(${module.id})"
+                            class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out transform hover:scale-105"
+                        >
+                            Remover Módulo
+                        </button>
+                    </div>
+                    <input
+                        type="text"
+                        value="${module.name}"
+                        onkeyup="updateModuleName(${module.id}, this.value)"
+                        class="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-purple-500 mb-4"
+                        placeholder="Nome do Módulo (Ex: Informações Pessoais)"
+                    />
+
+                    <h3 class="text-xl font-semibold text-purple-600 mb-3 border-b border-purple-100 pb-2">
+                        Perguntas:
+                    </h3>
+                    <div id="questionsContainer-${module.id}">
+                        <!-- Perguntas serão inseridas aqui -->
+                    </div>
+
+                    <button
+                        onclick="addQuestion(${module.id})"
+                        class="mt-4 w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline transition duration-300 ease-in-out transform hover:scale-105"
+                    >
+                        Adicionar Pergunta
+                    </button>
+                `;
+                modulesContainer.appendChild(moduleDiv);
+
+                const questionsContainer = moduleDiv.querySelector(`#questionsContainer-${module.id}`);
+                module.questions.forEach(question => {
+                    const questionDiv = document.createElement('div');
+                    questionDiv.className = 'mb-5 p-4 bg-white rounded-lg shadow-sm border border-gray-200';
+                    questionDiv.innerHTML = `
+                        <div class="flex justify-between items-center mb-3">
+                            <label class="block text-gray-700 text-sm font-bold">
+                                Texto da Pergunta:
+                            </label>
+                            <button
+                                onclick="removeQuestion(${module.id}, ${question.id})"
+                                class="bg-red-400 hover:bg-red-500 text-white text-xs font-bold py-1 px-2 rounded-lg transition duration-300 ease-in-out"
+                            >
+                                Remover Pergunta
+                            </button>
+                        </div>
+                        <input
+                            type="text"
+                            value="${question.text}"
+                            onkeyup="updateQuestionText(${module.id}, ${question.id}, this.value)"
+                            class="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-gray-400 mb-3"
+                            placeholder="Ex: Qual a sua idade?"
+                        />
+
+                        <label class="block text-gray-700 text-sm font-bold mb-2">
+                            Tipo de Resposta:
+                        </label>
+                        <select
+                            onchange="updateQuestionType(${module.id}, ${question.id}, this.value)"
+                            class="block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-2 px-3 pr-8 rounded-lg leading-tight focus:outline-none focus:shadow-outline focus:border-gray-400"
+                        >
+                            <option value="${QuestionType.YES_NO}" ${question.type === QuestionType.YES_NO ? 'selected' : ''}>Sim ou Não</option>
+                            <option value="${QuestionType.RATING_1_5}" ${question.type === QuestionType.RATING_1_5 ? 'selected' : ''}>Avaliação (1 a 5)</option>
+                            <option value="${QuestionType.DESCRIPTION}" ${question.type === QuestionType.DESCRIPTION ? 'selected' : ''}>Descrição (Texto Livre)</option>
+                        </select>
+                    `;
+                    questionsContainer.appendChild(questionDiv);
+                });
+            });
+        }
+
+        // Funções para o Modal de Visualização da Pesquisa
+        function openSurveyModal() {
+            const modalOverlay = document.getElementById('surveyModalOverlay');
+            const modalSurveyTitle = document.getElementById('modalSurveyTitle');
+            const modalSurveyContent = document.getElementById('modalSurveyContent');
+            const modalAnswersJson = document.getElementById('modalAnswersJson');
+
+            modalSurveyTitle.textContent = survey.title || 'Pesquisa Sem Título';
+            modalSurveyContent.innerHTML = ''; // Limpa o conteúdo anterior
+            modalAnswers = {}; // Reseta as respostas do modal
+
+            // Renderiza os módulos e perguntas da pesquisa no modal
+            survey.modules.forEach(module => {
+                const moduleDiv = document.createElement('div');
+                moduleDiv.className = 'mb-8 p-6 bg-blue-50 rounded-lg shadow-md';
+                moduleDiv.innerHTML = `
+                    <h2 class="text-2xl font-bold text-blue-700 mb-5 border-b-2 border-blue-200 pb-2">
+                        ${module.name || 'Módulo Sem Nome'}
+                    </h2>
+                    <div id="modalQuestionsContainer-${module.id}"></div>
+                `;
+                modalSurveyContent.appendChild(moduleDiv);
+
+                const questionsContainer = moduleDiv.querySelector(`#modalQuestionsContainer-${module.id}`);
+                module.questions.forEach(question => {
+                    const questionDiv = document.createElement('div');
+                    questionDiv.className = 'mb-6 bg-white p-4 rounded-lg shadow-sm';
+                    
+                    let questionHtml = `<label class="block text-gray-700 text-sm font-bold mb-2">${question.text || 'Pergunta Sem Texto'}</label>`;
+
+                    switch (question.type) {
+                        case QuestionType.YES_NO:
+                            questionHtml += `
+                                <div class="flex items-center space-x-4">
+                                    <label class="inline-flex items-center">
+                                        <input
+                                            type="radio"
+                                            name="modal-${module.id}-${question.id}"
+                                            value="Sim"
+                                            onchange="updateModalAnswer(${module.id}, ${question.id}, this.value)"
+                                            class="form-radio h-4 w-4 text-blue-600 rounded-full focus:ring-blue-500"
+                                        />
+                                        <span class="ml-2 text-gray-700">Sim</span>
+                                    </label>
+                                    <label class="inline-flex items-center">
+                                        <input
+                                            type="radio"
+                                            name="modal-${module.id}-${question.id}"
+                                            value="Não"
+                                            onchange="updateModalAnswer(${module.id}, ${question.id}, this.value)"
+                                            class="form-radio h-4 w-4 text-blue-600 rounded-full focus:ring-blue-500"
+                                        />
+                                        <span class="ml-2 text-gray-700">Não</span>
+                                    </label>
+                                </div>
+                            `;
+                            break;
+                        case QuestionType.RATING_1_5:
+                            questionHtml += `<div class="flex space-x-2">`;
+                            for (let i = 1; i <= 5; i++) {
+                                questionHtml += `
+                                    <label class="inline-flex items-center">
+                                        <input
+                                            type="radio"
+                                            name="modal-${module.id}-${question.id}"
+                                            value="${i}"
+                                            onchange="updateModalAnswer(${module.id}, ${question.id}, this.value)"
+                                            class="form-radio h-4 w-4 text-blue-600 rounded-full focus:ring-blue-500"
+                                        />
+                                        <span class="ml-2 text-gray-700">${i}</span>
+                                    </label>
+                                `;
+                            }
+                            questionHtml += `</div>`;
+                            break;
+                        case QuestionType.DESCRIPTION:
+                            questionHtml += `
+                                <textarea
+                                    onkeyup="updateModalAnswer(${module.id}, ${question.id}, this.value)"
+                                    class="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500"
+                                    rows="3"
+                                    placeholder="Digite sua resposta aqui..."
+                                ></textarea>
+                            `;
+                            break;
+                    }
+                    questionDiv.innerHTML = questionHtml;
+                    questionsContainer.appendChild(questionDiv);
+                });
+            });
+
+            modalAnswersJson.textContent = JSON.stringify(modalAnswers, null, 2);
+            modalOverlay.classList.add('show');
+        }
+
+        // Função para atualizar as respostas no modal
+        function updateModalAnswer(moduleId, questionId, value) {
+            if (!modalAnswers[moduleId]) {
+                modalAnswers[moduleId] = {};
+            }
+            modalAnswers[moduleId][questionId] = value;
+            document.getElementById('modalAnswersJson').textContent = JSON.stringify(modalAnswers, null, 2);
+        }
+
+        // Função para fechar o modal
+        function closeSurveyModal() {
+            document.getElementById('surveyModalOverlay').classList.remove('show');
+        }
+
+        // Renderiza os módulos iniciais (se houver) e o JSON ao carregar a página
+        window.onload = function() {
+            renderModules();
+            updateJsonDisplay();
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrossel de Imagens Infinito</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .carousel-image-container {
+            width: 100%;
+            height: 300px;
+            position: relative;
+        }
+        .carousel-slide {
+            position: absolute;
+            inset: 0;
+            transition: opacity 0.5s ease-in-out;
+            opacity: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .carousel-slide.active {
+            opacity: 1;
+        }
+        .carousel-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+        .modal-image {
+            max-width: 90vw;
+            max-height: 90vh;
+            object-fit: contain;
+        }
+        body.modal-open {
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4 font-inter">
+
+    <div class="bg-white rounded-xl shadow-lg p-6 w-full max-w-lg">
+        <h1 class="text-2xl font-bold text-center mb-6 text-gray-800">Nosso Carrossel de Imagens</h1>
+
+        <div class="relative">
+            <div id="carouselContainer" class="carousel-image-container rounded-lg overflow-hidden">
+                <div class="carousel-slide active rounded-lg" data-index="0">
+                    <img src="https://studioff.com.br/content/uploads/2025/07/05-1-e1751677680319.webp" alt="Imagem Paisagem" class="carousel-image rounded-lg cursor-pointer" data-index="0" onerror="this.onerror=null; this.src='https://placehold.co/600x300/cccccc/333333?text=Imagem+Nao+Encontrada';">
+                </div>
+                <div class="carousel-slide rounded-lg" data-index="1">
+                    <img src="https://studioff.com.br/content/uploads/2025/07/03-1.webp" alt="Imagem Retrato" class="carousel-image rounded-lg cursor-pointer" data-index="1" onerror="this.onerror=null; this.src='https://placehold.co/600x300/cccccc/333333?text=Imagem+Nao+Encontrada';">
+                </div>
+                <div class="carousel-slide rounded-lg" data-index="2">
+                    <img src="https://studioff.com.br/content/uploads/2025/07/06-2-e1751677664269.webp" alt="Nova Imagem" class="carousel-image rounded-lg cursor-pointer" data-index="2" onerror="this.onerror=null; this.src='https://placehold.co/600x300/cccccc/333333?text=Imagem+Nao+Encontrada';">
+                </div>
+            </div>
+
+            <button id="prevBtn" class="absolute top-1/2 left-4 -translate-y-1/2 bg-white bg-opacity-75 p-2 rounded-full shadow-md hover:bg-opacity-100 focus:outline-none focus:ring-2 focus:ring-blue-500 z-10">
+                <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+            </button>
+            <button id="nextBtn" class="absolute top-1/2 right-4 -translate-y-1/2 bg-white bg-opacity-75 p-2 rounded-full shadow-md hover:bg-opacity-100 focus:outline-none focus:ring-2 focus:ring-blue-500 z-10">
+                <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+            </button>
+
+            <div id="indicators" class="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2 z-10">
+            </div>
+        </div>
+    </div>
+
+    <div id="imageModal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 hidden">
+        <div class="relative">
+            <img id="modalImage" src="" alt="Imagem em Tela Cheia" class="modal-image rounded-lg" onerror="this.onerror=null; this.src='https://placehold.co/600x400/cccccc/333333?text=Imagem+Nao+Encontrada';">
+
+            <button id="closeModalBtn" class="absolute top-4 right-4 bg-white bg-opacity-75 p-2 rounded-full shadow-md hover:bg-opacity-100 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+
+            <button id="modalPrevBtn" class="absolute top-1/2 left-4 -translate-y-1/2 bg-white bg-opacity-75 p-2 rounded-full shadow-md hover:bg-opacity-100 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+            </button>
+            <button id="modalNextBtn" class="absolute top-1/2 right-4 -translate-y-1/2 bg-white bg-opacity-75 p-2 rounded-full shadow-md hover:bg-opacity-100 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const carouselSlides = Array.from(document.querySelectorAll('.carousel-image-container > .carousel-slide'));
+        const carouselImages = Array.from(document.querySelectorAll('.carousel-image-container img'));
+        let currentIndex = 0;
+        let autoSlideInterval;
+        const carouselContainer = document.getElementById('carouselContainer');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const indicatorsContainer = document.getElementById('indicators');
+        const imageModal = document.getElementById('imageModal');
+        const modalImage = document.getElementById('modalImage');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const modalPrevBtn = document.getElementById('modalPrevBtn');
+        const modalNextBtn = document.getElementById('modalNextBtn');
+
+        function startAutoSlide() {
+            clearInterval(autoSlideInterval);
+            autoSlideInterval = setInterval(nextImage, 3000);
+        }
+
+        function showImage(index) {
+            carouselSlides.forEach(slide => {
+                slide.classList.remove('active');
+                slide.style.zIndex = 0;
+            });
+            carouselSlides[index].classList.add('active');
+            carouselSlides[index].style.zIndex = 1;
+            updateIndicators(index);
+        }
+
+        function updateIndicators(activeIndex) {
+            indicatorsContainer.innerHTML = '';
+            carouselSlides.forEach((_, index) => {
+                const indicator = document.createElement('div');
+                indicator.classList.add('w-3', 'h-3', 'rounded-full', 'bg-white', 'cursor-pointer', 'transition-all', 'duration-300');
+                if (index === activeIndex) {
+                    indicator.classList.add('bg-opacity-100');
+                } else {
+                    indicator.classList.add('bg-opacity-50');
+                }
+                indicator.addEventListener('click', () => {
+                    currentIndex = index;
+                    showImage(currentIndex);
+                    startAutoSlide();
+                });
+                indicatorsContainer.appendChild(indicator);
+            });
+        }
+
+        function nextImage() {
+            currentIndex = (currentIndex + 1) % carouselSlides.length;
+            showImage(currentIndex);
+        }
+
+        function prevImage() {
+            currentIndex = (currentIndex - 1 + carouselSlides.length) % carouselSlides.length;
+            showImage(currentIndex);
+        }
+
+        nextBtn.addEventListener('click', () => {
+            nextImage();
+            startAutoSlide();
+        });
+
+        prevBtn.addEventListener('click', () => {
+            prevImage();
+            startAutoSlide();
+        });
+
+        showImage(currentIndex);
+        startAutoSlide();
+
+        carouselContainer.addEventListener('mouseover', () => {
+            clearInterval(autoSlideInterval);
+        });
+
+        carouselContainer.addEventListener('mouseout', () => {
+            startAutoSlide();
+        });
+
+        function openModal(event) {
+            const clickedImageIndex = parseInt(event.target.dataset.index);
+            currentIndex = clickedImageIndex;
+            modalImage.src = carouselImages[currentIndex].src;
+            imageModal.classList.remove('hidden');
+            document.body.classList.add('modal-open');
+        }
+
+        function closeModal() {
+            imageModal.classList.add('hidden');
+            document.body.classList.remove('modal-open');
+        }
+
+        function nextModalImage() {
+            currentIndex = (currentIndex + 1) % carouselImages.length;
+            modalImage.src = carouselImages[currentIndex].src;
+        }
+
+        function prevModalImage() {
+            currentIndex = (currentIndex - 1 + carouselImages.length) % carouselImages.length;
+            modalImage.src = carouselImages[currentIndex].src;
+        }
+
+        carouselImages.forEach((img) => {
+            img.addEventListener('click', openModal);
+        });
+
+        closeModalBtn.addEventListener('click', closeModal);
+        modalNextBtn.addEventListener('click', nextModalImage);
+        modalPrevBtn.addEventListener('click', prevModalImage);
+
+        imageModal.addEventListener('click', (event) => {
+            if (event.target === imageModal) {
+                closeModal();
+            }
+        });
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && !imageModal.classList.contains('hidden')) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>

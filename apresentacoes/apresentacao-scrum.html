@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apresentação de Fluxo de Software (Scroll)</title>
+    <!-- Carrega o Tailwind CSS para estilização moderna e responsiva -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Define a fonte Inter como padrão para todo o corpo do documento */
+        body {
+            font-family: "Inter", sans-serif;
+        }
+        /* Estilo para a seta do fluxograma */
+        .flow-arrow {
+            width: 2px;
+            height: 40px; /* Altura da seta */
+            background-color: #60a5fa; /* Cor azul claro */
+            position: relative;
+            margin: 0 auto; /* Centraliza a seta */
+        }
+        .flow-arrow::after {
+            content: '';
+            position: absolute;
+            bottom: -5px; /* Posição da ponta da seta */
+            left: -4px; /* Centraliza a ponta da seta */
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 8px solid #60a5fa; /* Cor da ponta da seta */
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col items-center py-12 px-4">
+    <div class="w-full max-w-4xl space-y-12">
+        <!-- Título da Apresentação -->
+        <h1 class="text-5xl font-extrabold text-gray-900 text-center mb-16">
+            Apresentação do Fluxo de Trabalho de Software
+        </h1>
+
+        <!-- NOVO CARD: Capa da Apresentação - Informações de Ricardo de Oliveira -->
+        <div class="bg-white p-8 md:p-12 rounded-2xl shadow-xl border border-gray-200 mb-12 space-y-6 transform transition-transform duration-300 hover:scale-[1.01] hover:shadow-2xl flex flex-col md:flex-row items-center md:items-start gap-8">
+            <div class="flex-shrink-0">
+                <img src="https://gravatar.com/avatar/fcb94399b68440bd9dcfb32522974d1d?size=256" alt="Foto de Ricardo de Oliveira" class="w-40 h-40 md:w-48 md:h-48 rounded-full object-cover shadow-lg border-4 border-blue-500">
+            </div>
+            <div class="flex-grow text-center md:text-left space-y-4">
+                <h2 class="text-4xl font-bold text-gray-800 mb-2">Apresentação por Ricardo de Oliveira</h2>
+                <p class="text-2xl text-gray-700">
+                    <span class="font-semibold">Setor:</span> Dgtallab - Desenvolvedor Backend e Tech Lider
+                </p>
+                <p class="text-xl text-gray-600">
+                    <span class="font-semibold">E-mail:</span> ricardo.oliveira@dgtallab.com.br
+                </p>
+                <h3 class="text-2xl font-semibold text-gray-800 mt-6 mb-3">Minhas Equipes:</h3>
+                <ul class="list-disc list-inside text-xl text-gray-700 space-y-1 pl-4">
+                    <li>Boards</li>
+                    <li>Métricas</li>
+                    <li>Mensageria</li>
+                    <li>DgtalScan</li>
+                    <li>Fisco Fácil</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Card de Introdução: A Metodologia Scrum-ban para o seu Fluxo de Software -->
+        <div class="bg-white p-8 md:p-12 rounded-2xl shadow-xl border border-gray-200 mb-12 space-y-6 transform transition-transform duration-300 hover:scale-[1.01] hover:shadow-2xl">
+            <h2 class="text-3xl font-bold text-gray-800 mb-4">A Metodologia Scrum-ban para o seu Fluxo de Software</h2>
+            <p class="text-xl text-gray-700 leading-relaxed">
+                Otimizamos seu processo de desenvolvimento de software, que envolve equipes especializadas (BD, Backend, Frontend, QA, DevOps) e usa cards com responsáveis, atividades, pontuação e datas no Quadro.
+            </p>
+        </div>
+
+        <!-- Card: O Desafio -->
+        <div class="bg-white p-8 md:p-12 rounded-2xl shadow-xl border border-gray-200 mb-12 space-y-6 transform transition-transform duration-300 hover:scale-[1.01] hover:shadow-2xl">
+            <h2 class="text-3xl font-bold text-gray-800 mb-4">O Desafio</h2>
+            <p class="text-xl text-gray-700 leading-relaxed">
+                Nosso fluxo sequencial, similar ao Cascata, com equipes especializadas, exige integrar práticas do Scrum para entregas incrementais, garantindo visibilidade, rastreabilidade e melhoria contínua.
+            </p>
+        </div>
+
+        <!-- Card: A Solução: Metodologia Scrum-ban Adaptada -->
+        <div class="bg-white p-8 md:p-12 rounded-2xl shadow-xl border border-gray-200 mb-12 space-y-6 transform transition-transform duration-300 hover:scale-[1.01] hover:shadow-2xl">
+            <h2 class="text-3xl font-bold text-blue-700 mb-4">A Solução: Metodologia Scrum-ban Adaptada</h2>
+            <p class="text-xl text-gray-700 leading-relaxed">
+                A melhor abordagem é uma mistura de Scrum com Kanban (Scrum-ban). Ela mantém seu fluxo sequencial, mas adiciona os benefícios do Scrum de ciclos de entrega e inspeção, tudo visualizado no Quadro.
+            </p>
+        </div>
+
+        <!-- Card: 1. Papéis Scrum Adaptados -->
+        <div class="bg-white p-8 md:p-12 rounded-2xl shadow-xl border border-gray-200 mb-12 space-y-6 transform transition-transform duration-300 hover:scale-[1.01] hover:shadow-2xl">
+            <h2 class="text-3xl font-bold text-gray-800 mb-4">1. Papéis Scrum Adaptados:</h2>
+            <ul class="list-disc list-inside text-xl text-gray-700 space-y-2 pl-4">
+                <li><strong>Product Owner (PO):</strong> Único responsável pelo Product Backlog, priorizando o que será feito.</li>
+                <li><strong>Scrum Master (SM):</strong> Facilita o Scrum, remove impedimentos e otimiza a comunicação entre as equipes.</li>
+                <li><strong>Times de Desenvolvimento (Adaptados):</strong> Equipes especializadas (BD, Backend, Frontend, QA, DevOps) colaboram para entregar um incremento completo a cada ciclo.</li>
+            </ul>
+        </div>
+
+        <!-- Card: 2. Estrutura do Quadro (Múltiplos Quadros) -->
+        <div class="bg-white p-8 md:p-12 rounded-2xl shadow-xl border border-gray-200 mb-12 space-y-6 transform transition-transform duration-300 hover:scale-[1.01] hover:shadow-2xl">
+            <h2 class="text-3xl font-bold text-gray-800 mb-4">2. Estrutura do Quadro (Múltiplos Quadros):</h2>
+            <p class="text-xl text-gray-700 leading-relaxed">Para clareza, sugerimos a seguinte organização:</p>
+            <ul class="list-disc list-inside text-xl text-gray-700 space-y-2 pl-4">
+                <li><strong>Quadro "Product Backlog" (UpStream):</strong> O PO gerencia a lista de novas funcionalidades e suas pontuações. (Aqui podemos alterar pois não sei como é bem certo o fluxo atual)</li>
+                <li><strong>Quadro Principal de Trabalho (Downstream):</strong>
+                    <ul class="list-circle list-inside ml-6 space-y-1">
+                        <li><strong>Backlog do Quadro:</strong> Cards prontos para a Sprint.</li>
+                        <li><strong>Fazendo:</strong> Coluna única para cards em progresso por qualquer equipe (com etiquetas para indicar a equipe ativa).</li>
+                        <li><strong>Revisão:</strong> Cards aguardando validação externa.</li>
+                        <li><strong>Pronto para Release:</strong> Cards aprovados, prontos para implantação.</li>
+                        <li><strong>Em Produção:</strong> Cards já implantados.</li>
+                    </ul>
+                </li>
+                <li><strong>"Sprints Finalizadas":</strong> Cards concluídos são movidos para cá ao final de cada Sprint para manter o quadro principal limpo.</li>
+            </ul>
+        </div>
+
+        <!-- Card: 3. Gerenciamento de Cards (Detalhes Internos) -->
+        <div class="bg-white p-8 md:p-12 rounded-2xl shadow-xl border border-gray-200 mb-12 space-y-6 transform transition-transform duration-300 hover:scale-[1.01] hover:shadow-2xl">
+            <h2 class="text-3xl font-bold text-gray-800 mb-4">3. Gerenciamento de Cards (Detalhes Internos):</h2>
+            <ul class="list-disc list-inside text-xl text-gray-700 space-y-2 pl-4">
+                <li>
+                    <strong>Um Card = Uma Funcionalidade Completa:</strong> Geralmente cada card principal representa uma funcionalidade inteira. Equipes especializadas gerenciam suas instruções e atividades <strong>dentro deste mesmo card</strong> (usando checklists e atribuições), contribuindo para a conclusão total da funcionalidade. (Nem sempre!)
+                </li>
+                <li><strong>Checklists Internos:</strong> Checklists dedicados para cada equipe (Ex: "Checklist BD") dentro do card principal.</li>
+                <li><strong>Pontuação e Meta:</strong>
+                    <ul class="list-circle list-inside ml-6 space-y-1">
+                        <li>A pontuação do card é a estimativa total da funcionalidade.</li>
+                        <li>As metas da equipe são cumprir seus checklists, contribuindo para o Objetivo da Sprint.</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+
+        
+        <!-- Card: 4. Eventos Scrum Adaptados -->
+        <div class="bg-white p-8 md:p-12 rounded-2xl shadow-xl border border-gray-200 mb-12 space-y-6 transform transition-transform duration-300 hover:scale-[1.01] hover:shadow-2xl">
+            <h2 class="text-3xl font-bold text-gray-800 mb-4">4. Eventos Scrum Adaptados:</h2>
+            <ul class="list-disc list-inside text-xl text-gray-700 space-y-2 pl-4">
+                <li><strong>Planejamento da Sprint:</strong> Equipes, PO e SM selecionam cards, movem para "Fazendo" e definem o Objetivo da Sprint.</li>
+                <li><strong>Daily Scrum (Diária):</strong> Reunião curta para sincronizar, discutir o progresso dos cards em "Fazendo" e identificar impedimentos.</li>
+                <li><strong>Revisão da Sprint:</strong> Demonstração dos cards concluídos para coletar feedback.</li>
+                <li><strong>Retrospectiva da Sprint:</strong> Análise do processo da equipe para definir melhorias.(Talves em um futuro breve)</li>
+            </ul>
+        </div>
+
+
+        <div class="bg-white p-8 md:p-12 rounded-2xl shadow-xl border border-gray-200 mb-12 space-y-6 transform transition-transform duration-300 hover:scale-[1.01] hover:shadow-2xl">
+            <h2 class="text-3xl font-bold text-gray-800 mb-4">Exemplo de como deve fluir o Fluxo</h2>
+
+            <p class="text-xl text-gray-700 leading-relaxed">
+                Abaixo vamos visualizar o fluxo e o planejamento das movimentações dos cards para uma funcionalidade de exemplo chamada "Funcionalidade: Integração de Pagamento Via Pix" dentro do boards.    
+            </p>
+        </div>
+<!-- NOVO CARD: Fluxograma do Processo -->
+        <div class="bg-white p-8 md:p-12 rounded-2xl shadow-xl border border-gray-200 mb-12 space-y-6 transform transition-transform duration-300 hover:scale-[1.01] hover:shadow-2xl">
+            <h2 class="text-3xl font-bold text-gray-800 text-center mb-8">Fluxograma do Processo de Desenvolvimento</h2>
+            <div class="flex flex-col items-center space-y-4">
+                <!-- Etapa: Banco de Dados -->
+                <div class="bg-blue-100 text-blue-800 text-2xl font-semibold py-4 px-8 rounded-full shadow-md w-full max-w-xs text-center">
+                    Banco de Dados
+                </div>
+                <div class="flow-arrow"></div>
+
+                <!-- Etapa: Backend -->
+                <div class="bg-indigo-100 text-indigo-800 text-2xl font-semibold py-4 px-8 rounded-full shadow-md w-full max-w-xs text-center">
+                    Backend
+                </div>
+                <div class="flow-arrow"></div>
+
+                <!-- Etapa: Frontend -->
+                <div class="bg-purple-100 text-purple-800 text-2xl font-semibold py-4 px-8 rounded-full shadow-md w-full max-w-xs text-center">
+                    Frontend
+                </div>
+                <div class="flow-arrow"></div>
+
+                <!-- Etapa: QA -->
+                <div class="bg-pink-100 text-pink-800 text-2xl font-semibold py-4 px-8 rounded-full shadow-md w-full max-w-xs text-center">
+                    QA
+                </div>
+                <div class="flow-arrow"></div>
+
+                <!-- Etapa: DevOps -->
+                <div class="bg-teal-100 text-teal-800 text-2xl font-semibold py-4 px-8 rounded-full shadow-md w-full max-w-xs text-center">
+                    DevOps
+                </div>
+            </div>
+        </div>
+
+        <!-- Card de Funcionalidade: Integração de Pagamento Via Pix - Concluído (Banco de Dados) -->
+        <div class="bg-white p-8 md:p-12 rounded-2xl shadow-xl border border-gray-200 transform transition-transform duration-300 hover:scale-[1.01] hover:shadow-2xl">
+            <h2 class="text-4xl font-bold text-gray-700 mb-4">
+                Funcionalidade: Integração de Pagamento Via Pix
+            </h2>
+            <p class="text-xl text-gray-700 mb-6">
+                <span class="font-semibold">Status:</span> Concluído (Banco de Dados)
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="bg-gray-50 p-6 rounded-xl border border-gray-200">
+                    <p class="text-xl text-gray-800"><strong class="text-gray-600">Pontuação:</strong> 8 pontos</p>
+                </div>
+                <div class="bg-gray-50 p-6 rounded-xl border border-gray-200">
+                    <p class="text-xl text-gray-800"><strong class="text-gray-600">Prazo:</strong> 10/08/2025</p>
+                </div>
+                <div class="bg-gray-50 p-6 rounded-xl border border-gray-200">
+                    <p class="text-xl text-gray-800"><strong class="text-gray-600">Responsável Atual:</strong> Equipe Banco de Dados</p>
+                </div>
+            </div>
+
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Checklists por Equipe:</h3>
+            <ul class="space-y-3">
+                <li class="flex items-center text-xl text-gray-800 bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <span class="text-green-500 mr-3 text-2xl">&#10003;</span>
+                    <strong>Banco de Dados:</strong> Concluído (Movido para revisão do responsável)
+                </li>
+                <li class="flex items-center text-xl text-gray-800 bg-red-50 p-4 rounded-lg border border-red-200">
+                    <span class="text-red-500 mr-3 text-2xl">&#10007;</span>
+                    <strong>Backend:</strong> Pendente
+                </li>
+                <li class="flex items-center text-xl text-gray-800 bg-red-50 p-4 rounded-lg border border-red-200">
+                    <span class="text-red-500 mr-3 text-2xl">&#10007;</span>
+                    <strong>Frontend:</strong> Pendente
+                </li>
+                <li class="flex items-center text-xl text-gray-800 bg-red-50 p-4 rounded-lg border border-red-200">
+                    <span class="text-red-500 mr-3 text-2xl">&#10007;</span>
+                    <strong>QA:</strong> Pendente
+                </li>
+                <li class="flex items-center text-xl text-gray-800 bg-red-50 p-4 rounded-lg border border-red-200">
+                    <span class="text-red-500 mr-3 text-2xl">&#10007;</span>
+                    <strong>DevOps:</strong> Pendente
+                </li>
+            </ul>
+        </div>
+
+        <!-- Card de Funcionalidade: Integração de Pagamento Via Pix - Em Desenvolvimento (Backend) -->
+        <div class="bg-white p-8 md:p-12 rounded-2xl shadow-xl border border-gray-200 transform transition-transform duration-300 hover:scale-[1.01] hover:shadow-2xl">
+            <h2 class="text-4xl font-bold text-blue-700 mb-4">
+                Funcionalidade: Integração de Pagamento Via Pix
+            </h2>
+            <p class="text-xl text-gray-700 mb-6">
+                <span class="font-semibold">Status:</span> Em Desenvolvimento (Backend)
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="bg-blue-50 p-6 rounded-xl border border-blue-200">
+                    <p class="text-xl text-gray-800"><strong class="text-blue-600">Pontuação:</strong> 8 pontos</p>
+                </div>
+                <div class="bg-blue-50 p-6 rounded-xl border border-blue-200">
+                    <p class="text-xl text-gray-800"><strong class="text-blue-600">Prazo:</strong> 15/08/2025</p>
+                </div>
+                <div class="bg-blue-50 p-6 rounded-xl border border-blue-200">
+                    <p class="text-xl text-gray-800"><strong class="text-blue-600">Responsável Atual:</strong> Equipe Backend</p>
+                </div>
+            </div>
+
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Checklists por Equipe:</h3>
+            <ul class="space-y-3">
+                <li class="flex items-center text-xl text-gray-800 bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <span class="text-green-500 mr-3 text-2xl">&#10003;</span>
+                    <strong>Banco de Dados:</strong> Concluído (Movido para revisão do responsável)
+                </li>
+                <li class="flex items-center text-xl text-gray-800 bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+                    <span class="text-yellow-500 mr-3 text-2xl">&#9679;</span>
+                    <strong>Backend:</strong> Em Andamento
+                </li>
+                <li class="flex items-center text-xl text-gray-800 bg-red-50 p-4 rounded-lg border border-red-200">
+                    <span class="text-red-500 mr-3 text-2xl">&#10007;</span>
+                    <strong>Frontend:</strong> Pendente
+                </li>
+                <li class="flex items-center text-xl text-gray-800 bg-red-50 p-4 rounded-lg border border-red-200">
+                    <span class="text-red-500 mr-3 text-2xl">&#10007;</span>
+                    <strong>QA:</strong> Pendente
+                </li>
+                <li class="flex items-center text-xl text-gray-800 bg-red-50 p-4 rounded-lg border border-red-200">
+                    <span class="text-red-500 mr-3 text-2xl">&#10007;</span>
+                    <strong>DevOps:</strong> Pendente
+                </li>
+            </ul>
+        </div>
+
+        <!-- Card de Funcionalidade: Integração de Pagamento Via Pix - Concluído (Frontend) -->
+        <div class="bg-white p-8 md:p-12 rounded-2xl shadow-xl border border-gray-200 transform transition-transform duration-300 hover:scale-[1.01] hover:shadow-2xl">
+            <h2 class="text-4xl font-bold text-gray-700 mb-4">
+                Funcionalidade: Integração de Pagamento Via Pix
+            </h2>
+            <p class="text-xl text-gray-700 mb-6">
+                <span class="font-semibold">Status:</span> Concluído (Frontend)
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="bg-gray-50 p-6 rounded-xl border border-gray-200">
+                    <p class="text-xl text-gray-800"><strong class="text-gray-600">Pontuação:</strong> 8 pontos</p>
+                </div>
+                <div class="bg-gray-50 p-6 rounded-xl border border-gray-200">
+                    <p class="text-xl text-gray-800"><strong class="text-gray-600">Prazo:</strong> 20/08/2025</p>
+                </div>
+                <div class="bg-gray-50 p-6 rounded-xl border border-gray-200">
+                    <p class="text-xl text-gray-800"><strong class="text-gray-600">Responsável Atual:</strong> Equipe Frontend</p>
+                </div>
+            </div>
+
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Checklists por Equipe:</h3>
+            <ul class="space-y-3">
+                <li class="flex items-center text-xl text-gray-800 bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <span class="text-green-500 mr-3 text-2xl">&#10003;</span>
+                    <strong>Banco de Dados:</strong> Concluído (Movido para revisão do responsável)
+                </li>
+                <li class="flex items-center text-xl text-gray-800 bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <span class="text-green-500 mr-3 text-2xl">&#10003;</span>
+                    <strong>Backend:</strong> Concluído (Movido para revisão do responsável)
+                </li>
+                <li class="flex items-center text-xl text-gray-800 bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <span class="text-green-500 mr-3 text-2xl">&#10003;</span>
+                    <strong>Frontend:</strong> Concluído (Movido para revisão do responsável)
+                </li>
+                <li class="flex items-center text-xl text-gray-800 bg-red-50 p-4 rounded-lg border border-red-200">
+                    <span class="text-red-500 mr-3 text-2xl">&#10007;</span>
+                    <strong>QA:</strong> Pendente
+                </li>
+                <li class="flex items-center text-xl text-gray-800 bg-red-50 p-4 rounded-lg border border-red-200">
+                    <span class="text-red-500 mr-3 text-2xl">&#10007;</span>
+                    <strong>DevOps:</strong> Pendente
+                </li>
+            </ul>
+        </div>
+
+        <!-- Card de Funcionalidade: Integração de Pagamento Via Pix - Em Revisão (QA) -->
+        <div class="bg-white p-8 md:p-12 rounded-2xl shadow-xl border border-gray-200 transform transition-transform duration-300 hover:scale-[1.01] hover:shadow-2xl">
+            <h2 class="text-4xl font-bold text-purple-700 mb-4">
+                Funcionalidade: Integração de Pagamento Via Pix
+            </h2>
+            <p class="text-xl text-gray-700 mb-6">
+                <span class="font-semibold">Status:</span> Em Revisão (QA)
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="bg-purple-50 p-6 rounded-xl border border-purple-200">
+                    <p class="text-xl text-gray-800"><strong class="text-purple-600">Pontuação:</strong> 8 pontos</p>
+                </div>
+                <div class="bg-purple-50 p-6 rounded-xl border border-purple-200">
+                    <p class="text-xl text-gray-800"><strong class="text-purple-600">Prazo:</strong> 25/08/2025</p>
+                </div>
+                <div class="bg-purple-50 p-6 rounded-xl border border-purple-200">
+                    <p class="text-xl text-gray-800"><strong class="text-purple-600">Responsável Atual:</strong> Equipe QA</p>
+                </div>
+            </div>
+
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Checklists por Equipe:</h3>
+            <ul class="space-y-3">
+                <li class="flex items-center text-xl text-gray-800 bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <span class="text-green-500 mr-3 text-2xl">&#10003;</span>
+                    <strong>Banco de Dados:</strong> Concluído (Movido para revisão do responsável)
+                </li>
+                <li class="flex items-center text-xl text-gray-800 bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <span class="text-green-500 mr-3 text-2xl">&#10003;</span>
+                    <strong>Backend:</strong> Concluído (Movido para revisão do responsável)
+                </li>
+                <li class="flex items-center text-xl text-gray-800 bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <span class="text-green-500 mr-3 text-2xl">&#10003;</span>
+                    <strong>Frontend:</strong> Concluído (Movido para revisão do responsável)
+                </li>
+                <li class="flex items-center text-xl text-gray-800 bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+                    <span class="text-yellow-500 mr-3 text-2xl">&#9679;</span>
+                    <strong>QA:</strong> Em Andamento (Testes de Aceitação)
+                </li>
+                <li class="flex items-center text-xl text-gray-800 bg-red-50 p-4 rounded-lg border border-red-200">
+                    <span class="text-red-500 mr-3 text-2xl">&#10007;</span>
+                    <strong>DevOps:</strong> Pendente
+                </li>
+            </ul>
+        </div>
+
+        <!-- Card de Funcionalidade: Integração de Pagamento Via Pix - Pronto para Release (DevOps) -->
+        <div class="bg-white p-8 md:p-12 rounded-2xl shadow-xl border border-gray-200 transform transition-transform duration-300 hover:scale-[1.01] hover:shadow-2xl">
+            <h2 class="text-4xl font-bold text-green-700 mb-4">
+                Funcionalidade: Integração de Pagamento Via Pix
+            </h2>
+            <p class="text-xl text-gray-700 mb-6">
+                <span class="font-semibold">Status:</span> Pronto para Release
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="bg-green-50 p-6 rounded-xl border border-green-200">
+                    <p class="text-xl text-gray-800"><strong class="text-green-600">Pontuação:</strong> 8 pontos</p>
+                </div>
+                <div class="bg-green-50 p-6 rounded-xl border border-green-200">
+                    <p class="text-xl text-gray-800"><strong class="text-green-600">Prazo:</strong> 30/08/2025</p>
+                </div>
+                <div class="bg-green-50 p-6 rounded-xl border border-green-200">
+                    <p class="text-xl text-gray-800"><strong class="text-green-600">Responsável Atual:</strong> Equipe DevOps</p>
+                </div>
+            </div>
+
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Checklists por Equipe:</h3>
+            <ul class="space-y-3">
+                <li class="flex items-center text-xl text-gray-800 bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <span class="text-green-500 mr-3 text-2xl">&#10003;</span>
+                    <strong>Banco de Dados:</strong> Concluído (Movido Pronto para Release)
+                </li>
+                <li class="flex items-center text-xl text-gray-800 bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <span class="text-green-500 mr-3 text-2xl">&#10003;</span>
+                    <strong>Backend:</strong> Concluído (Movido Pronto para Release)
+                </li>
+                <li class="flex items-center text-xl text-gray-800 bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <span class="text-green-500 mr-3 text-2xl">&#10003;</span>
+                    <strong>Frontend:</strong> Concluído (Movido Pronto para Release)
+                </li>
+                <li class="flex items-center text-xl text-gray-800 bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <span class="text-green-500 mr-3 text-2xl">&#10003;</span>
+                    <strong>QA:</strong> Concluído (Movido Pronto para Release)
+                </li>
+                <li class="flex items-center text-xl text-gray-800 bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+                    <span class="text-yellow-500 mr-3 text-2xl">&#9679;</span>
+                    <strong>DevOps:</strong> Em Andamento (Implantação)
+                </li>
+            </ul>
+        </div>
+
+        <!-- Card de Funcionalidade: Integração de Pagamento Via Pix - Concluído (Rodando em Produção) -->
+        <div class="bg-white p-8 md:p-12 rounded-2xl shadow-xl border border-gray-200 transform transition-transform duration-300 hover:scale-[1.01] hover:shadow-2xl">
+            <h2 class="text-4xl font-bold text-gray-700 mb-4">
+                Funcionalidade: Integração de Pagamento Via Pix
+            </h2>
+            <p class="text-xl text-gray-700 mb-6">
+                <span class="font-semibold">Status:</span> Concluído (Rodando em Produção)
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="bg-gray-50 p-6 rounded-xl border border-gray-200 col-span-1 md:col-span-3">
+                    <p class="text-xl text-gray-800"><strong class="text-gray-600">Pontuação Total:</strong> 40 pontos (esforço combinado das 5 equipes)</p>
+                    <p class="text-xl text-gray-800"><strong class="text-gray-600">Tempo Total para Finalização:</strong> 25 dias (de 10/08/2025 a 05/09/2025)</p>
+                </div>
+            </div>
+
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Checklists por Equipe:</h3>
+            <ul class="space-y-3">
+                <li class="flex items-center text-xl text-gray-800 bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <span class="text-green-500 mr-3 text-2xl">&#10003;</span>
+                    <span class="inline-block transform transition-transform duration-300 hover:scale-105 hover:shadow-lg rounded-md px-2 py-1">
+                        <strong>Banco de Dados:</strong> Concluído (Movido Pronto para Concluído)
+                    </span>
+                </li>
+                <li class="flex items-center text-xl text-gray-800 bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <span class="text-green-500 mr-3 text-2xl">&#10003;</span>
+                    <strong>Backend:</strong> Concluído (Movido Pronto para Concluído)
+                </li>
+                <li class="flex items-center text-xl text-gray-800 bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <span class="text-green-500 mr-3 text-2xl">&#10003;</span>
+                    <strong>Frontend:</strong> Concluído (Movido Pronto para Concluído)
+                </li>
+                <li class="flex items-center text-xl text-gray-800 bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <span class="text-green-500 mr-3 text-2xl">&#10003;</span>
+                    <strong>QA:</strong> Concluído (Movido Pronto para Concluído)
+                </li>
+                <li class="flex items-center text-xl text-gray-800 bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <span class="text-green-500 mr-3 text-2xl">&#10003;</span>
+                    <strong>DevOps:</strong> Concluído (Movido Pronto para Concluído)
+                </li>
+            </ul>
+        </div>
+
+        <!-- Novo Card de Conclusão: Benefícios da Metodologia Scrum-ban -->
+        <div class="bg-white p-8 md:p-12 rounded-2xl shadow-xl border border-gray-200 mb-12 space-y-6 transform transition-transform duration-300 hover:scale-[1.01] hover:shadow-2xl">
+            <h2 class="text-3xl font-bold text-teal-700 mb-4">Benefícios da Metodologia Scrum-ban Adaptada</h2>
+            <p class="text-xl text-gray-700 leading-relaxed">
+                Adoção do Scrum-ban otimiza seu fluxo de trabalho, trazendo:
+            </p>
+            <ul class="list-disc list-inside text-xl text-gray-700 space-y-2 pl-4">
+                <li><strong>Maior Visibilidade:</strong> Quadro unificado e detalhes internos dos cards oferecem visão clara do progresso.</li>
+                <li><strong>Melhor Rastreabilidade:</strong> Facilita o acompanhamento de quem trabalha em cada etapa e o status das atividades.</li>
+                <li><strong>Otimização do Fluxo:</strong> Identifica gargalos e acelera a entrega, reduzindo o "passa-mão".</li>
+                <li><strong>Comunicação Aprimorada:</strong> Eventos Scrum adaptados promovem sincronização e colaboração contínua.</li>
+                <li><strong>Foco em Valor:</strong> Priorização pelo PO e Objetivo da Sprint direcionam o esforço para o que mais importa.</li>
+                <li><strong>Melhoria Contínua:</strong> Retrospectivas permitem inspecionar e adaptar o processo.</li>
+            </ul>
+            <p class="text-xl text-gray-700 leading-relaxed font-semibold mt-6">
+                Com essa abordagem, sua equipe estará mais preparada para entregar software de alta qualidade de forma mais eficiente e previsível.
+            </p>
+        </div>
+
+
+<div class="bg-white p-8 md:p-12 rounded-2xl shadow-xl border border-gray-200 mb-12 space-y-6 transform transition-transform duration-300 hover:scale-[1.01] hover:shadow-2xl flex flex-col items-center justify-center text-center py-20">
+            <h2 class="text-5xl font-extrabold text-blue-700 mb-4">Obrigado!</h2>
+            <p class="text-3xl font-semibold text-gray-800">Dúvidas?</p>
+            <p class="text-xl text-gray-600 mt-4">
+                Sinta-se à vontade para perguntar.
+            </p>
+        </div>
+       
+<div class="bg-white p-8 md:p-12 rounded-2xl shadow-xl border border-gray-200 mb-12 space-y-6 transform transition-transform duration-300 hover:scale-[1.01] hover:shadow-2xl flex flex-col md:flex-row items-center md:items-start gap-8">
+            <div class="flex-shrink-0">
+                <img src="https://gravatar.com/avatar/fcb94399b68440bd9dcfb32522974d1d?size=256" alt="Foto de Ricardo de Oliveira" class="w-40 h-40 md:w-48 md:h-48 rounded-full object-cover shadow-lg border-4 border-blue-500">
+            </div>
+            <div class="flex-grow text-center md:text-left space-y-4">
+                <h2 class="text-4xl font-bold text-gray-800 mb-2">Apresentação por Ricardo de Oliveira</h2>
+                <p class="text-2xl text-gray-700">
+                    <span class="font-semibold">Setor:</span> Dgtallab - Desenvolvedor Backend e Tech Lider
+                </p>
+                <p class="text-xl text-gray-600">
+                    <span class="font-semibold">E-mail:</span> ricardo.oliveira@dgtallab.com.br
+                </p>
+                <h3 class="text-2xl font-semibold text-gray-800 mt-6 mb-3">Minhas Equipes:</h3>
+                <ul class="list-disc list-inside text-xl text-gray-700 space-y-1 pl-4">
+                    <li>Boards</li>
+                    <li>Métricas</li>
+                    <li>Mensageria</li>
+                    <li>DgtalScan</li>
+                    <li>Fisco Fácil</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grupos de Alunos</title>
+    <!-- Materialize CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <!-- Ícones Materialize -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f5f5f5;
+        }
+        .container {
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px; /* Adiciona espaço entre os cartões empilhados */
+        }
+        .card-title {
+            font-weight: 500;
+            color: #424242;
+        }
+        .collection-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+        }
+        .collection-item i {
+            margin-right: 15px;
+            color: #2196f3; /* Azul Materialize */
+        }
+        .group-header {
+            background-color: #2196f3;
+            color: white;
+            padding: 15px;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            font-size: 1.5em;
+            font-weight: bold;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-wrapper light-blue darken-3">
+            <a href="#" class="brand-logo center">Gerenciador de Grupos de Alunos</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h4 class="center-align grey-text text-darken-3">Nossos Grupos de Estudo</h4>
+        <div class="row">
+
+            <!-- Grupo 1: Desenvolvimento Web -->
+            <div class="col s12">
+                <div class="card">
+                    <div class="group-header">Desenvolvimento Web</div>
+                    <div class="card-content">
+                        <p class="grey-text text-darken-2">Este grupo foca em HTML, CSS e JavaScript para criar interfaces web interativas e responsivas.</p>
+                        <ul class="collection with-header">
+                            <li class="collection-header"><h5>Membros</h5></li>
+                            <li class="collection-item"><i class="material-icons">person</i><div>Maria Silva <br><span class="grey-text text-darken-1">Líder do Grupo</span></div></li>
+                            <li class="collection-item"><i class="material-icons">person</i>João Santos</li>
+                            <li class="collection-item"><i class="material-icons">person</i>Ana Oliveira</li>
+                            <li class="collection-item"><i class="material-icons">person</i>Pedro Costa</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grupo 2: Ciência de Dados -->
+            <div class="col s12">
+                <div class="card">
+                    <div class="group-header">Ciência de Dados</div>
+                    <div class="card-content">
+                        <p class="grey-text text-darken-2">Exploração de dados, aprendizado de máquina e estatística para análise e previsão.</p>
+                        <ul class="collection with-header">
+                            <li class="collection-header"><h5>Membros</h5></li>
+                            <li class="collection-item"><i class="material-icons">person</i><div>Carlos Pereira <br><span class="grey-text text-darken-1">Líder do Grupo</span></div></li>
+                            <li class="collection-item"><i class="material-icons">person</i>Fernanda Lima</li>
+                            <li class="collection-item"><i class="material-icons">person</i>Rafael Souza</li>
+                            <li class="collection-item"><i class="material-icons">person</i>Mariana Dias</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grupo 3: Design Gráfico -->
+            <div class="col s12">
+                <div class="card">
+                    <div class="group-header">Design Gráfico</div>
+                    <div class="card-content">
+                        <p class="grey-text text-darken-2">Criação de elementos visuais, identidade de marca e princípios de design para projetos diversos.</p>
+                        <ul class="collection with-header">
+                            <li class="collection-header"><h5>Membros</h5></li>
+                            <li class="collection-item"><i class="material-icons">person</i><div>Juliana Almeida <br><span class="grey-text text-darken-1">Líder do Grupo</span></div></li>
+                            <li class="collection-item"><i class="material-icons">person</i>Lucas Martins</li>
+                            <li class="collection-item"><i class="material-icons">person</i>Patrícia Rocha</li>
+                            <li class="collection-item"><i class="material-icons">person</i>Gustavo Neves</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grupo 4: Programação Móvel -->
+            <div class="col s12">
+                <div class="card">
+                    <div class="group-header">Programação Móvel</div>
+                    <div class="card-content">
+                        <p class="grey-text text-darken-2">Desenvolvimento de aplicativos para Android e iOS utilizando as melhores práticas e tecnologias.</p>
+                        <ul class="collection with-header">
+                            <li class="collection-header"><h5>Membros</h5></li>
+                            <li class="collection-item"><i class="material-icons">person</i><div>Roberto Costa <br><span class="grey-text text-darken-1">Líder do Grupo</span></div></li>
+                            <li class="collection-item"><i class="material-icons">person</i>Camila Soares</li>
+                            <li class="collection-item"><i class="material-icons">person</i>Daniel Rocha</li>
+                            <li class="collection-item"><i class="material-icons">person</i>Beatriz Lima</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grupo 5: Inteligência Artificial -->
+            <div class="col s12">
+                <div class="card">
+                    <div class="group-header">Inteligência Artificial</div>
+                    <div class="card-content">
+                        <p class="grey-text text-darken-2">Estudo de algoritmos de IA, redes neurais e aprendizado profundo para soluções inovadoras.</p>
+                        <ul class="collection with-header">
+                            <li class="collection-header"><h5>Membros</h5></li>
+                            <li class="collection-item"><i class="material-icons">person</i><div>Felipe Oliveira <br><span class="grey-text text-darken-1">Líder do Grupo</span></div></li>
+                            <li class="collection-item"><i class="material-icons">person</i>Gabriela Almeida</li>
+                            <li class="collection-item"><i class="material-icons">person</i>Thiago Silva</li>
+                            <li class="collection-item"><i class="material-icons">person</i>Laura Santos</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grupo 6: Redes de Computadores -->
+            <div class="col s12">
+                <div class="card">
+                    <div class="group-header">Redes de Computadores</div>
+                    <div class="card-content">
+                        <p class="grey-text text-darken-2">Configuração, manutenção e segurança de redes, incluindo protocolos e arquiteturas.</p>
+                        <ul class="collection with-header">
+                            <li class="collection-header"><h5>Membros</h5></li>
+                            <li class="collection-item"><i class="material-icons">person</i><div>André Costa <br><span class="grey-text text-darken-1">Líder do Grupo</span></div></li>
+                            <li class="collection-item"><i class="material-icons">person</i>Sofia Pereira</li>
+                            <li class="collection-item"><i class="material-icons">person</i>Bruno Martins</li>
+                            <li class="collection-item"><i class="material-icons">person</i>Alice Rocha</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grupo 7: Banco de Dados -->
+            <div class="col s12">
+                <div class="card">
+                    <div class="group-header">Banco de Dados</div>
+                    <div class="card-content">
+                        <p class="grey-text text-darken-2">Modelagem, implementação e otimização de bancos de dados relacionais e não relacionais.</p>
+                        <ul class="collection with-header">
+                            <li class="collection-header"><h5>Membros</h5></li>
+                            <li class="collection-item"><i class="material-icons">person</i><div>Carla Dias <br><span class="grey-text text-darken-1">Líder do Grupo</span></div></li>
+                            <li class="collection-item"><i class="material-icons">person</i>Diego Souza</li>
+                            <li class="collection-item"><i class="material-icons">person</i>Ester Mendes</li>
+                            <li class="collection-item"><i class="material-icons">person</i>Guilherme Alves</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grupo 8: Cibersegurança -->
+            <div class="col s12">
+                <div class="card">
+                    <div class="group-header">Cibersegurança</div>
+                    <div class="card-content">
+                        <p class="grey-text text-darken-2">Proteção de sistemas e dados contra ameaças cibernéticas, incluindo criptografia e forense digital.</p>
+                        <ul class="collection with-header">
+                            <li class="collection-header"><h5>Membros</h5></li>
+                            <li class="collection-item"><i class="material-icons">person</i><div>Larissa Rodrigues <br><span class="grey-text text-darken-1">Líder do Grupo</span></div></li>
+                            <li class="collection-item"><i class="material-icons">person</i>Murilo Fernandes</li>
+                            <li class="collection-item"><i class="material-icons">person</i>Nicole Gomes</li>
+                            <li class="collection-item"><i class="material-icons">person</i>Otávio Ribeiro</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grupo 9: Computação em Nuvem -->
+            <div class="col s12">
+                <div class="card">
+                    <div class="group-header">Computação em Nuvem</div>
+                    <div class="card-content">
+                        <p class="grey-text text-darken-2">Gerenciamento de infraestrutura e serviços em nuvem, como AWS, Azure e Google Cloud.</p>
+                        <ul class="collection with-header">
+                            <li class="collection-header"><h5>Membros</h5></li>
+                            <li class="collection-item"><i class="material-icons">person</i><div>Paulo Carvalho <br><span class="grey-text text-darken-1">Líder do Grupo</span></div></li>
+                            <li class="collection-item"><i class="material-icons">person</i>Renata Vieira</li>
+                            <li class="collection-item"><i class="material-icons">person</i>Sérgio Nogueira</li>
+                            <li class="collection-item"><i class="material-icons">person</i>Viviane Castro</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grupo 10: Jogos Digitais -->
+            <div class="col s12">
+                <div class="card">
+                    <div class="group-header">Jogos Digitais</div>
+                    <div class="card-content">
+                        <p class="grey-text text-darken-2">Design e desenvolvimento de jogos digitais, desde a concepção até a implementação de mecânicas.</p>
+                        <ul class="collection with-header">
+                            <li class="collection-header"><h5>Membros</h5></li>
+                            <li class="collection-item"><i class="material-icons">person</i><div>Victor Hugo <br><span class="grey-text text-darken-1">Líder do Grupo</span></div></li>
+                            <li class="collection-item"><i class="material-icons">person</i>Yasmin Santos</li>
+                            <li class="collection-item"><i class="material-icons">person</i>Zeca Silva</li>
+                            <li class="collection-item"><i class="material-icons">person</i>Xavier Lima</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grupo 11: Robótica -->
+            <div class="col s12">
+                <div class="card">
+                    <div class="group-header">Robótica</div>
+                    <div class="card-content">
+                        <p class="grey-text text-darken-2">Construção e programação de robôs, explorando eletrônica, mecânica e inteligência artificial aplicada.</p>
+                        <ul class="collection with-header">
+                            <li class="collection-header"><h5>Membros</h5></li>
+                            <li class="collection-item"><i class="material-icons">person</i><div>Amanda Costa <br><span class="grey-text text-darken-1">Líder do Grupo</span></div></li>
+                            <li class="collection-item"><i class="material-icons">person</i>Ricardo Oliveira</li>
+                            <li class="collection-item"><i class="material-icons">person</i>Sueli Ramos</li>
+                            <li class="collection-item"><i class="material-icons">person</i>Tiago Pereira</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grupo 12: Análise de Sistemas -->
+            <div class="col s12">
+                <div class="card">
+                    <div class="group-header">Análise de Sistemas</div>
+                    <div class="card-content">
+                        <p class="grey-text text-darken-2">Compreensão e especificação de requisitos de software, modelagem de processos e arquitetura de sistemas.</p>
+                        <ul class="collection with-header">
+                            <li class="collection-header"><h5>Membros</h5></li>
+                            <li class="collection-item"><i class="material-icons">person</i><div>Valéria Souza <br><span class="grey-text text-darken-1">Líder do Grupo</span></div></li>
+                            <li class="collection-item"><i class="material-icons">person</i>Wilson Guedes</li>
+                            <li class="collection-item"><i class="material-icons">person</i>Xênia Costa</li>
+                            <li class="collection-item"><i class="material-icons">person</i>Yara Nogueira</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Materialize JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ricardo Martins de Oliveira - Portfólio</title>
+    <!-- Carrega o Tailwind CSS CDN para estilização -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Carrega a fonte Poppins do Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Carrega o Font Awesome para ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" xintegrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0V4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden; /* Evita rolagem horizontal devido às animações */
+        }
+        /* Animação de fade-in para as seções */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .fade-in.appear {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        /* Estilo para links hover mais pronunciado */
+        .animated-link {
+            transition: all 0.3s ease-in-out;
+        }
+        .animated-link:hover {
+            color: #4c51bf;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .section-separator {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(to right, #6366f1, #a78bfa);
+            margin: 0 auto;
+            margin-top: 1.25rem;
+            border-radius: 9999px;
+        }
+
+        /* Estilos e Animações para o Fundo Animado */
+        .animated-background-shapes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1; /* Garante que as formas fiquem atrás do conteúdo */
+        }
+
+        .animated-background-shapes > div {
+            position: absolute;
+            background: rgba(167, 139, 250, 0.2); /* Tom de roxo com transparência */
+            border-radius: 50%;
+            animation: moveShapes 15s infinite alternate ease-in-out; /* Animação principal */
+            filter: blur(10px); /* Suaviza as bordas das formas */
+        }
+
+        .animated-background-shapes > div:nth-child(1) {
+            width: 80px; height: 80px;
+            left: 10%; top: 20%;
+            animation-duration: 18s;
+            animation-delay: 0s;
+        }
+        .animated-background-shapes > div:nth-child(2) {
+            width: 120px; height: 120px;
+            left: 60%; top: 50%;
+            background: rgba(99, 102, 241, 0.2); /* Tom de índigo com transparência */
+            animation-duration: 20s;
+            animation-delay: 2s;
+        }
+        .animated-background-shapes > div:nth-child(3) {
+            width: 70px; height: 70px;
+            left: 30%; top: 80%;
+            animation-duration: 16s;
+            animation-delay: 4s;
+        }
+        .animated-background-shapes > div:nth-child(4) {
+            width: 100px; height: 100px;
+            left: 80%; top: 10%;
+            background: rgba(167, 139, 250, 0.15);
+            animation-duration: 22s;
+            animation-delay: 6s;
+        }
+        .animated-background-shapes > div:nth-child(5) {
+            width: 90px; height: 90px;
+            left: 5%; top: 60%;
+            animation-duration: 17s;
+            animation-delay: 8s;
+        }
+        .animated-background-shapes > div:nth-child(6) {
+            width: 110px; height: 110px;
+            left: 70%; top: 30%;
+            background: rgba(99, 102, 241, 0.15);
+            animation-duration: 19s;
+            animation-delay: 10s;
+        }
+
+        @keyframes moveShapes {
+            0% { transform: translate(0, 0) scale(1); opacity: 0.6; }
+            25% { transform: translate(20px, -20px) scale(1.1); opacity: 0.8; }
+            50% { transform: translate(0, 40px) scale(0.9); opacity: 0.7; }
+            75% { transform: translate(-30px, -10px) scale(1.2); opacity: 0.9; }
+            100% { transform: translate(0, 0) scale(1); opacity: 0.6; }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-indigo-50 to-purple-100 text-gray-800 leading-relaxed antialiased relative">
+    <!-- Fundo Animado -->
+    <div class="animated-background-shapes">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+
+    <div class="container mx-auto p-4 sm:p-6 lg:p-8 max-w-4xl bg-white shadow-2xl rounded-3xl my-10 relative z-10">
+        <!-- Seção de Cabeçalho: Nome e Contato -->
+        <header class="text-center mb-12 pb-8 border-b-2 border-indigo-300">
+            <img src="https://1.gravatar.com/avatar/f45cc0a11dca2ddea73cf9bcd7cc823d138d29e3dbf15a29646ea348ec4b8205?size=256&d=initials" alt="Foto de Perfil de Ricardo Martins de Oliveira" class="w-32 h-32 rounded-full mx-auto mb-6 border-4 border-indigo-500 shadow-lg transform hover:scale-105 transition-all duration-300">
+            <h1 class="text-6xl sm:text-7xl font-extrabold text-indigo-900 mb-4 tracking-tight">Ricardo Martins de Oliveira</h1>
+            <p class="text-xl sm:text-2xl text-gray-600 mb-4">Trav. Arlindo Antunes, Guarapuava, Paraná</p>
+            <p class="text-xl sm:text-2xl text-gray-700 space-x-4">
+                <a href="https://wa.me/5542999486362" class="text-indigo-700 hover:text-indigo-900 transition duration-300 ease-in-out px-3 py-1 rounded-lg animated-link"><i class="fab fa-whatsapp mr-2"></i>42 9 9948 6362</a>
+                <span class="text-gray-400">|</span>
+                <a href="mailto:ricardo.de.oliveira96@gmail.com" class="text-indigo-700 hover:text-indigo-900 transition duration-300 ease-in-out px-3 py-1 rounded-lg animated-link"><i class="fas fa-envelope mr-2"></i>ricardo.de.oliveira96@gmail.com</a>
+            </p>
+        </header>
+
+        <!-- Seção de Links Sociais -->
+        <section class="mb-12 p-8 bg-indigo-50 rounded-2xl shadow-xl fade-in">
+            <h2 class="text-3xl sm:text-4xl font-bold text-indigo-800 mb-5">Links</h2>
+            <div class="section-separator"></div>
+            <ul class="list-none space-y-4 text-xl mt-8">
+                <li><a href="https://www.linkedin.com/in/ricardodeoliveira96/" target="_blank" class="flex items-center text-gray-700 hover:text-indigo-900 transition duration-300 ease-in-out rounded-lg p-3 hover:bg-indigo-100 animated-link"><i class="fab fa-linkedin fa-lg mr-4 text-indigo-600"></i>LinkedIn</a></li>
+                <li><a href="https://github.com/Roliveira96" target="_blank" class="flex items-center text-gray-700 hover:text-indigo-900 transition duration-300 ease-in-out rounded-lg p-3 hover:bg-indigo-100 animated-link"><i class="fab fa-github fa-lg mr-4 text-indigo-600"></i>GitHub</a></li>
+                <li><a href="https://www.udemy.com/user/ricardo-martins-de-oliveira/" target="_blank" class="flex items-center text-gray-700 hover:text-indigo-900 transition duration-300 ease-in-out rounded-lg p-3 hover:bg-indigo-100 animated-link"><i class="fas fa-graduation-cap fa-lg mr-4 text-indigo-600"></i>Udemy</a></li>
+                <li><a href="https://wa.me/5542999486362" target="_blank" class="flex items-center text-gray-700 hover:text-indigo-900 transition duration-300 ease-in-out rounded-lg p-3 hover:bg-indigo-100 animated-link"><i class="fab fa-whatsapp fa-lg mr-4 text-indigo-600"></i>WhatsApp</a></li>
+            </ul>
+        </section>
+
+        <!-- Seção de Resumo Profissional -->
+        <section class="mb-12 p-8 bg-white rounded-2xl shadow-xl fade-in">
+            <h2 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-5">Resumo Profissional</h2>
+            <div class="section-separator"></div>
+            <p class="text-lg leading-relaxed text-gray-700 mt-8">
+                <span class="font-semibold text-indigo-700">Engenheiro de Software</span> dinâmico e experiente na <span class="font-semibold text-indigo-700">GT Group</span>, com sólida atuação no desenvolvimento de soluções robustas. Especializado em <span class="font-semibold text-indigo-700">Golang (mais de 2 anos), PostgreSQL e Angular</span>, com foco em <span class="font-semibold text-indigo-700">design e implementação de Microserviços (Docker)</span> e <span class="font-semibold text-indigo-700">integração de sistemas com Inteligência Artificial</span>. Minha trajetória abrange um amplo espectro de tecnologias, incluindo HTML, JavaScript, CSS, PHP, MySQL, Java, Git, RESTful, JavaWeb e Android, garantindo versatilidade e inovação em projetos desafiadores.
+            </p>
+        </section>
+
+        <!-- Seção de Experiência Profissional -->
+        <section class="mb-12 p-8 bg-white rounded-2xl shadow-xl fade-in">
+            <h2 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-5">Experiência Profissional</h2>
+            <div class="section-separator"></div>
+
+            <div class="mb-8 p-6 bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.02] transition-all duration-300 ease-in-out border border-gray-200 group relative overflow-hidden mt-8">
+                <span class="absolute inset-y-0 left-0 w-2 bg-indigo-600 group-hover:bg-indigo-700 transition-all duration-300"></span>
+                <h3 class="text-2xl sm:text-3xl font-semibold text-indigo-700 pl-4">GT Group, São Paulo</h3>
+                <p class="text-gray-600 text-lg mb-2 pl-4">Desde 2023 até o momento</p>
+                <p class="text-lg text-gray-700 pl-4">
+                    <span class="font-medium text-indigo-600">Desenvolvedor Back-end Sênior em Go</span>, com ampla experiência na criação e manutenção de sistemas web. Especializado em <span class="font-medium text-indigo-600">arquitetura de APIs, modelagem de banco de dados e levantamento de requisitos</span>. Responsável pela liderança de equipe, organização de projetos e análise de sistemas, garantindo a entrega de soluções eficientes.
+                </p>
+            </div>
+
+            <div class="mb-8 p-6 bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.02] transition-all duration-300 ease-in-out border border-gray-200 group relative overflow-hidden">
+                <span class="absolute inset-y-0 left-0 w-2 bg-indigo-600 group-hover:bg-indigo-700 transition-all duration-300"></span>
+                <h3 class="text-2xl sm:text-3xl font-semibold text-indigo-700 pl-4">K13 Agência Web, Guarapuava</h3>
+                <p class="text-gray-600 text-lg mb-2 pl-4">Desde 2020 até 2023</p>
+                <p class="text-lg text-gray-700 pl-4">
+                    Comecei minha carreira em TI como <span class="font-medium text-indigo-600">Gestor de Suporte Técnico</span>, onde adquiri sólidos conhecimentos em redes e gerenciamento de servidores web. Posteriormente, migrei para a área de desenvolvimento, atuando como <span class="font-medium text-indigo-600">Desenvolvedor Back-end PHP</span>, com experiência em <span class="font-medium text-indigo-600">WordPress, Laravel e PHP puro</span> na criação e manutenção de sistemas web.
+                </p>
+            </div>
+
+            <div class="mb-8 p-6 bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.02] transition-all duration-300 ease-in-out border border-gray-200 group relative overflow-hidden">
+                <span class="absolute inset-y-0 left-0 w-2 bg-indigo-600 group-hover:bg-indigo-700 transition-all duration-300"></span>
+                <h3 class="text-2xl sm:text-3xl font-semibold text-indigo-700 pl-4">Grafis Encadernadora, Guarapuava</h3>
+                <p class="text-gray-600 text-lg mb-2 pl-4">Desde 2018 até 2019</p>
+                <p class="text-lg text-gray-700 pl-4">
+                    <span class="font-medium text-indigo-600">Laboratorista Digital</span> responsável por diversos tipos de impressão, incluindo <span class="font-medium text-indigo-600">fotos para fotolivros e revelações fotográficas</span>. Experiência na operação de equipamentos e garantia da qualidade final dos produtos.
+                </p>
+            </div>
+
+            <div class="mb-8 p-6 bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.02] transition-all duration-300 ease-in-out border border-gray-200 group relative overflow-hidden">
+                <span class="absolute inset-y-0 left-0 w-2 bg-indigo-600 group-hover:bg-indigo-700 transition-all duration-300"></span>
+                <h3 class="text-2xl sm:text-3xl font-semibold text-indigo-700 pl-4">Colégio Estadual Floriano Peixoto, Laranjeiras do Sul</h3>
+                <p class="text-gray-600 text-lg mb-2 pl-4">Desde 2016 a 2017</p>
+                <p class="text-lg text-gray-700 pl-4">
+                    <span class="font-medium text-indigo-600">Instrutor técnico</span> especializado nas disciplinas de <span class="font-medium text-indigo-600">Banco de Dados, Desenvolvimento Web I e Lógica de Programação</span>. Responsável por capacitar alunos de curso técnico pós-médio, preparando-os com habilidades essenciais para o mercado de trabalho.
+                </p>
+            </div>
+
+            <div class="mb-8 p-6 bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.02] transition-all duration-300 ease-in-out border border-gray-200 group relative overflow-hidden">
+                <span class="absolute inset-y-0 left-0 w-2 bg-indigo-600 group-hover:bg-indigo-700 transition-all duration-300"></span>
+                <h3 class="text-2xl sm:text-3xl font-semibold text-indigo-700 pl-4">RioNet Informática, Rio Bonito do Iguaçu</h3>
+                <p class="text-gray-600 text-lg mb-2 pl-4">Desde 2015 à 2016</p>
+                <p class="text-lg text-gray-700 pl-4">
+                    <span class="font-medium text-indigo-600">Técnico de Suporte e Infraestrutura de TI</span>. Responsável por <span class="font-medium text-indigo-600">instalação de sistemas operacionais e softwares</span>, além de atuar na <span class="font-medium text-indigo-600">infraestrutura de redes</span>, incluindo instalação e configuração de roteadores, switches e antenas wireless para clientes.
+                </p>
+            </div>
+
+            <div class="mb-8 p-6 bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.02] transition-all duration-300 ease-in-out border border-gray-200 group relative overflow-hidden">
+                <span class="absolute inset-y-0 left-0 w-2 bg-indigo-600 group-hover:bg-indigo-700 transition-all duration-300"></span>
+                <h3 class="text-2xl sm:text-3xl font-semibold text-indigo-700 pl-4">Sorvetes Milk Money, Rio Bonito do Iguaçu</h3>
+                <p class="text-gray-600 text-lg mb-2 pl-4">Desde 2010 à 2015</p>
+                <p class="text-lg text-gray-700 pl-4">
+                    Profissional multifuncional com experiência em <span class="font-medium text-indigo-600">vendas, fabricação e gestão de fábrica</span>. Responsável pela supervisão do processo de produção, controle de qualidade, planejamento de vendas e gestão de equipe, garantindo a eficiência operacional e o cumprimento de metas.
+                </p>
+            </div>
+        </section>
+
+        <!-- Seção de Formação Acadêmica -->
+        <section class="mb-12 p-8 bg-white rounded-2xl shadow-xl fade-in">
+            <h2 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-5">Formação Acadêmica</h2>
+            <div class="section-separator"></div>
+            <ul class="list-disc list-inside space-y-4 text-xl text-gray-700 mt-8">
+                <li>
+                    <span class="font-semibold text-indigo-700">UTFPR - Universidade Tecnológica Federal do Paraná, Guarapuava</span>
+                    <p class="text-gray-600">Curso Tecnologias em Sistemas para Internet.</p>
+                </li>
+                <li>
+                    <span class="font-semibold text-indigo-700">Colégio Estadual Floriano Peixoto, Laranjeiras do Sul</span>
+                    <p class="text-gray-600">Curso Técnico em Informática.</p>
+                </li>
+            </ul>
+        </section>
+
+        <!-- Seção de Competências -->
+        <section class="mb-12 p-8 bg-white rounded-2xl shadow-xl fade-in">
+            <h2 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-5">Competências</h2>
+            <div class="section-separator"></div>
+            <div id="skills-container" class="mt-8">
+                <!-- Os grupos e cards serão carregados aqui via JavaScript -->
+            </div>
+        </section>
+
+        <!-- Seção de Idiomas -->
+        <section class="mb-12 p-8 bg-white rounded-2xl shadow-xl fade-in">
+            <h2 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-5">Idiomas</h2>
+            <div class="section-separator"></div>
+            <ul class="list-disc list-inside space-y-4 text-xl text-gray-700 mt-8">
+                <li>Inglês</li>
+            </ul>
+        </section>
+
+        <!-- Rodapé -->
+        <footer class="text-center text-gray-500 text-sm mt-12 pt-8 border-t-2 border-gray-300">
+            &copy; 2025 Ricardo Martins de Oliveira. Todos os direitos reservados.
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animação de fade-in para as seções
+            const sections = document.querySelectorAll('.fade-in');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('appear');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.1
+            });
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+
+            // Carregamento dinâmico das competências em cards agrupados
+            const groupedSkillsData = [
+                {
+                    groupName: 'Linguagens & Frameworks',
+                    skills: [
+                        { name: 'HTML', iconClass: 'fab fa-html5', colorClass: 'text-orange-500' },
+                        { name: 'JavaScript', iconClass: 'fab fa-js', colorClass: 'text-yellow-500' },
+                        { name: 'CSS', iconClass: 'fab fa-css3-alt', colorClass: 'text-blue-500' },
+                        { name: 'PHP', iconClass: 'fab fa-php', colorClass: 'text-purple-600' },
+                        { name: 'Java', iconClass: 'fab fa-java', colorClass: 'text-red-600' },
+                        { name: 'GoLang', iconClass: 'fas fa-code', colorClass: 'text-blue-700' },
+                        { name: 'Angular', iconClass: 'fab fa-angular', colorClass: 'text-red-600' },
+                        { name: 'JavaWeb', iconClass: 'fab fa-java', colorClass: 'text-orange-600' },
+                        { name: 'Android', iconClass: 'fab fa-android', colorClass: 'text-green-700' },
+                    ]
+                },
+                {
+                    groupName: 'Bancos de Dados',
+                    skills: [
+                        { name: 'MySQL', iconClass: 'fas fa-database', colorClass: 'text-indigo-600' },
+                        { name: 'PostgreSQL', iconClass: 'fas fa-database', colorClass: 'text-indigo-700' },
+                    ]
+                },
+                {
+                    groupName: 'Controle de Versão & APIs',
+                    skills: [
+                        { name: 'Git', iconClass: 'fab fa-git-alt', colorClass: 'text-red-700' },
+                        { name: 'RESTful', iconClass: 'fas fa-exchange-alt', colorClass: 'text-green-600' },
+                    ]
+                },
+                {
+                    groupName: 'Gerência de Servidores & Cloud',
+                    skills: [
+                        { name: 'WHM/Cpanel', iconClass: 'fas fa-cogs', colorClass: 'text-blue-800' },
+                        { name: 'AWS', iconClass: 'fab fa-aws', colorClass: 'text-orange-400' },
+                        { name: 'Kubernetes', iconClass: 'fas fa-cubes', colorClass: 'text-blue-400' },
+                    ]
+                },
+                {
+                    groupName: 'Sistemas Operacionais',
+                    skills: [
+                        { name: 'Linux', iconClass: 'fab fa-linux', colorClass: 'text-yellow-700' },
+                        { name: 'MacOS', iconClass: 'fab fa-apple', colorClass: 'text-gray-700' },
+                        { name: 'Windows', iconClass: 'fab fa-windows', colorClass: 'text-blue-700' },
+                    ]
+                },
+                {
+                    groupName: 'Infraestrutura de Redes',
+                    skills: [
+                        { name: 'Redes', iconClass: 'fas fa-network-wired', colorClass: 'text-gray-600' },
+                        { name: 'DNS Servers', iconClass: 'fas fa-server', colorClass: 'text-blue-600' },
+                        { name: 'Apache2', iconClass: 'fas fa-server', colorClass: 'text-red-400' },
+                        { name: 'Firewall', iconClass: 'fas fa-shield-alt', colorClass: 'text-green-500' },
+                        { name: 'Exim', iconClass: 'fas fa-envelope-open-text', colorClass: 'text-blue-500' },
+                        { name: 'Wireless/Networking', iconClass: 'fas fa-wifi', colorClass: 'text-indigo-500' },
+                    ]
+                },
+                {
+                    groupName: 'Ferramentas Google',
+                    skills: [
+                        { name: 'Google Docs', iconClass: 'fas fa-file-alt', colorClass: 'text-blue-500' },
+                        { name: 'Google Analytics', iconClass: 'fab fa-google', colorClass: 'text-red-500' },
+                        { name: 'Google Admin', iconClass: 'fab fa-google', colorClass: 'text-blue-600' },
+                        { name: 'Google Console', iconClass: 'fab fa-google', colorClass: 'text-green-600' },
+                        { name: 'Google Cloud', iconClass: 'fab fa-google', colorClass: 'text-purple-600' },
+                        { name: 'Search Console', iconClass: 'fab fa-google', colorClass: 'text-orange-600' },
+                    ]
+                },
+                {
+                    groupName: 'Outras Ferramentas & IA',
+                    skills: [
+                        { name: 'JetBrains (IDEs)', iconClass: 'fas fa-terminal', colorClass: 'text-blue-900' },
+                        { name: 'Ferramentas de IA', iconClass: 'fas fa-brain', colorClass: 'text-purple-800' },
+                    ]
+                },
+                {
+                    groupName: 'Outras Qualificações',
+                    skills: [
+                        { name: 'Habilitação A/B', iconClass: 'fas fa-car', colorClass: 'text-gray-800' },
+                    ]
+                },
+            ];
+
+            const skillsContainer = document.getElementById('skills-container');
+            if (skillsContainer) {
+                groupedSkillsData.forEach(group => {
+                    // Cria o título do grupo
+                    const groupHeader = document.createElement('h3');
+                    groupHeader.className = 'text-2xl font-semibold text-gray-700 mt-8 mb-4 border-b border-gray-200 pb-2';
+                    groupHeader.textContent = group.groupName;
+                    skillsContainer.appendChild(groupHeader);
+
+                    // Cria a grade para os cards de habilidades dentro do grupo
+                    const groupGrid = document.createElement('div');
+                    groupGrid.className = 'grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4';
+                    skillsContainer.appendChild(groupGrid);
+
+                    group.skills.forEach(skill => {
+                        const skillCard = document.createElement('div');
+                        skillCard.className = `flex flex-col items-center justify-center p-3 bg-gray-50 rounded-lg shadow-sm hover:shadow-md transform hover:scale-105 transition-all duration-300 ease-in-out border border-gray-200`;
+                        skillCard.innerHTML = `
+                            <i class="${skill.iconClass} fa-2x ${skill.colorClass} mb-2"></i>
+                            <span class="text-base font-medium ${skill.colorClass} text-center">${skill.name}</span>
+                        `;
+                        groupGrid.appendChild(skillCard);
+                    });
+                });
+            }
+        });
+    </script>
+</body>
+</html>
