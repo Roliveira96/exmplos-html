@@ -34,15 +34,24 @@
             transform: translateY(-3px);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
+        /* Separador de seção com gradiente animado */
         .section-separator {
             content: '';
             display: block;
             width: 80px;
             height: 4px;
-            background: linear-gradient(to right, #6366f1, #a78bfa);
+            background: linear-gradient(to right, #6366f1, #a78bfa, #6366f1); /* Gradiente repetido */
+            background-size: 200% 100%; /* Duplica o tamanho para permitir a animação */
+            animation: gradientMove 3s linear infinite alternate; /* Animação suave */
             margin: 0 auto;
             margin-top: 1.25rem;
             border-radius: 9999px;
+        }
+
+        /* Animação para o gradiente do separador */
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
         }
 
         /* Estilos e Animações para o Fundo Animado */
@@ -111,9 +120,84 @@
             75% { transform: translate(-30px, -10px) scale(1.2); opacity: 0.9; }
             100% { transform: translate(0, 0) scale(1); opacity: 0.6; }
         }
+
+        /* Efeito de borda gradiente animada para cards de experiência */
+        .experience-card-left-border {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 8px; /* Largura fixa da barra lateral */
+            background: linear-gradient(to bottom, #6366f1, #a78bfa, #6366f1);
+            background-size: 100% 200%; /* Ajuste para animação vertical */
+            animation: auroraMove 5s linear infinite alternate; /* Animação da aurora */
+            border-radius: 6px 0 0 6px; /* Bordas arredondadas apenas na esquerda */
+            z-index: 0; /* Garante que fique atrás do conteúdo do card */
+        }
+        @keyframes auroraMove {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 0% 100%; }
+        }
+
+        /* Efeito de brilho nos cards de competências */
+        .skill-card-glow:hover {
+            box-shadow: 0 0 15px rgba(99, 102, 241, 0.4), 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Estilos do Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+        }
+        .modal-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            max-width: 600px;
+            width: 90%;
+            transform: scale(0.9);
+            transition: transform 0.3s ease-in-out;
+            position: relative;
+        }
+        .modal-overlay.open .modal-content {
+            transform: scale(1);
+        }
+        .modal-close-button {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #6366f1;
+            transition: color 0.2s;
+        }
+        .modal-close-button:hover {
+            color: #4338ca;
+        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-indigo-50 to-purple-100 text-gray-800 leading-relaxed antialiased relative">
+    <!-- Barra de Progresso de Rolagem -->
+    <div id="progressBar" class="fixed top-0 left-0 w-0 h-1 bg-gradient-to-r from-indigo-500 to-purple-500 z-50 rounded-r-full"></div>
+
     <!-- Fundo Animado -->
     <div class="animated-background-shapes">
         <div></div>
@@ -130,23 +214,30 @@
             <img src="https://1.gravatar.com/avatar/f45cc0a11dca2ddea73cf9bcd7cc823d138d29e3dbf15a29646ea348ec4b8205?size=256&d=initials" alt="Foto de Perfil de Ricardo Martins de Oliveira" class="w-32 h-32 rounded-full mx-auto mb-6 border-4 border-indigo-500 shadow-lg transform hover:scale-105 transition-all duration-300">
             <h1 class="text-6xl sm:text-7xl font-extrabold text-indigo-900 mb-4 tracking-tight">Ricardo Martins de Oliveira</h1>
             <p class="text-xl sm:text-2xl text-gray-600 mb-4">Trav. Arlindo Antunes, Guarapuava, Paraná</p>
-            <p class="text-xl sm:text-2xl text-gray-700 space-x-4">
+            <div class="text-xl sm:text-2xl text-gray-700 space-x-4 p-2 bg-indigo-50 rounded-xl shadow-inner inline-block">
                 <a href="https://wa.me/5542999486362" class="text-indigo-700 hover:text-indigo-900 transition duration-300 ease-in-out px-3 py-1 rounded-lg animated-link"><i class="fab fa-whatsapp mr-2"></i>42 9 9948 6362</a>
                 <span class="text-gray-400">|</span>
                 <a href="mailto:ricardo.de.oliveira96@gmail.com" class="text-indigo-700 hover:text-indigo-900 transition duration-300 ease-in-out px-3 py-1 rounded-lg animated-link"><i class="fas fa-envelope mr-2"></i>ricardo.de.oliveira96@gmail.com</a>
-            </p>
+            </div>
         </header>
 
-        <!-- Seção de Links Sociais -->
+        <!-- Seção de Links Sociais (agora como botões horizontais) -->
         <section class="mb-12 p-8 bg-indigo-50 rounded-2xl shadow-xl fade-in">
-            <h2 class="text-3xl sm:text-4xl font-bold text-indigo-800 mb-5">Links</h2>
-            <div class="section-separator"></div>
-            <ul class="list-none space-y-4 text-xl mt-8">
-                <li><a href="https://www.linkedin.com/in/ricardodeoliveira96/" target="_blank" class="flex items-center text-gray-700 hover:text-indigo-900 transition duration-300 ease-in-out rounded-lg p-3 hover:bg-indigo-100 animated-link"><i class="fab fa-linkedin fa-lg mr-4 text-indigo-600"></i>LinkedIn</a></li>
-                <li><a href="https://github.com/Roliveira96" target="_blank" class="flex items-center text-gray-700 hover:text-indigo-900 transition duration-300 ease-in-out rounded-lg p-3 hover:bg-indigo-100 animated-link"><i class="fab fa-github fa-lg mr-4 text-indigo-600"></i>GitHub</a></li>
-                <li><a href="https://www.udemy.com/user/ricardo-martins-de-oliveira/" target="_blank" class="flex items-center text-gray-700 hover:text-indigo-900 transition duration-300 ease-in-out rounded-lg p-3 hover:bg-indigo-100 animated-link"><i class="fas fa-graduation-cap fa-lg mr-4 text-indigo-600"></i>Udemy</a></li>
-                <li><a href="https://wa.me/5542999486362" target="_blank" class="flex items-center text-gray-700 hover:text-indigo-900 transition duration-300 ease-in-out rounded-lg p-3 hover:bg-indigo-100 animated-link"><i class="fab fa-whatsapp fa-lg mr-4 text-indigo-600"></i>WhatsApp</a></li>
-            </ul>
+            <!-- Removido o título "Links" -->
+            <div class="flex flex-wrap justify-center gap-4 mt-4">
+                <a href="https://www.linkedin.com/in/ricardodeoliveira96/" target="_blank" class="flex items-center bg-indigo-600 text-white py-3 px-6 rounded-full font-semibold shadow-md hover:bg-indigo-700 transition duration-300 ease-in-out transform hover:scale-105">
+                    <i class="fab fa-linkedin fa-lg mr-2"></i> LinkedIn
+                </a>
+                <a href="https://github.com/Roliveira96" target="_blank" class="flex items-center bg-gray-700 text-white py-3 px-6 rounded-full font-semibold shadow-md hover:bg-gray-800 transition duration-300 ease-in-out transform hover:scale-105">
+                    <i class="fab fa-github fa-lg mr-2"></i> GitHub
+                </a>
+                <a href="https://www.udemy.com/user/ricardo-martins-de-oliveira/" target="_blank" class="flex items-center bg-red-600 text-white py-3 px-6 rounded-full font-semibold shadow-md hover:bg-red-700 transition duration-300 ease-in-out transform hover:scale-105">
+                    <i class="fas fa-graduation-cap fa-lg mr-2"></i> Udemy
+                </a>
+                <a href="https://wa.me/5542999486362" target="_blank" class="flex items-center bg-green-500 text-white py-3 px-6 rounded-full font-semibold shadow-md hover:bg-green-600 transition duration-300 ease-in-out transform hover:scale-105">
+                    <i class="fab fa-whatsapp fa-lg mr-2"></i> WhatsApp
+                </a>
+            </div>
         </section>
 
         <!-- Seção de Resumo Profissional -->
@@ -163,56 +254,56 @@
             <h2 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-5">Experiência Profissional</h2>
             <div class="section-separator"></div>
 
-            <div class="mb-8 p-6 bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.02] transition-all duration-300 ease-in-out border border-gray-200 group relative overflow-hidden mt-8">
-                <span class="absolute inset-y-0 left-0 w-2 bg-indigo-600 group-hover:bg-indigo-700 transition-all duration-300"></span>
-                <h3 class="text-2xl sm:text-3xl font-semibold text-indigo-700 pl-4">GT Group, São Paulo</h3>
-                <p class="text-gray-600 text-lg mb-2 pl-4">Desde 2023 até o momento</p>
-                <p class="text-lg text-gray-700 pl-4">
+            <div class="mb-8 p-6 bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.01] transition-all duration-300 ease-in-out border border-gray-200 relative overflow-hidden mt-8">
+                <span class="experience-card-left-border"></span>
+                <h3 class="text-2xl sm:text-3xl font-semibold text-indigo-700 pl-4 relative z-10">GT Group, São Paulo</h3>
+                <p class="text-gray-600 text-lg mb-2 pl-4 relative z-10">Desde 2023 até o momento</p>
+                <p class="text-lg text-gray-700 pl-4 relative z-10">
                     <span class="font-medium text-indigo-600">Desenvolvedor Back-end Sênior em Go</span>, com ampla experiência na criação e manutenção de sistemas web. Especializado em <span class="font-medium text-indigo-600">arquitetura de APIs, modelagem de banco de dados e levantamento de requisitos</span>. Responsável pela liderança de equipe, organização de projetos e análise de sistemas, garantindo a entrega de soluções eficientes.
                 </p>
             </div>
 
-            <div class="mb-8 p-6 bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.02] transition-all duration-300 ease-in-out border border-gray-200 group relative overflow-hidden">
-                <span class="absolute inset-y-0 left-0 w-2 bg-indigo-600 group-hover:bg-indigo-700 transition-all duration-300"></span>
-                <h3 class="text-2xl sm:text-3xl font-semibold text-indigo-700 pl-4">K13 Agência Web, Guarapuava</h3>
-                <p class="text-gray-600 text-lg mb-2 pl-4">Desde 2020 até 2023</p>
-                <p class="text-lg text-gray-700 pl-4">
+            <div class="mb-8 p-6 bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.01] transition-all duration-300 ease-in-out border border-gray-200 relative overflow-hidden">
+                <span class="experience-card-left-border"></span>
+                <h3 class="text-2xl sm:text-3xl font-semibold text-indigo-700 pl-4 relative z-10">K13 Agência Web, Guarapuava</h3>
+                <p class="text-gray-600 text-lg mb-2 pl-4 relative z-10">Desde 2020 até 2023</p>
+                <p class="text-lg text-gray-700 pl-4 relative z-10">
                     Comecei minha carreira em TI como <span class="font-medium text-indigo-600">Gestor de Suporte Técnico</span>, onde adquiri sólidos conhecimentos em redes e gerenciamento de servidores web. Posteriormente, migrei para a área de desenvolvimento, atuando como <span class="font-medium text-indigo-600">Desenvolvedor Back-end PHP</span>, com experiência em <span class="font-medium text-indigo-600">WordPress, Laravel e PHP puro</span> na criação e manutenção de sistemas web.
                 </p>
             </div>
 
-            <div class="mb-8 p-6 bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.02] transition-all duration-300 ease-in-out border border-gray-200 group relative overflow-hidden">
-                <span class="absolute inset-y-0 left-0 w-2 bg-indigo-600 group-hover:bg-indigo-700 transition-all duration-300"></span>
-                <h3 class="text-2xl sm:text-3xl font-semibold text-indigo-700 pl-4">Grafis Encadernadora, Guarapuava</h3>
-                <p class="text-gray-600 text-lg mb-2 pl-4">Desde 2018 até 2019</p>
-                <p class="text-lg text-gray-700 pl-4">
+            <div class="mb-8 p-6 bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.01] transition-all duration-300 ease-in-out border border-gray-200 relative overflow-hidden">
+                <span class="experience-card-left-border"></span>
+                <h3 class="text-2xl sm:text-3xl font-semibold text-indigo-700 pl-4 relative z-10">Grafis Encadernadora, Guarapuava</h3>
+                <p class="text-gray-600 text-lg mb-2 pl-4 relative z-10">Desde 2018 até 2019</p>
+                <p class="text-lg text-gray-700 pl-4 relative z-10">
                     <span class="font-medium text-indigo-600">Laboratorista Digital</span> responsável por diversos tipos de impressão, incluindo <span class="font-medium text-indigo-600">fotos para fotolivros e revelações fotográficas</span>. Experiência na operação de equipamentos e garantia da qualidade final dos produtos.
                 </p>
             </div>
 
-            <div class="mb-8 p-6 bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.02] transition-all duration-300 ease-in-out border border-gray-200 group relative overflow-hidden">
-                <span class="absolute inset-y-0 left-0 w-2 bg-indigo-600 group-hover:bg-indigo-700 transition-all duration-300"></span>
-                <h3 class="text-2xl sm:text-3xl font-semibold text-indigo-700 pl-4">Colégio Estadual Floriano Peixoto, Laranjeiras do Sul</h3>
-                <p class="text-gray-600 text-lg mb-2 pl-4">Desde 2016 a 2017</p>
-                <p class="text-lg text-gray-700 pl-4">
+            <div class="mb-8 p-6 bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.01] transition-all duration-300 ease-in-out border border-gray-200 relative overflow-hidden">
+                <span class="experience-card-left-border"></span>
+                <h3 class="text-2xl sm:text-3xl font-semibold text-indigo-700 pl-4 relative z-10">Colégio Estadual Floriano Peixoto, Laranjeiras do Sul</h3>
+                <p class="text-gray-600 text-lg mb-2 pl-4 relative z-10">Desde 2016 a 2017</p>
+                <p class="text-lg text-gray-700 pl-4 relative z-10">
                     <span class="font-medium text-indigo-600">Instrutor técnico</span> especializado nas disciplinas de <span class="font-medium text-indigo-600">Banco de Dados, Desenvolvimento Web I e Lógica de Programação</span>. Responsável por capacitar alunos de curso técnico pós-médio, preparando-os com habilidades essenciais para o mercado de trabalho.
                 </p>
             </div>
 
-            <div class="mb-8 p-6 bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.02] transition-all duration-300 ease-in-out border border-gray-200 group relative overflow-hidden">
-                <span class="absolute inset-y-0 left-0 w-2 bg-indigo-600 group-hover:bg-indigo-700 transition-all duration-300"></span>
-                <h3 class="text-2xl sm:text-3xl font-semibold text-indigo-700 pl-4">RioNet Informática, Rio Bonito do Iguaçu</h3>
-                <p class="text-gray-600 text-lg mb-2 pl-4">Desde 2015 à 2016</p>
-                <p class="text-lg text-gray-700 pl-4">
+            <div class="mb-8 p-6 bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.01] transition-all duration-300 ease-in-out border border-gray-200 relative overflow-hidden">
+                <span class="experience-card-left-border"></span>
+                <h3 class="text-2xl sm:text-3xl font-semibold text-indigo-700 pl-4 relative z-10">RioNet Informática, Rio Bonito do Iguaçu</h3>
+                <p class="text-gray-600 text-lg mb-2 pl-4 relative z-10">Desde 2015 à 2016</p>
+                <p class="text-lg text-gray-700 pl-4 relative z-10">
                     <span class="font-medium text-indigo-600">Técnico de Suporte e Infraestrutura de TI</span>. Responsável por <span class="font-medium text-indigo-600">instalação de sistemas operacionais e softwares</span>, além de atuar na <span class="font-medium text-indigo-600">infraestrutura de redes</span>, incluindo instalação e configuração de roteadores, switches e antenas wireless para clientes.
                 </p>
             </div>
 
-            <div class="mb-8 p-6 bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.02] transition-all duration-300 ease-in-out border border-gray-200 group relative overflow-hidden">
-                <span class="absolute inset-y-0 left-0 w-2 bg-indigo-600 group-hover:bg-indigo-700 transition-all duration-300"></span>
-                <h3 class="text-2xl sm:text-3xl font-semibold text-indigo-700 pl-4">Sorvetes Milk Money, Rio Bonito do Iguaçu</h3>
-                <p class="text-gray-600 text-lg mb-2 pl-4">Desde 2010 à 2015</p>
-                <p class="text-lg text-gray-700 pl-4">
+            <div class="mb-8 p-6 bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.01] transition-all duration-300 ease-in-out border border-gray-200 relative overflow-hidden">
+                <span class="experience-card-left-border"></span>
+                <h3 class="text-2xl sm:text-3xl font-semibold text-indigo-700 pl-4 relative z-10">Sorvetes Milk Money, Rio Bonito do Iguaçu</h3>
+                <p class="text-gray-600 text-lg mb-2 pl-4 relative z-10">Desde 2010 à 2015</p>
+                <p class="text-lg text-gray-700 pl-4 relative z-10">
                     Profissional multifuncional com experiência em <span class="font-medium text-indigo-600">vendas, fabricação e gestão de fábrica</span>. Responsável pela supervisão do processo de produção, controle de qualidade, planejamento de vendas e gestão de equipe, garantindo a eficiência operacional e o cumprimento de metas.
                 </p>
             </div>
@@ -234,7 +325,7 @@
             </ul>
         </section>
 
-        <!-- Seção de Competências -->
+        <!-- Seção de Competências (Listagem com Ver Mais e Modal) -->
         <section class="mb-12 p-8 bg-white rounded-2xl shadow-xl fade-in">
             <h2 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-5">Competências</h2>
             <div class="section-separator"></div>
@@ -258,7 +349,81 @@
         </footer>
     </div>
 
+    <!-- Modal de Detalhes da Competência -->
+    <div id="skillModal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close-button" id="closeModal">&times;</button>
+            <h3 id="modalSkillName" class="text-3xl font-bold text-indigo-800 mb-4"></h3>
+            <p id="modalSkillDescription" class="text-lg text-gray-700 mb-4"></p>
+            <p id="modalSkillWhatIDo" class="text-lg text-gray-700 mb-6"></p>
+            <button id="readContentButton" class="bg-indigo-600 text-white py-3 px-6 rounded-lg font-semibold shadow-md hover:bg-indigo-700 transition duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center space-x-2">
+                <i class="fas fa-volume-up mr-2"></i> Ler Conteúdo
+            </button>
+            <audio id="audioPlayer" src="" style="display: none;"></audio>
+        </div>
+    </div>
+
+
     <script>
+        // Função utilitária para converter Base64 em ArrayBuffer
+        function base64ToArrayBuffer(base64) {
+            const binaryString = atob(base64);
+            const len = binaryString.length;
+            const bytes = new Uint8Array(len);
+            for (let i = 0; i < len; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            return bytes.buffer;
+        }
+
+        // Função utilitária para converter PCM para WAV
+        function pcmToWav(pcmData, sampleRate) {
+            const dataLength = pcmData.length * 2; // 2 bytes per sample (Int16)
+            const buffer = new ArrayBuffer(44 + dataLength);
+            const view = new DataView(buffer);
+
+            // WAV header
+            let offset = 0;
+            function writeString(str) {
+                for (let i = 0; i < str.length; i++) {
+                    view.setUint8(offset + i, str.charCodeAt(i));
+                }
+                offset += str.length;
+            }
+
+            function writeUint32(val) {
+                view.setUint32(offset, val, true);
+                offset += 4;
+            }
+
+            function writeUint16(val) {
+                view.setUint16(offset, val, true);
+                offset += 2;
+            }
+
+            writeString('RIFF');
+            writeUint32(36 + dataLength);
+            writeString('WAVE');
+            writeString('fmt ');
+            writeUint32(16);
+            writeUint16(1); // AudioFormat (1 = PCM)
+            writeUint16(1); // NumChannels (1 = mono)
+            writeUint32(sampleRate);
+            writeUint32(sampleRate * 2); // ByteRate (sampleRate * numChannels * bytesPerSample)
+            writeUint16(2); // BlockAlign (numChannels * bytesPerSample)
+            writeUint16(16); // BitsPerSample (16-bit)
+            writeString('data');
+            writeUint32(dataLength);
+
+            // Write PCM data
+            for (let i = 0; i < pcmData.length; i++) {
+                view.setInt16(offset, pcmData[i], true);
+                offset += 2;
+            }
+
+            return new Blob([view], { type: 'audio/wav' });
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             // Animação de fade-in para as seções
             const sections = document.querySelectorAll('.fade-in');
@@ -280,114 +445,290 @@
                 observer.observe(section);
             });
 
+            // Barra de progresso de rolagem
+            const progressBar = document.getElementById('progressBar');
+            window.addEventListener('scroll', () => {
+                const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+                const scrollPosition = window.scrollY;
+                const progress = (scrollPosition / totalHeight) * 100;
+                progressBar.style.width = `${progress}%`;
+            });
+
+
             // Carregamento dinâmico das competências em cards agrupados
             const groupedSkillsData = [
                 {
                     groupName: 'Linguagens & Frameworks',
                     skills: [
-                        { name: 'HTML', iconClass: 'fab fa-html5', colorClass: 'text-orange-500' },
-                        { name: 'JavaScript', iconClass: 'fab fa-js', colorClass: 'text-yellow-500' },
-                        { name: 'CSS', iconClass: 'fab fa-css3-alt', colorClass: 'text-blue-500' },
-                        { name: 'PHP', iconClass: 'fab fa-php', colorClass: 'text-purple-600' },
-                        { name: 'Java', iconClass: 'fab fa-java', colorClass: 'text-red-600' },
-                        { name: 'GoLang', iconClass: 'fas fa-code', colorClass: 'text-blue-700' },
-                        { name: 'Angular', iconClass: 'fab fa-angular', colorClass: 'text-red-600' },
-                        { name: 'JavaWeb', iconClass: 'fab fa-java', colorClass: 'text-orange-600' },
-                        { name: 'Android', iconClass: 'fab fa-android', colorClass: 'text-green-700' },
+                        { name: 'HTML', iconClass: 'fab fa-html5', colorClass: 'text-orange-500',
+                            description: 'HTML (HyperText Markup Language) é a linguagem de marcação padrão para criar páginas web e seus aplicativos.',
+                            whatIDo: 'Utilizo HTML para estruturar o conteúdo de websites, garantindo acessibilidade e semântica corretas.' },
+                        { name: 'JavaScript', iconClass: 'fab fa-js', colorClass: 'text-yellow-500',
+                            description: 'JavaScript é uma linguagem de programação interpretada que permite criar conteúdo interativo em páginas web.',
+                            whatIDo: 'Desenvolvo funcionalidades dinâmicas e interativas para websites, aprimorando a experiência do usuário.' },
+                        { name: 'CSS', iconClass: 'fab fa-css3-alt', colorClass: 'text-blue-500',
+                            description: 'CSS (Cascading Style Sheets) é uma linguagem de estilo usada para descrever a apresentação de um documento escrito em HTML.',
+                            whatIDo: 'Crio e aplico estilos visuais atraentes e responsivos para websites, utilizando as melhores práticas de design.' },
+                        { name: 'PHP', iconClass: 'fab fa-php', colorClass: 'text-purple-600',
+                            description: 'PHP é uma linguagem de script de uso geral, especialmente adequada para desenvolvimento web.',
+                            whatIDo: 'Desenvolvo e mantenho aplicações web robustas e escaláveis usando PHP, com experiência em frameworks como Laravel.' },
+                        { name: 'Java', iconClass: 'fab fa-java', colorClass: 'text-red-600',
+                            description: 'Java é uma linguagem de programação orientada a objetos, multiplataforma, amplamente utilizada para aplicações empresariais e Android.',
+                            whatIDo: 'Desenvolvo soluções backend e aplicativos Android utilizando a linguagem Java, focando em performance e segurança.' },
+                        { name: 'GoLang', iconClass: 'fas fa-code', colorClass: 'text-blue-700',
+                            description: 'Go (ou Golang) é uma linguagem de programação de código aberto desenvolvida pelo Google, focada em simplicidade, desempenho e concorrência.',
+                            whatIDo: 'Especializado em desenvolvimento backend com Go, construindo microsserviços eficientes e sistemas de alta performance.' },
+                        { name: 'Angular', iconClass: 'fab fa-angular', colorClass: 'text-red-600',
+                            description: 'Angular é um framework de código aberto para a construção de aplicações web e móveis, mantido pelo Google.',
+                            whatIDo: 'Crio interfaces de usuário dinâmicas e ricas em recursos para aplicações web utilizando o framework Angular.' },
+                        { name: 'JavaWeb', iconClass: 'fab fa-java', colorClass: 'text-orange-600',
+                            description: 'JavaWeb refere-se às tecnologias baseadas em Java para o desenvolvimento de aplicações web, como servlets e JSPs.',
+                            whatIDo: 'Desenvolvo e implemento aplicações web empresariais utilizando tecnologias JavaWeb, garantindo robustez e escalabilidade.' },
+                        { name: 'Android', iconClass: 'fab fa-android', colorClass: 'text-green-700',
+                            description: 'Android é um sistema operacional móvel desenvolvido pelo Google, amplamente utilizado em smartphones e tablets.',
+                            whatIDo: 'Crio aplicativos para a plataforma Android, desde o design da interface até a implementação de funcionalidades complexas.' },
                     ]
                 },
                 {
                     groupName: 'Bancos de Dados',
                     skills: [
-                        { name: 'MySQL', iconClass: 'fas fa-database', colorClass: 'text-indigo-600' },
-                        { name: 'PostgreSQL', iconClass: 'fas fa-database', colorClass: 'text-indigo-700' },
+                        { name: 'MySQL', iconClass: 'fas fa-database', colorClass: 'text-indigo-600',
+                            description: 'MySQL é um sistema de gerenciamento de banco de dados relacional (SGBDR) popular e de código aberto.',
+                            whatIDo: 'Projeto, implemento e gerencio bancos de dados MySQL, otimizando consultas e garantindo a integridade dos dados.' },
+                        { name: 'PostgreSQL', iconClass: 'fas fa-database', colorClass: 'text-indigo-700',
+                            description: 'PostgreSQL é um poderoso sistema de banco de dados objeto-relacional de código aberto, conhecido por sua robustez e flexibilidade.',
+                            whatIDo: 'Trabalho com modelagem, otimização e manutenção de bancos de dados PostgreSQL em ambientes de alta demanda.' },
                     ]
                 },
                 {
                     groupName: 'Controle de Versão & APIs',
                     skills: [
-                        { name: 'Git', iconClass: 'fab fa-git-alt', colorClass: 'text-red-700' },
-                        { name: 'RESTful', iconClass: 'fas fa-exchange-alt', colorClass: 'text-green-600' },
+                        { name: 'Git', iconClass: 'fab fa-git-alt', colorClass: 'text-red-700',
+                            description: 'Git é um sistema de controle de versão distribuído que rastreia mudanças no código-fonte durante o desenvolvimento de software.',
+                            whatIDo: 'Utilizo Git para controle de versão em todos os projetos, garantindo colaboração eficiente e gerenciamento de código.' },
+                        { name: 'RESTful', iconClass: 'fas fa-exchange-alt', colorClass: 'text-green-600',
+                            description: 'RESTful (Representational State Transfer) é um estilo arquitetural para sistemas distribuídos, como web services, baseados no protocolo HTTP.',
+                            whatIDo: 'Desenvolvo APIs RESTful robustas e bem documentadas, facilitando a comunicação entre diferentes sistemas e plataformas.' },
                     ]
                 },
                 {
                     groupName: 'Gerência de Servidores & Cloud',
                     skills: [
-                        { name: 'WHM/Cpanel', iconClass: 'fas fa-cogs', colorClass: 'text-blue-800' },
-                        { name: 'AWS', iconClass: 'fab fa-aws', colorClass: 'text-orange-400' },
-                        { name: 'Kubernetes', iconClass: 'fas fa-cubes', colorClass: 'text-blue-400' },
+                        { name: 'WHM/Cpanel', iconClass: 'fas fa-cogs', colorClass: 'text-blue-800',
+                            description: 'WHM (Web Host Manager) e cPanel são painéis de controle de hospedagem web que simplificam a gerência de servidores e sites.',
+                            whatIDo: 'Gerencio servidores e contas de hospedagem, configurando ambientes e otimizando o desempenho de websites.' },
+                        { name: 'AWS', iconClass: 'fab fa-aws', colorClass: 'text-orange-400',
+                            description: 'Amazon Web Services (AWS) é uma plataforma de serviços em nuvem abrangente e amplamente adotada.',
+                            whatIDo: 'Implemento e gerencio soluções escaláveis na nuvem AWS, incluindo EC2, S3, RDS e Lambda.' },
+                        { name: 'Kubernetes', iconClass: 'fas fa-cubes', colorClass: 'text-blue-400',
+                            description: 'Kubernetes é um sistema de orquestração de contêineres de código aberto para automatizar a implantação, escalonamento e gerenciamento de aplicações.',
+                            whatIDo: 'Trabalho com a orquestração de contêineres utilizando Kubernetes, garantindo a alta disponibilidade e escalabilidade de aplicações.' },
                     ]
                 },
                 {
                     groupName: 'Sistemas Operacionais',
                     skills: [
-                        { name: 'Linux', iconClass: 'fab fa-linux', colorClass: 'text-yellow-700' },
-                        { name: 'MacOS', iconClass: 'fab fa-apple', colorClass: 'text-gray-700' },
-                        { name: 'Windows', iconClass: 'fab fa-windows', colorClass: 'text-blue-700' },
+                        { name: 'Linux', iconClass: 'fab fa-linux', colorClass: 'text-yellow-700',
+                            description: 'Linux é uma família de sistemas operacionais de código aberto baseados no kernel Linux.',
+                            whatIDo: 'Possuo conhecimento avançado em ambientes Linux para desenvolvimento, administração de servidores e automação.' },
+                        { name: 'MacOS', iconClass: 'fab fa-apple', colorClass: 'text-gray-700',
+                            description: 'macOS é o sistema operacional desenvolvido pela Apple para seus computadores Macintosh.',
+                            whatIDo: 'Utilizo MacOS como principal ambiente de desenvolvimento, aproveitando sua integração e ferramentas para software.' },
+                        { name: 'Windows', iconClass: 'fab fa-windows', colorClass: 'text-blue-700',
+                            description: 'Microsoft Windows é uma família de sistemas operacionais gráficos desenvolvidos pela Microsoft.',
+                            whatIDo: 'Tenho proficiência em ambientes Windows para desenvolvimento e suporte técnico, garantindo compatibilidade e funcionalidade.' },
                     ]
                 },
                 {
                     groupName: 'Infraestrutura de Redes',
                     skills: [
-                        { name: 'Redes', iconClass: 'fas fa-network-wired', colorClass: 'text-gray-600' },
-                        { name: 'DNS Servers', iconClass: 'fas fa-server', colorClass: 'text-blue-600' },
-                        { name: 'Apache2', iconClass: 'fas fa-server', colorClass: 'text-red-400' },
-                        { name: 'Firewall', iconClass: 'fas fa-shield-alt', colorClass: 'text-green-500' },
-                        { name: 'Exim', iconClass: 'fas fa-envelope-open-text', colorClass: 'text-blue-500' },
-                        { name: 'Wireless/Networking', iconClass: 'fas fa-wifi', colorClass: 'text-indigo-500' },
+                        { name: 'Redes', iconClass: 'fas fa-network-wired', colorClass: 'text-gray-600',
+                            description: 'Infraestrutura de redes abrange o hardware e software para comunicação entre sistemas.',
+                            whatIDo: 'Projeto e implemento soluções de rede, incluindo roteamento, segmentação e configuração de dispositivos.' },
+                        { name: 'DNS Servers', iconClass: 'fas fa-server', colorClass: 'text-blue-600',
+                            description: 'Servidores DNS (Domain Name System) traduzem nomes de domínio em endereços IP.',
+                            whatIDo: 'Configuro e gerencio servidores DNS para garantir a resolução de nomes eficiente e confiável.' },
+                        { name: 'Apache2', iconClass: 'fas fa-server', colorClass: 'text-red-400',
+                            description: 'Apache HTTP Server (Apache2) é um servidor web de código aberto, um dos mais usados globalmente.',
+                            whatIDo: 'Configuro e otimizo servidores Apache2 para hospedagem de aplicações web, garantindo performance e segurança.' },
+                        { name: 'Firewall', iconClass: 'fas fa-shield-alt', colorClass: 'text-green-500',
+                            description: 'Um firewall é um sistema de segurança de rede que monitora e controla o tráfego de rede.',
+                            whatIDo: 'Implemento e gerencio firewalls para proteger sistemas e redes contra acessos não autorizados e ameaças cibernéticas.' },
+                        { name: 'Exim', iconClass: 'fas fa-envelope-open-text', colorClass: 'text-blue-500',
+                            description: 'Exim é um agente de transporte de e-mail (MTA) de código aberto para sistemas Unix-like.',
+                            whatIDo: 'Configuro e mantenho servidores Exim para gerenciar o fluxo de e-mails em ambientes de hospedagem.' },
+                        { name: 'Wireless/Networking', iconClass: 'fas fa-wifi', colorClass: 'text-indigo-500',
+                            description: 'Conhecimento em tecnologias sem fio e de rede para conectividade e comunicação.',
+                            whatIDo: 'Instalo e configuro roteadores, switches e antenas wireless, otimizando a conectividade e a segurança da rede.' },
                     ]
                 },
                 {
                     groupName: 'Ferramentas Google',
                     skills: [
-                        { name: 'Google Docs', iconClass: 'fas fa-file-alt', colorClass: 'text-blue-500' },
-                        { name: 'Google Analytics', iconClass: 'fab fa-google', colorClass: 'text-red-500' },
-                        { name: 'Google Admin', iconClass: 'fab fa-google', colorClass: 'text-blue-600' },
-                        { name: 'Google Console', iconClass: 'fab fa-google', colorClass: 'text-green-600' },
-                        { name: 'Google Cloud', iconClass: 'fab fa-google', colorClass: 'text-purple-600' },
-                        { name: 'Search Console', iconClass: 'fab fa-google', colorClass: 'text-orange-600' },
+                        { name: 'Google Docs', iconClass: 'fas fa-file-alt', colorClass: 'text-blue-500',
+                            description: 'Google Docs é um processador de texto baseado em nuvem, parte do Google Workspace.',
+                            whatIDo: 'Utilizo Google Docs para criação e colaboração em documentos, facilitando a produtividade e o trabalho em equipe.' },
+                        { name: 'Google Analytics', iconClass: 'fab fa-google', colorClass: 'text-red-500',
+                            description: 'Google Analytics é um serviço de análise da web que rastreia e relata o tráfego do website.',
+                            whatIDo: 'Analiso dados de tráfego e comportamento do usuário em websites para otimizar a performance e as estratégias digitais.' },
+                        { name: 'Google Admin', iconClass: 'fab fa-google', colorClass: 'text-blue-600',
+                            description: 'Google Admin Console é a ferramenta para gerenciar serviços do Google Workspace para uma organização.',
+                            whatIDo: 'Administro contas e serviços do Google Workspace, garantindo a segurança e o funcionamento das ferramentas corporativas.' },
+                        { name: 'Google Console', iconClass: 'fab fa-google', colorClass: 'text-green-600',
+                            description: 'Google Cloud Console é a interface web para gerenciar recursos e serviços do Google Cloud Platform.',
+                            whatIDo: 'Gerencio projetos e recursos na Google Cloud Platform, implementando e monitorando soluções em nuvem.' },
+                        { name: 'Google Cloud', iconClass: 'fab fa-google', colorClass: 'text-purple-600',
+                            description: 'Google Cloud Platform (GCP) é um conjunto de serviços de computação em nuvem oferecido pelo Google.',
+                            whatIDo: 'Desenvolvo e implemento soluções escaláveis e resilientes utilizando os diversos serviços da Google Cloud Platform.' },
+                        { name: 'Search Console', iconClass: 'fab fa-google', colorClass: 'text-orange-600',
+                            description: 'Google Search Console é um serviço que ajuda a monitorar e manter a presença do seu site nos resultados da Pesquisa Google.',
+                            whatIDo: 'Otimizo a visibilidade de websites na pesquisa Google, monitorando o desempenho e identificando oportunidades de melhoria de SEO.' },
                     ]
                 },
                 {
                     groupName: 'Outras Ferramentas & IA',
                     skills: [
-                        { name: 'JetBrains (IDEs)', iconClass: 'fas fa-terminal', colorClass: 'text-blue-900' },
-                        { name: 'Ferramentas de IA', iconClass: 'fas fa-brain', colorClass: 'text-purple-800' },
+                        { name: 'JetBrains (IDEs)', iconClass: 'fas fa-terminal', colorClass: 'text-blue-900',
+                            description: 'JetBrains oferece uma suíte de IDEs (Integrated Development Environments) para diversas linguagens de programação, como GoLand e IntelliJ IDEA.',
+                            whatIDo: 'Utilizo as IDEs da JetBrains para desenvolvimento, aproveitando seus recursos avançados para aumentar a produtividade e a qualidade do código.' },
+                        { name: 'Ferramentas de IA (Gemini, GPT, LL Studio)', iconClass: 'fas fa-brain', colorClass: 'text-purple-800',
+                            description: 'Ferramentas de Inteligência Artificial como Gemini, GPT e LL Studio são utilizadas para geração de texto, análise e automação.',
+                            whatIDo: 'Integro e utilizo ferramentas de IA para otimizar processos de desenvolvimento, gerar conteúdo e explorar soluções inovadoras.' },
                     ]
                 },
                 {
                     groupName: 'Outras Qualificações',
                     skills: [
-                        { name: 'Habilitação A/B', iconClass: 'fas fa-car', colorClass: 'text-gray-800' },
+                        { name: 'Habilitação A/B', iconClass: 'fas fa-car', colorClass: 'text-gray-800',
+                            description: 'Possuo habilitação para dirigir veículos das categorias A (motocicleta) e B (automóvel).',
+                            whatIDo: 'Flexibilidade e autonomia para deslocamentos, seja para o trabalho ou outras necessidades.' },
                     ]
                 },
             ];
 
             const skillsContainer = document.getElementById('skills-container');
+            const skillModal = document.getElementById('skillModal');
+            const closeModalButton = document.getElementById('closeModal');
+            const modalSkillName = document.getElementById('modalSkillName');
+            const modalSkillDescription = document.getElementById('modalSkillDescription');
+            const modalSkillWhatIDo = document.getElementById('modalSkillWhatIDo');
+            const readContentButton = document.getElementById('readContentButton');
+            const audioPlayer = document.getElementById('audioPlayer');
+
+            // Função para abrir o modal
+            function openModal(skill) {
+                modalSkillName.textContent = skill.name;
+                modalSkillDescription.textContent = skill.description;
+                modalSkillWhatIDo.textContent = skill.whatIDo;
+                skillModal.classList.add('open');
+                // Adiciona a classe para impedir o scroll no body
+                document.body.style.overflow = 'hidden';
+            }
+
+            // Função para fechar o modal
+            function closeModal() {
+                skillModal.classList.remove('open');
+                // Remove a classe para permitir o scroll no body
+                document.body.style.overflow = '';
+                // Para qualquer áudio que esteja tocando
+                audioPlayer.pause();
+                audioPlayer.currentTime = 0;
+            }
+
+            // Event listener para fechar o modal
+            closeModalButton.addEventListener('click', closeModal);
+            skillModal.addEventListener('click', (e) => {
+                if (e.target === skillModal) {
+                    closeModal();
+                }
+            });
+
+            // Carregamento das competências no HTML
             if (skillsContainer) {
                 groupedSkillsData.forEach(group => {
-                    // Cria o título do grupo
                     const groupHeader = document.createElement('h3');
                     groupHeader.className = 'text-2xl font-semibold text-gray-700 mt-8 mb-4 border-b border-gray-200 pb-2';
                     groupHeader.textContent = group.groupName;
                     skillsContainer.appendChild(groupHeader);
 
-                    // Cria a grade para os cards de habilidades dentro do grupo
                     const groupGrid = document.createElement('div');
                     groupGrid.className = 'grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4';
                     skillsContainer.appendChild(groupGrid);
 
                     group.skills.forEach(skill => {
                         const skillCard = document.createElement('div');
-                        skillCard.className = `flex flex-col items-center justify-center p-3 bg-gray-50 rounded-lg shadow-sm hover:shadow-md transform hover:scale-105 transition-all duration-300 ease-in-out border border-gray-200`;
+                        skillCard.className = `flex flex-col items-center justify-center p-3 bg-gray-50 rounded-lg shadow-sm hover:shadow-lg hover:border-indigo-400 transform hover:scale-105 transition-all duration-300 ease-in-out border border-gray-200 skill-card-glow cursor-pointer`;
                         skillCard.innerHTML = `
                             <i class="${skill.iconClass} fa-2x ${skill.colorClass} mb-2"></i>
                             <span class="text-base font-medium ${skill.colorClass} text-center">${skill.name}</span>
                         `;
+                        skillCard.addEventListener('click', () => openModal(skill)); // Abre o modal ao clicar
                         groupGrid.appendChild(skillCard);
                     });
                 });
             }
+
+            // Função para ler o conteúdo do modal (TTS)
+            readContentButton.addEventListener('click', async () => {
+                const textToRead = `${modalSkillName.textContent}. ${modalSkillDescription.textContent}. ${modalSkillWhatIDo.textContent}`;
+                readContentButton.disabled = true;
+                readContentButton.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Lendo...`;
+
+                try {
+                    const payload = {
+                        contents: [{
+                            parts: [{ text: textToRead }]
+                        }],
+                        generationConfig: {
+                            responseModalities: ["AUDIO"],
+                            speechConfig: {
+                                voiceConfig: {
+                                    prebuiltVoiceConfig: { voiceName: "Puck" } // Voz Puck (Upbeat)
+                                }
+                            }
+                        },
+                        model: "gemini-2.5-flash-preview-tts"
+                    };
+                    const apiKey = "";
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
+
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    const result = await response.json();
+                    const part = result?.candidates?.[0]?.content?.parts?.[0];
+                    const audioData = part?.inlineData?.data;
+                    const mimeType = part?.inlineData?.mimeType;
+
+                    if (audioData && mimeType && mimeType.startsWith("audio/L16")) {
+                        const sampleRateMatch = mimeType.match(/rate=(\d+)/);
+                        const sampleRate = sampleRateMatch ? parseInt(sampleRateMatch[1], 10) : 16000; // Default a 16kHz
+
+                        const pcmData = base64ToArrayBuffer(audioData);
+                        const pcm16 = new Int16Array(pcmData);
+                        const wavBlob = pcmToWav(pcm16, sampleRate);
+                        const audioUrl = URL.createObjectURL(wavBlob);
+
+                        audioPlayer.src = audioUrl;
+                        audioPlayer.play();
+
+                        audioPlayer.onended = () => {
+                            URL.revokeObjectURL(audioUrl); // Libera o URL do objeto após a reprodução
+                        };
+                    } else {
+                        console.error("Erro: Estrutura de resposta de áudio inesperada ou mimeType não suportado.", result);
+                        alert("Não foi possível gerar o áudio. Tente novamente.");
+                    }
+                } catch (error) {
+                    console.error("Erro ao chamar a API TTS:", error);
+                    alert("Ocorreu um erro ao tentar ler o conteúdo. Verifique o console.");
+                } finally {
+                    readContentButton.disabled = false;
+                    readContentButton.innerHTML = `<i class="fas fa-volume-up mr-2"></i> Ler Conteúdo`;
+                }
+            });
         });
     </script>
 </body>
