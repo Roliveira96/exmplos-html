@@ -15,6 +15,15 @@
             font-family: 'Poppins', sans-serif;
             overflow-x: hidden; /* Evita rolagem horizontal devido às animações */
         }
+        /* Lógica de visibilidade do idioma */
+        .version-br, .version-eua { display: none; }
+        body.version-br-active .version-br { display: block; }
+        body.version-eua-active .version-eua { display: block; }
+        /* Para elementos inline */
+        body.version-br-active .version-br-inline { display: inline; }
+        body.version-eua-active .version-eua-inline { display: inline; }
+
+
         /* Animação de fade-in para as seções */
         .fade-in {
             opacity: 0;
@@ -48,7 +57,6 @@
             border-radius: 9999px;
         }
 
-        /* Animação para o gradiente do separador */
         @keyframes gradientMove {
             0% { background-position: 0% 50%; }
             100% { background-position: 100% 50%; }
@@ -62,56 +70,23 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
-            z-index: -1; /* Garante que as formas fiquem atrás do conteúdo */
+            z-index: -1;
         }
 
         .animated-background-shapes > div {
             position: absolute;
-            background: rgba(167, 139, 250, 0.2); /* Tom de roxo com transparência */
+            background: rgba(167, 139, 250, 0.2);
             border-radius: 50%;
-            animation: moveShapes 15s infinite alternate ease-in-out; /* Animação principal */
-            filter: blur(10px); /* Suaviza as bordas das formas */
+            animation: moveShapes 15s infinite alternate ease-in-out;
+            filter: blur(10px);
         }
 
-        .animated-background-shapes > div:nth-child(1) {
-            width: 80px; height: 80px;
-            left: 10%; top: 20%;
-            animation-duration: 18s;
-            animation-delay: 0s;
-        }
-        .animated-background-shapes > div:nth-child(2) {
-            width: 120px; height: 120px;
-            left: 60%; top: 50%;
-            background: rgba(99, 102, 241, 0.2); /* Tom de índigo com transparência */
-            animation-duration: 20s;
-            animation-delay: 2s;
-        }
-        .animated-background-shapes > div:nth-child(3) {
-            width: 70px; height: 70px;
-            left: 30%; top: 80%;
-            animation-duration: 16s;
-            animation-delay: 4s;
-        }
-        .animated-background-shapes > div:nth-child(4) {
-            width: 100px; height: 100px;
-            left: 80%; top: 10%;
-            background: rgba(167, 139, 250, 0.15);
-            animation-duration: 22s;
-            animation-delay: 6s;
-        }
-        .animated-background-shapes > div:nth-child(5) {
-            width: 90px; height: 90px;
-            left: 5%; top: 60%;
-            animation-duration: 17s;
-            animation-delay: 8s;
-        }
-        .animated-background-shapes > div:nth-child(6) {
-            width: 110px; height: 110px;
-            left: 70%; top: 30%;
-            background: rgba(99, 102, 241, 0.15);
-            animation-duration: 19s;
-            animation-delay: 10s;
-        }
+        .animated-background-shapes > div:nth-child(1) { width: 80px; height: 80px; left: 10%; top: 20%; animation-duration: 18s; animation-delay: 0s; }
+        .animated-background-shapes > div:nth-child(2) { width: 120px; height: 120px; left: 60%; top: 50%; background: rgba(99, 102, 241, 0.2); animation-duration: 20s; animation-delay: 2s; }
+        .animated-background-shapes > div:nth-child(3) { width: 70px; height: 70px; left: 30%; top: 80%; animation-duration: 16s; animation-delay: 4s; }
+        .animated-background-shapes > div:nth-child(4) { width: 100px; height: 100px; left: 80%; top: 10%; background: rgba(167, 139, 250, 0.15); animation-duration: 22s; animation-delay: 6s; }
+        .animated-background-shapes > div:nth-child(5) { width: 90px; height: 90px; left: 5%; top: 60%; animation-duration: 17s; animation-delay: 8s; }
+        .animated-background-shapes > div:nth-child(6) { width: 110px; height: 110px; left: 70%; top: 30%; background: rgba(99, 102, 241, 0.15); animation-duration: 19s; animation-delay: 10s; }
 
         @keyframes moveShapes {
             0% { transform: translate(0, 0) scale(1); opacity: 0.6; }
@@ -121,30 +96,27 @@
             100% { transform: translate(0, 0) scale(1); opacity: 0.6; }
         }
 
-        /* Efeito de borda gradiente animada para cards de experiência */
         .experience-card-left-border {
             position: absolute;
             top: 0;
             left: 0;
             height: 100%;
-            width: 8px; /* Largura fixa da barra lateral */
+            width: 8px;
             background: linear-gradient(to bottom, #6366f1, #a78bfa, #6366f1);
-            background-size: 100% 200%; /* Ajuste para animação vertical */
-            animation: auroraMove 5s linear infinite alternate; /* Animação da aurora */
-            border-radius: 6px 0 0 6px; /* Bordas arredondadas apenas na esquerda */
-            z-index: 0; /* Garante que fique atrás do conteúdo do card */
+            background-size: 100% 200%;
+            animation: auroraMove 5s linear infinite alternate;
+            border-radius: 6px 0 0 6px;
+            z-index: 0;
         }
         @keyframes auroraMove {
             0% { background-position: 0% 0%; }
             100% { background-position: 0% 100%; }
         }
 
-        /* Efeito de brilho nos cards de competências */
         .skill-card-glow:hover {
             box-shadow: 0 0 15px rgba(99, 102, 241, 0.4), 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
-        /* Estilos do Modal */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -174,8 +146,11 @@
             transform: scale(0.9);
             transition: transform 0.3s ease-in-out;
             position: relative;
-            max-height: 90vh; /* Limita a altura do modal */
-            overflow-y: auto; /* Adiciona scroll se o conteúdo for muito grande */
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        #certificateModal .modal-content {
+             max-width: 900px; /* Aumenta a largura para o certificado */
         }
         .modal-overlay.open .modal-content {
             transform: scale(1);
@@ -194,6 +169,32 @@
         .modal-close-button:hover {
             color: #4338ca;
         }
+        
+        .language-switcher {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1001;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .language-switcher img {
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        .language-switcher img:hover {
+            transform: scale(1.1);
+        }
+        .language-switcher img.active {
+            border-color: #6366f1;
+            box-shadow: 0 0 15px rgba(99, 102, 241, 0.5);
+        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-indigo-50 to-purple-100 text-gray-800 leading-relaxed antialiased relative">
@@ -202,12 +203,13 @@
 
     <!-- Fundo Animado -->
     <div class="animated-background-shapes">
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
+        <div></div><div></div><div></div><div></div><div></div><div></div>
+    </div>
+    
+    <!-- Seletor de Idioma -->
+    <div class="language-switcher">
+        <img src="https://flagcdn.com/w40/br.png" alt="Português" id="lang-pt-btn">
+        <img src="https://flagcdn.com/w40/us.png" alt="English" id="lang-en-btn">
     </div>
 
     <div class="container mx-auto p-4 sm:p-6 lg:p-8 max-w-4xl bg-white shadow-2xl rounded-3xl my-10 relative z-10">
@@ -223,83 +225,443 @@
             </div>
         </header>
 
-        <!-- Seção de Links Sociais (agora como botões horizontais) -->
+        <!-- Seção de Links Sociais -->
         <section class="mb-12 p-8 bg-indigo-50 rounded-2xl shadow-xl fade-in">
             <div class="flex flex-wrap justify-center gap-4 mt-4">
-                <a href="https://www.linkedin.com/in/ricardodeoliveira96/" target="_blank" class="flex items-center bg-indigo-600 text-white py-3 px-6 rounded-full font-semibold shadow-md hover:bg-indigo-700 transition duration-300 ease-in-out transform hover:scale-105">
-                    <i class="fab fa-linkedin fa-lg mr-2"></i> LinkedIn
-                </a>
-                <a href="https://github.com/Roliveira96" target="_blank" class="flex items-center bg-gray-700 text-white py-3 px-6 rounded-full font-semibold shadow-md hover:bg-gray-800 transition duration-300 ease-in-out transform hover:scale-105">
-                    <i class="fab fa-github fa-lg mr-2"></i> GitHub
-                </a>
-                <a href="https://www.udemy.com/user/ricardo-martins-de-oliveira/" target="_blank" class="flex items-center bg-red-600 text-white py-3 px-6 rounded-full font-semibold shadow-md hover:bg-red-700 transition duration-300 ease-in-out transform hover:scale-105">
-                    <i class="fas fa-graduation-cap fa-lg mr-2"></i> Udemy
-                </a>
-                <a href="https://wa.me/5542999486362" target="_blank" class="flex items-center bg-green-500 text-white py-3 px-6 rounded-full font-semibold shadow-md hover:bg-green-600 transition duration-300 ease-in-out transform hover:scale-105">
-                    <i class="fab fa-whatsapp fa-lg mr-2"></i> WhatsApp
-                </a>
+                <a href="https://www.linkedin.com/in/ricardodeoliveira96/" target="_blank" class="flex items-center bg-indigo-600 text-white py-3 px-6 rounded-full font-semibold shadow-md hover:bg-indigo-700 transition duration-300 ease-in-out transform hover:scale-105"> <i class="fab fa-linkedin fa-lg mr-2"></i> LinkedIn </a>
+                <a href="https://github.com/Roliveira96" target="_blank" class="flex items-center bg-gray-700 text-white py-3 px-6 rounded-full font-semibold shadow-md hover:bg-gray-800 transition duration-300 ease-in-out transform hover:scale-105"> <i class="fab fa-github fa-lg mr-2"></i> GitHub </a>
+                <a href="https://www.udemy.com/user/ricardo-martins-de-oliveira/" target="_blank" class="flex items-center bg-red-600 text-white py-3 px-6 rounded-full font-semibold shadow-md hover:bg-red-700 transition duration-300 ease-in-out transform hover:scale-105"> <i class="fas fa-graduation-cap fa-lg mr-2"></i> Udemy </a>
+                <a href="https://wa.me/5542999486362" target="_blank" class="flex items-center bg-green-500 text-white py-3 px-6 rounded-full font-semibold shadow-md hover:bg-green-600 transition duration-300 ease-in-out transform hover:scale-105"> <i class="fab fa-whatsapp fa-lg mr-2"></i> WhatsApp </a>
+                <a href="https://studio4you.com.br/profile.php" target="_blank" class="flex items-center bg-blue-500 text-white py-3 px-6 rounded-full font-semibold shadow-md hover:bg-blue-600 transition duration-300 ease-in-out transform hover:scale-105"> <i class="fas fa-globe fa-lg mr-2"></i> Site </a>
             </div>
         </section>
 
         <!-- Seção de Resumo Profissional -->
         <section class="mb-12 p-8 bg-white rounded-2xl shadow-xl fade-in">
-            <h2 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-5">Resumo Profissional</h2>
+            <h2 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-5 version-br">Resumo Profissional</h2>
+            <h2 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-5 version-eua">Professional Summary</h2>
             <div class="section-separator"></div>
-            <p class="text-lg leading-relaxed text-gray-700 mt-8">
-                <span class="font-semibold text-indigo-700">Engenheiro de Software</span> dinâmico e experiente na <span class="font-semibold text-indigo-700">GT Group</span>, com sólida atuação no desenvolvimento de soluções robustas. Especializado em <span class="font-semibold text-indigo-700">Golang (mais de 2 anos), PostgreSQL e Angular</span>, com foco em <span class="font-semibold text-indigo-700">design e implementação de Microserviços (Docker)</span> e <span class="font-semibold text-indigo-700">integração de sistemas com Inteligência Artificial</span>. Minha trajetória abrange um amplo espectro de tecnologias, incluindo HTML, JavaScript, CSS, PHP, MySQL, Java, Git, RESTful, JavaWeb e Android, garantindo versatilidade e inovação em projetos desafiadores.
-            </p>
+            <p class="text-lg leading-relaxed text-gray-700 mt-8 version-br"> <span class="font-semibold text-indigo-700">Engenheiro de Software e Tech Lead</span> com uma trajetória que evoluiu do suporte técnico à direção e, atualmente, à liderança em desenvolvimento. Especializado em <span class="font-semibold text-indigo-700">Go (Golang), PostgreSQL e Angular</span>, atuo no <span class="font-semibold text-indigo-700">design e implementação de Microserviços (Docker)</span> e na <span class="font-semibold text-indigo-700">integração de sistemas com Inteligência Artificial</span>. Além da minha expertise em desenvolvimento back-end, tenho experiência com <span class="font-semibold text-indigo-700">DevOps</span> e um amplo espectro de tecnologias web, garantindo soluções robustas e inovadoras. </p>
+            <p class="text-lg leading-relaxed text-gray-700 mt-8 version-eua"> <span class="font-semibold text-indigo-700">Software Engineer and Tech Lead</span> with a career path that has evolved from technical support to management and, currently, to development leadership. Specializing in <span class="font-semibold text-indigo-700">Go (Golang), PostgreSQL, and Angular</span>, I work on the <span class="font-semibold text-indigo-700">design and implementation of Microservices (Docker)</span> and the <span class="font-semibold text-indigo-700">integration of systems with Artificial Intelligence</span>. In addition to my expertise in back-end development, I have experience with <span class="font-semibold text-indigo-700">DevOps</span> and a broad spectrum of web technologies, ensuring robust and innovative solutions. </p>
         </section>
 
-        <!-- Seção de Experiência Profissional (Cards com Modal) -->
+        <!-- Seção de Experiência Profissional -->
         <section class="mb-12 p-8 bg-white rounded-2xl shadow-xl fade-in">
-            <h2 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-5">Experiência Profissional</h2>
+            <h2 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-5 version-br">Experiência Profissional</h2>
+            <h2 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-5 version-eua">Professional Experience</h2>
             <div class="section-separator"></div>
             <div id="experience-container" class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-                <!-- As experiências serão carregadas aqui via JavaScript -->
+                <!-- Card 1 -->
+                <div class="p-6 bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.01] transition-all duration-300 ease-in-out border border-gray-200 relative overflow-hidden group experience-card">
+                    <span class="experience-card-left-border"></span>
+                    <div class="relative z-10">
+                        <div class="version-br">
+                            <h3 class="text-xl sm:text-2xl font-semibold text-indigo-700 mb-1 exp-role">Tech Lead & Desenvolvedor Back-end Sênior</h3>
+                            <p class="text-gray-600 text-lg mb-1 exp-company">Grownt, São Paulo</p>
+                            <p class="text-gray-500 text-base mb-3 exp-duration">Desde 2023 até o momento</p>
+                            <p class="text-gray-700 mb-4 exp-summary">Líder técnico responsável pela organização e análise de projetos, garantindo a entrega de soluções eficientes.</p>
+                            <div class="hidden exp-description">Na Grownt, atuo como Tech Lead e Desenvolvedor Back-end Sênior, sendo responsável por:</div>
+                            <ul class="hidden exp-responsibilities"><li>Liderança técnica na organização e análise de projetos, garantindo a entrega de soluções eficientes.</li><li>Desenvolvimento e manutenção de sistemas web com Go, com foco em arquitetura de APIs e modelagem de banco de dados.</li><li>Atuação na integração de sistemas com Inteligência Artificial e implementação de Microserviços (Docker).</li><li>Colaboração com equipes multifuncionais para levantar requisitos e otimizar processos de desenvolvimento.</li></ul>
+                            <button class="bg-indigo-500 text-white py-2 px-4 rounded-lg font-semibold text-sm hover:bg-indigo-600 transition duration-300 ease-in-out transform hover:scale-105 view-more-btn">Ver Mais</button>
+                        </div>
+                        <div class="version-eua">
+                            <h3 class="text-xl sm:text-2xl font-semibold text-indigo-700 mb-1 exp-role">Tech Lead & Senior Back-end Developer</h3>
+                            <p class="text-gray-600 text-lg mb-1 exp-company">Grownt, São Paulo</p>
+                            <p class="text-gray-500 text-base mb-3 exp-duration">2023 to present</p>
+                            <p class="text-gray-700 mb-4 exp-summary">Technical leader responsible for project organization and analysis, ensuring the delivery of efficient solutions.</p>
+                            <div class="hidden exp-description">At Grownt, I work as a Tech Lead and Senior Back-end Developer, responsible for:</div>
+                            <ul class="hidden exp-responsibilities"><li>Technical leadership in project organization and analysis, ensuring the delivery of efficient solutions.</li><li>Development and maintenance of web systems with Go, focusing on API architecture and database modeling.</li><li>Integration of systems with Artificial Intelligence and implementation of Microservices (Docker).</li><li>Collaboration with cross-functional teams to gather requirements and optimize development processes.</li></ul>
+                            <button class="bg-indigo-500 text-white py-2 px-4 rounded-lg font-semibold text-sm hover:bg-indigo-600 transition duration-300 ease-in-out transform hover:scale-105 view-more-btn">View More</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Card 2 -->
+                <div class="p-6 bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.01] transition-all duration-300 ease-in-out border border-gray-200 relative overflow-hidden group experience-card">
+                    <span class="experience-card-left-border"></span>
+                    <div class="relative z-10">
+                        <div class="version-br">
+                            <h3 class="text-xl sm:text-2xl font-semibold text-indigo-700 mb-1 exp-role">Diretor de Suporte & Desenvolvedor Back-end PHP</h3>
+                            <p class="text-gray-600 text-lg mb-1 exp-company">K13 Agência Web, Guarapuava</p>
+                            <p class="text-gray-500 text-base mb-3 exp-duration">2020 — 2023</p>
+                            <p class="text-gray-700 mb-4 exp-summary">Liderei a equipe de suporte técnico e aprimorei a gestão de operações, com transição para desenvolvimento PHP.</p>
+                            <div class="hidden exp-description">Na K13 Agência Web, minha trajetória começou na liderança da equipe de suporte técnico, onde aprimorei a gestão de operações. Posteriormente, transicionei para a área de desenvolvimento, atuando com PHP, WordPress e Laravel. Minhas principais responsabilidades incluíram:</div>
+                            <ul class="hidden exp-responsibilities"><li>Liderança da equipe de suporte técnico e otimização de processos operacionais.</li><li>Desenvolvimento e manutenção de sistemas web utilizando PHP, WordPress e Laravel.</li><li>Criação de soluções personalizadas e garantia da qualidade do código.</li></ul>
+                            <button class="bg-indigo-500 text-white py-2 px-4 rounded-lg font-semibold text-sm hover:bg-indigo-600 transition duration-300 ease-in-out transform hover:scale-105 view-more-btn">Ver Mais</button>
+                        </div>
+                        <div class="version-eua">
+                            <h3 class="text-xl sm:text-2xl font-semibold text-indigo-700 mb-1 exp-role">Support Director & PHP Back-end Developer</h3>
+                            <p class="text-gray-600 text-lg mb-1 exp-company">K13 Web Agency, Guarapuava</p>
+                            <p class="text-gray-500 text-base mb-3 exp-duration">2020 — 2023</p>
+                            <p class="text-gray-700 mb-4 exp-summary">Led the technical support team and improved operations management, transitioning to PHP development.</p>
+                            <div class="hidden exp-description">At K13 Web Agency, my journey began leading the technical support team, where I improved operations management. Later, I transitioned to development, working with PHP, WordPress, and Laravel. My main responsibilities included:</div>
+                            <ul class="hidden exp-responsibilities"><li>Leading the technical support team and optimizing operational processes.</li><li>Developing and maintaining web systems using PHP, WordPress, and Laravel.</li><li>Creating custom solutions and ensuring code quality.</li></ul>
+                            <button class="bg-indigo-500 text-white py-2 px-4 rounded-lg font-semibold text-sm hover:bg-indigo-600 transition duration-300 ease-in-out transform hover:scale-105 view-more-btn">View More</button>
+                        </div>
+                    </div>
+                </div>
+                 <!-- Card 3 -->
+                 <div class="p-6 bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.01] transition-all duration-300 ease-in-out border border-gray-200 relative overflow-hidden group experience-card">
+                    <span class="experience-card-left-border"></span>
+                    <div class="relative z-10">
+                        <div class="version-br">
+                            <h3 class="text-xl sm:text-2xl font-semibold text-indigo-700 mb-1 exp-role">Instrutor Técnico</h3>
+                            <p class="text-gray-600 text-lg mb-1 exp-company">Colégio Estadual Floriano Peixoto, Laranjeiras do Sul</p>
+                            <p class="text-gray-500 text-base mb-3 exp-duration">2016 — 2017</p>
+                            <p class="text-gray-700 mb-4 exp-summary">Responsável por capacitar alunos em curso técnico nas disciplinas de Banco de Dados, Desenvolvimento Web I e Lógica de Programação.</p>
+                            <div class="hidden exp-description">No Colégio Estadual Floriano Peixoto, atuei como Instrutor Técnico, com foco em:</div>
+                            <ul class="hidden exp-responsibilities"><li>Capacitação de alunos em curso técnico nas disciplinas de Banco de Dados.</li><li>Ensino de Desenvolvimento Web I e Lógica de Programação.</li><li>Preparação dos alunos com habilidades essenciais para o mercado de trabalho em TI.</li></ul>
+                            <button class="bg-indigo-500 text-white py-2 px-4 rounded-lg font-semibold text-sm hover:bg-indigo-600 transition duration-300 ease-in-out transform hover:scale-105 view-more-btn">Ver Mais</button>
+                        </div>
+                        <div class="version-eua">
+                            <h3 class="text-xl sm:text-2xl font-semibold text-indigo-700 mb-1 exp-role">Technical Instructor</h3>
+                            <p class="text-gray-600 text-lg mb-1 exp-company">State College Floriano Peixoto, Laranjeiras do Sul</p>
+                            <p class="text-gray-500 text-base mb-3 exp-duration">2016 — 2017</p>
+                            <p class="text-gray-700 mb-4 exp-summary">Responsible for training students in a technical course on Database, Web Development I, and Programming Logic.</p>
+                            <div class="hidden exp-description">At State College Floriano Peixoto, I worked as a Technical Instructor, focusing on:</div>
+                            <ul class="hidden exp-responsibilities"><li>Training students in a technical course on Database subjects.</li><li>Teaching Web Development I and Programming Logic.</li><li>Preparing students with essential skills for the IT job market.</li></ul>
+                            <button class="bg-indigo-500 text-white py-2 px-4 rounded-lg font-semibold text-sm hover:bg-indigo-600 transition duration-300 ease-in-out transform hover:scale-105 view-more-btn">View More</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Card 4 -->
+                <div class="p-6 bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.01] transition-all duration-300 ease-in-out border border-gray-200 relative overflow-hidden group experience-card">
+                    <span class="experience-card-left-border"></span>
+                    <div class="relative z-10">
+                        <div class="version-br">
+                            <h3 class="text-xl sm:text-2xl font-semibold text-indigo-700 mb-1 exp-role">Laboratorista Digital</h3>
+                            <p class="text-gray-600 text-lg mb-1 exp-company">Grafis Encadernadora, Guarapuava</p>
+                            <p class="text-gray-500 text-base mb-3 exp-duration">2018-2019</p>
+                            <p class="text-gray-700 mb-4 exp-summary">Laboratorista Digital responsável por processos de impressão, incluindo fotos para fotolivros e revelações fotográficas.</p>
+                            <div class="hidden exp-description">Na Grafis Encadernadora, minhas responsabilidades como Laboratorista Digital incluíam:</div>
+                            <ul class="hidden exp-responsibilities"><li>Operação de equipamentos e processos de impressão digital.</li><li>Tratamento e impressão de fotos para fotolivros e revelações fotográficas.</li><li>Garantia da qualidade e fidelidade das cores nos produtos finais.</li></ul>
+                            <button class="bg-indigo-500 text-white py-2 px-4 rounded-lg font-semibold text-sm hover:bg-indigo-600 transition duration-300 ease-in-out transform hover:scale-105 view-more-btn">Ver Mais</button>
+                        </div>
+                        <div class="version-eua">
+                            <h3 class="text-xl sm:text-2xl font-semibold text-indigo-700 mb-1 exp-role">Digital Lab Technician</h3>
+                            <p class="text-gray-600 text-lg mb-1 exp-company">Grafis Encadernadora, Guarapuava</p>
+                            <p class="text-gray-500 text-base mb-3 exp-duration">2018-2019</p>
+                            <p class="text-gray-700 mb-4 exp-summary">Digital Lab Technician responsible for printing processes, including photos for photobooks and photo developing.</p>
+                            <div class="hidden exp-description">At Grafis Encadernadora, my responsibilities as a Digital Lab Technician included:</div>
+                            <ul class="hidden exp-responsibilities"><li>Operating digital printing equipment and processes.</li><li>Processing and printing photos for photobooks and photo developing.</li><li>Ensuring quality and color accuracy in the final products.</li></ul>
+                            <button class="bg-indigo-500 text-white py-2 px-4 rounded-lg font-semibold text-sm hover:bg-indigo-600 transition duration-300 ease-in-out transform hover:scale-105 view-more-btn">View More</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
 
         <!-- Seção de Formação Acadêmica -->
         <section class="mb-12 p-8 bg-white rounded-2xl shadow-xl fade-in">
-            <h2 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-5">Formação Acadêmica</h2>
+            <h2 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-5 version-br">Formação Acadêmica</h2>
+            <h2 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-5 version-eua">Academic Education</h2>
             <div class="section-separator"></div>
-            <ul class="list-disc list-inside space-y-4 text-xl text-gray-700 mt-8">
-                <li>
-                    <span class="font-semibold text-indigo-700">UTFPR - Universidade Tecnológica Federal do Paraná, Guarapuava</span>
-                    <p class="text-gray-600">Curso Tecnologias em Sistemas para Internet.</p>
-                </li>
-                <li>
-                    <span class="font-semibold text-indigo-700">Colégio Estadual Floriano Peixoto, Laranjeiras do Sul</span>
-                    <p class="text-gray-600">Curso Técnico em Informática.</p>
-                </li>
-            </ul>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+                <!-- Card UTFPR -->
+                <div class="p-6 bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.01] transition-all duration-300 ease-in-out border border-gray-200">
+                    <div class="version-br">
+                        <h3 class="text-xl font-semibold text-indigo-700 mb-2">UTFPR - Universidade Tecnológica Federal do Paraná</h3>
+                        <p class="text-gray-600">Guarapuava</p>
+                        <p class="text-gray-700 mt-2">Curso Tecnologias em Sistemas para Internet.</p>
+                    </div>
+                    <div class="version-eua">
+                        <h3 class="text-xl font-semibold text-indigo-700 mb-2">UTFPR - Federal University of Technology of Paraná</h3>
+                        <p class="text-gray-600">Guarapuava</p>
+                        <p class="text-gray-700 mt-2">Course in Technologies for Internet Systems.</p>
+                    </div>
+                </div>
+                <!-- Card Colégio -->
+                <div class="p-6 bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.01] transition-all duration-300 ease-in-out border border-gray-200">
+                    <div class="version-br">
+                        <h3 class="text-xl font-semibold text-indigo-700 mb-2">Colégio Estadual Floriano Peixoto</h3>
+                        <p class="text-gray-600">Laranjeiras do Sul</p>
+                        <p class="text-gray-700 mt-2">Curso Técnico em Informática.</p>
+                    </div>
+                    <div class="version-eua">
+                        <h3 class="text-xl font-semibold text-indigo-700 mb-2">State College Floriano Peixoto</h3>
+                        <p class="text-gray-600">Laranjeiras do Sul</p>
+                        <p class="text-gray-700 mt-2">Technical Course in Informatics.</p>
+                    </div>
+                </div>
+            </div>
         </section>
 
-        <!-- Seção de Competências (Listagem com Ver Mais e Modal) -->
+        <!-- Seção de Cursos -->
         <section class="mb-12 p-8 bg-white rounded-2xl shadow-xl fade-in">
-            <h2 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-5">Competências</h2>
+            <h2 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-5 version-br">Cursos e Certificados</h2>
+            <h2 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-5 version-eua">Courses and Certificates</h2>
+            <div class="section-separator"></div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+                
+                <!-- Card Curso: Planejamento e Gestão de Projetos -->
+                <div class="bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.01] transition-all duration-300 ease-in-out border border-gray-200 overflow-hidden">
+                    <a href="#" class="certificate-link" data-img-src="https://udemy-certificate.s3.amazonaws.com/image/UC-c114c8a4-1ea8-4d70-8220-16bc1aea7b02.jpg" data-pdf-src="https://www.udemy.com/certificate/UC-c114c8a4-1ea8-4d70-8220-16bc1aea7b02.pdf">
+                        <img src="https://udemy-certificate.s3.amazonaws.com/image/UC-c114c8a4-1ea8-4d70-8220-16bc1aea7b02.jpg" alt="Certificado Planejamento e Gestão de Projetos" class="w-full h-auto">
+                    </a>
+                    <div class="p-4">
+                        <div class="version-br">
+                            <h3 class="text-lg font-semibold text-indigo-700 mb-2">Planejamento e Gestão de Projetos</h3>
+                            <p class="text-sm text-gray-700">Concluído em 09/04/2025, por Gustavo Farias.</p>
+                        </div>
+                        <div class="version-eua">
+                            <h3 class="text-lg font-semibold text-indigo-700 mb-2">Project Planning and Management</h3>
+                            <p class="text-sm text-gray-700">Completed on 04/09/2025, by Gustavo Farias.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Card Curso: Product Owner para iniciantes -->
+                <div class="bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.01] transition-all duration-300 ease-in-out border border-gray-200 overflow-hidden">
+                    <a href="#" class="certificate-link" data-img-src="https://udemy-certificate.s3.amazonaws.com/image/UC-4bd96bcd-8e62-42b2-b080-0cbe85823dc2.jpg" data-pdf-src="https://www.udemy.com/certificate/UC-4bd96bcd-8e62-42b2-b080-0cbe85823dc2.pdf">
+                        <img src="https://udemy-certificate.s3.amazonaws.com/image/UC-4bd96bcd-8e62-42b2-b080-0cbe85823dc2.jpg" alt="Certificado Product Owner" class="w-full h-auto">
+                    </a>
+                    <div class="p-4">
+                        <div class="version-br">
+                            <h3 class="text-lg font-semibold text-indigo-700 mb-2">Product Owner para iniciantes</h3>
+                            <p class="text-sm text-gray-700">Concluído em 07/02/2025, por Thalita Maia.</p>
+                        </div>
+                        <div class="version-eua">
+                            <h3 class="text-lg font-semibold text-indigo-700 mb-2">Product Owner for Beginners</h3>
+                            <p class="text-sm text-gray-700">Completed on 02/07/2025, by Thalita Maia.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Card Curso: DevOps Linux Force -->
+                <div class="bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.01] transition-all duration-300 ease-in-out border border-gray-200 overflow-hidden">
+                    <a href="#" class="certificate-link" data-img-src="https://linuxforce.com.br/wp-content/uploads/2025/01/curso-devops-linux-force-security.jpg" data-pdf-src="https://e-certificado.com/login/visualizar?c=2435539A0C77326015803960">
+                        <img src="https://linuxforce.com.br/wp-content/uploads/2025/01/curso-devops-linux-force-security.jpg" alt="Certificado DevOps" class="w-full h-auto">
+                    </a>
+                    <div class="p-4">
+                        <div class="version-br">
+                            <h3 class="text-lg font-semibold text-indigo-700 mb-2">Curso de DevOps</h3>
+                            <p class="text-sm text-gray-700">Concluído em 28/01/2025, este curso de 50 horas abrange de Linux e Git a Kubernetes e Terraform.</p>
+                        </div>
+                        <div class="version-eua">
+                            <h3 class="text-lg font-semibold text-indigo-700 mb-2">DevOps Course</h3>
+                            <p class="text-sm text-gray-700">Completed on 01/28/2025, this 50-hour course covers from Linux and Git to Kubernetes and Terraform.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card Curso: Aprenda Go (Golang) sem Enrolação -->
+                <div class="bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.01] transition-all duration-300 ease-in-out border border-gray-200 overflow-hidden">
+                    <a href="#" class="certificate-link" data-img-src="https://udemy-certificate.s3.amazonaws.com/image/UC-87fe3c89-64c3-4024-8fa2-bde534b9fa19.jpg" data-pdf-src="https://www.udemy.com/certificate/UC-87fe3c89-64c3-4024-8fa2-bde534b9fa19.pdf">
+                        <img src="https://udemy-certificate.s3.amazonaws.com/image/UC-87fe3c89-64c3-4024-8fa2-bde534b9fa19.jpg" alt="Certificado Aprenda Go" class="w-full h-auto">
+                    </a>
+                    <div class="p-4">
+                        <div class="version-br">
+                            <h3 class="text-lg font-semibold text-indigo-700 mb-2">Aprenda Go (Golang) sem Enrolação</h3>
+                            <p class="text-sm text-gray-700">Concluído em 07/12/2023, por Escola de Devs Oficial.</p>
+                        </div>
+                        <div class="version-eua">
+                            <h3 class="text-lg font-semibold text-indigo-700 mb-2">Learn Go (Golang) Straight to the Point</h3>
+                            <p class="text-sm text-gray-700">Completed on 12/07/2023, by Escola de Devs Oficial.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card Curso: Programação Go para DevOps e SREs -->
+                <div class="bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.01] transition-all duration-300 ease-in-out border border-gray-200 overflow-hidden">
+                    <a href="#" class="certificate-link" data-img-src="https://udemy-certificate.s3.amazonaws.com/image/UC-527f804e-176d-414b-a8f2-64628a4792d1.jpg" data-pdf-src="https://www.udemy.com/certificate/UC-527f804e-176d-414b-a8f2-64628a4792d1.pdf">
+                        <img src="https://udemy-certificate.s3.amazonaws.com/image/UC-527f804e-176d-414b-a8f2-64628a4792d1.jpg" alt="Certificado Go para DevOps" class="w-full h-auto">
+                    </a>
+                    <div class="p-4">
+                        <div class="version-br">
+                            <h3 class="text-lg font-semibold text-indigo-700 mb-2">Programação Go para DevOps e SREs</h3>
+                            <p class="text-sm text-gray-700">Concluído em 28/11/2023, por Glaucio Guerra.</p>
+                        </div>
+                        <div class="version-eua">
+                            <h3 class="text-lg font-semibold text-indigo-700 mb-2">Go Programming for DevOps and SREs</h3>
+                            <p class="text-sm text-gray-700">Completed on 11/28/2023, by Glaucio Guerra.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card Curso: Go (Golang) - Do zero ao avançado -->
+                <div class="bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.01] transition-all duration-300 ease-in-out border border-gray-200 overflow-hidden">
+                    <a href="#" class="certificate-link" data-img-src="https://udemy-certificate.s3.amazonaws.com/image/UC-4b49ec2a-acc8-4b6a-befd-d51f3695e4cb.jpg" data-pdf-src="https://www.udemy.com/certificate/UC-4b49ec2a-acc8-4b6a-befd-d51f3695e4cb.pdf">
+                        <img src="https://udemy-certificate.s3.amazonaws.com/image/UC-4b49ec2a-acc8-4b6a-befd-d51f3695e4cb.jpg" alt="Certificado Go do Zero ao Avançado" class="w-full h-auto">
+                    </a>
+                    <div class="p-4">
+                        <div class="version-br">
+                            <h3 class="text-lg font-semibold text-indigo-700 mb-2">Go (Golang) - Do zero ao avançado</h3>
+                            <p class="text-sm text-gray-700">Concluído em 18/11/2023, por Stephany Henrique.</p>
+                        </div>
+                        <div class="version-eua">
+                            <h3 class="text-lg font-semibold text-indigo-700 mb-2">Go (Golang) - From Zero to Advanced</h3>
+                            <p class="text-sm text-gray-700">Completed on 11/18/2023, by Stephany Henrique.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card Curso: PostgreSQL Completo -->
+                <div class="bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.01] transition-all duration-300 ease-in-out border border-gray-200 overflow-hidden">
+                    <a href="#" class="certificate-link" data-img-src="https://udemy-certificate.s3.amazonaws.com/image/UC-91686520-f529-4ab6-833d-c8eaa6337405.jpg" data-pdf-src="https://www.udemy.com/certificate/UC-91686520-f529-4ab6-833d-c8eaa6337405.pdf">
+                        <img src="https://udemy-certificate.s3.amazonaws.com/image/UC-91686520-f529-4ab6-833d-c8eaa6337405.jpg" alt="Certificado PostgreSQL" class="w-full h-auto">
+                    </a>
+                    <div class="p-4">
+                        <div class="version-br">
+                            <h3 class="text-lg font-semibold text-indigo-700 mb-2">Curso completo de PostgreSQL!</h3>
+                            <p class="text-sm text-gray-700">Concluído em 18/07/2023, por Vitor Mazuco.</p>
+                        </div>
+                        <div class="version-eua">
+                            <h3 class="text-lg font-semibold text-indigo-700 mb-2">Complete PostgreSQL Course!</h3>
+                            <p class="text-sm text-gray-700">Completed on 07/18/2023, by Vitor Mazuco.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card Curso: DOCKER Completo -->
+                <div class="bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.01] transition-all duration-300 ease-in-out border border-gray-200 overflow-hidden">
+                    <a href="#" class="certificate-link" data-img-src="https://udemy-certificate.s3.amazonaws.com/image/UC-4f212bba-5c77-48e4-9476-5cf1c2756d12.jpg" data-pdf-src="https://www.udemy.com/certificate/UC-4f212bba-5c77-48e4-9476-5cf1c2756d12.pdf">
+                        <img src="https://udemy-certificate.s3.amazonaws.com/image/UC-4f212bba-5c77-48e4-9476-5cf1c2756d12.jpg" alt="Certificado Docker" class="w-full h-auto">
+                    </a>
+                    <div class="p-4">
+                        <div class="version-br">
+                            <h3 class="text-lg font-semibold text-indigo-700 mb-2">DOCKER Completo do Zero ao Avançado</h3>
+                            <p class="text-sm text-gray-700">Concluído em 13/03/2023, por Andre Iacono.</p>
+                        </div>
+                        <div class="version-eua">
+                            <h3 class="text-lg font-semibold text-indigo-700 mb-2">DOCKER Complete from Zero to Advanced</h3>
+                            <p class="text-sm text-gray-700">Completed on 03/13/2023, by Andre Iacono.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card Curso: Go (Golang): Explorando a Linguagem -->
+                <div class="bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.01] transition-all duration-300 ease-in-out border border-gray-200 overflow-hidden">
+                    <a href="#" class="certificate-link" data-img-src="https://udemy-certificate.s3.amazonaws.com/image/UC-29210c82-4f0c-4d72-84d6-0ba10ab281a1.jpg" data-pdf-src="https://www.udemy.com/certificate/UC-29210c82-4f0c-4d72-84d6-0ba10ab281a1.pdf">
+                        <img src="https://udemy-certificate.s3.amazonaws.com/image/UC-29210c82-4f0c-4d72-84d6-0ba10ab281a1.jpg" alt="Certificado Go Explorando" class="w-full h-auto">
+                    </a>
+                    <div class="p-4">
+                        <div class="version-br">
+                            <h3 class="text-lg font-semibold text-indigo-700 mb-2">Go (Golang): Explorando a Linguagem</h3>
+                            <p class="text-sm text-gray-700">Concluído em 23/02/2023, por Leonardo Moura Leitao.</p>
+                        </div>
+                        <div class="version-eua">
+                            <h3 class="text-lg font-semibold text-indigo-700 mb-2">Go (Golang): Exploring the Language</h3>
+                            <p class="text-sm text-gray-700">Completed on 02/23/2023, by Leonardo Moura Leitao.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card Curso: Aprenda Golang do Zero! -->
+                <div class="bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.01] transition-all duration-300 ease-in-out border border-gray-200 overflow-hidden">
+                    <a href="#" class="certificate-link" data-img-src="https://udemy-certificate.s3.amazonaws.com/image/UC-5988ea38-875d-4c86-867b-c42186af6cd6.jpg" data-pdf-src="https://www.udemy.com/certificate/UC-5988ea38-875d-4c86-867b-c42186af6cd6.pdf">
+                        <img src="https://udemy-certificate.s3.amazonaws.com/image/UC-5988ea38-875d-4c86-867b-c42186af6cd6.jpg" alt="Certificado Golang" class="w-full h-auto">
+                    </a>
+                    <div class="p-4">
+                        <div class="version-br">
+                            <h3 class="text-lg font-semibold text-indigo-700 mb-2">Aprenda Golang do Zero!</h3>
+                            <p class="text-sm text-gray-700">Concluído em 22/02/2023, por Otávio Augusto Gallego.</p>
+                        </div>
+                        <div class="version-eua">
+                            <h3 class="text-lg font-semibold text-indigo-700 mb-2">Learn Golang from Scratch!</h3>
+                            <p class="text-sm text-gray-700">Completed on 02/22/2023, by Otávio Augusto Gallego.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card Curso: Mobile app Prototype -->
+                <div class="bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.01] transition-all duration-300 ease-in-out border border-gray-200 overflow-hidden">
+                    <a href="#" class="certificate-link" data-img-src="https://udemy-certificate.s3.amazonaws.com/image/UC-f70f4d39-cffb-4146-a982-ed42e57bcda7.jpg" data-pdf-src="https://www.udemy.com/certificate/UC-f70f4d39-cffb-4146-a982-ed42e57bcda7.pdf">
+                        <img src="https://udemy-certificate.s3.amazonaws.com/image/UC-f70f4d39-cffb-4146-a982-ed42e57bcda7.jpg" alt="Certificado Mobile Prototype" class="w-full h-auto">
+                    </a>
+                    <div class="p-4">
+                        <div class="version-br">
+                            <h3 class="text-lg font-semibold text-indigo-700 mb-2">How to Build a Mobile app Prototype</h3>
+                            <p class="text-sm text-gray-700">Concluído em 20/02/2023, por Erick Bulatowicz.</p>
+                        </div>
+                        <div class="version-eua">
+                            <h3 class="text-lg font-semibold text-indigo-700 mb-2">How to Build a Mobile app Prototype</h3>
+                            <p class="text-sm text-gray-700">Completed on 02/20/2023, by Erick Bulatowicz.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card Curso: Introduction To Graphic Design -->
+                <div class="bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.01] transition-all duration-300 ease-in-out border border-gray-200 overflow-hidden">
+                    <a href="#" class="certificate-link" data-img-src="https://udemy-certificate.s3.amazonaws.com/image/UC-f4e273f3-037b-4b2d-90e1-0f4a29cd7456.jpg" data-pdf-src="https://www.udemy.com/certificate/UC-f4e273f3-037b-4b2d-90e1-0f4a29cd7456.pdf">
+                        <img src="https://udemy-certificate.s3.amazonaws.com/image/UC-f4e273f3-037b-4b2d-90e1-0f4a29cd7456.jpg" alt="Certificado Design Gráfico" class="w-full h-auto">
+                    </a>
+                    <div class="p-4">
+                        <div class="version-br">
+                            <h3 class="text-lg font-semibold text-indigo-700 mb-2">Introduction To Graphic Design</h3>
+                            <p class="text-sm text-gray-700">Concluído em 20/02/2023, por Anthony Isaac.</p>
+                        </div>
+                        <div class="version-eua">
+                            <h3 class="text-lg font-semibold text-indigo-700 mb-2">Introduction To Graphic Design</h3>
+                            <p class="text-sm text-gray-700">Completed on 02/20/2023, by Anthony Isaac.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card Curso: NodeJS with Mongodb -->
+                <div class="bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.01] transition-all duration-300 ease-in-out border border-gray-200 overflow-hidden">
+                    <a href="#" class="certificate-link" data-img-src="https://udemy-certificate.s3.amazonaws.com/image/UC-192d8cd6-031c-4901-9eff-b1611170959e.jpg" data-pdf-src="https://www.udemy.com/certificate/UC-192d8cd6-031c-4901-9eff-b1611170959e.pdf">
+                        <img src="https://udemy-certificate.s3.amazonaws.com/image/UC-192d8cd6-031c-4901-9eff-b1611170959e.jpg" alt="Certificado NodeJS" class="w-full h-auto">
+                    </a>
+                    <div class="p-4">
+                        <div class="version-br">
+                            <h3 class="text-lg font-semibold text-indigo-700 mb-2">Build NodeJS applications with Mongodb</h3>
+                            <p class="text-sm text-gray-700">Concluído em 19/02/2023, por Frantz Kati.</p>
+                        </div>
+                        <div class="version-eua">
+                            <h3 class="text-lg font-semibold text-indigo-700 mb-2">Build NodeJS applications with Mongodb</h3>
+                            <p class="text-sm text-gray-700">Completed on 02/19/2023, by Frantz Kati.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card Curso: LGPD -->
+                <div class="bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.01] transition-all duration-300 ease-in-out border border-gray-200 overflow-hidden">
+                    <a href="#" class="certificate-link" data-img-src="https://udemy-certificate.s3.amazonaws.com/image/UC-fc865835-49a1-44fc-9a1a-451a395e988e.jpg" data-pdf-src="https://www.udemy.com/certificate/UC-fc865835-49a1-44fc-9a1a-451a395e988e.pdf">
+                        <img src="https://udemy-certificate.s3.amazonaws.com/image/UC-fc865835-49a1-44fc-9a1a-451a395e988e.jpg" alt="Certificado LGPD" class="w-full h-auto">
+                    </a>
+                    <div class="p-4">
+                        <div class="version-br">
+                            <h3 class="text-lg font-semibold text-indigo-700 mb-2">LGPD - Lei Geral de Proteção de Dados</h3>
+                            <p class="text-sm text-gray-700">Concluído em 03/02/2023, por Andrade Bueno Treinamentos.</p>
+                        </div>
+                        <div class="version-eua">
+                            <h3 class="text-lg font-semibold text-indigo-700 mb-2">LGPD - General Data Protection Law</h3>
+                            <p class="text-sm text-gray-700">Completed on 02/03/2023, by Andrade Bueno Treinamentos.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Seção de Competências -->
+        <section class="mb-12 p-8 bg-white rounded-2xl shadow-xl fade-in">
+            <h2 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-5 version-br">Competências</h2>
+            <h2 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-5 version-eua">Skills</h2>
             <div class="section-separator"></div>
             <div id="skills-container" class="mt-8">
-                <!-- Os grupos e cards serão carregados aqui via JavaScript -->
+                <!-- Conteúdo das skills será inserido aqui, já que é muito repetitivo para o HTML -->
             </div>
         </section>
 
         <!-- Seção de Idiomas -->
         <section class="mb-12 p-8 bg-white rounded-2xl shadow-xl fade-in">
-            <h2 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-5">Idiomas</h2>
+            <h2 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-5 version-br">Idiomas</h2>
+            <h2 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-5 version-eua">Languages</h2>
             <div class="section-separator"></div>
             <ul class="list-disc list-inside space-y-4 text-xl text-gray-700 mt-8">
-                <li>Inglês</li>
+                <li class="version-br">Inglês</li>
+                <li class="version-eua">English</li>
             </ul>
         </section>
 
         <!-- Rodapé -->
         <footer class="text-center text-gray-500 text-sm mt-12 pt-8 border-t-2 border-gray-300">
-            &copy; 2025 Ricardo Martins de Oliveira. Todos os direitos reservados.
+           <span class="version-br">&copy; 2025 Ricardo Martins de Oliveira. Todos os direitos reservados.</span>
+           <span class="version-eua">&copy; 2025 Ricardo Martins de Oliveira. All rights reserved.</span>
         </footer>
     </div>
 
-    <!-- Modal de Detalhes (unificado para Competências e Experiências) -->
+    <!-- Modal de Detalhes da Experiência -->
     <div id="generalModal" class="modal-overlay">
         <div class="modal-content">
             <button class="modal-close-button" id="closeModal">&times;</button>
@@ -308,15 +670,29 @@
             <p id="modalDescription" class="text-lg text-gray-700 mb-4"></p>
             <ul id="modalResponsibilities" class="list-disc list-inside text-lg text-gray-700 ml-4 mb-6 space-y-2"></ul>
             <button id="readContentButton" class="bg-indigo-600 text-white py-3 px-6 rounded-lg font-semibold shadow-md hover:bg-indigo-700 transition duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center space-x-2">
-                <i class="fas fa-volume-up mr-2"></i> Ler Conteúdo
+                <i class="fas fa-volume-up mr-2"></i> 
+                <span class="version-br-inline">Ler Conteúdo</span>
+                <span class="version-eua-inline">Read Content</span>
             </button>
             <audio id="audioPlayer" src="" style="display: none;"></audio>
         </div>
     </div>
 
+    <!-- Modal de Certificado -->
+    <div id="certificateModal" class="modal-overlay">
+        <div class="modal-content p-4">
+            <button class="modal-close-button" id="closeCertificateModal">&times;</button>
+            <img id="certificateImage" src="" alt="Certificado" class="w-full h-auto rounded-lg mb-4">
+            <a id="certificatePdfLink" href="" target="_blank" class="bg-indigo-600 text-white py-3 px-6 rounded-lg font-semibold shadow-md hover:bg-indigo-700 transition duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center space-x-2 w-full">
+                <i class="fas fa-file-pdf mr-2"></i>
+                <span class="version-br-inline">Ver PDF</span>
+                <span class="version-eua-inline">View PDF</span>
+            </a>
+        </div>
+    </div>
+
 
     <script>
-        // Função utilitária para converter Base64 em ArrayBuffer
         function base64ToArrayBuffer(base64) {
             const binaryString = atob(base64);
             const len = binaryString.length;
@@ -327,58 +703,21 @@
             return bytes.buffer;
         }
 
-        // Função utilitária para converter PCM para WAV
         function pcmToWav(pcmData, sampleRate) {
-            const dataLength = pcmData.length * 2; // 2 bytes per sample (Int16)
+            const dataLength = pcmData.length * 2;
             const buffer = new ArrayBuffer(44 + dataLength);
             const view = new DataView(buffer);
-
-            // WAV header
             let offset = 0;
-            function writeString(str) {
-                for (let i = 0; i < str.length; i++) {
-                    view.setUint8(offset + i, str.charCodeAt(i));
-                }
-                offset += str.length;
-            }
-
-            function writeUint32(val) {
-                view.setUint32(offset, val, true);
-                offset += 4;
-            }
-
-            function writeUint16(val) {
-                view.setUint16(offset, val, true);
-                offset += 2;
-            }
-
-            writeString('RIFF');
-            writeUint32(36 + dataLength);
-            writeString('WAVE');
-            writeString('fmt ');
-            writeUint32(16);
-            writeUint16(1); // AudioFormat (1 = PCM)
-            writeUint16(1); // NumChannels (1 = mono)
-            writeUint32(sampleRate);
-            writeUint32(sampleRate * 2); // ByteRate (sampleRate * numChannels * bytesPerSample)
-            writeUint16(2); // BlockAlign (numChannels * bytesPerSample)
-            writeUint16(16); // BitsPerSample (16-bit)
-            writeString('data');
-            writeUint32(dataLength);
-
-            // Write PCM data
-            for (let i = 0; i < pcmData.length; i++) {
-                view.setInt16(offset, pcmData[i], true);
-                offset += 2;
-            }
-
+            function writeString(str) { for (let i = 0; i < str.length; i++) { view.setUint8(offset + i, str.charCodeAt(i)); } offset += str.length; }
+            function writeUint32(val) { view.setUint32(offset, val, true); offset += 4; }
+            function writeUint16(val) { view.setUint16(offset, val, true); offset += 2; }
+            writeString('RIFF'); writeUint32(36 + dataLength); writeString('WAVE'); writeString('fmt '); writeUint32(16); writeUint16(1); writeUint16(1); writeUint32(sampleRate); writeUint32(sampleRate * 2); writeUint16(2); writeUint16(16); writeString('data'); writeUint32(dataLength);
+            for (let i = 0; i < pcmData.length; i++) { view.setInt16(offset, pcmData[i], true); offset += 2; }
             return new Blob([view], { type: 'audio/wav' });
         }
-
+        
         document.addEventListener('DOMContentLoaded', function() {
-            // Animação de fade-in para as seções
             const sections = document.querySelectorAll('.fade-in');
-
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
@@ -386,17 +725,9 @@
                         observer.unobserve(entry.target);
                     }
                 });
-            }, {
-                root: null,
-                rootMargin: '0px',
-                threshold: 0.1
-            });
+            }, { root: null, rootMargin: '0px', threshold: 0.1 });
+            sections.forEach(section => { observer.observe(section); });
 
-            sections.forEach(section => {
-                observer.observe(section);
-            });
-
-            // Barra de progresso de rolagem
             const progressBar = document.getElementById('progressBar');
             window.addEventListener('scroll', () => {
                 const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
@@ -405,420 +736,136 @@
                 progressBar.style.width = `${progress}%`;
             });
 
-            // Dados das Experiências Profissionais
-            const experienceData = [
-                {
-                    type: 'experience',
-                    company: 'GT Group, São Paulo',
-                    role: 'Desenvolvedor Back-end Sênior em Go',
-                    duration: 'Desde 2023 até o momento',
-                    summary: 'Ampla experiência na criação e manutenção de sistemas web, especializado em arquitetura de APIs e modelagem de banco de dados.',
-                    description: 'Na GT Group, atuo como Desenvolvedor Back-end Sênior em Go, liderando o desenvolvimento e a manutenção de sistemas web robustos. Minhas responsabilidades incluem:',
-                    responsibilities: [
-                        'Liderança de equipe e organização de projetos.',
-                        'Arquitetura de APIs e microserviços.',
-                        'Modelagem e otimização de banco de dados (PostgreSQL).',
-                        'Levantamento de requisitos e análise de sistemas.',
-                        'Integração de sistemas com Inteligência Artificial.',
-                        'Garantia da entrega de soluções eficientes e escaláveis.'
-                    ]
-                },
-                {
-                    type: 'experience',
-                    company: 'K13 Agência Web, Guarapuava',
-                    role: 'Gestor de Suporte Técnico / Desenvolvedor Back-end PHP',
-                    duration: 'Desde 2020 até 2023',
-                    summary: 'Iniciei como Gestor de Suporte, migrando para desenvolvimento Back-end PHP com WordPress, Laravel e PHP puro.',
-                    description: 'Na K13 Agência Web, comecei minha carreira em TI como Gestor de Suporte Técnico, adquirindo sólidos conhecimentos em redes e gerenciamento de servidores web. Posteriormente, migrei para a área de desenvolvimento, atuando como Desenvolvedor Back-end PHP. Minhas responsabilidades e aprendizados incluíram:',
-                    responsibilities: [
-                        'Gestão e suporte técnico a clientes.',
-                        'Gerenciamento de servidores web.',
-                        'Desenvolvimento e manutenção de sistemas web em PHP.',
-                        'Experiência com WordPress e Laravel.',
-                        'Criação de soluções personalizadas em PHP puro.'
-                    ]
-                },
-                {
-                    type: 'experience',
-                    company: 'Grafis Encadernadora, Guarapuava',
-                    role: 'Laboratorista Digital',
-                    duration: 'Desde 2018 até 2019',
-                    summary: 'Responsável por diversos tipos de impressão digital, incluindo fotos para fotolivros e revelações fotográficas.',
-                    description: 'Na Grafis Encadernadora, atuei como Laboratorista Digital, sendo responsável por:',
-                    responsibilities: [
-                        'Operação de equipamentos de impressão digital.',
-                        'Processamento e impressão de fotos para fotolivros.',
-                        'Realização de revelações fotográficas.',
-                        'Garantia da qualidade final dos produtos impressos.'
-                    ]
-                },
-                {
-                    type: 'experience',
-                    company: 'Colégio Estadual Floriano Peixoto, Laranjeiras do Sul',
-                    role: 'Instrutor Técnico',
-                    duration: 'Desde 2016 a 2017',
-                    summary: 'Instrutor técnico especializado em Banco de Dados, Desenvolvimento Web I e Lógica de Programação.',
-                    description: 'No Colégio Estadual Floriano Peixoto, fui Instrutor Técnico nas seguintes disciplinas:',
-                    responsibilities: [
-                        'Banco de Dados.',
-                        'Desenvolvimento Web I.',
-                        'Lógica de Programação.',
-                        'Capacitação de alunos de curso técnico pós-médio.',
-                        'Preparação de alunos com habilidades essenciais para o mercado de trabalho.'
-                    ]
-                },
-                {
-                    type: 'experience',
-                    company: 'RioNet Informática, Rio Bonito do Iguaçu',
-                    role: 'Técnico de Suporte e Infraestrutura de TI',
-                    duration: 'Desde 2015 à 2016',
-                    summary: 'Responsável por instalação de sistemas, softwares e atuação na infraestrutura de redes para clientes.',
-                    description: 'Na RioNet Informática, minhas funções como Técnico de Suporte e Infraestrutura de TI incluíam:',
-                    responsibilities: [
-                        'Instalação de sistemas operacionais e softwares.',
-                        'Atuação na infraestrutura de redes.',
-                        'Instalação e configuração de roteadores, switches e antenas wireless para clientes.',
-                        'Suporte técnico e manutenção de equipamentos.'
-                    ]
-                },
-                {
-                    type: 'experience',
-                    company: 'Sorvetes Milk Money, Rio Bonito do Iguaçu',
-                    role: 'Profissional Multifuncional',
-                    duration: 'Desde 2010 à 2015',
-                    summary: 'Experiência em vendas, fabricação e gestão de fábrica, garantindo eficiência operacional e cumprimento de metas.',
-                    description: 'Na Sorvetes Milk Money, atuei em diversas frentes, o que me proporcionou uma visão completa do negócio. Minhas responsabilidades abrangiam:',
-                    responsibilities: [
-                        'Vendas e atendimento ao cliente.',
-                        'Fabricação dos produtos, com controle de qualidade.',
-                        'Gestão da fábrica e supervisão do processo de produção.',
-                        'Planejamento de vendas e gestão de equipe.',
-                        'Garantia da eficiência operacional e cumprimento de metas.'
-                    ]
-                },
-            ];
+            let currentLang = 'br';
 
+            const langPtButton = document.getElementById('lang-pt-btn');
+            const langEnButton = document.getElementById('lang-en-btn');
 
-            // Carregamento dinâmico das competências em cards agrupados
-            const groupedSkillsData = [
-                {
-                    groupName: 'Linguagens & Frameworks',
-                    skills: [
-                        { type: 'skill', name: 'HTML', iconClass: 'fab fa-html5', colorClass: 'text-orange-500',
-                            description: 'HTML (HyperText Markup Language) é a linguagem de marcação padrão para criar páginas web e seus aplicativos.',
-                            whatIDo: 'Utilizo HTML para estruturar o conteúdo de websites, garantindo acessibilidade e semântica corretas.' },
-                        { type: 'skill', name: 'JavaScript', iconClass: 'fab fa-js', colorClass: 'text-yellow-500',
-                            description: 'JavaScript é uma linguagem de programação interpretada que permite criar conteúdo interativo em páginas web.',
-                            whatIDo: 'Desenvolvo funcionalidades dinâmicas e interativas para websites, aprimorando a experiência do usuário.' },
-                        { type: 'skill', name: 'CSS', iconClass: 'fab fa-css3-alt', colorClass: 'text-blue-500',
-                            description: 'CSS (Cascading Style Sheets) é uma linguagem de estilo usada para descrever a apresentação de um documento escrito em HTML.',
-                            whatIDo: 'Crio e aplico estilos visuais atraentes e responsivos para websites, utilizando as melhores práticas de design.' },
-                        { type: 'skill', name: 'PHP', iconClass: 'fab fa-php', colorClass: 'text-purple-600',
-                            description: 'PHP é uma linguagem de script de uso geral, especialmente adequada para desenvolvimento web.',
-                            whatIDo: 'Desenvolvo e mantenho aplicações web robustas e escaláveis usando PHP, com experiência em frameworks como Laravel.' },
-                        { type: 'skill', name: 'Java', iconClass: 'fab fa-java', colorClass: 'text-red-600',
-                            description: 'Java é uma linguagem de programação orientada a objetos, multiplataforma, amplamente utilizada para aplicações empresariais e Android.',
-                            whatIDo: 'Desenvolvo soluções backend e aplicativos Android utilizando a linguagem Java, focando em performance e segurança.' },
-                        { type: 'skill', name: 'GoLang', iconClass: 'fas fa-code', colorClass: 'text-blue-700',
-                            description: 'Go (ou Golang) é uma linguagem de programação de código aberto desenvolvida pelo Google, focada em simplicidade, desempenho e concorrência.',
-                            whatIDo: 'Especializado em desenvolvimento backend com Go, construindo microsserviços eficientes e sistemas de alta performance.' },
-                        { type: 'skill', name: 'Angular', iconClass: 'fab fa-angular', colorClass: 'text-red-600',
-                            description: 'Angular é um framework de código aberto para a construção de aplicações web e móveis, mantido pelo Google.',
-                            whatIDo: 'Crio interfaces de usuário dinâmicas e ricas em recursos para aplicações web utilizando o framework Angular.' },
-                        { type: 'skill', name: 'JavaWeb', iconClass: 'fab fa-java', colorClass: 'text-orange-600',
-                            description: 'JavaWeb refere-se às tecnologias baseadas em Java para o desenvolvimento de aplicações web, como servlets e JSPs.',
-                            whatIDo: 'Desenvolvo e implemento aplicações web empresariais utilizando tecnologias JavaWeb, garantindo robustez e escalabilidade.' },
-                        { type: 'skill', name: 'Android', iconClass: 'fab fa-android', colorClass: 'text-green-700',
-                            description: 'Android é um sistema operacional móvel desenvolvido pelo Google, amplamente utilizado em smartphones e tablets.',
-                            whatIDo: 'Crio aplicativos para a plataforma Android, desde o design da interface até a implementação de funcionalidades complexas.' },
-                    ]
-                },
-                {
-                    groupName: 'Bancos de Dados',
-                    skills: [
-                        { type: 'skill', name: 'MySQL', iconClass: 'fas fa-database', colorClass: 'text-indigo-600',
-                            description: 'MySQL é um sistema de gerenciamento de banco de dados relacional (SGBDR) popular e de código aberto.',
-                            whatIDo: 'Projeto, implemento e gerencio bancos de dados MySQL, otimizando consultas e garantindo a integridade dos dados.' },
-                        { type: 'skill', name: 'PostgreSQL', iconClass: 'fas fa-database', colorClass: 'text-indigo-700',
-                            description: 'PostgreSQL é um poderoso sistema de banco de dados objeto-relacional de código aberto, conhecido por sua robustez e flexibilidade.',
-                            whatIDo: 'Trabalho com modelagem, otimização e manutenção de bancos de dados PostgreSQL em ambientes de alta demanda.' },
-                    ]
-                },
-                {
-                    groupName: 'Controle de Versão & APIs',
-                    skills: [
-                        { type: 'skill', name: 'Git', iconClass: 'fab fa-git-alt', colorClass: 'text-red-700',
-                            description: 'Git é um sistema de controle de versão distribuído que rastreia mudanças no código-fonte durante o desenvolvimento de software.',
-                            whatIDo: 'Utilizo Git para controle de versão em todos os projetos, garantindo colaboração eficiente e gerenciamento de código.' },
-                        { type: 'skill', name: 'RESTful', iconClass: 'fas fa-exchange-alt', colorClass: 'text-green-600',
-                            description: 'RESTful (Representational State Transfer) é um estilo arquitetural para sistemas distribuídos, como web services, baseados no protocolo HTTP.',
-                            whatIDo: 'Desenvolvo APIs RESTful robustas e bem documentadas, facilitando a comunicação entre diferentes sistemas e plataformas.' },
-                    ]
-                },
-                {
-                    groupName: 'Gerência de Servidores & Cloud',
-                    skills: [
-                        { type: 'skill', name: 'WHM/Cpanel', iconClass: 'fas fa-cogs', colorClass: 'text-blue-800',
-                            description: 'WHM (Web Host Manager) e cPanel são painéis de controle de hospedagem web que simplificam a gerência de servidores e sites.',
-                            whatIDo: 'Gerencio servidores e contas de hospedagem, configurando ambientes e otimizando o desempenho de websites.' },
-                        { type: 'skill', name: 'AWS', iconClass: 'fab fa-aws', colorClass: 'text-orange-400',
-                            description: 'Amazon Web Services (AWS) é uma plataforma de serviços em nuvem abrangente e amplamente adotada.',
-                            whatIDo: 'Implemento e gerencio soluções escaláveis na nuvem AWS, incluindo EC2, S3, RDS e Lambda.' },
-                        { type: 'skill', name: 'Kubernetes', iconClass: 'fas fa-cubes', colorClass: 'text-blue-400',
-                            description: 'Kubernetes é um sistema de orquestração de contêineres de código aberto para automatizar a implantação, escalonamento e gerenciamento de aplicações.',
-                            whatIDo: 'Trabalho com a orquestração de contêineres utilizando Kubernetes, garantindo a alta disponibilidade e escalabilidade de aplicações.' },
-                    ]
-                },
-                {
-                    groupName: 'Sistemas Operacionais',
-                    skills: [
-                        { type: 'skill', name: 'Linux', iconClass: 'fab fa-linux', colorClass: 'text-yellow-700',
-                            description: 'Linux é uma família de sistemas operacionais de código aberto baseados no kernel Linux.',
-                            whatIDo: 'Possuo conhecimento avançado em ambientes Linux para desenvolvimento, administração de servidores e automação.' },
-                        { type: 'skill', name: 'MacOS', iconClass: 'fab fa-apple', colorClass: 'text-gray-700',
-                            description: 'macOS é o sistema operacional desenvolvido pela Apple para seus computadores Macintosh.',
-                            whatIDo: 'Utilizo MacOS como principal ambiente de desenvolvimento, aproveitando sua integração e ferramentas para software.' },
-                        { type: 'skill', name: 'Windows', iconClass: 'fab fa-windows', colorClass: 'text-blue-700',
-                            description: 'Microsoft Windows é uma família de sistemas operacionais gráficos desenvolvidos pela Microsoft.',
-                            whatIDo: 'Tenho proficiência em ambientes Windows para desenvolvimento e suporte técnico, garantindo compatibilidade e funcionalidade.' },
-                    ]
-                },
-                {
-                    groupName: 'Infraestrutura de Redes',
-                    skills: [
-                        { type: 'skill', name: 'Redes', iconClass: 'fas fa-network-wired', colorClass: 'text-gray-600',
-                            description: 'Infraestrutura de redes abrange o hardware e software para comunicação entre sistemas.',
-                            whatIDo: 'Projeto e implemento soluções de rede, incluindo roteamento, segmentação e configuração de dispositivos.' },
-                        { type: 'skill', name: 'DNS Servers', iconClass: 'fas fa-server', colorClass: 'text-blue-600',
-                            description: 'Servidores DNS (Domain Name System) traduzem nomes de domínio em endereços IP.',
-                            whatIDo: 'Configuro e gerencio servidores DNS para garantir a resolução de nomes eficiente e confiável.' },
-                        { type: 'skill', name: 'Apache2', iconClass: 'fas fa-server', colorClass: 'text-red-400',
-                            description: 'Apache HTTP Server (Apache2) é um servidor web de código aberto, um dos mais usados globalmente.',
-                            whatIDo: 'Configuro e otimizo servidores Apache2 para hospedagem de aplicações web, garantindo performance e segurança.' },
-                        { type: 'skill', name: 'Firewall', iconClass: 'fas fa-shield-alt', colorClass: 'text-green-500',
-                            description: 'Um firewall é um sistema de segurança de rede que monitora e controla o tráfego de rede.',
-                            whatIDo: 'Implemento e gerencio firewalls para proteger sistemas e redes contra acessos não autorizados e ameaças cibernéticas.' },
-                        { type: 'skill', name: 'Exim', iconClass: 'fas fa-envelope-open-text', colorClass: 'text-blue-500',
-                            description: 'Exim é um agente de transporte de e-mail (MTA) de código aberto para sistemas Unix-like.',
-                            whatIDo: 'Configuro e mantenho servidores Exim para gerenciar o fluxo de e-mails em ambientes de hospedagem.' },
-                        { type: 'skill', name: 'Wireless/Networking', iconClass: 'fas fa-wifi', colorClass: 'text-indigo-500',
-                            description: 'Conhecimento em tecnologias sem fio e de rede para conectividade e comunicação.',
-                            whatIDo: 'Instalo e configuro roteadores, switches e antenas wireless, otimizando a conectividade e a segurança da rede.' },
-                    ]
-                },
-                {
-                    groupName: 'Ferramentas Google',
-                    skills: [
-                        { type: 'skill', name: 'Google Docs', iconClass: 'fas fa-file-alt', colorClass: 'text-blue-500',
-                            description: 'Google Docs é um processador de texto baseado em nuvem, parte do Google Workspace.',
-                            whatIDo: 'Utilizo Google Docs para criação e colaboração em documentos, facilitando a produtividade e o trabalho em equipe.' },
-                        { type: 'skill', name: 'Google Analytics', iconClass: 'fab fa-google', colorClass: 'text-red-500',
-                            description: 'Google Analytics é um serviço de análise da web que rastreia e relata o tráfego do website.',
-                            whatIDo: 'Analiso dados de tráfego e comportamento do usuário em websites para otimizar a performance e as estratégias digitais.' },
-                        { type: 'skill', name: 'Google Admin', iconClass: 'fab fa-google', colorClass: 'text-blue-600',
-                            description: 'Google Admin Console é a ferramenta para gerenciar serviços do Google Workspace para uma organização.',
-                            whatIDo: 'Administro contas e serviços do Google Workspace, garantindo a segurança e o funcionamento das ferramentas corporativas.' },
-                        { type: 'skill', name: 'Google Console', iconClass: 'fab fa-google', colorClass: 'text-green-600',
-                            description: 'Google Cloud Console é a interface web para gerenciar recursos e serviços do Google Cloud Platform.',
-                            whatIDo: 'Gerencio projetos e recursos na Google Cloud Platform, implementando e monitorando soluções em nuvem.' },
-                        { type: 'skill', name: 'Google Cloud', iconClass: 'fab fa-google', colorClass: 'text-purple-600',
-                            description: 'Google Cloud Platform (GCP) é um conjunto de serviços de computação em nuvem oferecido pelo Google.',
-                            whatIDo: 'Desenvolvo e implemento soluções escaláveis e resilientes utilizando os diversos serviços da Google Cloud Platform.' },
-                        { type: 'skill', name: 'Search Console', iconClass: 'fab fa-google', colorClass: 'text-orange-600',
-                            description: 'Google Search Console é um serviço que ajuda a monitorar e manter a presença do seu site nos resultados da Pesquisa Google.',
-                            whatIDo: 'Otimizo a visibilidade de websites na pesquisa Google, monitorando o desempenho e identificando oportunidades de melhoria de SEO.' },
-                    ]
-                },
-                {
-                    groupName: 'Outras Ferramentas & IA',
-                    skills: [
-                        { type: 'skill', name: 'JetBrains (IDEs)', iconClass: 'fas fa-terminal', colorClass: 'text-blue-900',
-                            description: 'JetBrains oferece uma suíte de IDEs (Integrated Development Environments) para diversas linguagens de programação, como GoLand e IntelliJ IDEA.',
-                            whatIDo: 'Utilizo as IDEs da JetBrains para desenvolvimento, aproveitando seus recursos avançados para aumentar a produtividade e a qualidade do código.' },
-                        { type: 'skill', name: 'Ferramentas de IA (Gemini, GPT, LL Studio)', iconClass: 'fas fa-brain', colorClass: 'text-purple-800',
-                            description: 'Ferramentas de Inteligência Artificial como Gemini, GPT e LL Studio são utilizadas para geração de texto, análise e automação.',
-                            whatIDo: 'Integro e utilizo ferramentas de IA para otimizar processos de desenvolvimento, gerar conteúdo e explorar soluções inovadoras.' },
-                    ]
-                },
-                {
-                    groupName: 'Outras Qualificações',
-                    skills: [
-                        { type: 'skill', name: 'Habilitação A/B', iconClass: 'fas fa-car', colorClass: 'text-gray-800',
-                            description: 'Possuo habilitação para dirigir veículos das categorias A (motocicleta) e B (automóvel).',
-                            whatIDo: 'Flexibilidade e autonomia para deslocamentos, seja para o trabalho ou outras necessidades.' },
-                    ]
-                },
-            ];
+            function switchLanguage(lang) {
+                currentLang = lang;
+                document.documentElement.lang = lang === 'br' ? 'pt-BR' : 'en';
+                document.body.classList.remove('version-br-active', 'version-eua-active');
+                document.body.classList.add(`version-${lang}-active`);
+                langPtButton.classList.toggle('active', lang === 'br');
+                langEnButton.classList.toggle('active', lang === 'eua');
+            }
 
-            const experienceContainer = document.getElementById('experience-container');
-            const skillsContainer = document.getElementById('skills-container');
+            langPtButton.addEventListener('click', () => switchLanguage('br'));
+            langEnButton.addEventListener('click', () => switchLanguage('eua'));
+
+            // Modal de Experiência
             const generalModal = document.getElementById('generalModal');
             const closeModalButton = document.getElementById('closeModal');
             const modalTitle = document.getElementById('modalTitle');
             const modalSubTitle = document.getElementById('modalSubTitle');
             const modalDescription = document.getElementById('modalDescription');
             const modalResponsibilities = document.getElementById('modalResponsibilities');
-            const readContentButton = document.getElementById('readContentButton');
             const audioPlayer = document.getElementById('audioPlayer');
 
-            // Função para abrir o modal de forma genérica
-            function openModal(item) {
-                modalTitle.textContent = item.name || item.role; // Título pode ser nome da skill ou cargo da experiência
-                modalDescription.textContent = item.description || item.summary; // Descrição pode ser de skill ou resumo da experiência
-                modalSubTitle.textContent = item.company ? `${item.company} (${item.duration})` : ''; // Subtítulo para experiências
-
-                // Limpa responsabilidades anteriores
-                modalResponsibilities.innerHTML = '';
-                if (item.responsibilities && item.responsibilities.length > 0) {
-                    item.responsibilities.forEach(resp => {
-                        const li = document.createElement('li');
-                        li.textContent = resp;
-                        modalResponsibilities.appendChild(li);
-                    });
-                    modalResponsibilities.style.display = 'block'; // Mostra a lista
-                } else {
-                    modalResponsibilities.style.display = 'none'; // Esconde se não houver responsabilidades
-                }
-
+            function openExperienceModal(cardElement) {
+                const langVersion = currentLang === 'br' ? 'br' : 'eua';
+                const content = cardElement.querySelector(`.version-${langVersion}`);
+                if (!content) return;
+                modalTitle.textContent = content.querySelector('.exp-role')?.textContent || '';
+                modalSubTitle.textContent = `${content.querySelector('.exp-company')?.textContent} (${content.querySelector('.exp-duration')?.textContent})`;
+                modalDescription.innerHTML = content.querySelector('.exp-description')?.innerHTML || '';
+                const responsibilitiesList = content.querySelector('.exp-responsibilities');
+                modalResponsibilities.innerHTML = responsibilitiesList?.innerHTML || '';
+                modalResponsibilities.style.display = responsibilitiesList?.innerHTML ? 'block' : 'none';
                 generalModal.classList.add('open');
                 document.body.style.overflow = 'hidden';
             }
 
-            // Função para fechar o modal
-            function closeModal() {
+            function closeExperienceModal() {
                 generalModal.classList.remove('open');
                 document.body.style.overflow = '';
                 audioPlayer.pause();
                 audioPlayer.currentTime = 0;
             }
 
-            // Event listeners para fechar o modal
-            closeModalButton.addEventListener('click', closeModal);
+            closeModalButton.addEventListener('click', closeExperienceModal);
             generalModal.addEventListener('click', (e) => {
-                if (e.target === generalModal) {
-                    closeModal();
-                }
+                if (e.target === generalModal) closeExperienceModal();
             });
 
-            // Carregamento das experiências no HTML
-            if (experienceContainer) {
-                experienceData.forEach(exp => {
-                    const experienceCard = document.createElement('div');
-                    experienceCard.className = `p-6 bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.01] transition-all duration-300 ease-in-out border border-gray-200 relative overflow-hidden group`;
-                    experienceCard.innerHTML = `
-                        <span class="experience-card-left-border"></span>
-                        <div class="relative z-10">
-                            <h3 class="text-xl sm:text-2xl font-semibold text-indigo-700 mb-1">${exp.role}</h3>
-                            <p class="text-gray-600 text-lg mb-1">${exp.company}</p>
-                            <p class="text-gray-500 text-base mb-3">${exp.duration}</p>
-                            <p class="text-gray-700 mb-4">${exp.summary}</p>
-                            <button class="bg-indigo-500 text-white py-2 px-4 rounded-lg font-semibold text-sm hover:bg-indigo-600 transition duration-300 ease-in-out transform hover:scale-105">
-                                Ver Mais
-                            </button>
-                        </div>
-                    `;
-                    experienceCard.querySelector('button').addEventListener('click', () => openModal(exp));
-                    experienceContainer.appendChild(experienceCard);
+            document.querySelectorAll('.experience-card .view-more-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    openExperienceModal(e.currentTarget.closest('.experience-card'));
                 });
+            });
+
+            // Modal de Certificado
+            const certificateModal = document.getElementById('certificateModal');
+            const closeCertificateModalButton = document.getElementById('closeCertificateModal');
+            const certificateImage = document.getElementById('certificateImage');
+            const certificatePdfLink = document.getElementById('certificatePdfLink');
+
+            function openCertificateModal(imgSrc, pdfSrc) {
+                certificateImage.src = imgSrc;
+                certificatePdfLink.href = pdfSrc;
+                certificateModal.classList.add('open');
+                document.body.style.overflow = 'hidden';
             }
 
-            // Carregamento das competências no HTML
-            if (skillsContainer) {
-                groupedSkillsData.forEach(group => {
-                    const groupHeader = document.createElement('h3');
-                    groupHeader.className = 'text-2xl font-semibold text-gray-700 mt-8 mb-4 border-b border-gray-200 pb-2';
-                    groupHeader.textContent = group.groupName;
-                    skillsContainer.appendChild(groupHeader);
+            function closeCertificateModal() {
+                certificateModal.classList.remove('open');
+                document.body.style.overflow = '';
+            }
+            
+            closeCertificateModalButton.addEventListener('click', closeCertificateModal);
+            certificateModal.addEventListener('click', (e) => {
+                if (e.target === certificateModal) closeCertificateModal();
+            });
 
-                    const groupGrid = document.createElement('div');
-                    groupGrid.className = 'grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4';
-                    skillsContainer.appendChild(groupGrid);
+            document.querySelectorAll('.certificate-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const imgSrc = e.currentTarget.dataset.imgSrc;
+                    const pdfSrc = e.currentTarget.dataset.pdfSrc;
+                    openCertificateModal(imgSrc, pdfSrc);
+                });
+            });
 
+
+            // Gerar Skills dinamicamente para não poluir tanto o HTML
+            const skillsData = {
+                br: [
+                    { groupName: 'Linguagens & Frameworks', skills: [ { name: 'Go (Golang)', icon: 'fas fa-code', color: 'text-blue-700' }, { name: 'Angular', icon: 'fab fa-angular', color: 'text-red-600' }, { name: 'HTML', icon: 'fab fa-html5', color: 'text-orange-500' }, { name: 'CSS', icon: 'fab fa-css3-alt', color: 'text-blue-500' }, { name: 'JavaScript', icon: 'fab fa-js', color: 'text-yellow-500' }, { name: 'PHP', icon: 'fab fa-php', color: 'text-purple-600' }, { name: 'Java', icon: 'fab fa-java', color: 'text-red-600' }, { name: 'RESTful', icon: 'fas fa-exchange-alt', color: 'text-green-600' }, { name: 'Composer', icon: 'fas fa-box-open', color: 'text-gray-700' } ] },
+                    { groupName: 'Bancos de Dados', skills: [ { name: 'PostgreSQL', icon: 'fas fa-database', color: 'text-indigo-700' }, { name: 'MySQL', icon: 'fas fa-database', color: 'text-indigo-600' } ] },
+                    { groupName: 'DevOps & Cloud', skills: [ { name: 'Docker', icon: 'fab fa-docker', color: 'text-blue-500' }, { name: 'Kubernetes', icon: 'fas fa-cubes', color: 'text-blue-400' }, { name: 'AWS', icon: 'fab fa-aws', color: 'text-orange-400' }, { name: 'Pipelines', icon: 'fas fa-stream', color: 'text-green-500' }, { name: 'Jenkins', icon: 'fab fa-jenkins', color: 'text-red-500' }, { name: 'Git', icon: 'fab fa-git-alt', color: 'text-red-700' }, { name: 'GitHub', icon: 'fab fa-github', color: 'text-gray-800' }, { name: 'GitLab', icon: 'fab fa-gitlab', color: 'text-orange-600' }, { name: 'Bitbucket', icon: 'fab fa-bitbucket', color: 'text-blue-700' }, { name: 'SSH', icon: 'fas fa-terminal', color: 'text-green-700' } ] },
+                ],
+                eua: [
+                    { groupName: 'Languages & Frameworks', skills: [ { name: 'Go (Golang)', icon: 'fas fa-code', color: 'text-blue-700' }, { name: 'Angular', icon: 'fab fa-angular', color: 'text-red-600' }, { name: 'HTML', icon: 'fab fa-html5', color: 'text-orange-500' }, { name: 'CSS', icon: 'fab fa-css3-alt', color: 'text-blue-500' }, { name: 'JavaScript', icon: 'fab fa-js', color: 'text-yellow-500' }, { name: 'PHP', icon: 'fab fa-php', color: 'text-purple-600' }, { name: 'Java', icon: 'fab fa-java', color: 'text-red-600' }, { name: 'RESTful', icon: 'fas fa-exchange-alt', color: 'text-green-600' }, { name: 'Composer', icon: 'fas fa-box-open', color: 'text-gray-700' } ] },
+                    { groupName: 'Databases', skills: [ { name: 'PostgreSQL', icon: 'fas fa-database', color: 'text-indigo-700' }, { name: 'MySQL', icon: 'fas fa-database', color: 'text-indigo-600' } ] },
+                    { groupName: 'DevOps & Cloud', skills: [ { name: 'Docker', icon: 'fab fa-docker', color: 'text-blue-500' }, { name: 'Kubernetes', icon: 'fas fa-cubes', color: 'text-blue-400' }, { name: 'AWS', icon: 'fab fa-aws', color: 'text-orange-400' }, { name: 'Pipelines', icon: 'fas fa-stream', color: 'text-green-500' }, { name: 'Jenkins', icon: 'fab fa-jenkins', color: 'text-red-500' }, { name: 'Git', icon: 'fab fa-git-alt', color: 'text-red-700' }, { name: 'GitHub', icon: 'fab fa-github', color: 'text-gray-800' }, { name: 'GitLab', icon: 'fab fa-gitlab', color: 'text-orange-600' }, { name: 'Bitbucket', icon: 'fab fa-bitbucket', color: 'text-blue-700' }, { name: 'SSH', icon: 'fas fa-terminal', color: 'text-green-700' } ] },
+                ]
+            };
+            const skillsContainer = document.getElementById('skills-container');
+            function loadSkills() {
+                skillsContainer.innerHTML = '';
+                const lang = currentLang;
+                skillsData[lang].forEach(group => {
+                    let groupHtml = `<div class="version-${lang}">
+                        <h3 class="text-2xl font-semibold text-gray-700 mt-8 mb-4 border-b border-gray-200 pb-2">${group.groupName}</h3>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">`;
                     group.skills.forEach(skill => {
-                        const skillCard = document.createElement('div');
-                        skillCard.className = `flex flex-col items-center justify-center p-3 bg-gray-50 rounded-lg shadow-sm hover:shadow-lg hover:border-indigo-400 transform hover:scale-105 transition-all duration-300 ease-in-out border border-gray-200 skill-card-glow cursor-pointer`;
-                        skillCard.innerHTML = `
-                            <i class="${skill.iconClass} fa-2x ${skill.colorClass} mb-2"></i>
-                            <span class="text-base font-medium ${skill.colorClass} text-center">${skill.name}</span>
-                        `;
-                        skillCard.addEventListener('click', () => openModal(skill)); // Abre o modal ao clicar
-                        groupGrid.appendChild(skillCard);
+                        groupHtml += `<div class="flex flex-col items-center justify-center p-3 bg-gray-50 rounded-lg shadow-sm hover:shadow-lg hover:border-indigo-400 transform hover:scale-105 transition-all duration-300 ease-in-out border border-gray-200 skill-card-glow cursor-pointer">
+                            <i class="${skill.icon} fa-2x ${skill.color} mb-2"></i>
+                            <span class="text-base font-medium ${skill.color} text-center">${skill.name}</span>
+                        </div>`;
                     });
+                    groupHtml += `</div></div>`;
+                    skillsContainer.innerHTML += groupHtml;
                 });
             }
+            // Recarregar skills na troca de idioma
+            langPtButton.addEventListener('click', loadSkills);
+            langEnButton.addEventListener('click', loadSkills);
 
-            // Função para ler o conteúdo do modal (TTS)
-            readContentButton.addEventListener('click', async () => {
-                let textToRead = `${modalTitle.textContent}. `;
-                if (modalSubTitle.textContent) {
-                    textToRead += `${modalSubTitle.textContent}. `;
-                }
-                textToRead += `${modalDescription.textContent}. `;
-                if (modalResponsibilities.style.display !== 'none') {
-                    textToRead += 'Principais Responsabilidades: ' + Array.from(modalResponsibilities.children).map(li => li.textContent).join(', ') + '.';
-                }
 
-                readContentButton.disabled = true;
-                readContentButton.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Lendo...`;
-
-                try {
-                    const payload = {
-                        contents: [{
-                            parts: [{ text: textToRead }]
-                        }],
-                        generationConfig: {
-                            responseModalities: ["AUDIO"],
-                            speechConfig: {
-                                voiceConfig: {
-                                    prebuiltVoiceConfig: { voiceName: "Puck" } // Voz Puck (Upbeat)
-                                }
-                            }
-                        },
-                        model: "gemini-2.5-flash-preview-tts"
-                    };
-                    const apiKey = "";
-                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
-
-                    const response = await fetch(apiUrl, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-                    const result = await response.json();
-                    const part = result?.candidates?.[0]?.content?.parts?.[0];
-                    const audioData = part?.inlineData?.data;
-                    const mimeType = part?.inlineData?.mimeType;
-
-                    if (audioData && mimeType && mimeType.startsWith("audio/L16")) {
-                        const sampleRateMatch = mimeType.match(/rate=(\d+)/);
-                        const sampleRate = sampleRateMatch ? parseInt(sampleRateMatch[1], 10) : 16000; // Default a 16kHz
-
-                        const pcmData = base64ToArrayBuffer(audioData);
-                        const pcm16 = new Int16Array(pcmData);
-                        const wavBlob = pcmToWav(pcm16, sampleRate);
-                        const audioUrl = URL.createObjectURL(wavBlob);
-
-                        audioPlayer.src = audioUrl;
-                        audioPlayer.play();
-
-                        audioPlayer.onended = () => {
-                            URL.revokeObjectURL(audioUrl); // Libera o URL do objeto após a reprodução
-                        };
-                    } else {
-                        console.error("Erro: Estrutura de resposta de áudio inesperada ou mimeType não suportado.", result);
-                        // alert("Não foi possível gerar o áudio. Tente novamente."); // Removido alert
-                        // Melhor usar uma mensagem no console ou em um elemento da UI para não bloquear o iframe
-                        console.log("Mensagem ao usuário: Não foi possível gerar o áudio. Tente novamente.");
-                    }
-                } catch (error) {
-                    console.error("Erro ao chamar a API TTS:", error);
-                    // alert("Ocorreu um erro ao tentar ler o conteúdo. Verifique o console."); // Removido alert
-                    console.log("Mensagem ao usuário: Ocorreu um erro ao tentar ler o conteúdo. Verifique o console.");
-                } finally {
-                    readContentButton.disabled = false;
-                    readContentButton.innerHTML = `<i class="fas fa-volume-up mr-2"></i> Ler Conteúdo`;
-                }
-            });
+            // Inicializa a página
+            switchLanguage('br');
+            loadSkills();
         });
     </script>
 </body>
