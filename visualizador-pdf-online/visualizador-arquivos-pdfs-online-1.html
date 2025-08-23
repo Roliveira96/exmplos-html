@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualizador de PDF Avançado com Canvas</title>
+    
+    <!-- Inclui o Tailwind CSS para estilização -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Inclui a biblioteca PDF.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js"></script>
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 1rem;
+        }
+        .toolbar {
+            position: sticky;
+            top: 1rem;
+            z-index: 10;
+        }
+        #pdf-canvas-container {
+            max-width: 100%;
+            overflow-x: auto;
+            padding-top: 1rem;
+        }
+        #pdf-canvas {
+            display: block;
+            margin: 0 auto;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            border-radius: 0.5rem;
+        }
+        #page-num-input {
+            width: 50px;
+            text-align: center;
+        }
+        .btn {
+            transition: all 0.2s ease-in-out;
+        }
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <!-- Barra de Ferramentas -->
+    <div id="toolbar" class="toolbar bg-white p-3 rounded-lg shadow-lg flex items-center space-x-4">
+        <button id="prev-page" class="btn bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md">
+            Anterior
+        </button>
+        
+        <div class="flex items-center space-x-2 text-gray-700">
+            <span>Página:</span>
+            <input type="number" id="page-num-input" class="border rounded-md p-1">
+            <span id="page-count">/ 0</span>
+        </div>
+        
+        <button id="next-page" class="btn bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md">
+            Próxima
+        </button>
+
+        <div class="border-l border-gray-300 h-8 mx-2"></div>
+
+        <button id="zoom-out" class="btn bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-md">
+            -
+        </button>
+        <span class="text-gray-700">Zoom</span>
+        <button id="zoom-in" class="btn bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-md">
+            +
+        </button>
+    </div>
+
+    <!-- Container do Canvas -->
+    <div id="pdf-canvas-container" class="mt-4">
+        <canvas id="pdf-canvas"></canvas>
+    </div>
+
+    <!-- Mensagens de Status -->
+    <div id="loading-message" class="mt-4 text-lg text-gray-600">Carregando PDF...</div>
+    <div id="error-message" class="mt-4 text-lg text-red-600 hidden">Ocorreu um erro ao carregar o PDF.</div>
+
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js';
+
+        const pdfUrl = 'https://mozilla.github.io/pdf.js/web/compressed.tracemonkey-pldi-09.pdf';
+
+        let pdfDoc = null;
+        let pageNum = 1;
+        let scale = 1.5;
+        let pageRendering = false;
+        let pageNumPending = null;
+
+        const canvas = document.getElementById('pdf-canvas');
+        const ctx = canvas.getContext('2d');
+        const loadingMessage = document.getElementById('loading-message');
+        const errorMessage = document.getElementById('error-message');
+
+        async function renderPage(num) {
+            pageRendering = true;
+            loadingMessage.classList.remove('hidden');
+            errorMessage.classList.add('hidden');
+
+            try {
+                const page = await pdfDoc.getPage(num);
+                const viewport = page.getViewport({ scale: scale });
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+
+                const renderContext = {
+                    canvasContext: ctx,
+                    viewport: viewport
+                };
+                const renderTask = page.render(renderContext);
+
+                await renderTask.promise;
+                pageRendering = false;
+                loadingMessage.classList.add('hidden');
+
+                if (pageNumPending !== null) {
+                    renderPage(pageNumPending);
+                    pageNumPending = null;
+                }
+                updateUI();
+            } catch (error) {
+                console.error('Erro ao renderizar a página:', error);
+                loadingMessage.classList.add('hidden');
+                errorMessage.classList.remove('hidden');
+            }
+        }
+
+        function queueRenderPage(num) {
+            if (pageRendering) {
+                pageNumPending = num;
+            } else {
+                renderPage(num);
+            }
+        }
+
+        function updateUI() {
+            document.getElementById('page-num-input').value = pageNum;
+            document.getElementById('prev-page').disabled = (pageNum <= 1);
+            document.getElementById('next-page').disabled = (pageNum >= pdfDoc.numPages);
+        }
+
+        document.getElementById('prev-page').addEventListener('click', () => {
+            if (pageNum <= 1) return;
+            pageNum--;
+            queueRenderPage(pageNum);
+        });
+
+        document.getElementById('next-page').addEventListener('click', () => {
+            if (pageNum >= pdfDoc.numPages) return;
+            pageNum++;
+            queueRenderPage(pageNum);
+        });
+
+        document.getElementById('zoom-out').addEventListener('click', () => {
+            if (scale <= 0.5) return;
+            scale -= 0.25;
+            queueRenderPage(pageNum);
+        });
+
+        document.getElementById('zoom-in').addEventListener('click', () => {
+            if (scale >= 3.0) return;
+            scale += 0.25;
+            queueRenderPage(pageNum);
+        });
+
+        document.getElementById('page-num-input').addEventListener('change', (e) => {
+            const desiredPage = parseInt(e.target.value, 10);
+            if (desiredPage >= 1 && desiredPage <= pdfDoc.numPages) {
+                pageNum = desiredPage;
+                queueRenderPage(pageNum);
+            } else {
+                e.target.value = pageNum; // Reverte para a página atual se o valor for inválido
+            }
+        });
+
+        async function loadPdf() {
+            try {
+                const loadingTask = pdfjsLib.getDocument(pdfUrl);
+                pdfDoc = await loadingTask.promise;
+                document.getElementById('page-count').textContent = `/ ${pdfDoc.numPages}`;
+                renderPage(pageNum);
+            } catch (error) {
+                console.error('Erro ao carregar o PDF:', error);
+                loadingMessage.classList.add('hidden');
+                errorMessage.classList.remove('hidden');
+            }
+        }
+
+        window.onload = loadPdf;
+    </script>
+
+</body>
+</html>
