@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protótipo de Mensageiro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #a0aec0;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #718096;
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background: #4a5568;
+        }
+        .dark ::-webkit-scrollbar-thumb:hover {
+            background: #718096;
+        }
+        
+        /* Animações */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .message-animate {
+            animation: fadeInUp 0.3s ease-out forwards;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes slideOutRight {
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+        }
+
+        .toast-enter {
+            animation: slideInRight 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        }
+        
+        .toast-exit {
+             animation: slideOutRight 0.5s cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards;
+        }
+
+    </style>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900">
+
+    <div class="flex h-screen text-gray-800 dark:text-gray-200 antialiased">
+        <!-- Barra lateral de grupos -->
+        <aside class="w-full md:w-[380px] flex-shrink-0 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col">
+            <!-- Cabeçalho da barra lateral -->
+            <header class="h-16 flex items-center justify-between px-4 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
+                <img src="https://placehold.co/40x40/7e22ce/white?text=Eu" alt="Foto do perfil do usuário" class="w-10 h-10 rounded-full">
+                <div class="flex items-center space-x-2">
+                    <button class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    </button>
+                    <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700">
+                        <svg id="theme-toggle-dark-icon" class="hidden h-6 w-6 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+                        <svg id="theme-toggle-light-icon" class="hidden h-6 w-6 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
+                    </button>
+                    <button class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" /></svg>
+                    </button>
+                </div>
+            </header>
+            <div id="group-list" class="flex-1 overflow-y-auto"></div>
+        </aside>
+
+        <main class="flex-1 flex flex-col bg-gray-50 dark:bg-gray-900">
+            <header id="chat-header" class="h-16 flex items-center justify-between px-4 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 flex-shrink-0"></header>
+            <div id="messages" class="flex-1 overflow-y-auto p-6 space-y-6 bg-cover" style="background-image: url('https://i.pinimg.com/736x/8c/98/99/8c98994518b575bfd8c949e91d20548b.jpg')"></div>
+            <footer class="h-16 flex items-center px-4 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 flex-shrink-0">
+                <button class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 cursor-not-allowed" disabled>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                </button>
+                 <button class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 cursor-not-allowed" disabled>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" /></svg>
+                </button>
+                <form id="message-form" class="flex-1 flex items-center">
+                    <input id="message-input" type="text" placeholder="Digite uma mensagem" class="flex-1 mx-4 bg-gray-100 dark:bg-gray-700 rounded-full py-2 px-4 focus:outline-none">
+                    <button type="submit" class="p-3 rounded-full bg-emerald-500 text-white hover:bg-emerald-600 transition-transform duration-200 hover:scale-110">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
+                    </button>
+                </form>
+            </footer>
+        </main>
+    </div>
+    
+    <div id="notification-toast-container" class="fixed top-5 right-5 z-50 pointer-events-none"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            const chatData = {
+                'devs-cerveja': {
+                    name: 'Devs & Cerveja 🍻',
+                    avatar: 'https://placehold.co/48x48/f97316/white?text=DEV',
+                    members: 'Você, Ana, Thiago, Carlos + 8',
+                    muted: false,
+                    messages: [
+                        { type: 'received', sender: 'Ana', time: '10:01', contentType: 'text', text: 'E aí, pessoal! Alguém topa um happy hour hoje?' },
+                        { type: 'sent', sender: 'Você', time: '10:02', contentType: 'text', text: 'Opa, eu topo! Onde?' },
+                        { type: 'received', sender: 'Thiago', time: '10:05', contentType: 'image', imageUrl: 'https://images.unsplash.com/photo-1518791841217-8f162f1e1131?q=80&w=400&auto=format&fit=crop', text: 'Só se for pra comemorar que não achei mais esse bug' },
+                        { type: 'received', sender: 'Carlos', time: '10:08', contentType: 'link', text: 'Falando em comemorar, vejam essa lib de gráficos que achei, parece promissora: https://github.com/chartjs', linkData: { title: 'Chart.js', description: 'Simple yet flexible JavaScript charting for designers & developers', image: 'https://placehold.co/80x80/2dd4bf/333?text=JS' } },
+                        { type: 'sent', sender: 'Você', time: '10:09', contentType: 'reply', text: 'Legal! Já usei em outro projeto, é muito boa mesmo.', replyTo: { sender: 'Carlos', text: 'Falando em comemorar, vejam essa lib de gráficos que achei...' } },
+                        { type: 'received', sender: 'Ana', time: '10:11', contentType: 'text', text: 'Então fechou! Bar do Zé às 19h?' },
+                        { type: 'received', sender: 'Thiago', time: '10:15', contentType: 'text', text: 'Confirmado!' },
+                    ],
+                    unread: 0,
+                },
+                'designers-criativos': {
+                    name: 'Designers Criativos',
+                    avatar: 'https://placehold.co/48x48/10b981/white?text=UX',
+                    members: 'Você, Mariana, Bia, Leo + 5',
+                    muted: false,
+                    messages: [{ type: 'received', sender: 'Mariana', time: 'Ontem', contentType: 'text', text: 'Alguém tem referência de paleta de cor para um app de finanças?' }],
+                    unread: 0,
+                },
+                'familia-silva': {
+                    name: 'Família Silva',
+                    avatar: 'https://placehold.co/48x48/3b82f6/white?text=FAM',
+                    members: 'Você, Mãe, Pai, Irmã',
+                    muted: true,
+                    messages: [
+                        { type: 'received', sender: 'Mãe', time: '18:25', contentType: 'text', text: 'Não esqueçam o almoço de domingo!' },
+                        { type: 'sent', sender: 'Você', time: '18:30', contentType: 'text', text: 'Pode deixar, mãe!' },
+                    ],
+                    unread: 0,
+                },
+                'projeto-phoenix': {
+                    name: 'Projeto Phoenix',
+                    avatar: 'https://placehold.co/48x48/8b5cf6/white?text=PROJ',
+                    members: 'Você, Ana, Gerente',
+                    muted: false,
+                    messages: [{ type: 'received', sender: 'Gerente', time: 'Sexta', contentType: 'text', text: 'Relatório para amanhã, sem falta.' }],
+                    unread: 0,
+                }
+            };
+
+            let activeGroupId = 'devs-cerveja';
+
+            const groupListEl = document.getElementById('group-list');
+            const chatHeaderEl = document.getElementById('chat-header');
+            const messagesEl = document.getElementById('messages');
+            const messageForm = document.getElementById('message-form');
+            const messageInput = document.getElementById('message-input');
+            const notificationToastContainer = document.getElementById('notification-toast-container');
+            
+            const botResponses = ["Olá Ricardo, que bom te ver por aqui!", "Fala, Ricardo! Tudo certo para o nosso próximo 1:1?", "Ricardo, recebi sua mensagem. Retorno em breve.", "Interessante o que você disse. Vou analisar.", "Anotado, Ricardo! Obrigado pelo feedback.", "E aí, mestre Ricardo! Como posso ajudar hoje?", "Sua mensagem chegou! O café já está pronto?"];
+            const randomMessages = ["Vamos marcar aquele almoço!", "O deploy foi um sucesso!", "Alguém viu meu Trello?", "Reunião em 5 minutos.", "Essa funcionalidade ficou incrível!"];
+            const randomSenders = ['Ana', 'Thiago', 'Carlos', 'Mariana'];
+
+            const renderGroupList = () => {
+                groupListEl.innerHTML = '';
+                Object.entries(chatData).forEach(([groupId, group]) => {
+                    const lastMessage = group.messages[group.messages.length - 1];
+                    const isActive = groupId === activeGroupId;
+                    const groupEl = document.createElement('div');
+                    groupEl.className = `flex items-start px-4 py-3 border-b border-gray-200 dark:border-gray-700 cursor-pointer ${isActive ? 'bg-gray-100 dark:bg-gray-700/50' : 'hover:bg-gray-50 dark:hover:bg-gray-700/30'}`;
+                    groupEl.dataset.groupId = groupId;
+                    groupEl.innerHTML = `<img src="${group.avatar}" alt="Ícone do grupo" class="w-12 h-12 rounded-full mr-4"><div class="flex-1 min-w-0"><div class="flex justify-between items-center mb-1"><p class="font-semibold truncate">${group.name}</p><span class="text-xs ${group.unread > 0 ? 'text-green-500 font-semibold' : 'text-gray-400'}">${lastMessage.time}</span></div><div class="flex justify-between items-center"><p class="text-sm text-gray-500 dark:text-gray-400 truncate">${lastMessage.sender}: ${lastMessage.text}</p><div class="flex items-center space-x-2">${group.muted ? '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0L19 5.858a1 1 0 010 1.414L16.071 10l2.929 2.929a1 1 0 11-1.414 1.414L14.657 11.414l-2.929 2.929a1 1 0 01-1.414-1.414L13.243 10l-2.929-2.929a1 1 0 011.414-1.414L14.657 8.586l2.929-2.929a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>' : ''}${group.unread > 0 ? `<span class="bg-green-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">${group.unread}</span>` : ''}</div></div></div>`;
+                    groupEl.addEventListener('click', () => switchGroup(groupId));
+                    groupListEl.appendChild(groupEl);
+                });
+            };
+
+            const renderChat = () => {
+                const group = chatData[activeGroupId];
+                chatHeaderEl.innerHTML = `<div class="flex items-center"><img src="${group.avatar}" alt="Ícone do grupo" class="w-10 h-10 rounded-full mr-3"><div><p class="font-semibold">${group.name}</p><p class="text-xs text-gray-500 dark:text-gray-400">${group.members}</p></div></div><div class="flex items-center space-x-2"><button class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg></button><button class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" /></svg></button></div>`;
+                messagesEl.innerHTML = '';
+                group.messages.forEach(addMessageToUI);
+                scrollToBottom();
+            };
+
+            const addMessageToUI = (message) => {
+                const messageWrapper = document.createElement('div');
+                messageWrapper.className = `flex items-end gap-2 message-animate ${message.type === 'sent' ? 'justify-end' : ''}`;
+                
+                let messageBody = '';
+                switch (message.contentType) {
+                    case 'image':
+                        messageBody = `<div class="bg-white dark:bg-gray-800 rounded-lg rounded-bl-none p-2 max-w-xs shadow"><p class="font-semibold text-sm text-orange-500 px-1">${message.sender}</p><img src="${message.imageUrl}" class="rounded-md mt-1" alt="Imagem enviada"><p class="text-sm p-1 mt-1">${message.text}</p></div>`;
+                        break;
+                    case 'link':
+                        messageBody = `<div class="bg-white dark:bg-gray-800 rounded-lg rounded-bl-none p-3 max-w-lg shadow"><p class="font-semibold text-sm text-blue-500">${message.sender}</p><p class="text-sm mb-2">${message.text.replace(/(https?:\/\/[^\s]+)/g, '<a href="#" class="text-blue-500 hover:underline">$1</a>')}</p><a href="#" class="flex bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden not-prose"><div class="flex-1 p-3"><p class="font-semibold text-sm">${message.linkData.title}</p><p class="text-xs text-gray-500 dark:text-gray-400">${message.linkData.description}</p></div><img src="${message.linkData.image}" class="w-20 h-20 object-cover" alt="Preview do link"></a></div>`;
+                        break;
+                    case 'reply':
+                         messageBody = `<div class="bg-emerald-100 dark:bg-emerald-800/60 rounded-lg rounded-br-none p-3 max-w-lg shadow"><div class="bg-emerald-200/50 dark:bg-emerald-900/40 p-2 rounded-md border-l-2 border-emerald-500 mb-2"><p class="font-semibold text-sm text-emerald-600 dark:text-emerald-400">${message.replyTo.sender}</p><p class="text-sm text-gray-600 dark:text-gray-300 truncate">${message.replyTo.text}</p></div><p class="text-sm">${message.text}</p></div>`;
+                        break;
+                    default: // text
+                         messageBody = message.type === 'sent' 
+                            ? `<div class="bg-emerald-100 dark:bg-emerald-800/60 rounded-lg rounded-br-none p-3 max-w-lg shadow"><p class="text-sm">${message.text}</p></div>`
+                            : `<div class="bg-white dark:bg-gray-800 rounded-lg rounded-bl-none p-3 max-w-lg shadow"><p class="font-semibold text-sm text-emerald-500">${message.sender}</p><p class="text-sm">${message.text}</p></div>`;
+                }
+
+                const senderAvatar = `https://placehold.co/32x32/${message.sender === 'Ana' ? '10b981' : message.sender === 'Thiago' ? 'f97316' : '3b82f6'}/white?text=${message.sender.charAt(0)}`;
+                const timeEl = `<p class="text-right text-xs text-gray-400 dark:text-gray-500 mt-1 px-1">${message.time}</p>`;
+                
+                if (message.type === 'sent') {
+                    messageWrapper.innerHTML = `${messageBody.slice(0, -6)}${timeEl}</div>`;
+                } else {
+                    messageWrapper.innerHTML = `<img src="${senderAvatar}" class="w-8 h-8 rounded-full flex-shrink-0 self-start" alt="Avatar ${message.sender}">${messageBody.slice(0, -6)}${timeEl}</div>`;
+                }
+                
+                messagesEl.appendChild(messageWrapper);
+            };
+
+            const switchGroup = (groupId) => {
+                activeGroupId = groupId;
+                if (chatData[groupId]) {
+                    chatData[groupId].unread = 0;
+                }
+                renderGroupList();
+                renderChat();
+            };
+            
+            const scrollToBottom = () => { messagesEl.scrollTop = messagesEl.scrollHeight; }
+
+            const handleSendMessage = (e) => {
+                e.preventDefault();
+                const text = messageInput.value.trim();
+                if (!text) return;
+                const now = new Date();
+                const time = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+                const newMessage = { sender: 'Você', text, time, type: 'sent', contentType: 'text' };
+                chatData[activeGroupId].messages.push(newMessage);
+                addMessageToUI(newMessage);
+                scrollToBottom();
+                messageInput.value = '';
+                setTimeout(sendBotResponse, 1000);
+            };
+
+            const sendBotResponse = () => {
+                const now = new Date();
+                const time = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+                const text = botResponses[Math.floor(Math.random() * botResponses.length)];
+                const botMessage = { sender: 'Bot', text, time, type: 'received', contentType: 'text' };
+                chatData[activeGroupId].messages.push(botMessage);
+                addMessageToUI(botMessage);
+                scrollToBottom();
+            };
+            
+            const showNotification = (group, message) => {
+                const toast = document.createElement('div');
+                toast.className = 'bg-gradient-to-r from-teal-400 to-blue-500 text-white shadow-lg rounded-lg p-4 max-w-sm w-full mb-4 pointer-events-auto toast-enter';
+                toast.innerHTML = `<div class="flex items-start"><div class="flex-shrink-0 pt-0.5"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg></div><div class="ml-3 w-0 flex-1"><p class="font-bold">${group.name}</p><p class="mt-1 text-sm">${message.sender}: ${message.text}</p></div></div>`;
+                notificationToastContainer.appendChild(toast);
+                setTimeout(() => {
+                    toast.classList.remove('toast-enter');
+                    toast.classList.add('toast-exit');
+                    toast.addEventListener('animationend', () => toast.remove());
+                }, 5000);
+            };
+
+            const simulateRandomMessage = () => {
+                const groupIds = Object.keys(chatData);
+                const inactiveGroupIds = groupIds.filter(id => id !== activeGroupId);
+                const randomGroupId = inactiveGroupIds[Math.floor(Math.random() * inactiveGroupIds.length)];
+                if(!randomGroupId) return;
+                const group = chatData[randomGroupId];
+                group.unread++;
+                const now = new Date();
+                const time = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+                const text = randomMessages[Math.floor(Math.random() * randomMessages.length)];
+                const sender = randomSenders[Math.floor(Math.random() * randomSenders.length)];
+                const newMessage = { sender, text, time, type: 'received', contentType: 'text' };
+                group.messages.push(newMessage);
+                if (!group.muted) {
+                    showNotification(group, newMessage);
+                }
+                renderGroupList();
+            };
+
+            messageForm.addEventListener('submit', handleSendMessage);
+            
+            // Inicialização
+            switchGroup(activeGroupId);
+            setInterval(simulateRandomMessage, 30000);
+        });
+
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+        const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+        if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            themeToggleLightIcon.classList.remove('hidden');
+            document.documentElement.classList.add('dark');
+        } else {
+            themeToggleDarkIcon.classList.remove('hidden');
+            document.documentElement.classList.remove('dark');
+        }
+        themeToggleBtn.addEventListener('click', function() {
+            themeToggleDarkIcon.classList.toggle('hidden');
+            themeToggleLightIcon.classList.toggle('hidden');
+            document.documentElement.classList.toggle('dark');
+            if (document.documentElement.classList.contains('dark')) {
+                localStorage.setItem('color-theme', 'dark');
+            } else {
+                localStorage.setItem('color-theme', 'light');
+            }
+        });
+    </script>
+</body>
+</html>
+
