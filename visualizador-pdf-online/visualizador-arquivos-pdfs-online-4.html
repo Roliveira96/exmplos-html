@@ -22,7 +22,12 @@
             background-color: #f0f2f5;
             display: flex;
             flex-direction: column;
-            padding: 1rem;
+            padding: 0;
+        }
+        @media (min-width: 1024px) {
+            body {
+                padding: 1rem;
+            }
         }
         #viewer-area {
             width: 100%;
@@ -41,6 +46,7 @@
             justify-content: center;
             align-items: center;
             position: relative;
+            cursor: grab;
         }
         #flipbook .page canvas, #zoom-view-container .page canvas {
             max-width: 100%;
@@ -64,8 +70,8 @@
         #zoom-content.grabbing {
             cursor: grabbing;
         }
-        #bookmarks-list::-webkit-scrollbar { display: none; }
-        #bookmarks-list { -ms-overflow-style: none; scrollbar-width: none; }
+        #bookmarks-list::-webkit-scrollbar, #notes-list-container::-webkit-scrollbar { display: none; }
+        #bookmarks-list, #notes-list-container { -ms-overflow-style: none; scrollbar-width: none; }
         #ribbon-container {
             position: absolute;
             top: 0;
@@ -86,6 +92,8 @@
             border-bottom-right-radius: 5px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
             transition: all 0.3s;
+            pointer-events: auto; /* Permite que o mouse interaja com a fita */
+            cursor: pointer;
         }
     </style>
 </head>
@@ -94,29 +102,43 @@
         Carregando e renderizando as páginas do livro...
     </div>
 
-    <div class="w-full max-w-screen-2xl flex flex-col lg:flex-row gap-4 flex-grow min-h-0">
-        <main class="w-full lg:w-3/4 flex flex-col min-w-0">
+    <div class="w-full max-w-screen-2xl mx-auto flex flex-col lg:flex-row gap-4 flex-grow min-h-0">
+        <main class="w-full lg:w-3/4 flex flex-col min-w-0 flex-grow pb-24 lg:pb-0">
             <div id="viewer-area">
+                <div id="add-bookmark-ribbon" class="hidden absolute top-0 transform -translate-x-1/2 z-30 p-2 cursor-pointer" title="Adicionar Marcador nesta Página">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-500 hover:text-blue-700 drop-shadow-lg" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd" />
+                    </svg>
+                </div>
                 <div id="ribbon-container"></div>
                 <!-- O Flipbook ou a Lupa aparecerão aqui -->
             </div>
     
-            <div id="pdf-controls" class="mt-4 flex flex-wrap justify-center items-center gap-2 sm:gap-4 z-10" style="display:none;">
+            <div id="pdf-controls" class="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-sm p-3 shadow-[0_-2px_10px_rgba(0,0,0,0.1)] flex flex-wrap justify-center items-center gap-2 sm:gap-4 z-20 lg:relative lg:bg-transparent lg:shadow-none lg:backdrop-blur-none lg:p-0 lg:mt-4" style="display:none;">
                 <button id="prev-page" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-transform transform hover:scale-105">Anterior</button>
                 <span id="page-info" class="text-gray-800 font-semibold text-sm sm:text-base order-first sm:order-none w-full sm:w-auto text-center"></span>
                 <button id="next-page" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-transform transform hover:scale-105">Próxima</button>
                 <button id="zoom-btn" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-transform transform hover:scale-105">Lupa</button>
+                <button id="toggle-bookmarks-btn" class="p-2 bg-gray-600 hover:bg-gray-700 text-white font-bold rounded-lg shadow-md lg:hidden">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-3.13L5 18V4z" />
+                    </svg>
+                </button>
             </div>
         </main>
 
-        <aside id="bookmarks-section" class="w-full lg:w-1/4 bg-white p-4 rounded-lg shadow-lg flex flex-col" style="display:none;">
-            <h2 class="text-xl font-bold text-gray-800 mb-3 text-center">Marcadores</h2>
+        <aside id="bookmarks-section" class="fixed top-0 right-0 h-full w-full max-w-sm bg-white p-4 shadow-xl z-50 transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col lg:relative lg:w-1/4 lg:translate-x-0 lg:max-h-none lg:shadow-lg lg:rounded-lg" style="display:none;">
+            <div class="flex justify-between items-center mb-3">
+                <h2 class="text-xl font-bold text-gray-800">Marcadores</h2>
+                <button id="close-bookmarks-btn" class="lg:hidden text-gray-600 hover:text-gray-900 text-2xl font-bold">&times;</button>
+            </div>
             <div class="grid grid-cols-1 gap-2 mb-4">
                 <button id="add-bookmark-btn" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-2 rounded-lg shadow-md text-sm col-span-2">Adicionar Marcador</button>
             </div>
             <div id="bookmarks-list" class="space-y-2 overflow-y-auto flex-grow"></div>
         </aside>
     </div>
+    <div id="bookmarks-backdrop" class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden"></div>
 
     <!-- Modal para Adicionar Marcador -->
     <div id="add-bookmark-modal" class="fixed inset-0 bg-black bg-opacity-75 hidden items-center justify-center z-50">
@@ -161,6 +183,23 @@
         </div>
     </div>
 
+    <!-- Modal para Anotações -->
+    <div id="notes-modal" class="fixed inset-0 bg-black bg-opacity-75 hidden items-center justify-center z-50">
+        <div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-md flex flex-col" style="height: 80vh;">
+            <h3 id="notes-modal-title" class="text-lg font-bold mb-4">Anotações</h3>
+            <div id="notes-list-container" class="space-y-2 overflow-y-auto flex-grow mb-4 border p-2 rounded">
+                <!-- As anotações serão listadas aqui -->
+            </div>
+            <div class="flex flex-col gap-2">
+                <textarea id="note-input" class="w-full border-2 border-gray-300 p-2 rounded" placeholder="Escreva sua anotação..."></textarea>
+                <div class="flex justify-end gap-3">
+                    <button id="close-notes-btn" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded">Fechar</button>
+                    <button id="save-note-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Adicionar Anotação</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         (function ($) {
             pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js';
@@ -176,6 +215,8 @@
             let pdfDoc = null;
             let modalZoomLevel = 1.5;
             let bookmarks = [];
+            let currentNotesBookmarkIndex = null;
+            let pageToAddBookmark = null; 
 
             const colors = {
                 red: { bg: 'bg-red-400' },
@@ -195,7 +236,9 @@
 
             function initializeTurnJsWhenReady() {
                 try {
+                    const display = $(window).width() < 1024 ? 'single' : 'double';
                     flipbook.turn({
+                        display: display,
                         width: viewerArea.width(),
                         height: viewerArea.height(),
                         autoCenter: true,
@@ -256,13 +299,123 @@
 
             $(window).on('resize', () => {
                 if (isFlipbookInitialized && flipbook && flipbook.is(':visible')) {
+                    const newDisplay = $(window).width() < 1024 ? 'single' : 'double';
+                    if (flipbook.turn('display') !== newDisplay) {
+                        flipbook.turn('display', newDisplay);
+                    }
                     flipbook.turn('size', viewerArea.width(), viewerArea.height());
                 }
             });
             
+            viewerArea.on('click', '.ribbon-marker', function() {
+                const bookmarkIndex = $(this).data('bookmark-index');
+                if (bookmarkIndex !== undefined && bookmarkIndex !== null) {
+                    openNotesModal(bookmarkIndex);
+                }
+            });
+
             $('#prev-page').on('click', () => flipbook.turn('previous'));
             $('#next-page').on('click', () => flipbook.turn('next'));
+
+            // --- INÍCIO: LÓGICA DE ARRASTAR PARA VIRAR A PÁGINA ---
+            let isMouseDown = false;
+            let isDraggingPage = false;
+            let startPageX = 0;
+            const dragThreshold = 10;
+            const turnPageThreshold = 50;
+
+            viewerArea.on('mousedown', '#flipbook .page', function(e) {
+                if (e.which !== 1 || !$(this).is(':visible')) return;
+                isMouseDown = true;
+                startPageX = e.pageX;
+                isDraggingPage = false;
+            });
             
+            $(document).on('mousemove', function(e) {
+                if (!isMouseDown) return;
+                if (!isDraggingPage && Math.abs(e.pageX - startPageX) > dragThreshold) {
+                    isDraggingPage = true;
+                    $('#flipbook').css('cursor', 'grabbing');
+                     $('body').css({ 'user-select': 'none' });
+                }
+            });
+
+            $(document).on('mouseup', function(e) {
+                if (!isMouseDown) return;
+                if (isDraggingPage) {
+                    const deltaX = e.pageX - startPageX;
+                    if (Math.abs(deltaX) > turnPageThreshold) {
+                        if (deltaX < 0) {
+                            flipbook.turn('next');
+                        } else {
+                            flipbook.turn('previous');
+                        }
+                    }
+                }
+                isMouseDown = false;
+                isDraggingPage = false; 
+                $('#flipbook').css('cursor', '');
+                $('body').css({ 'user-select': '' });
+            });
+            // --- FIM: LÓGICA DE ARRASTAR PARA VIRAR A PÁGINA ---
+
+            // --- INÍCIO: LÓGICA DA FITA PARA ADICIONAR MARCADOR ---
+            const addBookmarkRibbon = $('#add-bookmark-ribbon');
+            let hoveredPageNum = null;
+
+            viewerArea.on('mousemove', '#flipbook .page', function(e) {
+                const pageElement = $(this);
+                const pageNum = pageElement.data('pageNum');
+                if (!pageNum) return;
+
+                const yPos = e.pageY - pageElement.offset().top;
+                const topThreshold = 40; 
+
+                if (yPos > 0 && yPos < topThreshold) {
+                    hoveredPageNum = pageNum;
+                    const display = flipbook.turn('display');
+                    let positionLeft = (display === 'double' && pageNum > 1 && pageNum < pdfDoc.numPages) 
+                        ? (pageNum % 2 === 0 ? '25%' : '75%') 
+                        : '50%';
+                    addBookmarkRibbon.css('left', positionLeft).removeClass('hidden');
+                } else {
+                    if (hoveredPageNum === pageNum) {
+                        addBookmarkRibbon.addClass('hidden');
+                    }
+                }
+            });
+
+            viewerArea.on('mouseleave', '#flipbook-container', () => addBookmarkRibbon.addClass('hidden'));
+
+            addBookmarkRibbon.on('click', function() {
+                if (hoveredPageNum) {
+                    pageToAddBookmark = hoveredPageNum;
+                    openBookmarkModal();
+                    addBookmarkRibbon.addClass('hidden'); 
+                }
+            });
+            // --- FIM: LÓGICA DA FITA PARA ADICIONAR MARCADOR ---
+
+            // --- INÍCIO: LÓGICA DO PAINEL DE MARCADORES MÓVEL ---
+            const bookmarksSection = $('#bookmarks-section');
+            const bookmarksBackdrop = $('#bookmarks-backdrop');
+
+            function openMobileBookmarks() {
+                bookmarksBackdrop.removeClass('hidden');
+                bookmarksSection.removeClass('translate-x-full');
+            }
+
+            function closeMobileBookmarks() {
+                bookmarksBackdrop.addClass('hidden');
+                bookmarksSection.addClass('translate-x-full');
+            }
+
+            $('#toggle-bookmarks-btn').on('click', openMobileBookmarks);
+            $('#close-bookmarks-btn').on('click', closeMobileBookmarks);
+            bookmarksBackdrop.on('click', closeMobileBookmarks);
+            // --- FIM: LÓGICA DO PAINEL DE MARCADORES MÓVEL ---
+
+
             // --- LÓGICA DO ZOOM (LUPA) ---
             let zoomViewContainer = null;
             let zoomContent = null;
@@ -271,21 +424,42 @@
             function updateRibbon(view) {
                 const ribbonContainer = $('#ribbon-container');
                 ribbonContainer.empty();
-                const bookmarksOnView = bookmarks.filter(bm => view.includes(bm.page));
-                if (bookmarksOnView.length > 0) {
-                    const firstBookmark = bookmarksOnView[0];
-                    const ribbonEl = $('<div class="ribbon-marker"></div>');
-                    ribbonEl.addClass(colors[firstBookmark.color].bg);
-
-                    const display = flipbook.turn('display');
-                    const bookmarkedPage = firstBookmark.page;
-
-                    if (display === 'double' && bookmarkedPage > 1 && bookmarkedPage < pdfDoc.numPages) {
-                        ribbonEl.css('left', bookmarkedPage % 2 === 0 ? '25%' : '75%');
-                    } else {
-                        ribbonEl.css('left', '50%');
+                
+                const bookmarksByPage = {};
+                bookmarks.forEach((bm, index) => {
+                    if (view.includes(bm.page)) {
+                        if (!bookmarksByPage[bm.page]) {
+                            bookmarksByPage[bm.page] = [];
+                        }
+                        bookmarksByPage[bm.page].push({ bookmark: bm, index: index });
                     }
-                    ribbonContainer.append(ribbonEl);
+                });
+
+                const display = flipbook.turn('display');
+
+                for (const pageNumStr in bookmarksByPage) {
+                    const pageNum = parseInt(pageNumStr);
+                    const pageBookmarksData = bookmarksByPage[pageNum];
+                    
+                    let basePosition = (display === 'double' && pageNum > 1 && pageNum < pdfDoc.numPages)
+                        ? (pageNum % 2 === 0 ? 25 : 75)
+                        : 50;
+
+                    const totalRibbonsOnPage = pageBookmarksData.length;
+                    const offsetStep = 2.5;
+
+                    pageBookmarksData.forEach((data, i) => {
+                        const offset = (i - (totalRibbonsOnPage - 1) / 2) * offsetStep;
+                        const finalPosition = basePosition + offset;
+
+                        const ribbonEl = $('<div class="ribbon-marker"></div>');
+                        ribbonEl.addClass(colors[data.bookmark.color].bg);
+                        ribbonEl.css('left', `${finalPosition}%`);
+                        ribbonEl.attr('title', data.bookmark.title); 
+                        ribbonEl.data('bookmark-index', data.index);
+                        
+                        ribbonContainer.append(ribbonEl);
+                    });
                 }
             }
             
@@ -297,6 +471,8 @@
                     return;
                 }
                 bookmarks.forEach((bm, index) => {
+                    const notesIcon = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500 hover:text-blue-600" viewBox="0 0 20 20" fill="currentColor"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" /><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" /></svg>`;
+                    const notesCount = bm.notes ? bm.notes.length : 0;
                     const el = $(`
                         <div class="bookmark-item flex items-center justify-between p-2 rounded-lg cursor-pointer hover:bg-gray-100" data-page="${bm.page}">
                             <div class="flex items-center gap-3">
@@ -306,7 +482,13 @@
                                     <p class="text-sm text-gray-500">Página ${bm.page}</p>
                                 </div>
                             </div>
-                            <button class="delete-bookmark-btn text-xl text-red-500 hover:text-red-700" data-index="${index}">&times;</button>
+                            <div class="flex items-center gap-2">
+                                <button class="view-notes-btn p-1 flex items-center gap-1" data-index="${index}" title="Ver/Adicionar Anotações">
+                                    ${notesIcon}
+                                    <span class="text-xs font-bold text-gray-600">${notesCount}</span>
+                                </button>
+                                <button class="delete-bookmark-btn text-xl text-red-500 hover:text-red-700" data-index="${index}">&times;</button>
+                            </div>
                         </div>
                     `);
                     list.append(el);
@@ -328,7 +510,10 @@
             const bookmarkModal = $('#add-bookmark-modal');
             let selectedColor = 'red';
 
-            $('#add-bookmark-btn').on('click', () => openBookmarkModal());
+            $('#add-bookmark-btn').on('click', () => {
+                pageToAddBookmark = flipbook.turn('page');
+                openBookmarkModal();
+            });
             
             function openBookmarkModal() {
                 $('#bookmark-title-input').val('');
@@ -352,8 +537,9 @@
                 
                 const newBookmark = {
                     title: title,
-                    page: flipbook.turn('page'),
-                    color: selectedColor
+                    page: pageToAddBookmark,
+                    color: selectedColor,
+                    notes: []
                 };
 
                 bookmarks.push(newBookmark);
@@ -369,13 +555,7 @@
 
                     const distance = Math.abs(targetPage - current);
                     const direction = targetPage > current ? 1 : -1;
-                    let nextPage;
-
-                    if (distance > 10) {
-                        nextPage = current + 10 * direction;
-                    } else {
-                        nextPage = current + 1 * direction;
-                    }
+                    let nextPage = (distance > 10) ? current + 10 * direction : current + 1 * direction;
 
                     nextPage = direction > 0 ? Math.min(nextPage, targetPage) : Math.max(nextPage, targetPage);
                     
@@ -390,6 +570,9 @@
 
             $('#bookmarks-list').on('click', '.bookmark-item', function() {
                 animateTurnToPage($(this).data('page'));
+                if ($(window).width() < 1024) {
+                    closeMobileBookmarks();
+                }
             });
 
             $('#bookmarks-list').on('click', '.delete-bookmark-btn', function(e) {
@@ -402,6 +585,70 @@
                     }
                 });
             });
+
+            // --- LÓGICA DAS ANOTAÇÕES ---
+            function openNotesModal(index) {
+                currentNotesBookmarkIndex = index;
+                const bookmark = bookmarks[index];
+                $('#notes-modal-title').text(`Anotações para: "${bookmark.title}"`);
+                renderNotesInModal();
+                $('#notes-modal').removeClass('hidden').addClass('flex');
+            }
+
+            function renderNotesInModal() {
+                const listContainer = $('#notes-list-container');
+                listContainer.empty();
+                const bookmark = bookmarks[currentNotesBookmarkIndex];
+                if (!bookmark.notes || bookmark.notes.length === 0) {
+                    listContainer.html('<p class="text-gray-500 text-center">Nenhuma anotação ainda.</p>');
+                    return;
+                }
+
+                bookmark.notes.forEach((note, index) => {
+                    const noteEl = $(`
+                        <div class="note-item bg-gray-100 p-2 rounded-md flex justify-between items-start">
+                            <p class="text-gray-800 whitespace-pre-wrap flex-grow">${note}</p>
+                            <button class="delete-note-btn text-red-500 hover:text-red-700 ml-2 flex-shrink-0" data-note-index="${index}">&times;</button>
+                        </div>
+                    `);
+                    listContainer.append(noteEl);
+                });
+            }
+
+            $('#save-note-btn').on('click', () => {
+                const noteInput = $('#note-input');
+                const noteText = noteInput.val().trim();
+                if (noteText && currentNotesBookmarkIndex !== null) {
+                    if (!bookmarks[currentNotesBookmarkIndex].notes) {
+                        bookmarks[currentNotesBookmarkIndex].notes = [];
+                    }
+                    bookmarks[currentNotesBookmarkIndex].notes.push(noteText);
+                    saveBookmarks();
+                    renderNotesInModal();
+                    noteInput.val('');
+                }
+            });
+
+            $('#notes-list-container').on('click', '.delete-note-btn', function() {
+                const noteIndex = $(this).data('note-index');
+                if (currentNotesBookmarkIndex !== null) {
+                    bookmarks[currentNotesBookmarkIndex].notes.splice(noteIndex, 1);
+                    saveBookmarks();
+                    renderNotesInModal();
+                }
+            });
+
+            $('#close-notes-btn').on('click', () => {
+                $('#notes-modal').addClass('hidden').removeClass('flex');
+                currentNotesBookmarkIndex = null;
+            });
+
+            $('#bookmarks-list').on('click', '.view-notes-btn', function(e) {
+                e.stopPropagation();
+                const index = $(this).data('index');
+                openNotesModal(index);
+            });
+
 
             function showConfirm(message, callback) {
                 $('#confirm-message').text(message);
@@ -422,7 +669,7 @@
             }
             $('#alert-btn-ok').on('click', () => {
                 $('#alert-modal').addClass('hidden').removeClass('flex');
-            });
+});
             
             $(window).on('load', loadPdfAndInitFlipbook);
             
