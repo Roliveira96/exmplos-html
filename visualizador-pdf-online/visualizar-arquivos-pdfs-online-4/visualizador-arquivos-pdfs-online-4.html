@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualizador de PDF com Efeito de Livro</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/turn.js/3/turn.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gray-200">
+    <div id="loading-message" class="bg-white p-4 rounded-lg shadow-xl text-lg text-gray-700">
+        Carregando e renderizando as páginas do livro...
+    </div>
+
+    <div class="w-full max-w-screen-2xl mx-auto flex flex-col lg:flex-row gap-4 flex-grow min-h-0">
+        <main class="w-full lg:w-3/4 flex flex-col min-w-0 flex-grow pb-24 lg:pb-0">
+            <div id="viewer-area">
+                <div id="add-bookmark-ribbon" class="hidden absolute top-0 transform -translate-x-1/2 z-30 p-2 cursor-pointer" title="Adicionar Marcador nesta Página">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-500 hover:text-blue-700 drop-shadow-lg" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd" />
+                    </svg>
+                </div>
+                <div id="ribbon-container"></div>
+                <!-- O Flipbook ou a Lupa aparecerão aqui -->
+            </div>
+    
+            <div id="pdf-controls" class="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-sm p-3 shadow-[0_-2px_10px_rgba(0,0,0,0.1)] flex flex-wrap justify-center items-center gap-2 sm:gap-4 z-20 lg:relative lg:bg-transparent lg:shadow-none lg:backdrop-blur-none lg:p-0 lg:mt-4" style="display:none;">
+                <button id="prev-page" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-transform transform hover:scale-105">Anterior</button>
+                <span id="page-info" class="text-gray-800 font-semibold text-sm sm:text-base order-first sm:order-none w-full sm:w-auto text-center"></span>
+                <button id="next-page" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-transform transform hover:scale-105">Próxima</button>
+                <button id="zoom-btn" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-transform transform hover:scale-105">Lupa</button>
+                <button id="toggle-bookmarks-btn" class="p-2 bg-gray-600 hover:bg-gray-700 text-white font-bold rounded-lg shadow-md lg:hidden">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-3.13L5 18V4z" />
+                    </svg>
+                </button>
+            </div>
+        </main>
+
+        <aside id="bookmarks-section" class="fixed top-0 right-0 h-full w-full max-w-sm bg-white p-4 shadow-xl z-50 transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col lg:relative lg:w-1/4 lg:translate-x-0 lg:max-h-none lg:shadow-lg lg:rounded-lg" style="display:none;">
+            <div class="flex justify-between items-center mb-3">
+                <h2 class="text-xl font-bold text-gray-800">Marcadores</h2>
+                <button id="close-bookmarks-btn" class="lg:hidden text-gray-600 hover:text-gray-900 text-2xl font-bold">&times;</button>
+            </div>
+            <div class="grid grid-cols-1 gap-2 mb-4">
+                <button id="add-bookmark-btn" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-2 rounded-lg shadow-md text-sm col-span-2">Adicionar Marcador</button>
+            </div>
+            <div id="bookmarks-list" class="space-y-2 overflow-y-auto flex-grow"></div>
+        </aside>
+    </div>
+    <div id="bookmarks-backdrop" class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden"></div>
+
+    <!-- Modal para Adicionar Marcador -->
+    <div id="add-bookmark-modal" class="fixed inset-0 bg-black bg-opacity-75 hidden items-center justify-center z-50">
+        <div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-sm">
+            <h3 class="text-lg font-bold mb-4">Novo Marcador</h3>
+            <input type="text" id="bookmark-title-input" class="w-full border-2 border-gray-300 p-2 rounded mb-4" placeholder="Título do marcador">
+            <div class="mb-4">
+                <p class="mb-2">Escolha uma cor:</p>
+                <div id="bookmark-color-options" class="flex justify-center gap-2">
+                    <button class="color-box w-8 h-8 rounded-full bg-red-400 border-2 border-transparent" data-color="red"></button>
+                    <button class="color-box w-8 h-8 rounded-full bg-blue-400 border-2 border-transparent" data-color="blue"></button>
+                    <button class="color-box w-8 h-8 rounded-full bg-green-400 border-2 border-transparent" data-color="green"></button>
+                    <button class="color-box w-8 h-8 rounded-full bg-yellow-400 border-2 border-transparent" data-color="yellow"></button>
+                    <button class="color-box w-8 h-8 rounded-full bg-purple-400 border-2 border-transparent" data-color="purple"></button>
+                </div>
+            </div>
+            <div class="flex justify-end gap-3">
+                <button id="cancel-bookmark-btn" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded">Cancelar</button>
+                <button id="save-bookmark-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Salvar</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal de Confirmação -->
+    <div id="confirm-modal" class="fixed inset-0 bg-black bg-opacity-75 hidden items-center justify-center z-[100]">
+        <div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-sm">
+            <p id="confirm-message" class="mb-4 text-center"></p>
+            <div class="flex justify-center gap-4">
+                <button id="confirm-btn-no" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-6 rounded">Não</button>
+                <button id="confirm-btn-yes" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-6 rounded">Sim</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Alerta -->
+    <div id="alert-modal" class="fixed inset-0 bg-black bg-opacity-75 hidden items-center justify-center z-[101]">
+        <div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-sm">
+            <p id="alert-message" class="mb-4 text-center"></p>
+            <div class="flex justify-center">
+                <button id="alert-btn-ok" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-8 rounded">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Anotações -->
+    <div id="notes-modal" class="fixed inset-0 bg-black bg-opacity-75 hidden items-center justify-center z-50">
+        <div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-md flex flex-col" style="height: 80vh;">
+            <h3 id="notes-modal-title" class="text-lg font-bold mb-4">Anotações</h3>
+            <div id="notes-list-container" class="space-y-2 overflow-y-auto flex-grow mb-4 border p-2 rounded">
+                <!-- As anotações serão listadas aqui -->
+            </div>
+            <div class="flex flex-col gap-2">
+                <textarea id="note-input" class="w-full border-2 border-gray-300 p-2 rounded" placeholder="Escreva sua anotação..."></textarea>
+                <div class="flex justify-end gap-3">
+                    <button id="close-notes-btn" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded">Fechar</button>
+                    <button id="save-note-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Adicionar Anotação</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js" defer></script>
+</body>
+</html>
+
