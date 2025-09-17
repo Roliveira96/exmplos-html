@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualizador de PDF com Efeito de Livro</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/turn.js/3/turn.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            flex-direction: column;
+            padding: 1rem;
+        }
+        #viewer-area {
+            width: 100%;
+            position: relative;
+            flex-grow: 1; /* Essencial para o layout flexível */
+            min-height: 0;
+        }
+        #flipbook, #zoom-view-container {
+            width: 100%;
+            height: 100%;
+        }
+        #flipbook .page, #zoom-view-container .page {
+            background-color: white;
+            box-shadow: 0 0 20px rgba(0,0,0,0.15);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        #flipbook .page canvas, #zoom-view-container .page canvas {
+            max-width: 100%;
+            max-height: 100%;
+            height: auto;
+            width: auto;
+        }
+        #loading-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+        }
+        #zoom-content {
+            cursor: grab;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+        }
+        #zoom-content.grabbing {
+            cursor: grabbing;
+        }
+        #bookmarks-list::-webkit-scrollbar { display: none; }
+        #bookmarks-list { -ms-overflow-style: none; scrollbar-width: none; }
+        #ribbon-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 30px;
+            pointer-events: none;
+            z-index: 20; /* Aumentado para garantir que fique sobre o flipbook */
+        }
+        .ribbon-marker {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 30px;
+            border-bottom-left-radius: 5px;
+            border-bottom-right-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+        }
+    </style>
+</head>
+<body class="bg-gray-200">
+    <div id="loading-message" class="bg-white p-4 rounded-lg shadow-xl text-lg text-gray-700">
+        Carregando e renderizando as páginas do livro...
+    </div>
+
+    <div class="w-full max-w-screen-2xl flex flex-col lg:flex-row gap-4 flex-grow min-h-0">
+        <main class="w-full lg:w-3/4 flex flex-col min-w-0">
+            <div id="viewer-area">
+                <div id="ribbon-container"></div>
+                <!-- O Flipbook ou a Lupa aparecerão aqui -->
+            </div>
+    
+            <div id="pdf-controls" class="mt-4 flex flex-wrap justify-center items-center gap-2 sm:gap-4 z-10" style="display:none;">
+                <button id="prev-page" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-transform transform hover:scale-105">Anterior</button>
+                <span id="page-info" class="text-gray-800 font-semibold text-sm sm:text-base order-first sm:order-none w-full sm:w-auto text-center"></span>
+                <button id="next-page" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-transform transform hover:scale-105">Próxima</button>
+                <button id="zoom-btn" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-transform transform hover:scale-105">Lupa</button>
+            </div>
+        </main>
+
+        <aside id="bookmarks-section" class="w-full lg:w-1/4 bg-white p-4 rounded-lg shadow-lg flex flex-col" style="display:none;">
+            <h2 class="text-xl font-bold text-gray-800 mb-3 text-center">Marcadores</h2>
+            <div class="grid grid-cols-1 gap-2 mb-4">
+                <button id="add-bookmark-btn" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-2 rounded-lg shadow-md text-sm col-span-2">Adicionar Marcador</button>
+            </div>
+            <div id="bookmarks-list" class="space-y-2 overflow-y-auto flex-grow"></div>
+        </aside>
+    </div>
+
+    <!-- Modal para Adicionar Marcador -->
+    <div id="add-bookmark-modal" class="fixed inset-0 bg-black bg-opacity-75 hidden items-center justify-center z-50">
+        <div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-sm">
+            <h3 class="text-lg font-bold mb-4">Novo Marcador</h3>
+            <input type="text" id="bookmark-title-input" class="w-full border-2 border-gray-300 p-2 rounded mb-4" placeholder="Título do marcador">
+            <div class="mb-4">
+                <p class="mb-2">Escolha uma cor:</p>
+                <div id="bookmark-color-options" class="flex justify-center gap-2">
+                    <button class="color-box w-8 h-8 rounded-full bg-red-400 border-2 border-transparent" data-color="red"></button>
+                    <button class="color-box w-8 h-8 rounded-full bg-blue-400 border-2 border-transparent" data-color="blue"></button>
+                    <button class="color-box w-8 h-8 rounded-full bg-green-400 border-2 border-transparent" data-color="green"></button>
+                    <button class="color-box w-8 h-8 rounded-full bg-yellow-400 border-2 border-transparent" data-color="yellow"></button>
+                    <button class="color-box w-8 h-8 rounded-full bg-purple-400 border-2 border-transparent" data-color="purple"></button>
+                </div>
+            </div>
+            <div class="flex justify-end gap-3">
+                <button id="cancel-bookmark-btn" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded">Cancelar</button>
+                <button id="save-bookmark-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Salvar</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal de Confirmação -->
+    <div id="confirm-modal" class="fixed inset-0 bg-black bg-opacity-75 hidden items-center justify-center z-[100]">
+        <div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-sm">
+            <p id="confirm-message" class="mb-4 text-center"></p>
+            <div class="flex justify-center gap-4">
+                <button id="confirm-btn-no" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-6 rounded">Não</button>
+                <button id="confirm-btn-yes" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-6 rounded">Sim</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Alerta -->
+    <div id="alert-modal" class="fixed inset-0 bg-black bg-opacity-75 hidden items-center justify-center z-[101]">
+        <div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-sm">
+            <p id="alert-message" class="mb-4 text-center"></p>
+            <div class="flex justify-center">
+                <button id="alert-btn-ok" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-8 rounded">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function ($) {
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js';
+            const pdfUrl = 'https://mozilla.github.io/pdf.js/web/compressed.tracemonkey-pldi-09.pdf';
+            const scale = 1.5;
+
+            const viewerArea = $('#viewer-area');
+            const loadingMessage = $('#loading-message');
+            const pageInfo = $('#page-info');
+            
+            let flipbook = null;
+            let isFlipbookInitialized = false;
+            let pdfDoc = null;
+            let modalZoomLevel = 1.5;
+            let bookmarks = [];
+
+            const colors = {
+                red: { bg: 'bg-red-400' },
+                blue: { bg: 'bg-blue-400' },
+                green: { bg: 'bg-green-400' },
+                yellow: { bg: 'bg-yellow-400' },
+                purple: { bg: 'bg-purple-400' }
+            };
+
+            function createFlipbookDOM() {
+                const flipbookContainer = $('<div id="flipbook-container" class="w-full h-full"></div>');
+                flipbook = $('<div id="flipbook"></div>');
+                flipbookContainer.append(flipbook);
+                viewerArea.prepend(flipbookContainer);
+                return flipbook;
+            }
+
+            function initializeTurnJsWhenReady() {
+                try {
+                    flipbook.turn({
+                        width: viewerArea.width(),
+                        height: viewerArea.height(),
+                        autoCenter: true,
+                        elevation: 50,
+                        gradients: true,
+                        when: { turned: (event, page, view) => onPageTurn(view) }
+                    });
+                    isFlipbookInitialized = true;
+                    onPageTurn(flipbook.turn('view'));
+                    loadBookmarks();
+                } catch (e) {
+                    console.error("Erro CRÍTICO ao inicializar a biblioteca turn.js:", e);
+                    showAlert("Ocorreu um erro grave ao exibir o livro.");
+                }
+            }
+
+            async function loadPdfAndInitFlipbook() {
+                try {
+                    pdfDoc = await pdfjsLib.getDocument(pdfUrl).promise;
+                    const numPages = pdfDoc.numPages;
+                    flipbook = createFlipbookDOM();
+
+                    for (let pageNum = 1; pageNum <= numPages; pageNum++) {
+                        const page = await pdfDoc.getPage(pageNum);
+                        const viewport = page.getViewport({ scale: scale });
+                        const canvas = document.createElement('canvas');
+                        canvas.height = viewport.height;
+                        canvas.width = viewport.width;
+                        const pageElement = $('<div>').addClass('page').append(canvas);
+                        pageElement.data('pageNum', pageNum);
+                        flipbook.append(pageElement);
+                        const ctx = canvas.getContext('2d');
+                        await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+                    }
+
+                    if (numPages % 2 !== 0) {
+                        flipbook.append($('<div>').addClass('page'));
+                    }
+
+                    loadingMessage.hide();
+                    $('#flipbook-container, #pdf-controls, #bookmarks-section').show();
+                    
+                    initializeTurnJsWhenReady();
+
+                } catch (error) {
+                    console.error('Erro ao carregar o PDF:', error);
+                    loadingMessage.text('Falha ao carregar o PDF.');
+                }
+            }
+            
+            function onPageTurn(view) {
+                if (!isFlipbookInitialized) return;
+                const currentPage = flipbook.turn('page');
+                const totalPages = pdfDoc.numPages;
+                pageInfo.text(`Página ${currentPage} de ${totalPages}`);
+                updateRibbon(view);
+            }
+
+            $(window).on('resize', () => {
+                if (isFlipbookInitialized && flipbook && flipbook.is(':visible')) {
+                    flipbook.turn('size', viewerArea.width(), viewerArea.height());
+                }
+            });
+            
+            $('#prev-page').on('click', () => flipbook.turn('previous'));
+            $('#next-page').on('click', () => flipbook.turn('next'));
+            
+            // --- LÓGICA DO ZOOM (LUPA) ---
+            let zoomViewContainer = null;
+            let zoomContent = null;
+            
+            // --- LÓGICA DOS MARCADORES ---
+            function updateRibbon(view) {
+                const ribbonContainer = $('#ribbon-container');
+                ribbonContainer.empty();
+                const bookmarksOnView = bookmarks.filter(bm => view.includes(bm.page));
+                if (bookmarksOnView.length > 0) {
+                    const firstBookmark = bookmarksOnView[0];
+                    const ribbonEl = $('<div class="ribbon-marker"></div>');
+                    ribbonEl.addClass(colors[firstBookmark.color].bg);
+
+                    const display = flipbook.turn('display');
+                    const bookmarkedPage = firstBookmark.page;
+
+                    if (display === 'double' && bookmarkedPage > 1 && bookmarkedPage < pdfDoc.numPages) {
+                        ribbonEl.css('left', bookmarkedPage % 2 === 0 ? '25%' : '75%');
+                    } else {
+                        ribbonEl.css('left', '50%');
+                    }
+                    ribbonContainer.append(ribbonEl);
+                }
+            }
+            
+            function renderBookmarks() {
+                const list = $('#bookmarks-list');
+                list.empty();
+                if (bookmarks.length === 0) {
+                    list.html('<p class="text-gray-500 text-center">Nenhum marcador.</p>');
+                    return;
+                }
+                bookmarks.forEach((bm, index) => {
+                    const el = $(`
+                        <div class="bookmark-item flex items-center justify-between p-2 rounded-lg cursor-pointer hover:bg-gray-100" data-page="${bm.page}">
+                            <div class="flex items-center gap-3">
+                                <span class="w-4 h-4 rounded-full ${colors[bm.color].bg}"></span>
+                                <div class="flex-grow">
+                                    <p class="font-semibold text-gray-700">${bm.title}</p>
+                                    <p class="text-sm text-gray-500">Página ${bm.page}</p>
+                                </div>
+                            </div>
+                            <button class="delete-bookmark-btn text-xl text-red-500 hover:text-red-700" data-index="${index}">&times;</button>
+                        </div>
+                    `);
+                    list.append(el);
+                });
+                if(flipbook) updateRibbon(flipbook.turn('view'));
+            }
+
+            function saveBookmarks() {
+                localStorage.setItem('pdf_bookmarks', JSON.stringify(bookmarks));
+                renderBookmarks();
+            }
+
+            function loadBookmarks() {
+                const stored = localStorage.getItem('pdf_bookmarks');
+                bookmarks = stored ? JSON.parse(stored) : [];
+                renderBookmarks();
+            }
+
+            const bookmarkModal = $('#add-bookmark-modal');
+            let selectedColor = 'red';
+
+            $('#add-bookmark-btn').on('click', () => openBookmarkModal());
+            
+            function openBookmarkModal() {
+                $('#bookmark-title-input').val('');
+                selectedColor = 'red';
+                $('.color-box').removeClass('ring-2 ring-offset-2 ring-blue-500').addClass('border-transparent');
+                $('.color-box[data-color="red"]').addClass('ring-2 ring-offset-2 ring-blue-500');
+                bookmarkModal.removeClass('hidden').addClass('flex');
+            }
+
+            $('#cancel-bookmark-btn').on('click', () => bookmarkModal.addClass('hidden').removeClass('flex'));
+
+            $('#bookmark-color-options').on('click', '.color-box', function() {
+                selectedColor = $(this).data('color');
+                $('.color-box').removeClass('ring-2 ring-offset-2 ring-blue-500');
+                $(this).addClass('ring-2 ring-offset-2 ring-blue-500');
+            });
+
+            $('#save-bookmark-btn').on('click', () => {
+                const title = $('#bookmark-title-input').val().trim();
+                if (!title) { showAlert('Por favor, insira um título.'); return; }
+                
+                const newBookmark = {
+                    title: title,
+                    page: flipbook.turn('page'),
+                    color: selectedColor
+                };
+
+                bookmarks.push(newBookmark);
+                saveBookmarks();
+                bookmarkModal.addClass('hidden').removeClass('flex');
+            });
+            
+            function animateTurnToPage(targetPage) {
+                if (!flipbook) return;
+                const flip = () => {
+                    const current = flipbook.turn('page');
+                    if (current == targetPage) return;
+
+                    const distance = Math.abs(targetPage - current);
+                    const direction = targetPage > current ? 1 : -1;
+                    let nextPage;
+
+                    if (distance > 10) {
+                        nextPage = current + 10 * direction;
+                    } else {
+                        nextPage = current + 1 * direction;
+                    }
+
+                    nextPage = direction > 0 ? Math.min(nextPage, targetPage) : Math.max(nextPage, targetPage);
+                    
+                    flipbook.turn('page', nextPage);
+
+                    if (nextPage != targetPage) {
+                        setTimeout(flip, 150);
+                    }
+                };
+                flip();
+            }
+
+            $('#bookmarks-list').on('click', '.bookmark-item', function() {
+                animateTurnToPage($(this).data('page'));
+            });
+
+            $('#bookmarks-list').on('click', '.delete-bookmark-btn', function(e) {
+                e.stopPropagation();
+                const index = $(this).data('index');
+                showConfirm('Tem certeza que deseja excluir este marcador?', (confirmed) => {
+                    if (confirmed) {
+                        bookmarks.splice(index, 1);
+                        saveBookmarks();
+                    }
+                });
+            });
+
+            function showConfirm(message, callback) {
+                $('#confirm-message').text(message);
+                $('#confirm-modal').removeClass('hidden').addClass('flex');
+                $('#confirm-btn-yes').off().on('click', () => {
+                    $('#confirm-modal').addClass('hidden').removeClass('flex');
+                    callback(true);
+                });
+                $('#confirm-btn-no').off().on('click', () => {
+                    $('#confirm-modal').addClass('hidden').removeClass('flex');
+                    callback(false);
+                });
+            }
+
+            function showAlert(message) {
+                $('#alert-message').text(message);
+                $('#alert-modal').removeClass('hidden').addClass('flex');
+            }
+            $('#alert-btn-ok').on('click', () => {
+                $('#alert-modal').addClass('hidden').removeClass('flex');
+            });
+            
+            $(window).on('load', loadPdfAndInitFlipbook);
+            
+            // --- CÓDIGO DO ZOOM E MODAIS ---
+            function setupZoomControls(){viewerArea.on('click','#zoom-in-modal',async()=>{modalZoomLevel=Math.min(5.0,modalZoomLevel+0.5);await renderZoomedPages(modalZoomLevel,flipbook.turn('view'),zoomContent)});viewerArea.on('click','#zoom-out-modal',async()=>{modalZoomLevel=Math.max(1.0,modalZoomLevel-0.5);await renderZoomedPages(modalZoomLevel,flipbook.turn('view'),zoomContent)});viewerArea.on('click','#close-zoom',()=>{zoomViewContainer.hide();$('#flipbook-container, #pdf-controls').show();$(window).trigger('resize')})}
+            function createZoomViewDOM(){const e=$('<div id="zoom-view-container" class="relative" style="display:none;"><div id="zoom-content"></div><div class="absolute top-2 right-2 flex items-center space-x-2 z-10"><button id="zoom-out-modal" class="bg-white text-gray-800 rounded-full py-1 px-3 text-2xl shadow-lg hover:bg-gray-200">-</button><button id="zoom-in-modal" class="bg-white text-gray-800 rounded-full py-1 px-3 text-2xl shadow-lg hover:bg-gray-200">+</button><button id="close-zoom" class="bg-white text-gray-800 rounded-full py-1 px-3 text-2xl shadow-lg hover:bg-gray-200">&times;</button></div></div>');return viewerArea.append(e),e}
+            async function renderZoomedPages(e,t,o){o.empty(),loadingMessage.text("Aplicando zoom...").show();try{const n=$('<div class="flex flex-col md:flex-row gap-2 items-start justify-center p-4"></div>');for(const a of t){if(0===a)continue;const i=await pdfDoc.getPage(a),l=i.getViewport({scale:e}),s=document.createElement("canvas"),r=s.getContext("2d");s.height=l.height,s.width=l.width;const d={canvasContext:r,viewport:l};await i.render(d).promise,n.append($('<div class="page"></div>').append(s))}o.append(n)}catch(c){console.error("Erro ao aplicar zoom:",c)}finally{loadingMessage.hide().text("Carregando e renderizando as páginas do livro...")}}
+            function setupPanning(e){let t,o,n,a;e.on("mousedown",i=>{t=!0,e.addClass("grabbing"),o=i.pageX-e.offset().left,n=i.pageY-e.offset().top,a=e.scrollLeft(),scrollTop=e.scrollTop()}).on("mouseleave mouseup",()=>{t=!1,e.removeClass("grabbing")}).on("mousemove",i=>{t&&(i.preventDefault(),e.scrollLeft(a-(i.pageX-e.offset().left-o)),e.scrollTop(scrollTop-(i.pageY-e.offset().top-n)))})}
+            $('#zoom-btn').on('click', async () => {if (!flipbook) return;if (!zoomViewContainer) {zoomViewContainer = createZoomViewDOM();zoomContent = zoomViewContainer.find('#zoom-content');setupZoomControls();setupPanning(zoomContent);}$('#flipbook-container, #pdf-controls').hide();zoomViewContainer.show();const view = flipbook.turn('view');await renderZoomedPages(modalZoomLevel, view, zoomContent);});
+        })(jQuery);
+    </script>
+</body>
+</html>
+
