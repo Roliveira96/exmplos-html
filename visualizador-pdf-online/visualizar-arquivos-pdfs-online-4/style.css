@@ -1,7 +1,9 @@
-html, body {
+html,
+body {
     height: 100%;
     overflow: hidden;
 }
+
 body {
     font-family: 'Inter', sans-serif;
     background-color: #f0f2f5;
@@ -9,17 +11,20 @@ body {
     flex-direction: column;
     padding: 0;
 }
+
 @media (min-width: 1024px) {
     body {
         padding: 1rem;
     }
 }
+
 #viewer-area {
     width: 100%;
     position: relative;
-    flex-grow: 1; /* Essencial para o layout flexível */
+    flex-grow: 1;
     min-height: 0;
 }
+
 #flipbook-container {
     position: absolute;
     top: 0;
@@ -27,25 +32,32 @@ body {
     width: 100%;
     height: 100%;
 }
-#flipbook, #zoom-view-container {
+
+#flipbook,
+#zoom-view-container {
     width: 100%;
     height: 100%;
 }
-#flipbook .page, #zoom-view-container .page {
+
+#flipbook .page,
+#zoom-view-container .page {
     background-color: white;
-    box-shadow: 0 0 20px rgba(0,0,0,0.15);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
     display: flex;
     justify-content: center;
     align-items: center;
     position: relative;
     cursor: grab;
 }
-#flipbook .page canvas, #zoom-view-container .page canvas {
+
+#flipbook .page canvas,
+#zoom-view-container .page canvas {
     max-width: 100%;
     max-height: 100%;
     height: auto;
     width: auto;
 }
+
 #loading-message {
     position: absolute;
     top: 50%;
@@ -53,17 +65,29 @@ body {
     transform: translate(-50%, -50%);
     z-index: 1000;
 }
+
 #zoom-content {
     cursor: grab;
     width: 100%;
     height: 100%;
     overflow: auto;
 }
+
 #zoom-content.grabbing {
     cursor: grabbing;
 }
-#bookmarks-list::-webkit-scrollbar, #notes-list-container::-webkit-scrollbar { display: none; }
-#bookmarks-list, #notes-list-container { -ms-overflow-style: none; scrollbar-width: none; }
+
+#bookmarks-list::-webkit-scrollbar,
+#notes-list-container::-webkit-scrollbar {
+    display: none;
+}
+
+#bookmarks-list,
+#notes-list-container {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
 #ribbon-container {
     position: absolute;
     top: 0;
@@ -71,8 +95,9 @@ body {
     right: 0;
     height: 30px;
     pointer-events: none;
-    z-index: 20; /* Aumentado para garantir que fique sobre o flipbook */
+    z-index: 20;
 }
+
 .ribbon-marker {
     position: absolute;
     top: 0;
@@ -82,8 +107,45 @@ body {
     height: 30px;
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     transition: all 0.3s;
-    pointer-events: auto; /* Permite que o mouse interaja com a fita */
+    pointer-events: auto;
     cursor: pointer;
+}
+
+#zoom-view-container .page canvas {
+    max-width: none;
+    max-height: none;
+}
+
+#zoom-content.grabbing,
+#zoom-content.grabbing * {
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+}
+
+@media (max-width: 1023px) {
+    #zoom-view-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 50;
+        background-color: #f0f2f5;
+    }
+}
+
+#add-bookmark-modal,
+#notes-modal {
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+
+    background-color: rgba(107, 114, 128, 0.75);
+}
+
+#confirm-modal,
+#alert-modal {
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
 }

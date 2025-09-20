@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
     <title>Visualizador de PDF com Efeito de Livro</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
@@ -27,7 +27,6 @@
                     </svg>
                 </div>
                 <div id="ribbon-container"></div>
-                <!-- O Flipbook ou a Lupa aparecerão aqui -->
             </div>
     
             <div id="pdf-controls" class="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-sm p-3 shadow-[0_-2px_10px_rgba(0,0,0,0.1)] flex flex-wrap justify-center items-center gap-2 sm:gap-4 z-20 lg:relative lg:bg-transparent lg:shadow-none lg:backdrop-blur-none lg:p-0 lg:mt-4" style="display:none;">
@@ -56,7 +55,6 @@
     </div>
     <div id="bookmarks-backdrop" class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden"></div>
 
-    <!-- Modal para Adicionar Marcador -->
     <div id="add-bookmark-modal" class="fixed inset-0 bg-black bg-opacity-75 hidden items-center justify-center z-50">
         <div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-sm">
             <h3 class="text-lg font-bold mb-4">Novo Marcador</h3>
@@ -87,7 +85,6 @@
         </div>
     </div>
     
-    <!-- Modal de Confirmação -->
     <div id="confirm-modal" class="fixed inset-0 bg-black bg-opacity-75 hidden items-center justify-center z-[100]">
         <div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-sm">
             <p id="confirm-message" class="mb-4 text-center"></p>
@@ -98,7 +95,6 @@
         </div>
     </div>
 
-    <!-- Modal de Alerta -->
     <div id="alert-modal" class="fixed inset-0 bg-black bg-opacity-75 hidden items-center justify-center z-[101]">
         <div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-sm">
             <p id="alert-message" class="mb-4 text-center"></p>
@@ -108,12 +104,10 @@
         </div>
     </div>
 
-    <!-- Modal para Anotações -->
     <div id="notes-modal" class="fixed inset-0 bg-black bg-opacity-75 hidden items-center justify-center z-50">
         <div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-md flex flex-col" style="height: 80vh;">
             <h3 id="notes-modal-title" class="text-lg font-bold mb-4">Anotações</h3>
             <div id="notes-list-container" class="space-y-2 overflow-y-auto flex-grow mb-4 border p-2 rounded">
-                <!-- As anotações serão listadas aqui -->
             </div>
             <div class="flex flex-col gap-2">
                 <textarea id="note-input" class="w-full border-2 border-gray-300 p-2 rounded" placeholder="Escreva sua anotação..."></textarea>
@@ -128,4 +122,3 @@
     <script src="script.js" defer></script>
 </body>
 </html>
-

@@ -46,9 +46,7 @@
             isFlipbookInitialized = true;
             onPageTurn(flipbook.turn('view'));
             loadBookmarks();
-
             adjustAsideHeight();
-
         } catch (e) {
             console.error("Erro CRÍTICO ao inicializar a biblioteca turn.js:", e);
             showAlert("Ocorreu um erro grave ao exibir o livro.");
@@ -80,7 +78,6 @@
 
             loadingMessage.hide();
             $('#flipbook-container, #pdf-controls, #bookmarks-section').show();
-
             initializeTurnJsWhenReady();
 
         } catch (error) {
@@ -105,7 +102,6 @@
             }
             flipbook.turn('size', viewerArea.width(), viewerArea.height());
         }
-
         adjustAsideHeight();
     });
 
@@ -322,38 +318,18 @@
         $('.color-box').removeClass('ring-2 ring-offset-2 ring-blue-500').addClass('border-transparent');
         $('.color-box[data-color="red"]').addClass('ring-2 ring-offset-2 ring-blue-500');
         bookmarkModal.removeClass('hidden').addClass('flex');
-
         const pageSelectionContainer = $('#bookmark-page-selection');
         const view = flipbook.turn('view');
-
-
         if ($(window).width() >= 1024 && view.length === 2 && view[0] !== 0 && view[1] !== 0) {
             pageSelectionContainer.removeClass('hidden');
             const pageOptions = pageSelectionContainer.find('.page-option');
-
             $(pageOptions[0]).text(`Pág. ${view[0]}`).data('page', view[0]);
             $(pageOptions[1]).text(`Pág. ${view[1]}`).data('page', view[1]);
-
             pageToAddBookmark = view[0];
             $(pageOptions[0]).addClass('bg-blue-600 text-white border-blue-600').removeClass('border-gray-300 text-gray-800');
             $(pageOptions[1]).removeClass('bg-blue-600 text-white border-blue-600').addClass('border-gray-300 text-gray-800');
-
         } else {
             pageSelectionContainer.addClass('hidden');
-        }
-    }
-
-    // Função para ajustar a altura da seção de marcadores para ser igual à da área do visualizador
-    function adjustAsideHeight() {
-        // Executa apenas em telas grandes (desktop)
-        if ($(window).width() >= 1024) {
-            const viewerHeight = $('#viewer-area').height();
-            if (viewerHeight > 0) {
-                $('#bookmarks-section').css('height', viewerHeight);
-            }
-        } else {
-            // Em telas pequenas, remove a altura fixa para o painel móvel funcionar corretamente
-            $('#bookmarks-section').css('height', '');
         }
     }
 
@@ -496,9 +472,9 @@
     $('#alert-btn-ok').on('click', () => {
         $('#alert-modal').addClass('hidden').removeClass('flex');
     });
-
+    
     $(window).on('load', loadPdfAndInitFlipbook);
-
+    
     function createZoomViewDOM() {
         const zoomViewHTML = `
             <div id="zoom-view-container" class="relative" style="display:none;">
@@ -516,25 +492,19 @@
 
     async function renderZoomedPages(scale, view, zoomContentElement) {
         console.log(`[LOG] Iniciando renderZoomedPages. Escala: ${scale}, Páginas na visão: ${view.join(', ')}`);
-
         zoomContentElement.empty();
         loadingMessage.text("Aplicando zoom...").show();
-
         try {
             const pageContainer = $('<div class="flex flex-col md:flex-row gap-2 items-start justify-start p-4"></div>');
-
             for (const pageNum of view) {
                 if (pageNum === 0) continue;
-
                 console.log(`[LOG] Renderizando página ${pageNum} com escala ${scale}`);
-
                 const pdfPage = await pdfDoc.getPage(pageNum);
                 const viewport = pdfPage.getViewport({ scale: scale });
                 const canvas = document.createElement("canvas");
                 const context = canvas.getContext("2d");
                 canvas.height = viewport.height;
                 canvas.width = viewport.width;
-
                 const renderContext = {
                     canvasContext: context,
                     viewport: viewport
@@ -552,80 +522,88 @@
     }
 
     function setupPanning(zoomContentElement) {
-        let isPanning, startX, startY, scrollLeft, scrollTop;
-        zoomContentElement.on("mousedown", (e) => {
+        let isPanning = false;
+        let startX, startY, scrollLeft, scrollTop;
+        const getPointerEvent = (e) => {
+            return e.type.startsWith('touch') ? e.originalEvent.touches[0] : e;
+        };
+        zoomContentElement.on("mousedown touchstart", (e) => {
             isPanning = true;
             zoomContentElement.addClass("grabbing");
-            startX = e.pageX - zoomContentElement.offset().left;
-            startY = e.pageY - zoomContentElement.offset().top;
+            const pointer = getPointerEvent(e);
+            startX = pointer.pageX - zoomContentElement.offset().left;
+            startY = pointer.pageY - zoomContentElement.offset().top;
             scrollLeft = zoomContentElement.scrollLeft();
             scrollTop = zoomContentElement.scrollTop();
-        }).on("mouseleave mouseup", () => {
+        });
+        zoomContentElement.on("mouseup touchend mouseleave", (e) => {
             isPanning = false;
             zoomContentElement.removeClass("grabbing");
-        }).on("mousemove", (e) => {
-            if (isPanning) {
-                e.preventDefault();
-                const x = e.pageX - zoomContentElement.offset().left;
-                const walkX = x - startX;
-                zoomContentElement.scrollLeft(scrollLeft - walkX);
-                const y = e.pageY - zoomContentElement.offset().top;
-                const walkY = y - startY;
-                zoomContentElement.scrollTop(scrollTop - walkY);
-            }
+        });
+        zoomContentElement.on("mousemove touchmove", (e) => {
+            if (!isPanning) return;
+            e.preventDefault(); 
+            const pointer = getPointerEvent(e);
+            const x = pointer.pageX - zoomContentElement.offset().left;
+            const walkX = x - startX;
+            zoomContentElement.scrollLeft(scrollLeft - walkX);
+            const y = pointer.pageY - zoomContentElement.offset().top;
+            const walkY = y - startY;
+            zoomContentElement.scrollTop(scrollTop - walkY);
         });
     }
+
     $('#zoom-btn').on('click', async () => {
         console.log("[LOG] Botão 'Lupa' (#zoom-btn) clicado.");
-
-        // --- LINHA ADICIONADA ---
-        // Reinicia o nível de zoom para o valor padrão toda vez que o botão é clicado.
-        modalZoomLevel = 1.5;
-
+        modalZoomLevel = 1.5; 
         if (!flipbook) {
             console.warn("[AVISO] Flipbook não inicializado. Ação de zoom abortada.");
             return;
         }
-
         if (!zoomViewContainer) {
             console.log("[LOG] Container de zoom não existe. Criando pela primeira vez...");
             zoomViewContainer = createZoomViewDOM();
             zoomContent = zoomViewContainer.find('#zoom-content');
             setupPanning(zoomContent);
             console.log("[LOG] Registrando eventos para os botões de controle de zoom (+, -, x).");
-
-            zoomViewContainer.on('click', '#zoom-in-modal', async () => {
-                console.log("[LOG] Botão '+ Zoom' clicado.");
-                console.log(`[LOG] Nível de zoom ANTERIOR: ${modalZoomLevel}`);
+            const zoomEvents = 'click touchend';
+            zoomViewContainer.on(zoomEvents, '#zoom-in-modal', async (e) => {
+                e.preventDefault();
+                console.log("[LOG] Botão '+ Zoom' acionado.");
                 modalZoomLevel = Math.min(5.0, modalZoomLevel + 0.5);
-                console.log(`[LOG] Nível de zoom NOVO: ${modalZoomLevel}`);
                 await renderZoomedPages(modalZoomLevel, flipbook.turn('view'), zoomContent);
             });
-
-            zoomViewContainer.on('click', '#zoom-out-modal', async () => {
-                console.log("[LOG] Botão '- Zoom' clicado.");
-                console.log(`[LOG] Nível de zoom ANTERIOR: ${modalZoomLevel}`);
+            zoomViewContainer.on(zoomEvents, '#zoom-out-modal', async (e) => {
+                e.preventDefault();
+                console.log("[LOG] Botão '- Zoom' acionado.");
                 modalZoomLevel = Math.max(1.0, modalZoomLevel - 0.5);
-                console.log(`[LOG] Nível de zoom NOVO: ${modalZoomLevel}`);
                 await renderZoomedPages(modalZoomLevel, flipbook.turn('view'), zoomContent);
             });
-
-            zoomViewContainer.on('click', '#close-zoom', () => {
-                console.log("[LOG] Botão 'Fechar Zoom' clicado.");
+            zoomViewContainer.on(zoomEvents, '#close-zoom', (e) => {
+                e.preventDefault();
+                console.log("[LOG] Botão 'Fechar Zoom' acionado.");
                 zoomViewContainer.hide();
                 $('#flipbook-container, #pdf-controls').show();
                 $(window).trigger('resize');
             });
             console.log("[LOG] Eventos de zoom registrados com sucesso.");
         }
-
         console.log("[LOG] Escondendo flipbook e mostrando a área de zoom.");
         $('#flipbook-container, #pdf-controls').hide();
         zoomViewContainer.show();
-
         const view = flipbook.turn('view');
-        // A função abaixo agora será chamada com o modalZoomLevel reiniciado (1.5)
         await renderZoomedPages(modalZoomLevel, view, zoomContent);
     });
+
+    function adjustAsideHeight() {
+        if ($(window).width() >= 1024) { 
+            const viewerHeight = $('#viewer-area').height();
+            if (viewerHeight > 0) {
+                $('#bookmarks-section').css('height', viewerHeight);
+            }
+        } else {
+            $('#bookmarks-section').css('height', ''); 
+        }
+    }
 
 })(jQuery);
