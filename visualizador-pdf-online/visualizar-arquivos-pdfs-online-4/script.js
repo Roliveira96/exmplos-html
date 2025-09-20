@@ -6,14 +6,14 @@
     const viewerArea = $('#viewer-area');
     const loadingMessage = $('#loading-message');
     const pageInfo = $('#page-info');
-    
+
     let flipbook = null;
     let isFlipbookInitialized = false;
     let pdfDoc = null;
     let modalZoomLevel = 1.5;
     let bookmarks = [];
     let currentNotesBookmarkIndex = null;
-    let pageToAddBookmark = null; 
+    let pageToAddBookmark = null;
 
     const colors = {
         red: { bg: 'bg-red-400' },
@@ -46,6 +46,9 @@
             isFlipbookInitialized = true;
             onPageTurn(flipbook.turn('view'));
             loadBookmarks();
+
+            adjustAsideHeight();
+
         } catch (e) {
             console.error("Erro CRÍTICO ao inicializar a biblioteca turn.js:", e);
             showAlert("Ocorreu um erro grave ao exibir o livro.");
@@ -77,7 +80,7 @@
 
             loadingMessage.hide();
             $('#flipbook-container, #pdf-controls, #bookmarks-section').show();
-            
+
             initializeTurnJsWhenReady();
 
         } catch (error) {
@@ -85,7 +88,7 @@
             loadingMessage.text('Falha ao carregar o PDF.');
         }
     }
-    
+
     function onPageTurn(view) {
         if (!isFlipbookInitialized) return;
         const currentPage = flipbook.turn('page');
@@ -102,9 +105,11 @@
             }
             flipbook.turn('size', viewerArea.width(), viewerArea.height());
         }
+
+        adjustAsideHeight();
     });
-    
-    viewerArea.on('click', '.ribbon-marker', function() {
+
+    viewerArea.on('click', '.ribbon-marker', function () {
         const bookmarkIndex = $(this).data('bookmark-index');
         if (bookmarkIndex !== undefined && bookmarkIndex !== null) {
             openNotesModal(bookmarkIndex);
@@ -114,7 +119,6 @@
     $('#prev-page').on('click', () => flipbook.turn('previous'));
     $('#next-page').on('click', () => flipbook.turn('next'));
 
-    // --- INÍCIO: LÓGICA DE ARRASTAR PARA VIRAR A PÁGINA ---
     let isPointerDown = false;
     let isDraggingPage = false;
     let startPageX = 0;
@@ -130,25 +134,21 @@
 
     function pointerMove(e) {
         if (!isPointerDown) return;
-        
         const currentPageX = e.type === 'touchmove' ? e.originalEvent.touches[0].pageX : e.pageX;
-        
         if (!isDraggingPage && Math.abs(currentPageX - startPageX) > dragThreshold) {
             isDraggingPage = true;
-            if (e.type === 'mousemove') { // Apply styles only for mouse
+            if (e.type === 'mousemove') {
                 $('#flipbook').css('cursor', 'grabbing');
                 $('body').css({ 'user-select': 'none' });
             }
         }
-
         if (isDraggingPage) {
-            e.preventDefault(); // Prevent scrolling while dragging
+            e.preventDefault();
         }
     }
 
     function pointerUp(e) {
         if (!isPointerDown) return;
-
         if (isDraggingPage) {
             const endPageX = e.type === 'touchend' ? e.originalEvent.changedTouches[0].pageX : e.pageX;
             const deltaX = endPageX - startPageX;
@@ -160,37 +160,30 @@
                 }
             }
         }
-        
-        // Reset state
         isPointerDown = false;
         isDraggingPage = false;
         $('#flipbook').css('cursor', '');
         $('body').css({ 'user-select': '' });
     }
 
-    // Bind Events
     viewerArea.on('mousedown touchstart', '#flipbook .page', pointerDown);
     $(document).on('mousemove touchmove', pointerMove);
     $(document).on('mouseup touchend', pointerUp);
-    // --- FIM: LÓGICA DE ARRASTAR PARA VIRAR A PÁGINA ---
 
-    // --- INÍCIO: LÓGICA DA FITA PARA ADICIONAR MARCADOR ---
     const addBookmarkRibbon = $('#add-bookmark-ribbon');
     let hoveredPageNum = null;
 
-    viewerArea.on('mousemove', '#flipbook .page', function(e) {
+    viewerArea.on('mousemove', '#flipbook .page', function (e) {
         const pageElement = $(this);
         const pageNum = pageElement.data('pageNum');
         if (!pageNum) return;
-
         const yPos = e.pageY - pageElement.offset().top;
-        const topThreshold = 40; 
-
+        const topThreshold = 40;
         if (yPos > 0 && yPos < topThreshold) {
             hoveredPageNum = pageNum;
             const display = flipbook.turn('display');
-            let positionLeft = (display === 'double' && pageNum > 1 && pageNum < pdfDoc.numPages) 
-                ? (pageNum % 2 === 0 ? '25%' : '75%') 
+            let positionLeft = (display === 'double' && pageNum > 1 && pageNum < pdfDoc.numPages)
+                ? (pageNum % 2 === 0 ? '25%' : '75%')
                 : '50%';
             addBookmarkRibbon.css('left', positionLeft).removeClass('hidden');
         } else {
@@ -202,16 +195,14 @@
 
     viewerArea.on('mouseleave', '#flipbook-container', () => addBookmarkRibbon.addClass('hidden'));
 
-    addBookmarkRibbon.on('click', function() {
+    addBookmarkRibbon.on('click', function () {
         if (hoveredPageNum) {
             pageToAddBookmark = hoveredPageNum;
             openBookmarkModal();
-            addBookmarkRibbon.addClass('hidden'); 
+            addBookmarkRibbon.addClass('hidden');
         }
     });
-    // --- FIM: LÓGICA DA FITA PARA ADICIONAR MARCADOR ---
 
-    // --- INÍCIO: LÓGICA DO PAINEL DE MARCADORES MÓVEL ---
     const bookmarksSection = $('#bookmarks-section');
     const bookmarksBackdrop = $('#bookmarks-backdrop');
 
@@ -228,18 +219,20 @@
     $('#toggle-bookmarks-btn').on('click', openMobileBookmarks);
     $('#close-bookmarks-btn').on('click', closeMobileBookmarks);
     bookmarksBackdrop.on('click', closeMobileBookmarks);
-    // --- FIM: LÓGICA DO PAINEL DE MARCADORES MÓVEL ---
 
+    $('#add-bookmark-modal').on('click', '.page-option', function () {
+        const selectedPage = $(this).data('page');
+        pageToAddBookmark = selectedPage;
+        $('.page-option').removeClass('bg-blue-600 text-white border-blue-600').addClass('border-gray-300 text-gray-800');
+        $(this).addClass('bg-blue-600 text-white border-blue-600').removeClass('border-gray-300 text-gray-800');
+    });
 
-    // --- LÓGICA DO ZOOM (LUPA) ---
     let zoomViewContainer = null;
     let zoomContent = null;
-    
-    // --- LÓGICA DOS MARCADORES ---
+
     function updateRibbon(view) {
         const ribbonContainer = $('#ribbon-container');
         ribbonContainer.empty();
-        
         const bookmarksByPage = {};
         bookmarks.forEach((bm, index) => {
             if (view.includes(bm.page)) {
@@ -249,35 +242,28 @@
                 bookmarksByPage[bm.page].push({ bookmark: bm, index: index });
             }
         });
-
         const display = flipbook.turn('display');
-
         for (const pageNumStr in bookmarksByPage) {
             const pageNum = parseInt(pageNumStr);
             const pageBookmarksData = bookmarksByPage[pageNum];
-            
             let basePosition = (display === 'double' && pageNum > 1 && pageNum < pdfDoc.numPages)
                 ? (pageNum % 2 === 0 ? 25 : 75)
                 : 50;
-
             const totalRibbonsOnPage = pageBookmarksData.length;
             const offsetStep = 2.5;
-
             pageBookmarksData.forEach((data, i) => {
                 const offset = (i - (totalRibbonsOnPage - 1) / 2) * offsetStep;
                 const finalPosition = basePosition + offset;
-
                 const ribbonEl = $('<div class="ribbon-marker"></div>');
                 ribbonEl.addClass(colors[data.bookmark.color].bg);
                 ribbonEl.css('left', `${finalPosition}%`);
-                ribbonEl.attr('title', data.bookmark.title); 
+                ribbonEl.attr('title', data.bookmark.title);
                 ribbonEl.data('bookmark-index', data.index);
-                
                 ribbonContainer.append(ribbonEl);
             });
         }
     }
-    
+
     function renderBookmarks() {
         const list = $('#bookmarks-list');
         list.empty();
@@ -308,7 +294,7 @@
             `);
             list.append(el);
         });
-        if(flipbook) updateRibbon(flipbook.turn('view'));
+        if (flipbook) updateRibbon(flipbook.turn('view'));
     }
 
     function saveBookmarks() {
@@ -329,18 +315,51 @@
         pageToAddBookmark = flipbook.turn('page');
         openBookmarkModal();
     });
-    
+
     function openBookmarkModal() {
         $('#bookmark-title-input').val('');
         selectedColor = 'red';
         $('.color-box').removeClass('ring-2 ring-offset-2 ring-blue-500').addClass('border-transparent');
         $('.color-box[data-color="red"]').addClass('ring-2 ring-offset-2 ring-blue-500');
         bookmarkModal.removeClass('hidden').addClass('flex');
+
+        const pageSelectionContainer = $('#bookmark-page-selection');
+        const view = flipbook.turn('view');
+
+
+        if ($(window).width() >= 1024 && view.length === 2 && view[0] !== 0 && view[1] !== 0) {
+            pageSelectionContainer.removeClass('hidden');
+            const pageOptions = pageSelectionContainer.find('.page-option');
+
+            $(pageOptions[0]).text(`Pág. ${view[0]}`).data('page', view[0]);
+            $(pageOptions[1]).text(`Pág. ${view[1]}`).data('page', view[1]);
+
+            pageToAddBookmark = view[0];
+            $(pageOptions[0]).addClass('bg-blue-600 text-white border-blue-600').removeClass('border-gray-300 text-gray-800');
+            $(pageOptions[1]).removeClass('bg-blue-600 text-white border-blue-600').addClass('border-gray-300 text-gray-800');
+
+        } else {
+            pageSelectionContainer.addClass('hidden');
+        }
+    }
+
+    // Função para ajustar a altura da seção de marcadores para ser igual à da área do visualizador
+    function adjustAsideHeight() {
+        // Executa apenas em telas grandes (desktop)
+        if ($(window).width() >= 1024) {
+            const viewerHeight = $('#viewer-area').height();
+            if (viewerHeight > 0) {
+                $('#bookmarks-section').css('height', viewerHeight);
+            }
+        } else {
+            // Em telas pequenas, remove a altura fixa para o painel móvel funcionar corretamente
+            $('#bookmarks-section').css('height', '');
+        }
     }
 
     $('#cancel-bookmark-btn').on('click', () => bookmarkModal.addClass('hidden').removeClass('flex'));
 
-    $('#bookmark-color-options').on('click', '.color-box', function() {
+    $('#bookmark-color-options').on('click', '.color-box', function () {
         selectedColor = $(this).data('color');
         $('.color-box').removeClass('ring-2 ring-offset-2 ring-blue-500');
         $(this).addClass('ring-2 ring-offset-2 ring-blue-500');
@@ -349,33 +368,27 @@
     $('#save-bookmark-btn').on('click', () => {
         const title = $('#bookmark-title-input').val().trim();
         if (!title) { showAlert('Por favor, insira um título.'); return; }
-        
         const newBookmark = {
             title: title,
             page: pageToAddBookmark,
             color: selectedColor,
             notes: []
         };
-
         bookmarks.push(newBookmark);
         saveBookmarks();
         bookmarkModal.addClass('hidden').removeClass('flex');
     });
-    
+
     function animateTurnToPage(targetPage) {
         if (!flipbook) return;
         const flip = () => {
             const current = flipbook.turn('page');
             if (current == targetPage) return;
-
             const distance = Math.abs(targetPage - current);
             const direction = targetPage > current ? 1 : -1;
             let nextPage = (distance > 10) ? current + 10 * direction : current + 1 * direction;
-
             nextPage = direction > 0 ? Math.min(nextPage, targetPage) : Math.max(nextPage, targetPage);
-            
             flipbook.turn('page', nextPage);
-
             if (nextPage != targetPage) {
                 setTimeout(flip, 150);
             }
@@ -383,14 +396,14 @@
         flip();
     }
 
-    $('#bookmarks-list').on('click', '.bookmark-item', function() {
+    $('#bookmarks-list').on('click', '.bookmark-item', function () {
         animateTurnToPage($(this).data('page'));
         if ($(window).width() < 1024) {
             closeMobileBookmarks();
         }
     });
 
-    $('#bookmarks-list').on('click', '.delete-bookmark-btn', function(e) {
+    $('#bookmarks-list').on('click', '.delete-bookmark-btn', function (e) {
         e.stopPropagation();
         const index = $(this).data('index');
         showConfirm('Tem certeza que deseja excluir este marcador?', (confirmed) => {
@@ -401,7 +414,6 @@
         });
     });
 
-    // --- LÓGICA DAS ANOTAÇÕES ---
     function openNotesModal(index) {
         currentNotesBookmarkIndex = index;
         const bookmark = bookmarks[index];
@@ -418,7 +430,6 @@
             listContainer.html('<p class="text-gray-500 text-center">Nenhuma anotação ainda.</p>');
             return;
         }
-
         bookmark.notes.forEach((note, index) => {
             const noteEl = $(`
                 <div class="note-item bg-gray-100 p-2 rounded-md flex justify-between items-start">
@@ -444,7 +455,7 @@
         }
     });
 
-    $('#notes-list-container').on('click', '.delete-note-btn', function() {
+    $('#notes-list-container').on('click', '.delete-note-btn', function () {
         const noteIndex = $(this).data('note-index');
         if (currentNotesBookmarkIndex !== null) {
             bookmarks[currentNotesBookmarkIndex].notes.splice(noteIndex, 1);
@@ -458,12 +469,11 @@
         currentNotesBookmarkIndex = null;
     });
 
-    $('#bookmarks-list').on('click', '.view-notes-btn', function(e) {
+    $('#bookmarks-list').on('click', '.view-notes-btn', function (e) {
         e.stopPropagation();
         const index = $(this).data('index');
         openNotesModal(index);
     });
-
 
     function showConfirm(message, callback) {
         $('#confirm-message').text(message);
@@ -482,17 +492,140 @@
         $('#alert-message').text(message);
         $('#alert-modal').removeClass('hidden').addClass('flex');
     }
+
     $('#alert-btn-ok').on('click', () => {
         $('#alert-modal').addClass('hidden').removeClass('flex');
-});
-    
-    $(window).on('load', loadPdfAndInitFlipbook);
-    
-    // --- CÓDIGO DO ZOOM E MODAIS ---
-    function setupZoomControls(){viewerArea.on('click','#zoom-in-modal',async()=>{modalZoomLevel=Math.min(5.0,modalZoomLevel+0.5);await renderZoomedPages(modalZoomLevel,flipbook.turn('view'),zoomContent)});viewerArea.on('click','#zoom-out-modal',async()=>{modalZoomLevel=Math.max(1.0,modalZoomLevel-0.5);await renderZoomedPages(modalZoomLevel,flipbook.turn('view'),zoomContent)});viewerArea.on('click','#close-zoom',()=>{zoomViewContainer.hide();$('#flipbook-container, #pdf-controls').show();$(window).trigger('resize')})}
-    function createZoomViewDOM(){const e=$('<div id="zoom-view-container" class="relative" style="display:none;"><div id="zoom-content"></div><div class="absolute top-2 right-2 flex items-center space-x-2 z-10"><button id="zoom-out-modal" class="bg-white text-gray-800 rounded-full py-1 px-3 text-2xl shadow-lg hover:bg-gray-200">-</button><button id="zoom-in-modal" class="bg-white text-gray-800 rounded-full py-1 px-3 text-2xl shadow-lg hover:bg-gray-200">+</button><button id="close-zoom" class="bg-white text-gray-800 rounded-full py-1 px-3 text-2xl shadow-lg hover:bg-gray-200">&times;</button></div></div>');return viewerArea.append(e),e}
-    async function renderZoomedPages(e,t,o){o.empty(),loadingMessage.text("Aplicando zoom...").show();try{const n=$('<div class="flex flex-col md:flex-row gap-2 items-start justify-center p-4"></div>');for(const a of t){if(0===a)continue;const i=await pdfDoc.getPage(a),l=i.getViewport({scale:e}),s=document.createElement("canvas"),r=s.getContext("2d");s.height=l.height,s.width=l.width;const d={canvasContext:r,viewport:l};await i.render(d).promise,n.append($('<div class="page"></div>').append(s))}o.append(n)}catch(c){console.error("Erro ao aplicar zoom:",c)}finally{loadingMessage.hide().text("Carregando e renderizando as páginas do livro...")}}
-    function setupPanning(e){let t,o,n,a;e.on("mousedown",i=>{t=!0,e.addClass("grabbing"),o=i.pageX-e.offset().left,n=i.pageY-e.offset().top,a=e.scrollLeft(),scrollTop=e.scrollTop()}).on("mouseleave mouseup",()=>{t=!1,e.removeClass("grabbing")}).on("mousemove",i=>{t&&(i.preventDefault(),e.scrollLeft(a-(i.pageX-e.offset().left-o)),e.scrollTop(scrollTop-(i.pageY-e.offset().top-n)))})}
-    $('#zoom-btn').on('click', async () => {if (!flipbook) return;if (!zoomViewContainer) {zoomViewContainer = createZoomViewDOM();zoomContent = zoomViewContainer.find('#zoom-content');setupZoomControls();setupPanning(zoomContent);}$('#flipbook-container, #pdf-controls').hide();zoomViewContainer.show();const view = flipbook.turn('view');await renderZoomedPages(modalZoomLevel, view, zoomContent);});
-})(jQuery);
+    });
 
+    $(window).on('load', loadPdfAndInitFlipbook);
+
+    function createZoomViewDOM() {
+        const zoomViewHTML = `
+            <div id="zoom-view-container" class="relative" style="display:none;">
+                <div id="zoom-content"></div>
+                <div class="absolute top-2 right-2 flex items-center space-x-2 z-10">
+                    <button id="zoom-out-modal" class="bg-white text-gray-800 rounded-full py-1 px-3 text-2xl shadow-lg hover:bg-gray-200">-</button>
+                    <button id="zoom-in-modal" class="bg-white text-gray-800 rounded-full py-1 px-3 text-2xl shadow-lg hover:bg-gray-200">+</button>
+                    <button id="close-zoom" class="bg-white text-gray-800 rounded-full py-1 px-3 text-2xl shadow-lg hover:bg-gray-200">&times;</button>
+                </div>
+            </div>`;
+        const zoomViewElement = $(zoomViewHTML);
+        viewerArea.append(zoomViewElement);
+        return zoomViewElement;
+    }
+
+    async function renderZoomedPages(scale, view, zoomContentElement) {
+        console.log(`[LOG] Iniciando renderZoomedPages. Escala: ${scale}, Páginas na visão: ${view.join(', ')}`);
+
+        zoomContentElement.empty();
+        loadingMessage.text("Aplicando zoom...").show();
+
+        try {
+            const pageContainer = $('<div class="flex flex-col md:flex-row gap-2 items-start justify-start p-4"></div>');
+
+            for (const pageNum of view) {
+                if (pageNum === 0) continue;
+
+                console.log(`[LOG] Renderizando página ${pageNum} com escala ${scale}`);
+
+                const pdfPage = await pdfDoc.getPage(pageNum);
+                const viewport = pdfPage.getViewport({ scale: scale });
+                const canvas = document.createElement("canvas");
+                const context = canvas.getContext("2d");
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+
+                const renderContext = {
+                    canvasContext: context,
+                    viewport: viewport
+                };
+                await pdfPage.render(renderContext).promise;
+                pageContainer.append($('<div class="page flex-shrink-0"></div>').append(canvas));
+            }
+            zoomContentElement.append(pageContainer);
+            console.log("[LOG] Renderização das páginas com zoom concluída com sucesso.");
+        } catch (error) {
+            console.error("[ERRO CRÍTICO] Falha ao renderizar páginas com zoom:", error);
+        } finally {
+            loadingMessage.hide().text("Carregando e renderizando as páginas do livro...");
+        }
+    }
+
+    function setupPanning(zoomContentElement) {
+        let isPanning, startX, startY, scrollLeft, scrollTop;
+        zoomContentElement.on("mousedown", (e) => {
+            isPanning = true;
+            zoomContentElement.addClass("grabbing");
+            startX = e.pageX - zoomContentElement.offset().left;
+            startY = e.pageY - zoomContentElement.offset().top;
+            scrollLeft = zoomContentElement.scrollLeft();
+            scrollTop = zoomContentElement.scrollTop();
+        }).on("mouseleave mouseup", () => {
+            isPanning = false;
+            zoomContentElement.removeClass("grabbing");
+        }).on("mousemove", (e) => {
+            if (isPanning) {
+                e.preventDefault();
+                const x = e.pageX - zoomContentElement.offset().left;
+                const walkX = x - startX;
+                zoomContentElement.scrollLeft(scrollLeft - walkX);
+                const y = e.pageY - zoomContentElement.offset().top;
+                const walkY = y - startY;
+                zoomContentElement.scrollTop(scrollTop - walkY);
+            }
+        });
+    }
+    $('#zoom-btn').on('click', async () => {
+        console.log("[LOG] Botão 'Lupa' (#zoom-btn) clicado.");
+
+        // --- LINHA ADICIONADA ---
+        // Reinicia o nível de zoom para o valor padrão toda vez que o botão é clicado.
+        modalZoomLevel = 1.5;
+
+        if (!flipbook) {
+            console.warn("[AVISO] Flipbook não inicializado. Ação de zoom abortada.");
+            return;
+        }
+
+        if (!zoomViewContainer) {
+            console.log("[LOG] Container de zoom não existe. Criando pela primeira vez...");
+            zoomViewContainer = createZoomViewDOM();
+            zoomContent = zoomViewContainer.find('#zoom-content');
+            setupPanning(zoomContent);
+            console.log("[LOG] Registrando eventos para os botões de controle de zoom (+, -, x).");
+
+            zoomViewContainer.on('click', '#zoom-in-modal', async () => {
+                console.log("[LOG] Botão '+ Zoom' clicado.");
+                console.log(`[LOG] Nível de zoom ANTERIOR: ${modalZoomLevel}`);
+                modalZoomLevel = Math.min(5.0, modalZoomLevel + 0.5);
+                console.log(`[LOG] Nível de zoom NOVO: ${modalZoomLevel}`);
+                await renderZoomedPages(modalZoomLevel, flipbook.turn('view'), zoomContent);
+            });
+
+            zoomViewContainer.on('click', '#zoom-out-modal', async () => {
+                console.log("[LOG] Botão '- Zoom' clicado.");
+                console.log(`[LOG] Nível de zoom ANTERIOR: ${modalZoomLevel}`);
+                modalZoomLevel = Math.max(1.0, modalZoomLevel - 0.5);
+                console.log(`[LOG] Nível de zoom NOVO: ${modalZoomLevel}`);
+                await renderZoomedPages(modalZoomLevel, flipbook.turn('view'), zoomContent);
+            });
+
+            zoomViewContainer.on('click', '#close-zoom', () => {
+                console.log("[LOG] Botão 'Fechar Zoom' clicado.");
+                zoomViewContainer.hide();
+                $('#flipbook-container, #pdf-controls').show();
+                $(window).trigger('resize');
+            });
+            console.log("[LOG] Eventos de zoom registrados com sucesso.");
+        }
+
+        console.log("[LOG] Escondendo flipbook e mostrando a área de zoom.");
+        $('#flipbook-container, #pdf-controls').hide();
+        zoomViewContainer.show();
+
+        const view = flipbook.turn('view');
+        // A função abaixo agora será chamada com o modalZoomLevel reiniciado (1.5)
+        await renderZoomedPages(modalZoomLevel, view, zoomContent);
+    });
+
+})(jQuery);
