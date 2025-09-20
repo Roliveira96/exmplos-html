@@ -48,7 +48,6 @@
             loadBookmarks();
             adjustAsideHeight();
         } catch (e) {
-            console.error("Erro CRÍTICO ao inicializar a biblioteca turn.js:", e);
             showAlert("Ocorreu um erro grave ao exibir o livro.");
         }
     }
@@ -81,7 +80,6 @@
             initializeTurnJsWhenReady();
 
         } catch (error) {
-            console.error('Erro ao carregar o PDF:', error);
             loadingMessage.text('Falha ao carregar o PDF.');
         }
     }
@@ -491,14 +489,12 @@
     }
 
     async function renderZoomedPages(scale, view, zoomContentElement) {
-        console.log(`[LOG] Iniciando renderZoomedPages. Escala: ${scale}, Páginas na visão: ${view.join(', ')}`);
         zoomContentElement.empty();
         loadingMessage.text("Aplicando zoom...").show();
         try {
             const pageContainer = $('<div class="flex flex-col md:flex-row gap-2 items-start justify-start p-4"></div>');
             for (const pageNum of view) {
                 if (pageNum === 0) continue;
-                console.log(`[LOG] Renderizando página ${pageNum} com escala ${scale}`);
                 const pdfPage = await pdfDoc.getPage(pageNum);
                 const viewport = pdfPage.getViewport({ scale: scale });
                 const canvas = document.createElement("canvas");
@@ -513,9 +509,8 @@
                 pageContainer.append($('<div class="page flex-shrink-0"></div>').append(canvas));
             }
             zoomContentElement.append(pageContainer);
-            console.log("[LOG] Renderização das páginas com zoom concluída com sucesso.");
         } catch (error) {
-            console.error("[ERRO CRÍTICO] Falha ao renderizar páginas com zoom:", error);
+            showAlert("Ocorreu um erro ao aplicar o zoom.");
         } finally {
             loadingMessage.hide().text("Carregando e renderizando as páginas do livro...");
         }
@@ -554,41 +549,32 @@
     }
 
     $('#zoom-btn').on('click', async () => {
-        console.log("[LOG] Botão 'Lupa' (#zoom-btn) clicado.");
         modalZoomLevel = 1.5; 
         if (!flipbook) {
-            console.warn("[AVISO] Flipbook não inicializado. Ação de zoom abortada.");
             return;
         }
         if (!zoomViewContainer) {
-            console.log("[LOG] Container de zoom não existe. Criando pela primeira vez...");
             zoomViewContainer = createZoomViewDOM();
             zoomContent = zoomViewContainer.find('#zoom-content');
             setupPanning(zoomContent);
-            console.log("[LOG] Registrando eventos para os botões de controle de zoom (+, -, x).");
             const zoomEvents = 'click touchend';
             zoomViewContainer.on(zoomEvents, '#zoom-in-modal', async (e) => {
                 e.preventDefault();
-                console.log("[LOG] Botão '+ Zoom' acionado.");
                 modalZoomLevel = Math.min(5.0, modalZoomLevel + 0.5);
                 await renderZoomedPages(modalZoomLevel, flipbook.turn('view'), zoomContent);
             });
             zoomViewContainer.on(zoomEvents, '#zoom-out-modal', async (e) => {
                 e.preventDefault();
-                console.log("[LOG] Botão '- Zoom' acionado.");
                 modalZoomLevel = Math.max(1.0, modalZoomLevel - 0.5);
                 await renderZoomedPages(modalZoomLevel, flipbook.turn('view'), zoomContent);
             });
             zoomViewContainer.on(zoomEvents, '#close-zoom', (e) => {
                 e.preventDefault();
-                console.log("[LOG] Botão 'Fechar Zoom' acionado.");
                 zoomViewContainer.hide();
                 $('#flipbook-container, #pdf-controls').show();
                 $(window).trigger('resize');
             });
-            console.log("[LOG] Eventos de zoom registrados com sucesso.");
         }
-        console.log("[LOG] Escondendo flipbook e mostrando a área de zoom.");
         $('#flipbook-container, #pdf-controls').hide();
         zoomViewContainer.show();
         const view = flipbook.turn('view');
