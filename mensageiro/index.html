@@ -6,6 +6,7 @@
     <title>Protótipo de Mensageiro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -44,35 +45,10 @@
         .message-animate {
             animation: fadeInUp 0.3s ease-out forwards;
         }
-
-        @keyframes slideInRight {
-            from {
-                opacity: 0;
-                transform: translateX(100%);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
         
-        @keyframes slideOutRight {
-            from {
-                opacity: 1;
-                transform: translateX(0);
-            }
-            to {
-                opacity: 0;
-                transform: translateX(100%);
-            }
-        }
-
-        .toast-enter {
-            animation: slideInRight 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-        }
-        
-        .toast-exit {
-             animation: slideOutRight 0.5s cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards;
+        /* Estilo customizado para Notyf */
+        .notyf__toast {
+            cursor: pointer;
         }
 
     </style>
@@ -121,11 +97,26 @@
         </main>
     </div>
     
-    <div id="notification-toast-container" class="fixed top-5 right-5 z-50 pointer-events-none"></div>
-
+    <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
 
+            const notyf = new Notyf({
+                duration: 5000,
+                position: { x: 'right', y: 'top' },
+                dismissible: true,
+                types: [
+                    {
+                        type: 'info',
+                        background: 'linear-gradient(to right, #059669, #10b981)',
+                        icon: {
+                            className: 'notyf__icon--info',
+                            tagName: 'div'
+                        }
+                    }
+                ]
+            });
+            
             const chatData = {
                 'devs-cerveja': {
                     name: 'Devs & Cerveja 🍻',
@@ -179,7 +170,6 @@
             const messagesEl = document.getElementById('messages');
             const messageForm = document.getElementById('message-form');
             const messageInput = document.getElementById('message-input');
-            const notificationToastContainer = document.getElementById('notification-toast-container');
             
             const botResponses = ["Olá Ricardo, que bom te ver por aqui!", "Fala, Ricardo! Tudo certo para o nosso próximo 1:1?", "Ricardo, recebi sua mensagem. Retorno em breve.", "Interessante o que você disse. Vou analisar.", "Anotado, Ricardo! Obrigado pelo feedback.", "E aí, mestre Ricardo! Como posso ajudar hoje?", "Sua mensagem chegou! O café já está pronto?"];
             const randomMessages = ["Vamos marcar aquele almoço!", "O deploy foi um sucesso!", "Alguém viu meu Trello?", "Reunião em 5 minutos.", "Essa funcionalidade ficou incrível!"];
@@ -275,16 +265,16 @@
                 scrollToBottom();
             };
             
-            const showNotification = (group, message) => {
-                const toast = document.createElement('div');
-                toast.className = 'bg-gradient-to-r from-teal-400 to-blue-500 text-white shadow-lg rounded-lg p-4 max-w-sm w-full mb-4 pointer-events-auto toast-enter';
-                toast.innerHTML = `<div class="flex items-start"><div class="flex-shrink-0 pt-0.5"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg></div><div class="ml-3 w-0 flex-1"><p class="font-bold">${group.name}</p><p class="mt-1 text-sm">${message.sender}: ${message.text}</p></div></div>`;
-                notificationToastContainer.appendChild(toast);
-                setTimeout(() => {
-                    toast.classList.remove('toast-enter');
-                    toast.classList.add('toast-exit');
-                    toast.addEventListener('animationend', () => toast.remove());
-                }, 5000);
+            const showNotification = (groupId, group, message) => {
+                const notification = notyf.open({
+                    type: 'info',
+                    message: `<strong>${group.name}</strong><br>${message.sender}: ${message.text}`,
+                });
+                
+                notification.on('click', ({target, event}) => {
+                    switchGroup(groupId);
+                    notyf.dismiss(notification);
+                });
             };
 
             const simulateRandomMessage = () => {
@@ -292,16 +282,20 @@
                 const inactiveGroupIds = groupIds.filter(id => id !== activeGroupId);
                 const randomGroupId = inactiveGroupIds[Math.floor(Math.random() * inactiveGroupIds.length)];
                 if(!randomGroupId) return;
+                
                 const group = chatData[randomGroupId];
                 group.unread++;
+                
                 const now = new Date();
                 const time = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
                 const text = randomMessages[Math.floor(Math.random() * randomMessages.length)];
                 const sender = randomSenders[Math.floor(Math.random() * randomSenders.length)];
+                
                 const newMessage = { sender, text, time, type: 'received', contentType: 'text' };
                 group.messages.push(newMessage);
+                
                 if (!group.muted) {
-                    showNotification(group, newMessage);
+                    showNotification(randomGroupId, group, newMessage);
                 }
                 renderGroupList();
             };

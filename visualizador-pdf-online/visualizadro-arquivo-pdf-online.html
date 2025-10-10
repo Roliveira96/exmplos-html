@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualizador de PDF com Efeito de Livro</title>
+    
+    <!-- Inclui o Tailwind CSS para estilização dos botões e layout -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Inclui jQuery, que é uma dependência do Turn.js -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <!-- Inclui a biblioteca Turn.js para o efeito de virar a página -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/turn.js/3/turn.min.js"></script>
+    
+    <!-- Inclui a biblioteca PDF.js para carregar e renderizar o PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #d1d5db; /* Um cinza mais escuro para destacar o livro */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+            padding: 1rem;
+        }
+        #flipbook-container {
+            perspective: 2000px;
+        }
+        #flipbook {
+            width: 90vw;
+            height: 85vh; /* Altura ajustada para dar espaço à pesquisa */
+            max-width: 1200px;
+            max-height: 750px;
+        }
+        #flipbook .page {
+            background-color: white;
+            box-shadow: 0 0 20px rgba(0,0,0,0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative; /* Necessário para o posicionamento do destaque */
+        }
+        #flipbook .page canvas {
+            max-width: 100%;
+            max-height: 100%;
+            height: auto;
+            width: auto;
+        }
+        #loading-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+        }
+        #zoom-content {
+            cursor: grab;
+        }
+        #zoom-content.grabbing {
+            cursor: grabbing;
+        }
+        .highlight {
+            position: absolute;
+            background-color: yellow;
+            opacity: 0.5;
+        }
+        .highlight-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="loading-message" class="bg-white p-4 rounded-lg shadow-xl text-lg text-gray-700">
+        Carregando e renderizando as páginas do livro...
+    </div>
+
+    <!-- Container do Livro -->
+    <div id="flipbook-container">
+        <div id="flipbook"></div>
+    </div>
+
+    <!-- Controles de Navegação e Pesquisa -->
+    <div class="mt-2 flex items-center justify-center flex-wrap gap-4 z-10">
+        <button id="prev-page" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-5 rounded-lg shadow-md transition-transform transform hover:scale-105">Anterior</button>
+        <span id="page-info" class="text-gray-800 font-semibold"></span>
+        <button id="next-page" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-5 rounded-lg shadow-md transition-transform transform hover:scale-105">Próxima</button>
+        <button id="zoom-btn" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-5 rounded-lg shadow-md transition-transform transform hover:scale-105">Lupa</button>
+        <div class="flex items-center bg-white rounded-lg shadow-md">
+            <input type="search" id="search-input" placeholder="Pesquisar..." class="py-2 px-3 border-none rounded-l-lg focus:outline-none">
+            <button id="search-btn" class="bg-gray-800 text-white p-2.5 rounded-r-lg hover:bg-black">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/></svg>
+            </button>
+        </div>
+    </div>
+    <div id="search-results-container" class="mt-2 text-sm text-gray-700 w-full max-w-2xl h-8 text-center"></div>
+
+    <!-- Modal de Zoom -->
+    <div id="zoom-modal" class="fixed inset-0 bg-black bg-opacity-75 hidden items-center justify-center p-4 z-50">
+        <div id="zoom-content" class="bg-white p-2 rounded-lg shadow-2xl max-w-full max-h-full overflow-auto"></div>
+        <div class="absolute top-4 right-4 flex items-center space-x-2">
+            <button id="zoom-out-modal" class="bg-white text-gray-800 rounded-full py-1 px-3 text-2xl leading-none shadow-lg hover:bg-gray-200">-</button>
+            <button id="zoom-in-modal" class="bg-white text-gray-800 rounded-full py-1 px-3 text-2xl leading-none shadow-lg hover:bg-gray-200">+</button>
+            <button id="close-zoom" class="bg-white text-gray-800 rounded-full py-1 px-3 text-2xl leading-none shadow-lg hover:bg-gray-200">&times;</button>
+        </div>
+    </div>
+
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js';
+        const pdfUrl = 'https://mozilla.github.io/pdf.js/web/compressed.tracemonkey-pldi-09.pdf';
+        const scale = 1.5;
+
+        const flipbook = $('#flipbook');
+        const loadingMessage = $('#loading-message');
+        const pageInfo = $('#page-info');
+        
+        let isFlipbookInitialized = false;
+        let pdfDoc = null;
+        let modalZoomLevel = 2.5;
+        let pageTextContents = []; // Array para guardar o texto de cada página
+
+        async function loadPdfAndInitFlipbook() {
+            try {
+                const loadingTask = pdfjsLib.getDocument(pdfUrl);
+                pdfDoc = await loadingTask.promise;
+                const numPages = pdfDoc.numPages;
+
+                for (let pageNum = 1; pageNum <= numPages; pageNum++) {
+                    loadingMessage.text(`Renderizando página ${pageNum} de ${numPages}...`);
+                    const page = await pdfDoc.getPage(pageNum);
+                    const viewport = page.getViewport({ scale: scale });
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+                    const renderContext = { canvasContext: ctx, viewport: viewport };
+                    await page.render(renderContext).promise;
+                    
+                    const pageElement = $('<div>').addClass('page').attr('data-page-number', pageNum).append(canvas);
+                    flipbook.append(pageElement);
+                }
+                
+                for (let pageNum = 1; pageNum <= numPages; pageNum++) {
+                    loadingMessage.text(`Extraindo texto da página ${pageNum} de ${numPages}...`);
+                    const page = await pdfDoc.getPage(pageNum);
+                    const textContent = await page.getTextContent();
+                    pageTextContents.push(textContent);
+                }
+
+                loadingMessage.hide();
+
+                flipbook.turn({
+                    width: flipbook.width(), height: flipbook.height(),
+                    autoCenter: true, elevation: 50, gradients: true,
+                    when: { turned: (event, page, view) => { updatePageInfo(); clearHighlights(); } }
+                });
+                
+                isFlipbookInitialized = true;
+                updatePageInfo();
+            } catch (error) {
+                console.error('Erro ao carregar o PDF:', error);
+                loadingMessage.text('Falha ao carregar o PDF.');
+            }
+        }
+        
+        function updatePageInfo() {
+            if (!isFlipbookInitialized) return;
+            const currentPage = flipbook.turn('page');
+            const totalPages = flipbook.turn('pages');
+            pageInfo.text(`Página ${currentPage} de ${totalPages}`);
+        }
+
+        $('#prev-page').on('click', () => flipbook.turn('previous'));
+        $('#next-page').on('click', () => flipbook.turn('next'));
+        $(window).on('resize', () => { if (isFlipbookInitialized) flipbook.turn('size', flipbook.width(), flipbook.height()); });
+        
+        // --- LÓGICA DA PESQUISA ---
+        const searchInput = $('#search-input');
+        const searchBtn = $('#search-btn');
+        const searchResultsContainer = $('#search-results-container');
+
+        function handleSearch() {
+            const searchTerm = searchInput.val().trim();
+            if (searchTerm.length < 2) {
+                searchResultsContainer.text('');
+                clearHighlights();
+                return;
+            }
+
+            const searchResults = [];
+            pageTextContents.forEach((textContent, pageIndex) => {
+                const pageNum = pageIndex + 1;
+                const pageText = textContent.items.map(item => item.str).join(' ');
+                if (pageText.toLowerCase().includes(searchTerm.toLowerCase())) {
+                    searchResults.push(pageNum);
+                }
+            });
+
+            displaySearchResults(searchResults, searchTerm);
+        }
+
+        function displaySearchResults(results, term) {
+            searchResultsContainer.empty();
+            if (results.length === 0) {
+                searchResultsContainer.text(`Nenhum resultado encontrado para "${term}".`);
+                return;
+            }
+            
+            searchResultsContainer.append(`<span>${results.length} resultado(s) em: </span>`);
+            results.forEach((pageNum, index) => {
+                const pageLink = $(`<a href="#" class="text-blue-600 hover:underline cursor-pointer ml-2">${pageNum}</a>`);
+                pageLink.on('click', async (e) => {
+                    e.preventDefault();
+                    flipbook.turn('page', pageNum);
+                    // Espera a animação de virar a página terminar antes de destacar
+                    setTimeout(async () => {
+                        await highlightWords(pageNum, term);
+                    }, 500);
+                });
+                searchResultsContainer.append(pageLink);
+            });
+        }
+        
+        async function highlightWords(pageNum, searchTerm) {
+            clearHighlights();
+            const pageElement = flipbook.find(`.page[data-page-number="${pageNum}"]`);
+            if (pageElement.length === 0) return;
+            
+            let highlightContainer = pageElement.find('.highlight-container');
+            if (highlightContainer.length === 0) {
+                highlightContainer = $('<div class="highlight-container"></div>');
+                pageElement.append(highlightContainer);
+            }
+
+            const textContent = pageTextContents[pageNum - 1];
+            const page = await pdfDoc.getPage(pageNum);
+            const viewport = page.getViewport({ scale: scale });
+
+            textContent.items.forEach(item => {
+                if (item.str.toLowerCase().includes(searchTerm.toLowerCase())) {
+                    const tx = pdfjsLib.Util.transform(viewport.transform, item.transform);
+                    const highlight = $('<div></div>').addClass('highlight').css({
+                        left: tx[4] + 'px',
+                        top: tx[5] + 'px',
+                        width: item.width + 'px',
+                        height: item.height + 'px',
+                    });
+                    highlightContainer.append(highlight);
+                }
+            });
+        }
+        
+        function clearHighlights() {
+            $('.highlight-container').empty();
+        }
+
+        searchBtn.on('click', handleSearch);
+        searchInput.on('keyup', (e) => { if (e.key === 'Enter') handleSearch(); });
+
+
+        // --- LÓGICA DO ZOOM (EXISTENTE) ---
+        const zoomBtn = $('#zoom-btn');
+        const zoomModal = $('#zoom-modal');
+        const zoomContent = $('#zoom-content');
+        const closeZoomBtn = $('#close-zoom');
+
+        async function renderZoomedPages(zoomLevel) {
+            if (!isFlipbookInitialized || !pdfDoc) return;
+            zoomContent.empty();
+            const view = flipbook.turn('view');
+            
+            try {
+                loadingMessage.text('A aplicar zoom...').show();
+                const canvasContainer = $('<div class="flex flex-col md:flex-row gap-2"></div>');
+                for (const pageNum of view) {
+                    if (pageNum === 0) continue;
+                    const page = await pdfDoc.getPage(pageNum);
+                    const viewport = page.getViewport({ scale: zoomLevel });
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+                    const renderContext = { canvasContext: ctx, viewport: viewport };
+                    await page.render(renderContext).promise;
+                    canvasContainer.append(canvas);
+                }
+                zoomContent.append(canvasContainer);
+                loadingMessage.hide().text('Carregando e renderizando as páginas do livro...');
+            } catch (error) {
+                console.error("Erro ao aplicar zoom:", error);
+                loadingMessage.text('Falha ao aplicar zoom.').show().delay(2000).fadeOut();
+            }
+        }
+
+        zoomBtn.on('click', () => {
+            renderZoomedPages(modalZoomLevel);
+            zoomModal.removeClass('hidden').addClass('flex');
+        });
+
+        $('#zoom-in-modal').on('click', () => {
+            modalZoomLevel = Math.min(5.0, modalZoomLevel + 0.5); // Limite máximo de zoom
+            renderZoomedPages(modalZoomLevel);
+        });
+
+        $('#zoom-out-modal').on('click', () => {
+            modalZoomLevel = Math.max(1.0, modalZoomLevel - 0.5); // Limite mínimo de zoom
+            renderZoomedPages(modalZoomLevel);
+        });
+
+        closeZoomBtn.on('click', () => {
+            zoomModal.addClass('hidden').removeClass('flex');
+            zoomContent.empty();
+        });
+        
+        let isPanning = false;
+        let startX, startY, scrollLeft, scrollTop;
+        zoomContent.on('mousedown', (e) => { isPanning = true; zoomContent.addClass('grabbing'); startX = e.pageX - zoomContent.offset().left; startY = e.pageY - zoomContent.offset().top; scrollLeft = zoomContent.scrollLeft(); scrollTop = zoomContent.scrollTop(); });
+        zoomContent.on('mouseleave', () => { isPanning = false; zoomContent.removeClass('grabbing'); });
+        zoomContent.on('mouseup', () => { isPanning = false; zoomContent.removeClass('grabbing'); });
+        zoomContent.on('mousemove', (e) => { if (!isPanning) return; e.preventDefault(); const x = e.pageX - zoomContent.offset().left; const y = e.pageY - zoomContent.offset().top; const walkX = (x - startX); const walkY = (y - startY); zoomContent.scrollLeft(scrollLeft - walkX); zoomContent.scrollTop(scrollTop - walkY); });
+
+        $(document).ready(loadPdfAndInitFlipbook);
+    </script>
+</body>
+</html>
+

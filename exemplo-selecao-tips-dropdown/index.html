@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciador de Literaturas do Aluno</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .chip {
+            transition: all 0.2s ease-in-out;
+        }
+        .chip:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        /* Estilo para a barra de rolagem do dropdown */
+        .autocomplete-results::-webkit-scrollbar {
+            width: 6px;
+        }
+        .autocomplete-results::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .autocomplete-results::-webkit-scrollbar-thumb {
+            background: #a8a8a8;
+            border-radius: 6px;
+        }
+        .autocomplete-results::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-8">
+
+    <div class="max-w-2xl mx-auto">
+        <div class="bg-white rounded-2xl shadow-xl">
+            <div class="p-6 md:p-8">
+                <h2 class="text-xl font-bold text-gray-800 mb-2">Literaturas Lidas pelo Aluno</h2>
+                <p class="text-sm text-gray-500 mb-6">Clique no campo para ver as opções, digite para pesquisar ou pressione 'Enter' para criar um novo item.</p>
+
+                <!-- Campo de Input e Dropdown -->
+                <div class="relative" id="autocomplete-wrapper">
+                    <div class="relative">
+                        <input type="text" id="literature-input" placeholder="Pesquisar ou adicionar..." class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow">
+                        <i class="fas fa-book absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                    </div>
+                    <div id="autocomplete-results" class="autocomplete-results absolute z-10 w-full bg-white border border-gray-200 rounded-lg mt-1 shadow-lg max-h-60 overflow-y-auto hidden">
+                        <!-- Resultados da busca aparecerão aqui -->
+                    </div>
+                </div>
+
+                <!-- Container dos Chips -->
+                <div id="chips-container" class="mt-6 flex flex-wrap gap-3">
+                    <!-- Chips das literaturas selecionadas aparecerão aqui -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Edição -->
+    <div id="edit-modal" class="fixed inset-0 bg-gray-900 bg-opacity-60 flex items-center justify-center z-50 hidden">
+        <div class="bg-white p-6 rounded-lg shadow-xl max-w-md w-full mx-4">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">Editar Literatura</h3>
+            <input type="hidden" id="edit-literature-id">
+            <input type="text" id="edit-literature-name" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <div class="mt-6 flex justify-end space-x-3">
+                <button id="cancel-edit-btn" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300">Cancelar</button>
+                <button id="save-edit-btn" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Salvar Alteração</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Deleção -->
+    <div id="delete-modal" class="fixed inset-0 bg-gray-900 bg-opacity-60 flex items-center justify-center z-50 hidden">
+        <div class="bg-white p-6 rounded-lg shadow-xl max-w-md w-full mx-4">
+            <div class="flex items-start">
+                <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+                    <i class="fas fa-exclamation-triangle text-red-600"></i>
+                </div>
+                <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                    <h3 class="text-lg font-semibold text-red-700">Atenção! Exclusão Definitiva</h3>
+                    <input type="hidden" id="delete-literature-id">
+                    <div class="mt-2">
+                        <p class="text-sm text-gray-600">Você está prestes a excluir a literatura "<strong id="delete-literature-name" class="text-gray-800"></strong>" do sistema.</p>
+                        <p class="mt-2 text-sm text-gray-600 font-bold">Esta ação irá removê-la para TODOS os alunos que a possuem. Esta ação não pode ser desfeita.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-6 flex flex-row-reverse">
+                <button id="confirm-delete-btn" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 ml-3">Excluir</button>
+                <button id="cancel-delete-btn" class="px-4 py-2 bg-white text-gray-700 rounded-md border border-gray-300 hover:bg-gray-50">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    // --- SIMULAÇÃO DO BANCO DE DADOS ---
+    let allLiteratures = [
+        { id: 1, name: "O Livro de Mirdad" },
+        { id: 2, name: "A Voz do Mestre" },
+        { id: 3, name: "O Profeta" },
+        { id: 4, name: "O Caibalion" },
+        { id: 5, name: "Autobiografia de um Iogue" },
+        { id: 6, name: "O Poder do Agora" },
+        { id: 7, name: "A Cabana" },
+    ];
+    let nextId = 8;
+    
+    // Literaturas que o aluno já possui (simulação)
+    let studentLiteratures = [1, 4];
+
+    // --- ELEMENTOS DO DOM ---
+    const input = document.getElementById('literature-input');
+    const resultsContainer = document.getElementById('autocomplete-results');
+    const chipsContainer = document.getElementById('chips-container');
+    const editModal = document.getElementById('edit-modal');
+    const editIdInput = document.getElementById('edit-literature-id');
+    const editNameInput = document.getElementById('edit-literature-name');
+    const deleteModal = document.getElementById('delete-modal');
+    const deleteIdInput = document.getElementById('delete-literature-id');
+    const deleteNameSpan = document.getElementById('delete-literature-name');
+
+    // --- FUNÇÕES DE RENDERIZAÇÃO ---
+    const renderChips = () => {
+        chipsContainer.innerHTML = '';
+        studentLiteratures.forEach(litId => {
+            const literature = allLiteratures.find(l => l.id === litId);
+            if (!literature) return;
+            const chip = document.createElement('div');
+            chip.className = 'chip bg-blue-100 text-blue-800 text-sm font-semibold px-4 py-2 rounded-full flex items-center gap-3 shadow-sm';
+            chip.dataset.id = literature.id;
+            chip.innerHTML = `
+                <span>${literature.name}</span>
+                <button class="edit-btn text-blue-600 hover:text-blue-900" title="Editar"><i class="fas fa-pencil-alt fa-xs"></i></button>
+                <button class="remove-btn text-blue-600 hover:text-blue-900" title="Remover do aluno"><i class="fas fa-times fa-sm"></i></button>
+            `;
+            chipsContainer.appendChild(chip);
+        });
+    };
+
+    const updateAutocomplete = (query) => {
+        resultsContainer.innerHTML = '';
+        const lowerCaseQuery = query.toLowerCase();
+        const filtered = allLiteratures.filter(lit => 
+            !studentLiteratures.includes(lit.id) && lit.name.toLowerCase().includes(lowerCaseQuery)
+        );
+
+        if (filtered.length > 0) {
+            filtered.forEach(lit => {
+                const item = document.createElement('div');
+                item.className = 'p-3 hover:bg-gray-100 cursor-pointer text-gray-700 flex justify-between items-center';
+                item.dataset.id = lit.id; // Mantém o ID no item principal para seleção
+                item.innerHTML = `
+                    <span class="flex-grow">${lit.name}</span>
+                    <button class="delete-literature-btn text-gray-400 hover:text-red-600 p-1 rounded-full" data-id="${lit.id}" data-name="${lit.name}" title="Excluir do sistema">
+                        <i class="fas fa-trash fa-xs"></i>
+                    </button>
+                `;
+                resultsContainer.appendChild(item);
+            });
+            resultsContainer.classList.remove('hidden');
+        } else {
+            resultsContainer.classList.add('hidden');
+        }
+    };
+
+    // --- FUNÇÕES DE LÓGICA ---
+    const addLiteratureToStudent = (literatureId) => {
+        if (!studentLiteratures.includes(literatureId)) {
+            studentLiteratures.push(literatureId);
+            input.value = '';
+            resultsContainer.classList.add('hidden');
+            renderChips();
+        }
+    };
+
+    const createAndAddLiterature = (name) => {
+        const existing = allLiteratures.find(lit => lit.name.toLowerCase() === name.toLowerCase());
+        if (existing) {
+            addLiteratureToStudent(existing.id);
+            return;
+        }
+        const newLiterature = { id: nextId++, name: name };
+        allLiteratures.push(newLiterature);
+        addLiteratureToStudent(newLiterature.id);
+    };
+
+    // --- EVENT LISTENERS ---
+    input.addEventListener('click', (e) => {
+        e.stopPropagation();
+        updateAutocomplete(input.value);
+    });
+    input.addEventListener('input', () => updateAutocomplete(input.value));
+
+    input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && input.value.trim().length > 0) {
+            e.preventDefault();
+            createAndAddLiterature(input.value.trim());
+        }
+    });
+
+    resultsContainer.addEventListener('click', (e) => {
+        const deleteBtn = e.target.closest('.delete-literature-btn');
+        const literatureItem = e.target.closest('[data-id]');
+
+        if (deleteBtn) {
+            e.stopPropagation(); // Impede que o clique no lixo selecione o item
+            const id = parseInt(deleteBtn.dataset.id);
+            const name = deleteBtn.dataset.name;
+            
+            deleteIdInput.value = id;
+            deleteNameSpan.textContent = name;
+            deleteModal.classList.remove('hidden');
+
+        } else if (literatureItem) {
+            addLiteratureToStudent(parseInt(literatureItem.dataset.id));
+        }
+    });
+    
+    document.addEventListener('click', (e) => {
+        const wrapper = document.getElementById('autocomplete-wrapper');
+        if (!wrapper.contains(e.target)) {
+            resultsContainer.classList.add('hidden');
+        }
+    });
+
+    chipsContainer.addEventListener('click', (e) => {
+        const chip = e.target.closest('.chip');
+        if (!chip) return;
+        const literatureId = parseInt(chip.dataset.id);
+        const literature = allLiteratures.find(l => l.id === literatureId);
+
+        if (e.target.closest('.remove-btn')) {
+            studentLiteratures = studentLiteratures.filter(id => id !== literatureId);
+            renderChips();
+        } else if (e.target.closest('.edit-btn')) {
+            editIdInput.value = literature.id;
+            editNameInput.value = literature.name;
+            editModal.classList.remove('hidden');
+            editNameInput.focus();
+        }
+    });
+    
+    // Listeners dos Modais
+    document.getElementById('cancel-edit-btn').addEventListener('click', () => editModal.classList.add('hidden'));
+    document.getElementById('save-edit-btn').addEventListener('click', () => {
+        const id = parseInt(editIdInput.value);
+        const newName = editNameInput.value.trim();
+        if(newName) {
+            const literature = allLiteratures.find(l => l.id === id);
+            literature.name = newName;
+            renderChips();
+            editModal.classList.add('hidden');
+        }
+    });
+
+    document.getElementById('cancel-delete-btn').addEventListener('click', () => deleteModal.classList.add('hidden'));
+    document.getElementById('confirm-delete-btn').addEventListener('click', () => {
+        console.warn("Aviso: Esta funcionalidade em um sistema real exigiria uma chamada de API para o backend para exclusão definitiva.");
+        const id = parseInt(deleteIdInput.value);
+        allLiteratures = allLiteratures.filter(l => l.id !== id);
+        studentLiteratures = studentLiteratures.filter(litId => litId !== id);
+        renderChips();
+        deleteModal.classList.add('hidden');
+    });
+
+    // Inicialização
+    renderChips();
+});
+</script>
+
+</body>
+</html>
+
