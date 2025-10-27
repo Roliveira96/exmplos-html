@@ -163,6 +163,14 @@ const preAtualizarDados = () => {
     }
 
     const linhaFinalSelecionada = linhaFinalKey ? TAXAS[linhaFinalKey] : null;
+
+    // Atualiza o novo campo de input da taxa de juros
+    const taxaJurosManualInput = document.getElementById('taxaJurosManual');
+    if (linhaFinalSelecionada) {
+        taxaJurosManualInput.value = (linhaFinalSelecionada.taxa * 100).toFixed(2).replace('.', ',');
+    }
+
+
     const cotaAtual = linhaFinalSelecionada ? (linhaFinalSelecionada.cota || COTA_FINANCIAMENTO_PADRAO) : COTA_FINANCIAMENTO_PADRAO;
     let entradaMinima = valorImovel * (1 - cotaAtual);
 
@@ -313,7 +321,7 @@ const calcularSimulacaoCompleta = () => {
     const aporteRendimentoAnual = unmaskPercent(elementosDOM.aporteRendimentoAnual.value);
     const pretendeAlugar = elementosDOM.pretendeAlugar.checked;
     const valorAluguel = unmaskMoeda(elementosDOM.valorAluguel.value);
-    const taxaAnual = parseFloat(elementosDOM.tipoFinanciamento.value);
+    const taxaAnual = unmaskPercent(document.getElementById('taxaJurosManual').value);
     const usarFgtsEntrada = document.getElementById('usarFgtsEntrada').checked;
     const taxaAumentoAluguel = unmaskPercent(document.getElementById('taxaAumentoAluguelInput').value);
     const taxaValorizacaoImovel = unmaskPercent(document.getElementById('taxaValorizacaoImovel').value);
@@ -382,7 +390,7 @@ const calcularSimulacaoCompleta = () => {
     const colunasAluguel = document.querySelectorAll('[data-coluna-aluguel]');
     colunasAluguel.forEach(col => col.style.display = pretendeAlugar ? '' : 'none');
 
-    renderizarTabelaFluxoCaixa(elementosDOM.tabelaCorpo, resultadoAporte.parcelas, valorAluguel, taxaAumentoAluguel, pretendeAlugar);
+    renderizarTabelaFluxoCaixa(elementosDOM.tabelaCorpo, resultadoAporte.parcelas, valorAluguel, taxaAumentoAluguel, pretendeAlugar, taxaCDI, entradaDinheiroFinal);
 
     renderizarDetalheFgts(dadosFamiliares.proponentes, usarFgtsEntrada, ativarAporte, resultadoAporte.fgtsAmortizadoTotal);
 
@@ -397,7 +405,10 @@ const calcularSimulacaoCompleta = () => {
     elementosDOM.ganhoValorizacaoEstimado.textContent = formatarMoeda(ganhoValorizacao);
 
     // Calcular e exibir o comparativo de investimento
-    const valorAcumuladoCDI = calcularInvestimentoAlternativo(resultadoAporte.parcelas, taxaCDI, entradaTotalFinal);
+    const valorAcumuladoCDI = calcularInvestimentoAlternativo(resultadoAporte.parcelas, taxaCDI, entradaDinheiroFinal);
     document.getElementById('valorImovelComValorizacao').textContent = formatarMoeda(valorFinalEstimado);
     document.getElementById('valorAcumuladoCDI').textContent = formatarMoeda(valorAcumuladoCDI);
+
+    // Habilitar o botão de exportar
+    document.getElementById('exportarJson').disabled = false;
 };

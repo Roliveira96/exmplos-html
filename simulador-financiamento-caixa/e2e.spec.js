@@ -59,7 +59,7 @@ test.describe('Simulador de Financiamento Caixa', () => {
     const primeiraParcelaTabela = await page.locator('#tabelaAmortizacaoBody tr:first-child td:nth-child(2)').innerText();
     const valorPrimeiraParcelaTabela = unmaskTest(primeiraParcelaTabela);
 
-    const aluguelTabela = await page.locator('#tabelaAmortizacaoBody tr:first-child td:nth-child(3)').innerText();
+    const aluguelTabela = await page.locator('#tabelaAmortizacaoBody tr:first-child td:nth-child(4)').innerText();
     const valorAluguelTabela = unmaskTest(aluguelTabela);
 
     const lucroPrejuizo = await page.locator('[data-testid="fluxo-caixa"]').first().innerText();

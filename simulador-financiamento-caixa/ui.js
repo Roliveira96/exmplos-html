@@ -266,16 +266,22 @@ const limparResultados = (elementosDOM) => {
     elementosDOM.ganhoValorizacaoEstimado.textContent = formatarMoeda(0);
 };
 
-const renderizarTabelaFluxoCaixa = (tabelaCorpo, parcelasCalculadas, valorAluguelInicial, taxaAumentoAluguel, pretendeAlugar) => {
+const renderizarTabelaFluxoCaixa = (tabelaCorpo, parcelasCalculadas, valorAluguelInicial, taxaAumentoAluguel, pretendeAlugar, taxaCDI, entradaDinheiro) => {
     tabelaCorpo.innerHTML = '';
     if (!parcelasCalculadas || parcelasCalculadas.length === 0) {
-        tabelaCorpo.innerHTML = '<tr><td colspan="5" class="text-center p-4 text-gray-500">Erro ao calcular parcelas.</td></tr>';
+        tabelaCorpo.innerHTML = '<tr><td colspan="6" class="text-center p-4 text-gray-500">Erro ao calcular parcelas.</td></tr>';
         return;
     }
 
     let aluguelMensalAtual = valorAluguelInicial;
+    let valorAcumuladoCDI = entradaDinheiro;
+    const taxaCDIMensal = taxaCDI / 12;
 
     parcelasCalculadas.forEach(p => {
+        // Atualiza o valor do CDI para o mês atual
+        valorAcumuladoCDI += p.parcelaTotalPaga;
+        valorAcumuladoCDI *= (1 + taxaCDIMensal);
+
         const ano = Math.ceil(p.mes / 12);
         if (p.mes % 12 === 1 && ano > 1) {
             aluguelMensalAtual *= (1 + taxaAumentoAluguel);
@@ -289,6 +295,7 @@ const renderizarTabelaFluxoCaixa = (tabelaCorpo, parcelasCalculadas, valorAlugue
         let rowHTML = `
             <td class="px-2 py-1 text-gray-700">${p.mes}</td>
             <td class="px-2 py-1 text-gray-700 text-right">${formatarMoeda(p.parcelaTotalPaga)}</td>
+            <td class="px-2 py-1 text-green-800 font-semibold text-right">${formatarMoeda(valorAcumuladoCDI)}</td>
         `;
 
         if (pretendeAlugar) {
