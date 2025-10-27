@@ -1,14 +1,14 @@
- body {
+body {
             font-family: 'Inter', sans-serif;
             background-color: #f0f4f8;
         }
         .card {
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
             border-radius: 12px;
-            overflow: hidden; /* Garante cantos arredondados */
+            overflow: hidden; 
         }
         .text-gradient {
-            background-image: linear-gradient(to right, #1E40AF, #1D4ED8); /* Azul mais escuro */
+            background-image: linear-gradient(to right, #1E40AF, #1D4ED8); 
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
@@ -16,8 +16,8 @@
             text-align: right;
         }
         .step-title {
-            background-color: #DBEAFE; /* Azul bem claro */
-            color: #1E3A8A; /* Azul escuro */
+            background-color: #DBEAFE; 
+            color: #1E3A8A; 
             padding: 10px 15px;
             font-weight: bold;
             border-bottom: 1px solid #BFDBFE;
@@ -32,8 +32,8 @@
             opacity: 0.7;
         }
          input:disabled {
-             background-color: #f3f4f6; /* cinza mais claro */
-             color: #6b7280; /* cinza */
+             background-color: #f3f4f6;
+             color: #6b7280; 
              cursor: not-allowed;
              opacity: 0.7;
          }
@@ -43,23 +43,24 @@
              cursor: not-allowed;
          }
         .resultado-destaque {
-             background-color: #EFF6FF; /* Azul extra claro */
-             border-left: 4px solid #3B82F6; /* Azul */
+             background-color: #EFF6FF;
+             border-left: 4px solid #3B82F6; 
         }
          .aviso-importante {
-             background-color: #FFFBEB; /* Amarelo claro */
-             border-left: 4px solid #F59E0B; /* Amarelo */
+             background-color: #FFFBEB; 
+             border-left: 4px solid #F59E0B; 
              padding: 10px;
              font-size: 0.875rem;
-             color: #B45309; /* Amarelo escuro */
+             color: #B45309; 
              border-radius: 0 4px 4px 0;
          }
-         /* Estilo para opções desabilitadas no select */
         option.ineligible {
-            color: #9ca3af; /* Cinza */
+            color: #9ca3af; 
             background-color: #f3f4f6;
         }
-        /* Esconde/Mostra seções condicionais */
         .secao-condicional.hidden {
             display: none;
+        }
+        .proponente-title {
+             font-semibold: text-indigo-700; 
         }

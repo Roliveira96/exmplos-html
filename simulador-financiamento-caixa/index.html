@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simulador Detalhado de Financiamento Caixa - SAC com FGTS</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <style src="style.css"></style>
+    <link rel="stylesheet" href="style.css"></link>
     
 </head>
 <body class="p-4 md:p-8">
 
-    <div class="max-w-6xl mx-auto bg-white rounded-xl shadow-2xl p-6 md:p-10">
+     <div class="max-w-6xl mx-auto bg-white rounded-xl shadow-2xl p-6 md:p-10">
         <h1 class="text-3xl md:text-4xl font-extrabold mb-10 text-center text-gradient">
             Simulador de Financiamento Caixa (com Amortização)
         </h1>
@@ -65,16 +65,19 @@
                     </div>
                 </div>
 
+                <!-- ETAPA 2: Proponentes -->
                 <div class="card">
                     <h2 class="step-title">2. Proponentes e Renda</h2>
                     <div class="step-content">
                         <p class="text-sm text-gray-600 mb-4">Adicione os participantes do financiamento.</p>
                         <div id="integrantesContainer" class="space-y-4 mb-4">
+                            <!-- Proponentes adicionados dinamicamente -->
                         </div>
                         <button onclick="adicionarIntegrante()" class="w-full py-2 bg-indigo-500 text-white font-semibold rounded-md hover:bg-indigo-600 transition duration-150 mb-4">
                             + Adicionar Proponente/Cônjuge
                         </button>
                         <p class="text-sm text-gray-600">Renda Familiar Bruta Média Calculada: <span id="rendaFamiliarDisplay" class="font-bold text-lg text-blue-700">R$ 0,00</span></p>
+                        <!-- FGTS na Entrada Movido para cá -->
                         <div class="mt-3 space-y-1 border-t pt-3">
                              <h3 class="text-sm font-medium text-gray-800 mb-2">Uso do FGTS Acumulado na Entrada</h3>
                             <div class="flex items-center">
@@ -86,6 +89,9 @@
                         </div>
                     </div>
                 </div>
+
+
+                <!-- ETAPA 3: Aporte Extra -->
                 <div class="card">
                     <h2 class="step-title">3. Aporte Extra (p/ Amortizar)</h2>
                     <div class="step-content space-y-4">
@@ -94,7 +100,7 @@
                              <label for="ativarAporte" class="ml-2 block text-sm font-medium text-gray-900">Ativar Aporte Extra para quitar mais rápido?</label>
                          </div>
 
-                         <div id="secaoAporteDetalhes" class="secao-condicional space-y-4 mt-3 border-t pt-3"> {/* Conteúdo condicional */}
+                         <div id="secaoAporteDetalhes" class="secao-condicional space-y-4 mt-3 border-t pt-3">
                              <div>
                                  <label class="block text-sm font-medium text-gray-700 mb-2">Tipo de Aporte:</label>
                                  <div class="flex items-center space-x-4">
@@ -123,6 +129,8 @@
                          </div>
                     </div>
                 </div>
+
+                 <!-- ETAPA 4: Entrada Final -->
                 <div class="card">
                      <h2 class="step-title">4. Definição da Entrada Final</h2>
                      <div class="step-content space-y-4">
@@ -181,6 +189,18 @@
                      </div>
                  </div>
 
+                 <!-- ETAPA 7: Valorização do Imóvel -->
+                <div class="card">
+                    <h2 class="step-title">7. Valorização do Imóvel (Estimativa)</h2>
+                    <div class="step-content">
+                         <div>
+                             <label for="taxaValorizacaoImovel" class="block text-sm font-medium text-gray-700">Taxa de Valorização Anual Média (% a.a.):</label>
+                            <input type="text" id="taxaValorizacaoImovel" value="5,00" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border input-percent" oninput="formatarInputPercent(this)">
+                            <p class="text-xs text-gray-500 mt-1">Estimativa baseada em índices como FipeZap ou média histórica da região.</p>
+                         </div>
+                    </div>
+                </div>
+
 
                 <button onclick="calcularSimulacaoCompleta()" class="mt-6 w-full py-3 bg-blue-600 text-white font-bold text-lg rounded-md hover:bg-blue-700 transition duration-150 shadow-lg">
                     Calcular Simulação Completa
@@ -208,19 +228,42 @@
                                 <h3 class="font-semibold text-blue-800 mb-2">Impacto Amortização (Aporte + FGTS Bienal)</h3>
                                 <div class="space-y-2 text-sm">
                                     <div class="flex justify-between"><span>Tempo Quitação Padrão:</span> <span id="tempoPadrao" class="font-semibold">--</span></div>
+                                    <div class="flex justify-between"><span>Custo Total Padrão (Sem Amort.):</span> <span id="custoTotalPadrao" class="font-semibold">R$ 0,00</span></div>
                                     <div class="flex justify-between"><span>Juros Totais Padrão:</span> <span id="jurosPadrao" class="font-semibold">R$ 0,00</span></div>
                                     <hr class="my-1 border-blue-200">
                                     <div class="flex justify-between text-green-700"><span>Novo Tempo Quitação:</span> <span id="tempoAporte" class="font-bold text-lg">--</span></div>
-                                    <div class="flex justify-between text-green-700"><span>Juros Totais (com Aporte):</span> <span id="jurosAporte" class="font-bold">R$ 0,00</span></div>
+                                    <div class="flex justify-between text-green-700"><span>Custo Total (com Amort.):</span> <span id="custoTotalAporte" class="font-bold">R$ 0,00</span></div>
+                                    <div class="flex justify-between text-green-700"><span>Juros Totais (com Amort.):</span> <span id="jurosAporte" class="font-bold">R$ 0,00</span></div>
                                      <hr class="my-1 border-blue-200">
-                                    <div class="flex justify-between text-indigo-700"><span>Economia Total Juros:</span> <span id="economiaJuros" class="font-bold text-xl">R$ 0,00</span></div>
+                                    <div class="flex justify-between text-indigo-700"><span>Economia Total (Custo):</span> <span id="economiaTotal" class="font-bold text-xl">R$ 0,00</span></div>
                                 </div>
                             </div>
-                            <p class="text-sm text-gray-600 mt-3">FGTS Futuro (Bienal p/ Amort.): <span id="fgtsBienalDisplay" class="font-bold text-indigo-700">R$ 0,00</span></p>
+                           <!-- <p class="text-sm text-gray-600 mt-3">FGTS Futuro (Bienal p/ Amort.): <span id="fgtsBienalDisplay" class="font-bold text-indigo-700">R$ 0,00</span></p> -->
                             <p id="avisoFgtsBienal" class="text-xs text-indigo-500 font-semibold hidden">FGTS futuro não será usado (um ou mais proponentes não marcaram a opção ou não são elegíveis).</p>
 
                         </div>
                     </div>
+                     <!-- DETALHAMENTO FGTS -->
+                     <div class="card">
+                         <h2 class="step-title">Detalhamento Uso do FGTS</h2>
+                         <div id="detalheFgtsContainer" class="step-content space-y-3 text-sm">
+                             <p class="text-center text-gray-500">Preencha os dados e clique em Calcular.</p>
+                             <!-- Detalhes preenchidos por JS -->
+                         </div>
+                     </div>
+
+                     <!-- VALORIZAÇÃO IMÓVEL -->
+                     <div class="card">
+                         <h2 class="step-title">Estimativa de Valorização</h2>
+                         <div class="step-content space-y-2 text-sm">
+                             <div class="flex justify-between"><span>Valor Original do Imóvel:</span> <span id="valorOriginalImovel" class="font-semibold">R$ 0,00</span></div>
+                             <div class="flex justify-between"><span>Tempo de Quitação (com amort.):</span> <span id="tempoQuitacaoValorizacao" class="font-semibold">--</span></div>
+                             <div class="flex justify-between"><span>Taxa Anual Considerada:</span> <span id="taxaValorizacaoUsada" class="font-semibold">0,00%</span></div>
+                              <hr class="my-1 border-gray-200">
+                             <div class="flex justify-between text-purple-700"><span>Valor Estimado ao Quitar:</span> <span id="valorFinalEstimadoImovel" class="font-bold text-lg">R$ 0,00</span></div>
+                             <div class="flex justify-between text-purple-700"><span>Ganho Estimado (Valorização):</span> <span id="ganhoValorizacaoEstimado" class="font-bold text-lg">R$ 0,00</span></div>
+                         </div>
+                     </div>
 
                      <div class="card secao-condicional hidden" id="cardFluxoCaixa">
                           <h2 class="step-title">Projeção Anual: Fluxo de Caixa (Aluguel vs Parcela)</h2>
@@ -250,7 +293,7 @@
     </div>
 
     <script src="main.js"></script>
-
+     <script src="geolocation.js"></script>
 </body>
 </html>
 
