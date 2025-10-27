@@ -29,9 +29,9 @@ const inicializarSimulador = async () => {
     isInitialized = true;
 
     const tabelaCorpo = document.querySelector('#tabelaAmortizacao tbody');
-    if(tabelaCorpo) tabelaCorpo.innerHTML = '<tr><td colspan="5" class="text-center p-4 text-gray-500">Preencha os dados e clique em Calcular.</td></tr>';
+    if (tabelaCorpo) tabelaCorpo.innerHTML = '<tr><td colspan="5" class="text-center p-4 text-gray-500">Preencha os dados e clique em Calcular.</td></tr>';
     const elementosDOM = buscarElementosDOM();
-    if(elementosDOM) limparResultados(elementosDOM);
+    if (elementosDOM) limparResultados(elementosDOM);
 
     toggleRendimentoAnual();
     toggleSecaoAporte();
