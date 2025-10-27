@@ -358,11 +358,10 @@ const calcularSimulacaoCompleta = () => {
         statusAprovacaoMensagem.textContent = 'Aprovado';
     }
 
-    if (pretendeAlugar) {
-        renderizarTabelaFluxoCaixa(elementosDOM.tabelaCorpo, resultadoAporte.parcelas, valorAluguel, valorFinanciado, taxaAumentoAluguel);
-    } else {
-        elementosDOM.tabelaCorpo.innerHTML = '<tr><td colspan="5" class="text-center p-4 text-gray-500">Opção de aluguel não selecionada.</td></tr>';
-    }
+    const colunasAluguel = document.querySelectorAll('[data-coluna-aluguel]');
+    colunasAluguel.forEach(col => col.style.display = pretendeAlugar ? '' : 'none');
+
+    renderizarTabelaFluxoCaixa(elementosDOM.tabelaCorpo, resultadoAporte.parcelas, valorAluguel, taxaAumentoAluguel, pretendeAlugar);
 
     renderizarDetalheFgts(dadosFamiliares.proponentes, usarFgtsEntrada, ativarAporte, resultadoAporte.fgtsAmortizadoTotal);
 

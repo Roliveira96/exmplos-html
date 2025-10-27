@@ -62,7 +62,7 @@ const atualizarCidades = (cidadePreSelecionar = null) => {
     const selectCidade = document.getElementById('cidade');
     selectCidade.innerHTML = '';
 
-    const estadoData = CIDADES_BRASIL[estadoSelecionado];
+    const estadoData = window.CIDADES_BRASIL[estadoSelecionado];
 
     if (!estadoData) {
         selectCidade.innerHTML = '<option value="">Selecione um Estado</option>';
@@ -291,7 +291,7 @@ const limparResultados = (elementosDOM) => {
     elementosDOM.ganhoValorizacaoEstimado.textContent = formatarMoeda(0);
 };
 
-const renderizarTabelaFluxoCaixa = (tabelaCorpo, parcelasCalculadas, valorAluguelInicial, valorFinanciadoInicial, taxaAumentoAluguel) => {
+const renderizarTabelaFluxoCaixa = (tabelaCorpo, parcelasCalculadas, valorAluguelInicial, taxaAumentoAluguel, pretendeAlugar) => {
     tabelaCorpo.innerHTML = '';
     if (!parcelasCalculadas || parcelasCalculadas.length === 0) {
         tabelaCorpo.innerHTML = '<tr><td colspan="5" class="text-center p-4 text-gray-500">Erro ao calcular parcelas.</td></tr>';
@@ -299,54 +299,34 @@ const renderizarTabelaFluxoCaixa = (tabelaCorpo, parcelasCalculadas, valorAlugue
     }
 
     let aluguelMensalAtual = valorAluguelInicial;
-    const parcelasPorAno = 12;
-    let saldoDevedorFinalAno = valorFinanciadoInicial;
-    const maxAnos = Math.ceil(parcelasCalculadas[parcelasCalculadas.length - 1].mes / parcelasPorAno);
 
-    for (let ano = 1; ano <= maxAnos; ano++) {
-        let indiceRealFinal = -1;
-        for (let i = parcelasCalculadas.length - 1; i >= 0; i--) {
-            if (Math.ceil(parcelasCalculadas[i].mes / parcelasPorAno) === ano) {
-                indiceRealFinal = i;
-                break;
-            }
-        }
-
-        if (indiceRealFinal === -1) {
-            if (saldoDevedorFinalAno <= 0.01) break;
-            console.warn(`Nenhuma parcela encontrada para o ano ${ano}.`);
-            continue;
-        }
-
-
-        const ultimaParcelaDoAno = parcelasCalculadas[indiceRealFinal];
-        const parcelaFinalAnoPaga = ultimaParcelaDoAno.parcelaTotalPaga;
-        saldoDevedorFinalAno = ultimaParcelaDoAno.novoSaldo;
-
-
-        if (ano > 1) {
+    parcelasCalculadas.forEach(p => {
+        const ano = Math.ceil(p.mes / 12);
+        if (p.mes % 12 === 1 && ano > 1) {
             aluguelMensalAtual *= (1 + taxaAumentoAluguel);
         }
 
-        const fluxoCaixaMensal = aluguelMensalAtual - parcelaFinalAnoPaga;
+        const fluxoCaixaMensal = aluguelMensalAtual - p.parcelaTotalPaga;
 
         const tr = document.createElement('tr');
         tr.className = `text-xs ${fluxoCaixaMensal >= -0.01 ? 'bg-green-50 hover:bg-green-100' : 'bg-white hover:bg-gray-50'}`;
 
-        tr.innerHTML = `
-            <td class="px-2 py-1 text-gray-700">${ano}</td>
-            <td class="px-2 py-1 text-gray-700 text-right">${formatarMoeda(parcelaFinalAnoPaga)}</td>
-            <td class="px-2 py-1 font-semibold ${aluguelMensalAtual >= parcelaFinalAnoPaga - 0.01 ? 'text-green-700' : 'text-yellow-700'} text-right">${formatarMoeda(aluguelMensalAtual)}</td>
-            <td class="px-2 py-1 ${fluxoCaixaMensal >= -0.01 ? 'text-green-800 font-bold' : 'text-red-600'} text-right">${formatarMoeda(fluxoCaixaMensal)}</td>
-            <td class="px-2 py-1 text-gray-700 text-right">${formatarMoeda(saldoDevedorFinalAno)}</td>
+        let rowHTML = `
+            <td class="px-2 py-1 text-gray-700">${p.mes}</td>
+            <td class="px-2 py-1 text-gray-700 text-right">${formatarMoeda(p.parcelaTotalPaga)}</td>
         `;
-        tabelaCorpo.appendChild(tr);
 
-        if (saldoDevedorFinalAno <= 0.01) break;
-    }
-    if (tabelaCorpo.innerHTML === '') {
-        tabelaCorpo.innerHTML = '<tr><td colspan="5" class="text-center p-4 text-gray-500">Erro ao gerar tabela. Verifique os dados.</td></tr>';
-    }
+        if (pretendeAlugar) {
+            rowHTML += `
+                <td class="px-2 py-1 font-semibold ${aluguelMensalAtual >= p.parcelaTotalPaga - 0.01 ? 'text-green-700' : 'text-yellow-700'} text-right">${formatarMoeda(aluguelMensalAtual)}</td>
+                <td class="px-2 py-1 ${fluxoCaixaMensal >= -0.01 ? 'text-green-800 font-bold' : 'text-red-600'} text-right">${formatarMoeda(fluxoCaixaMensal)}</td>
+            `;
+        }
+
+        rowHTML += `<td class="px-2 py-1 text-gray-700 text-right">${formatarMoeda(p.novoSaldo)}</td>`;
+        tr.innerHTML = rowHTML;
+        tabelaCorpo.appendChild(tr);
+    });
 };
 
 const renderizarDetalheFgts = (proponentes, usarFgtsEntrada, ativarAporte, fgtsAmortizadoTotalCalculado) => {

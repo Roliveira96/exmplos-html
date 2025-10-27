@@ -11,6 +11,5 @@ const TAXAS = {
 };
 const SEGUROS_MENSAIS = 50.00;
 
-let CIDADES_BRASIL = {};
 let integranteId = 0;
 let isInitialized = false;

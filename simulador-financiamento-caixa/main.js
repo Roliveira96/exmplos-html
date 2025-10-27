@@ -10,10 +10,10 @@ const inicializarSimulador = async () => {
     const selectEstado = document.getElementById('estado');
     selectEstado.innerHTML = '';
 
-    const siglas = Object.keys(CIDADES_BRASIL).sort();
+    const siglas = Object.keys(window.CIDADES_BRASIL).sort();
 
     siglas.forEach(sigla => {
-        const estado = CIDADES_BRASIL[sigla];
+        const estado = window.CIDADES_BRASIL[sigla];
         const option = document.createElement('option');
         option.value = sigla;
         option.textContent = estado.nome;
