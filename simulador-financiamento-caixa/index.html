@@ -131,7 +131,7 @@
 
                             <div>
                                 <label for="aporteValorMensal" class="block text-sm font-medium text-gray-700">Valor Mensal Guardado/Aportado (R$):</label>
-                                <input type="text" id="aporteValorMensal" value="100,00" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border input-moeda" oninput="formatarInputMoeda(this); atualizarAporteAluguelLink(false)">
+                                <input type="text" id="aporteValorMensal" value="100,00" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border input-moeda" oninput="formatarInputMoeda(this)">
                                 <p class="text-xs text-gray-500 mt-1">Este valor será guardado mensalmente. Se "Anual", será aplicado com rendimento. Se "Mensal", será amortizado direto na dívida.</p>
                             </div>
 
@@ -190,7 +190,7 @@
                          <div id="secaoAluguelDetalhes" class="secao-condicional hidden grid grid-cols-2 gap-4 mt-3 border-t pt-3">
                              <div>
                                 <label for="valorAluguel" class="block text-sm font-medium text-gray-700">Aluguel Mensal Inicial (R$):</label>
-                                <input type="text" id="valorAluguel" value="1.300,00" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border input-moeda" oninput="formatarInputMoeda(this); atualizarAporteAluguelLink(true)">
+                                <input type="text" id="valorAluguel" value="1.300,00" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border input-moeda" oninput="formatarInputMoeda(this)">
                              </div>
                              <div>
                                  <label for="taxaAumentoAluguelInput" class="block text-sm font-medium text-gray-700">Reajuste Anual (%):</label>

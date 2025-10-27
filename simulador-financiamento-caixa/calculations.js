@@ -190,7 +190,6 @@ const preAtualizarDados = () => {
 
     verificarEntradaMinima();
     verificarSelecaoIneligivel();
-    atualizarAporteAluguelLink();
 };
 
 const calcularAmortizacao = (valorFinanciado, taxaAnual, prazoMeses, aporteTipo, aporteValorMensal, aporteRendimentoAnual, fgtsBienal, proponentes, ativarAporte, objetivoAporte) => {

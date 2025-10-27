@@ -195,12 +195,15 @@ const toggleRendimentoAnual = () => {
 const toggleSecaoAporte = () => {
     const ativar = document.getElementById('ativarAporte').checked;
     const secaoDetalhes = document.getElementById('secaoAporteDetalhes');
+    const aporteInput = document.getElementById('aporteValorMensal');
+
     if (ativar) {
         secaoDetalhes.classList.remove('hidden');
+        aporteInput.disabled = false;
     } else {
         secaoDetalhes.classList.add('hidden');
+        aporteInput.disabled = true;
     }
-    atualizarAporteAluguelLink();
 };
 
 const toggleSecaoAluguel = () => {
@@ -210,31 +213,6 @@ const toggleSecaoAluguel = () => {
         secaoDetalhes.classList.remove('hidden');
     } else {
         secaoDetalhes.classList.add('hidden');
-    }
-    atualizarAporteAluguelLink();
-};
-
-const atualizarAporteAluguelLink = (foiAluguelQueMudou = false) => {
-    const ativarAporte = document.getElementById('ativarAporte').checked;
-    const pretendeAlugar = document.getElementById('pretendeAlugar').checked;
-    const aporteInput = document.getElementById('aporteValorMensal');
-    const aluguelInput = document.getElementById('valorAluguel');
-
-    if (ativarAporte && pretendeAlugar) {
-        if (foiAluguelQueMudou && aluguelInput.value) {
-            aporteInput.value = aluguelInput.value;
-            formatarInputMoeda(aporteInput);
-        } else if (!foiAluguelQueMudou && aluguelInput.value && aporteInput.value !== aluguelInput.value) {
-            aporteInput.value = aluguelInput.value;
-            formatarInputMoeda(aporteInput);
-        }
-        aporteInput.disabled = true;
-    } else if (ativarAporte) {
-        aporteInput.disabled = false;
-    } else {
-        aporteInput.value = '100,00';
-        formatarInputMoeda(aporteInput);
-        aporteInput.disabled = true;
     }
 };
 
@@ -316,7 +294,7 @@ const renderizarTabelaFluxoCaixa = (tabelaCorpo, parcelasCalculadas, valorAlugue
         if (pretendeAlugar) {
             rowHTML += `
                 <td class="px-2 py-1 font-semibold ${aluguelMensalAtual >= p.parcelaTotalPaga - 0.01 ? 'text-green-700' : 'text-yellow-700'} text-right">${formatarMoeda(aluguelMensalAtual)}</td>
-                <td class="px-2 py-1 ${fluxoCaixaMensal >= -0.01 ? 'text-green-800 font-bold' : 'text-red-600'} text-right">${formatarMoeda(fluxoCaixaMensal)}</td>
+                <td class="px-2 py-1 ${fluxoCaixaMensal >= -0.01 ? 'text-green-800 font-bold' : 'text-red-600'} text-right" data-testid="fluxo-caixa">${formatarMoeda(fluxoCaixaMensal)}</td>
             `;
         }
 
