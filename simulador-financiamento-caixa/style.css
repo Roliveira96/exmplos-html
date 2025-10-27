@@ -1,0 +1,65 @@
+ body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+        }
+        .card {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            border-radius: 12px;
+            overflow: hidden; /* Garante cantos arredondados */
+        }
+        .text-gradient {
+            background-image: linear-gradient(to right, #1E40AF, #1D4ED8); /* Azul mais escuro */
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .input-moeda, .input-data, .input-percent {
+            text-align: right;
+        }
+        .step-title {
+            background-color: #DBEAFE; /* Azul bem claro */
+            color: #1E3A8A; /* Azul escuro */
+            padding: 10px 15px;
+            font-weight: bold;
+            border-bottom: 1px solid #BFDBFE;
+            border-radius: 12px 12px 0 0;
+        }
+        .step-content {
+            padding: 20px;
+        }
+        select:disabled {
+            background-color: #e9ecef;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+         input:disabled {
+             background-color: #f3f4f6; /* cinza mais claro */
+             color: #6b7280; /* cinza */
+             cursor: not-allowed;
+             opacity: 0.7;
+         }
+         input[type="radio"]:disabled + label,
+         input[type="checkbox"]:disabled + label {
+             color: #9ca3af;
+             cursor: not-allowed;
+         }
+        .resultado-destaque {
+             background-color: #EFF6FF; /* Azul extra claro */
+             border-left: 4px solid #3B82F6; /* Azul */
+        }
+         .aviso-importante {
+             background-color: #FFFBEB; /* Amarelo claro */
+             border-left: 4px solid #F59E0B; /* Amarelo */
+             padding: 10px;
+             font-size: 0.875rem;
+             color: #B45309; /* Amarelo escuro */
+             border-radius: 0 4px 4px 0;
+         }
+         /* Estilo para opções desabilitadas no select */
+        option.ineligible {
+            color: #9ca3af; /* Cinza */
+            background-color: #f3f4f6;
+        }
+        /* Esconde/Mostra seções condicionais */
+        .secao-condicional.hidden {
+            display: none;
+        }
