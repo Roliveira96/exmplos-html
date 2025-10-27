@@ -238,6 +238,13 @@
                                     <div class="flex justify-between text-indigo-700"><span>Economia Total (Custo):</span> <span id="economiaTotal" class="font-bold text-xl">R$ 0,00</span></div>
                                 </div>
                             </div>
+                            <div id="statusAprovacao" class="hidden mt-4 p-4 rounded-lg">
+                                <h3 class="font-semibold text-lg mb-2">Status da Aprovação</h3>
+                                <p id="statusAprovacaoMensagem" class="text-base"></p>
+                                <p class="text-xs text-gray-500 mt-2">
+                                    <strong>Observação:</strong> Esta é uma simulação e não garante a aprovação do financiamento. A decisão final está sujeita à análise de crédito e à aprovação do gerente da Caixa.
+                                </p>
+                            </div>
                            <!-- <p class="text-sm text-gray-600 mt-3">FGTS Futuro (Bienal p/ Amort.): <span id="fgtsBienalDisplay" class="font-bold text-indigo-700">R$ 0,00</span></p> -->
                             <p id="avisoFgtsBienal" class="text-xs text-indigo-500 font-semibold hidden">FGTS futuro não será usado (um ou mais proponentes não marcaram a opção ou não são elegíveis).</p>
 
@@ -292,8 +299,51 @@
         </div>
     </div>
 
+    <script src="data.js"></script>
+    <script src="ui.js"></script>
+    <script src="calculations.js"></script>
+    <script src="geolocation.js"></script>
     <script src="main.js"></script>
-     <script src="geolocation.js"></script>
+    <script src="listeners.js"></script>
+
+    <template id="integranteTemplate">
+        <div class="p-4 bg-white rounded-lg shadow space-y-3 border border-gray-200" data-id="">
+            <div class="flex justify-between items-center">
+                <h3 class="proponente-title font-semibold text-indigo-700"></h3>
+                <button class="text-red-500 hover:text-red-700 text-xs font-bold px-2 py-1 rounded hover:bg-red-50" onclick="removerIntegrante(this.parentElement.parentElement.id)">Remover</button>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label class="block text-xs font-medium text-gray-600">Nome:</label>
+                    <input type="text" placeholder="Nome Proponente" class="integrante-nome mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 text-sm border" oninput="atualizarTituloProponente(this.parentElement.parentElement.parentElement.dataset.id)">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-600">Data Nasc.:</label>
+                    <input type="text" placeholder="DD/MM/AAAA" class="integrante-nascimento mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 text-sm border input-data" oninput="formatarDataInput(this)">
+                </div>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label class="block text-xs font-medium text-gray-600">Salário Bruto Médio (R$):</label>
+                    <input type="text" class="integrante-salario mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 text-sm border input-moeda" oninput="formatarInputMoeda(this); preAtualizarDados()">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-600">FGTS Acumulado (R$):</label>
+                    <input type="text" class="integrante-fgts-acumulado mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 text-sm border input-moeda" oninput="formatarInputMoeda(this); preAtualizarDados()">
+                </div>
+            </div>
+            <div class="grid grid-cols-2 gap-3 mt-2">
+                <div class="flex items-center">
+                    <input type="checkbox" class="integrante-fgts-3anos h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" onchange="preAtualizarDados()">
+                    <label class="ml-2 block text-xs text-gray-800">Possui 3 anos trab. (FGTS)?</label>
+                </div>
+                <div class="flex items-center">
+                    <input type="checkbox" class="integrante-usar-fgts-futuro h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500" onchange="preAtualizarDados()">
+                    <label class="ml-2 block text-xs text-gray-800">Usar FGTS futuro p/ Amortizar?</label>
+                </div>
+            </div>
+        </div>
+    </template>
 </body>
 </html>
 
