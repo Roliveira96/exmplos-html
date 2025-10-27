@@ -173,7 +173,7 @@
                              <label for="pretendeAlugar" class="ml-2 block text-sm font-medium text-gray-900">Pretende Alugar o Imóvel (após 1 ano)?</label>
                          </div>
 
-                         <div id="secaoAluguelDetalhes" class="secao-condicional hidden grid grid-cols-2 gap-4 mt-3 border-t pt-3"> {/* Conteúdo condicional */}
+                         <div id="secaoAluguelDetalhes" class="secao-condicional hidden grid grid-cols-2 gap-4 mt-3 border-t pt-3">
                              <div>
                                 <label for="valorAluguel" class="block text-sm font-medium text-gray-700">Aluguel Mensal Inicial (R$):</label>
                                 <input type="text" id="valorAluguel" value="1.300,00" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border input-moeda" oninput="formatarInputMoeda(this); atualizarAporteAluguelLink(true)">
@@ -209,7 +209,7 @@
 
             <!-- COLUNA DIREITA: RESULTADOS -->
             <div class="lg:col-span-1 space-y-6">
-                 <div id="resultados" class="sticky top-8 space-y-6"> {/* Faz a coluna de resultados fixar */}
+                 <div id="resultados" class="sticky top-8 space-y-6">
                     <div class="card">
                         <h2 class="step-title">Resultados da Simulação</h2>
                         <div class="step-content">
@@ -276,7 +276,7 @@
                           <h2 class="step-title">Projeção Anual: Fluxo de Caixa (Aluguel vs Parcela)</h2>
                           <div class="step-content">
                                <p class="text-xs text-gray-500 mb-2">(Aluguel Corrigido vs. Parcela Decrescente + Aporte)</p>
-                               <div class="overflow-y-auto max-h-96"> {/* Scroll para a tabela */}
+                               <div class="overflow-y-auto max-h-96">
                                   <table id="tabelaAmortizacao" class="min-w-full divide-y divide-gray-200 text-xs">
                                       <thead>
                                           <tr class="bg-gray-100">
