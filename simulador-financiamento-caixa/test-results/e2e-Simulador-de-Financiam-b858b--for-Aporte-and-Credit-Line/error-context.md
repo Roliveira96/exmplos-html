@@ -1,0 +1,679 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e2]:
+  - heading "Simulador de Financiamento Caixa (com Amortização)" [level=1] [ref=e3]
+  - generic [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - heading "1. Imóvel e Localização" [level=2] [ref=e7]
+        - generic [ref=e8]:
+          - generic [ref=e9]:
+            - generic [ref=e10]: "Estado:"
+            - combobox "Estado:" [ref=e11]:
+              - option "Acre"
+              - option "Alagoas"
+              - option "Amazonas"
+              - option "Amapá"
+              - option "Bahia"
+              - option "Ceará"
+              - option "Distrito Federal"
+              - option "Espírito Santo"
+              - option "Goiás"
+              - option "Maranhão"
+              - option "Minas Gerais"
+              - option "Mato Grosso do Sul"
+              - option "Mato Grosso"
+              - option "Pará"
+              - option "Paraíba"
+              - option "Pernambuco"
+              - option "Piauí"
+              - option "Paraná" [selected]
+              - option "Rio de Janeiro"
+              - option "Rio Grande do Norte"
+              - option "Rondônia"
+              - option "Roraima"
+              - option "Rio Grande do Sul"
+              - option "Santa Catarina"
+              - option "Sergipe"
+              - option "São Paulo"
+              - option "Tocantins"
+          - generic [ref=e12]:
+            - generic [ref=e13]: "Cidade:"
+            - combobox "Cidade:" [ref=e14]:
+              - option "Abatiá"
+              - option "Adrianópolis"
+              - option "Agudos do Sul"
+              - option "Almirante Tamandaré"
+              - option "Altamira do Paraná"
+              - option "Alto Paraná"
+              - option "Alto Piquiri"
+              - option "Altônia"
+              - option "Alvorada do Sul"
+              - option "Amaporã"
+              - option "Ampére"
+              - option "Anahy"
+              - option "Andirá"
+              - option "Antonina"
+              - option "Antônio Olinto"
+              - option "Apucarana"
+              - option "Arapongas"
+              - option "Arapoti"
+              - option "Arapuã"
+              - option "Araruna"
+              - option "Araucária"
+              - option "Ariranha do Ivaí"
+              - option "Assaí"
+              - option "Assis Chateaubriand"
+              - option "Astorga"
+              - option "Atalaia"
+              - option "Balsa Nova"
+              - option "Bandeirantes"
+              - option "Barbosa Ferraz"
+              - option "Barra do Jacaré"
+              - option "Barracão"
+              - option "Bela Vista da Caroba"
+              - option "Bela Vista do Paraíso"
+              - option "Bituruna"
+              - option "Boa Esperança"
+              - option "Boa Esperança do Iguaçu"
+              - option "Boa Ventura de São Roque"
+              - option "Boa Vista da Aparecida"
+              - option "Bocaiúva do Sul"
+              - option "Bom Jesus do Sul"
+              - option "Bom Sucesso"
+              - option "Bom Sucesso do Sul"
+              - option "Borrazópolis"
+              - option "Braganey"
+              - option "Brasilândia do Sul"
+              - option "Cafeara"
+              - option "Cafelândia"
+              - option "Cafezal do Sul"
+              - option "Califórnia"
+              - option "Cambará"
+              - option "Cambira"
+              - option "Cambé"
+              - option "Campina Grande do Sul"
+              - option "Campina da Lagoa"
+              - option "Campina do Simão"
+              - option "Campo Bonito"
+              - option "Campo Largo"
+              - option "Campo Magro"
+              - option "Campo Mourão"
+              - option "Campo do Tenente"
+              - option "Candói"
+              - option "Cantagalo"
+              - option "Capanema"
+              - option "Capitão Leônidas Marques"
+              - option "Carambeí"
+              - option "Carlópolis"
+              - option "Cascavel"
+              - option "Castro"
+              - option "Catanduvas"
+              - option "Centenário do Sul"
+              - option "Cerro Azul"
+              - option "Chopinzinho"
+              - option "Cianorte"
+              - option "Cidade Gaúcha"
+              - option "Clevelândia"
+              - option "Colombo"
+              - option "Colorado"
+              - option "Congonhinhas"
+              - option "Conselheiro Mairinck"
+              - option "Contenda"
+              - option "Corbélia"
+              - option "Cornélio Procópio"
+              - option "Coronel Domingos Soares"
+              - option "Coronel Vivida"
+              - option "Corumbataí do Sul"
+              - option "Cruz Machado"
+              - option "Cruzeiro do Iguaçu"
+              - option "Cruzeiro do Oeste"
+              - option "Cruzeiro do Sul"
+              - option "Cruzmaltina"
+              - option "Curitiba"
+              - option "Curiúva"
+              - option "Cândido de Abreu"
+              - option "Céu Azul"
+              - option "Diamante d'Oeste"
+              - option "Diamante do Norte"
+              - option "Diamante do Sul"
+              - option "Dois Vizinhos"
+              - option "Douradina"
+              - option "Doutor Camargo"
+              - option "Doutor Ulysses"
+              - option "Engenheiro Beltrão"
+              - option "Entre Rios do Oeste"
+              - option "Enéas Marques"
+              - option "Esperança Nova"
+              - option "Espigão Alto do Iguaçu"
+              - option "Farol"
+              - option "Faxinal"
+              - option "Fazenda Rio Grande"
+              - option "Fernandes Pinheiro"
+              - option "Figueira"
+              - option "Flor da Serra do Sul"
+              - option "Floraí"
+              - option "Floresta"
+              - option "Florestópolis"
+              - option "Flórida"
+              - option "Formosa do Oeste"
+              - option "Foz do Iguaçu"
+              - option "Foz do Jordão"
+              - option "Francisco Alves"
+              - option "Francisco Beltrão"
+              - option "Fênix"
+              - option "General Carneiro"
+              - option "Godoy Moreira"
+              - option "Goioerê"
+              - option "Goioxim"
+              - option "Grandes Rios"
+              - option "Guairaçá"
+              - option "Guamiranga"
+              - option "Guapirama"
+              - option "Guaporema"
+              - option "Guaraci"
+              - option "Guaraniaçu"
+              - option "Guarapuava" [selected]
+              - option "Guaraqueçaba"
+              - option "Guaratuba"
+              - option "Guaíra"
+              - option "Honório Serpa"
+              - option "Ibaiti"
+              - option "Ibema"
+              - option "Ibiporã"
+              - option "Icaraíma"
+              - option "Iguaraçu"
+              - option "Iguatu"
+              - option "Imbaú"
+              - option "Imbituva"
+              - option "Inajá"
+              - option "Indianópolis"
+              - option "Inácio Martins"
+              - option "Ipiranga"
+              - option "Iporã"
+              - option "Iracema do Oeste"
+              - option "Irati"
+              - option "Iretama"
+              - option "Itaguajé"
+              - option "Itaipulândia"
+              - option "Itambaracá"
+              - option "Itambé"
+              - option "Itapejara d'Oeste"
+              - option "Itaperuçu"
+              - option "Itaúna do Sul"
+              - option "Ivaiporã"
+              - option "Ivatuba"
+              - option "Ivaté"
+              - option "Ivaí"
+              - option "Jaboti"
+              - option "Jacarezinho"
+              - option "Jaguapitã"
+              - option "Jaguariaíva"
+              - option "Jandaia do Sul"
+              - option "Janiópolis"
+              - option "Japira"
+              - option "Japurá"
+              - option "Jardim Alegre"
+              - option "Jardim Olinda"
+              - option "Jataizinho"
+              - option "Jesuítas"
+              - option "Joaquim Távora"
+              - option "Jundiaí do Sul"
+              - option "Juranda"
+              - option "Jussara"
+              - option "Kaloré"
+              - option "Lapa"
+              - option "Laranjal"
+              - option "Laranjeiras do Sul"
+              - option "Leópolis"
+              - option "Lidianópolis"
+              - option "Lindoeste"
+              - option "Loanda"
+              - option "Lobato"
+              - option "Londrina"
+              - option "Luiziana"
+              - option "Lunardelli"
+              - option "Lupionópolis"
+              - option "Mallet"
+              - option "Mamborê"
+              - option "Mandaguari"
+              - option "Mandaguaçu"
+              - option "Mandirituba"
+              - option "Manfrinópolis"
+              - option "Mangueirinha"
+              - option "Manoel Ribas"
+              - option "Marechal Cândido Rondon"
+              - option "Maria Helena"
+              - option "Marialva"
+              - option "Marilena"
+              - option "Mariluz"
+              - option "Marilândia do Sul"
+              - option "Maringá"
+              - option "Maripá"
+              - option "Mariópolis"
+              - option "Marmeleiro"
+              - option "Marquinho"
+              - option "Marumbi"
+              - option "Matelândia"
+              - option "Matinhos"
+              - option "Mato Rico"
+              - option "Mauá da Serra"
+              - option "Medianeira"
+              - option "Mercedes"
+              - option "Mirador"
+              - option "Miraselva"
+              - option "Missal"
+              - option "Moreira Sales"
+              - option "Morretes"
+              - option "Munhoz de Melo"
+              - option "Nossa Senhora das Graças"
+              - option "Nova Aliança do Ivaí"
+              - option "Nova América da Colina"
+              - option "Nova Aurora"
+              - option "Nova Cantu"
+              - option "Nova Esperança"
+              - option "Nova Esperança do Sudoeste"
+              - option "Nova Fátima"
+              - option "Nova Laranjeiras"
+              - option "Nova Londrina"
+              - option "Nova Olímpia"
+              - option "Nova Prata do Iguaçu"
+              - option "Nova Santa Bárbara"
+              - option "Nova Santa Rosa"
+              - option "Nova Tebas"
+              - option "Novo Itacolomi"
+              - option "Ortigueira"
+              - option "Ourizona"
+              - option "Ouro Verde do Oeste"
+              - option "Paiçandu"
+              - option "Palmas"
+              - option "Palmeira"
+              - option "Palmital"
+              - option "Palotina"
+              - option "Paranacity"
+              - option "Paranaguá"
+              - option "Paranapoema"
+              - option "Paranavaí"
+              - option "Paraíso do Norte"
+              - option "Pato Bragado"
+              - option "Pato Branco"
+              - option "Paula Freitas"
+              - option "Paulo Frontin"
+              - option "Peabiru"
+              - option "Perobal"
+              - option "Pinhais"
+              - option "Pinhal de São Bento"
+              - option "Pinhalão"
+              - option "Pinhão"
+              - option "Piraquara"
+              - option "Piraí do Sul"
+              - option "Pitanga"
+              - option "Pitangueiras"
+              - option "Piên"
+              - option "Planaltina do Paraná"
+              - option "Planalto"
+              - option "Ponta Grossa"
+              - option "Pontal do Paraná"
+              - option "Porecatu"
+              - option "Porto Amazonas"
+              - option "Porto Barreiro"
+              - option "Porto Rico"
+              - option "Porto Vitória"
+              - option "Prado Ferreira"
+              - option "Pranchita"
+              - option "Presidente Castelo Branco"
+              - option "Primeiro de Maio"
+              - option "Prudentópolis"
+              - option "Pérola"
+              - option "Pérola d'Oeste"
+              - option "Quarto Centenário"
+              - option "Quatiguá"
+              - option "Quatro Barras"
+              - option "Quatro Pontes"
+              - option "Quedas do Iguaçu"
+              - option "Querência do Norte"
+              - option "Quinta do Sol"
+              - option "Quitandinha"
+              - option "Ramilândia"
+              - option "Rancho Alegre"
+              - option "Rancho Alegre d'Oeste"
+              - option "Realeza"
+              - option "Rebouças"
+              - option "Renascença"
+              - option "Reserva"
+              - option "Reserva do Iguaçu"
+              - option "Ribeirão Claro"
+              - option "Ribeirão do Pinhal"
+              - option "Rio Azul"
+              - option "Rio Bom"
+              - option "Rio Bonito do Iguaçu"
+              - option "Rio Branco do Ivaí"
+              - option "Rio Branco do Sul"
+              - option "Rio Negro"
+              - option "Rolândia"
+              - option "Roncador"
+              - option "Rondon"
+              - option "Rosário do Ivaí"
+              - option "Sabáudia"
+              - option "Salgado Filho"
+              - option "Salto do Itararé"
+              - option "Salto do Lontra"
+              - option "Santa Amélia"
+              - option "Santa Cecília do Pavão"
+              - option "Santa Cruz Monte Castelo"
+              - option "Santa Fé"
+              - option "Santa Helena"
+              - option "Santa Inês"
+              - option "Santa Isabel do Ivaí"
+              - option "Santa Izabel do Oeste"
+              - option "Santa Lúcia"
+              - option "Santa Maria do Oeste"
+              - option "Santa Mariana"
+              - option "Santa Mônica"
+              - option "Santa Tereza do Oeste"
+              - option "Santa Terezinha de Itaipu"
+              - option "Santana do Itararé"
+              - option "Santo Antônio da Platina"
+              - option "Santo Antônio do Caiuá"
+              - option "Santo Antônio do Paraíso"
+              - option "Santo Antônio do Sudoeste"
+              - option "Santo Inácio"
+              - option "Sapopema"
+              - option "Sarandi"
+              - option "Saudade do Iguaçu"
+              - option "Sengés"
+              - option "Serranópolis do Iguaçu"
+              - option "Sertaneja"
+              - option "Sertanópolis"
+              - option "Siqueira Campos"
+              - option "Sulina"
+              - option "São Carlos do Ivaí"
+              - option "São Jerônimo da Serra"
+              - option "São Jorge d'Oeste"
+              - option "São Jorge do Ivaí"
+              - option "São Jorge do Patrocínio"
+              - option "São José da Boa Vista"
+              - option "São José das Palmeiras"
+              - option "São José dos Pinhais"
+              - option "São João"
+              - option "São João do Caiuá"
+              - option "São João do Ivaí"
+              - option "São João do Triunfo"
+              - option "São Manoel do Paraná"
+              - option "São Mateus do Sul"
+              - option "São Miguel do Iguaçu"
+              - option "São Pedro do Iguaçu"
+              - option "São Pedro do Ivaí"
+              - option "São Pedro do Paraná"
+              - option "São Sebastião da Amoreira"
+              - option "São Tomé"
+              - option "Tamarana"
+              - option "Tamboara"
+              - option "Tapejara"
+              - option "Tapira"
+              - option "Teixeira Soares"
+              - option "Telêmaco Borba"
+              - option "Terra Boa"
+              - option "Terra Rica"
+              - option "Terra Roxa"
+              - option "Tibagi"
+              - option "Tijucas do Sul"
+              - option "Toledo"
+              - option "Tomazina"
+              - option "Três Barras do Paraná"
+              - option "Tunas do Paraná"
+              - option "Tuneiras do Oeste"
+              - option "Tupãssi"
+              - option "Turvo"
+              - option "Ubiratã"
+              - option "Umuarama"
+              - option "Uniflor"
+              - option "União da Vitória"
+              - option "Uraí"
+              - option "Ventania"
+              - option "Vera Cruz do Oeste"
+              - option "Verê"
+              - option "Vila Alta"
+              - option "Virmond"
+              - option "Vitorino"
+              - option "Wenceslau Braz"
+              - option "Xambrê"
+              - option "Ângulo"
+            - paragraph [ref=e15]: A lista de cidades é limitada. Limites e regras locais podem variar.
+          - generic [ref=e16]:
+            - generic [ref=e17]: "Valor Aproximado do Imóvel (R$):"
+            - textbox "Valor Aproximado do Imóvel (R$):" [ref=e18]: 200.000,00
+          - generic [ref=e19]:
+            - generic [ref=e20]:
+              - generic [ref=e21]: "Tipo:"
+              - combobox "Tipo:" [ref=e22]:
+                - option "Residencial" [selected]
+                - option "Comercial"
+            - generic [ref=e23]:
+              - generic [ref=e24]: "Condição:"
+              - combobox "Condição:" [ref=e25]:
+                - option "Usado" [selected]
+                - option "Novo"
+      - generic [ref=e26]:
+        - heading "2. Proponentes e Renda" [level=2] [ref=e27]
+        - generic [ref=e28]:
+          - paragraph [ref=e29]: Adicione os participantes do financiamento.
+          - generic [ref=e30]:
+            - generic [ref=e31]:
+              - generic [ref=e32]:
+                - heading "Proponente 1" [level=3] [ref=e33]
+                - button "Remover" [ref=e34] [cursor=pointer]
+              - generic [ref=e35]:
+                - generic [ref=e36]:
+                  - generic [ref=e37]: "Nome:"
+                  - textbox "Nome Proponente" [ref=e38]
+                - generic [ref=e39]:
+                  - generic [ref=e40]: "Data Nasc.:"
+                  - textbox "DD/MM/AAAA" [ref=e41]
+              - generic [ref=e42]:
+                - generic [ref=e43]:
+                  - generic [ref=e44]: "Salário Bruto Médio (R$):"
+                  - textbox [ref=e45]: 0,00
+                - generic [ref=e46]:
+                  - generic [ref=e47]: "FGTS Acumulado (R$):"
+                  - textbox [ref=e48]: 0,00
+              - generic [ref=e49]:
+                - generic [ref=e50]:
+                  - checkbox [checked] [ref=e51]
+                  - generic [ref=e52]: Possui 3 anos trab. (FGTS)?
+                - generic [ref=e53]:
+                  - checkbox [checked] [ref=e54]
+                  - generic [ref=e55]: Usar FGTS futuro p/ Amortizar?
+            - generic [ref=e56]:
+              - generic [ref=e57]:
+                - heading "Proponente 2" [level=3] [ref=e58]
+                - button "Remover" [ref=e59] [cursor=pointer]
+              - generic [ref=e60]:
+                - generic [ref=e61]:
+                  - generic [ref=e62]: "Nome:"
+                  - textbox "Nome Proponente" [ref=e63]
+                - generic [ref=e64]:
+                  - generic [ref=e65]: "Data Nasc.:"
+                  - textbox "DD/MM/AAAA" [ref=e66]
+              - generic [ref=e67]:
+                - generic [ref=e68]:
+                  - generic [ref=e69]: "Salário Bruto Médio (R$):"
+                  - textbox [ref=e70]: 0,00
+                - generic [ref=e71]:
+                  - generic [ref=e72]: "FGTS Acumulado (R$):"
+                  - textbox [ref=e73]: 0,00
+              - generic [ref=e74]:
+                - generic [ref=e75]:
+                  - checkbox [checked] [ref=e76]
+                  - generic [ref=e77]: Possui 3 anos trab. (FGTS)?
+                - generic [ref=e78]:
+                  - checkbox [checked] [ref=e79]
+                  - generic [ref=e80]: Usar FGTS futuro p/ Amortizar?
+          - button "+ Adicionar Proponente/Cônjuge" [ref=e81] [cursor=pointer]
+          - paragraph [ref=e82]: "Renda Familiar Bruta Média Calculada: R$ 0,00"
+          - generic [ref=e83]:
+            - heading "Uso do FGTS Acumulado na Entrada" [level=3] [ref=e84]
+            - generic [ref=e85]:
+              - checkbox "Usar saldo de FGTS disponível na entrada?" [checked] [ref=e86]
+              - generic [ref=e87]: Usar saldo de FGTS disponível na entrada?
+            - paragraph [ref=e88]: "FGTS Acumulado Total Disponível: R$ 0,00"
+      - generic [ref=e89]:
+        - heading "3. Aporte Extra (p/ Amortizar)" [level=2] [ref=e90]
+        - generic [ref=e91]:
+          - generic [ref=e92]:
+            - checkbox "Ativar Aporte Extra para quitar mais rápido?" [active] [ref=e93]
+            - generic [ref=e94]: Ativar Aporte Extra para quitar mais rápido?
+          - generic [ref=e95]:
+            - generic [ref=e96]:
+              - generic [ref=e97]: "Tipo de Aporte:"
+              - generic [ref=e98]:
+                - generic [ref=e99]:
+                  - radio "Mensal Direto" [checked] [ref=e100]
+                  - generic [ref=e101]: Mensal Direto
+                - generic [ref=e102]:
+                  - radio "Anual Acumulado" [ref=e103]
+                  - generic [ref=e104]: Anual Acumulado
+            - generic [ref=e105]:
+              - generic [ref=e106]: "Objetivo do Aporte:"
+              - generic [ref=e107]:
+                - generic [ref=e108]:
+                  - radio "Diminuir Tempo" [checked] [ref=e109]
+                  - generic [ref=e110]: Diminuir Tempo
+                - generic [ref=e111]:
+                  - radio "Diminuir Parcela" [ref=e112]
+                  - generic [ref=e113]: Diminuir Parcela
+            - generic [ref=e114]:
+              - generic [ref=e115]: "Valor Mensal Guardado/Aportado (R$):"
+              - textbox "Valor Mensal Guardado/Aportado (R$):" [ref=e116]: 100,00
+              - paragraph [ref=e117]: Este valor será guardado mensalmente. Se "Anual", será aplicado com rendimento. Se "Mensal", será amortizado direto na dívida.
+      - generic [ref=e118]:
+        - heading "4. Definição da Entrada Final" [level=2] [ref=e119]
+        - generic [ref=e120]:
+          - paragraph [ref=e121]: "Entrada Mínima Exigida: R$ 40.000,00"
+          - paragraph [ref=e122]: "FGTS Acumulado Disponível p/ Entrada: R$ 0,00"
+          - generic [ref=e123]:
+            - generic [ref=e124]: "Valor Final da Entrada em Dinheiro (R$):"
+            - textbox "Valor Final da Entrada em Dinheiro (R$):" [ref=e125]: 40.000,00
+          - paragraph [ref=e126]: "Entrada Total Final (Dinheiro + FGTS): R$ 40.000,00"
+      - generic [ref=e127]:
+        - heading "5. Linha de Crédito e Taxa" [level=2] [ref=e128]
+        - generic [ref=e129]:
+          - paragraph [ref=e130]: "Selecione a Linha de Crédito (sugerida automaticamente):"
+          - combobox [ref=e131]:
+            - option "MCMV Faixa 3 (Renda até R$ 8.600) (8.16% a.a.)"
+            - option "MCMV Classe Média (R$ 8.6k a R$ 12k) (9.50% a.a.)"
+            - option "Pró-Cotista FGTS (Renda até ~R$12k*) (9.01% a.a.)" [selected]
+            - option "SBPE Poupança+TR (Renda Livre) (10.38% a.a.)"
+            - option "SBPE IPCA+Tx Fixa (Renda Livre) (IPCA + Tx Fixa) (8.00% a.a.)"
+            - option "SBPE TR Balcão (Renda > R$ 12k) (11.49% a.a.)"
+          - generic [ref=e133]:
+            - generic [ref=e134]: "Taxa de Juros Anual (%):"
+            - textbox "Taxa de Juros Anual (%):" [ref=e135]: 9,01
+          - generic [ref=e136]:
+            - checkbox "Forçar Simulação com Taxa Balcão (SBPE)?" [ref=e137]
+            - generic [ref=e138]: Forçar Simulação com Taxa Balcão (SBPE)?
+      - generic [ref=e139]:
+        - heading "6. Receita de Aluguel (Opcional)" [level=2] [ref=e140]
+        - generic [ref=e142]:
+          - checkbox "Pretende Alugar o Imóvel (após 1 ano)?" [ref=e143]
+          - generic [ref=e144]: Pretende Alugar o Imóvel (após 1 ano)?
+      - generic [ref=e145]:
+        - heading "7. Valorização do Imóvel (Estimativa)" [level=2] [ref=e146]
+        - generic [ref=e148]:
+          - generic [ref=e149]: "Taxa de Valorização Anual Média (% a.a.):"
+          - textbox "Taxa de Valorização Anual Média (% a.a.):" [ref=e150]: 5,00
+          - paragraph [ref=e151]: Estimativa baseada em índices como FipeZap ou média histórica da região.
+      - generic [ref=e152]:
+        - button "Calcular Simulação Completa" [ref=e153] [cursor=pointer]
+        - button "Exportar Resultados (JSON)" [disabled] [ref=e154]
+    - generic [ref=e156]:
+      - text: "{/* Faz a coluna de resultados fixar */}"
+      - generic [ref=e157]:
+        - heading "Resultados da Simulação" [level=2] [ref=e158]
+        - generic [ref=e159]:
+          - generic [ref=e160]:
+            - generic [ref=e161]:
+              - paragraph [ref=e162]: Valor Financiado
+              - paragraph [ref=e163]: R$ 0,00
+            - generic [ref=e164]:
+              - paragraph [ref=e165]: Parcela Inicial (SAC, sem aporte)
+              - paragraph [ref=e166]: R$ 0,00
+          - generic [ref=e167]:
+            - heading "Impacto Amortização (Aporte + FGTS Bienal)" [level=3] [ref=e168]
+            - generic [ref=e169]:
+              - generic [ref=e170]:
+                - generic [ref=e171]: "Tempo Quitação Padrão:"
+                - generic [ref=e172]: "--"
+              - generic [ref=e173]:
+                - generic [ref=e174]: "Custo Total Padrão (Sem Amort.):"
+                - generic [ref=e175]: R$ 0,00
+              - generic [ref=e176]:
+                - generic [ref=e177]: "Juros Totais Padrão:"
+                - generic [ref=e178]: R$ 0,00
+              - separator [ref=e179]
+              - generic [ref=e180]:
+                - generic [ref=e181]: "Novo Tempo Quitação:"
+                - generic [ref=e182]: "--"
+              - generic [ref=e183]:
+                - generic [ref=e184]: "Custo Total (com Amort.):"
+                - generic [ref=e185]: R$ 0,00
+              - generic [ref=e186]:
+                - generic [ref=e187]: "Juros Totais (com Amort.):"
+                - generic [ref=e188]: R$ 0,00
+              - separator [ref=e189]
+              - generic [ref=e190]:
+                - generic [ref=e191]: "Economia Total (Custo):"
+                - generic [ref=e192]: R$ 0,00
+      - generic [ref=e193]:
+        - heading "Detalhamento Uso do FGTS" [level=2] [ref=e194]
+        - paragraph [ref=e196]: Calcule a simulação para ver os detalhes.
+      - generic [ref=e197]:
+        - heading "Estimativa de Valorização" [level=2] [ref=e198]
+        - generic [ref=e199]:
+          - generic [ref=e200]:
+            - generic [ref=e201]: "Taxa CDI Anual Média (% a.a.):"
+            - textbox "Taxa CDI Anual Média (% a.a.):" [ref=e202]: 10,00
+            - paragraph [ref=e203]: Estimativa da taxa CDI para o comparativo de investimento.
+          - generic [ref=e204]:
+            - generic [ref=e205]: "Valor Original do Imóvel:"
+            - generic [ref=e206]: R$ 0,00
+          - generic [ref=e207]:
+            - generic [ref=e208]: "Tempo de Quitação (com amort.):"
+            - generic [ref=e209]: "--"
+          - generic [ref=e210]:
+            - generic [ref=e211]: "Taxa Anual Considerada:"
+            - generic [ref=e212]: 0,00%
+          - separator [ref=e213]
+          - generic [ref=e214]:
+            - generic [ref=e215]: "Valor Estimado ao Quitar:"
+            - generic [ref=e216]: R$ 0,00
+          - generic [ref=e217]:
+            - generic [ref=e218]: "Ganho Estimado (Valorização):"
+            - generic [ref=e219]: R$ 0,00
+      - generic [ref=e220]:
+        - 'heading "Projeção Anual: Fluxo de Caixa (Aluguel vs Parcela)" [level=2] [ref=e221]'
+        - generic [ref=e222]:
+          - paragraph [ref=e223]: (Aluguel Corrigido vs. Parcela Decrescente + Aporte)
+          - table [ref=e225]:
+            - rowgroup [ref=e226]:
+              - row "Mês Parcela Paga Valor em CDI Aluguel Lucro Saldo Devedor" [ref=e227]:
+                - cell "Mês" [ref=e228]
+                - cell "Parcela Paga" [ref=e229]
+                - cell "Valor em CDI" [ref=e230]
+                - cell "Aluguel" [ref=e231]
+                - cell "Lucro" [ref=e232]
+                - cell "Saldo Devedor" [ref=e233]
+            - rowgroup [ref=e234]:
+              - row "Financiamento não necessário." [ref=e235]:
+                - cell "Financiamento não necessário." [ref=e236]
+      - generic [ref=e237]:
+        - heading "Comparativo de Investimento" [level=2] [ref=e238]
+        - generic [ref=e239]:
+          - generic [ref=e240]:
+            - paragraph [ref=e241]: Valor do Imóvel com Valorização
+            - paragraph [ref=e242]: R$ 0,00
+          - generic [ref=e243]:
+            - paragraph [ref=e244]: Valor Acumulado em Investimento (CDI)
+            - paragraph [ref=e245]: R$ 0,00
+```

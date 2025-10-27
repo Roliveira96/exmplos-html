@@ -88,4 +88,32 @@ test.describe('Simulador de Financiamento Caixa', () => {
     expect(valorImovelComValorizacao).not.toEqual('R$ 0,00');
     expect(valorAcumuladoCDI).not.toEqual('R$ 0,00');
   });
+
+  test('should correctly handle UI interactions for Aporte and Credit Line', async ({ page }) => {
+    // 1. Validar a ativação/desativação do campo de Aporte
+    const aporteInput = page.locator('#aporteValorMensal');
+
+    // Verifica se está habilitado ao marcar a checkbox
+    await page.check('#ativarAporte');
+    await expect(aporteInput).toBeEnabled();
+
+    // Verifica se está desabilitado ao desmarcar a checkbox
+    await page.uncheck('#ativarAporte');
+    await expect(aporteInput).toBeDisabled();
+
+    // 2. Validar a funcionalidade do dropdown de Linha de Crédito
+    await page.locator('.integrante-salario').fill('15.000,00');
+
+    // Guarda o valor da entrada mínima inicial
+    const entradaMinimaInicial = await page.locator('#entradaMinimaDisplay').innerText();
+
+    // Seleciona uma nova linha de crédito que deve resultar em um cálculo diferente
+    await page.selectOption('#tipoFinanciamento', { label: /SBPE TR Balcão/ });
+
+    // Guarda o novo valor da entrada mínima
+    const entradaMinimaFinal = await page.locator('#entradaMinimaDisplay').innerText();
+
+    // Compara se os valores são diferentes, confirmando que o recálculo ocorreu
+    expect(entradaMinimaInicial).not.toEqual(entradaMinimaFinal);
+  });
 });

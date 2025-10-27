@@ -197,13 +197,8 @@ const toggleSecaoAporte = () => {
     const secaoDetalhes = document.getElementById('secaoAporteDetalhes');
     const aporteInput = document.getElementById('aporteValorMensal');
 
-    if (ativar) {
-        secaoDetalhes.classList.remove('hidden');
-        aporteInput.disabled = false;
-    } else {
-        secaoDetalhes.classList.add('hidden');
-        aporteInput.disabled = true;
-    }
+    secaoDetalhes.classList.toggle('hidden', !ativar);
+    aporteInput.disabled = !ativar;
 };
 
 const toggleSecaoAluguel = () => {
