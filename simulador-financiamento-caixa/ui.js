@@ -216,6 +216,11 @@ const toggleSecaoAluguel = () => {
     }
 };
 
+const desselecionarLinhaDeCredito = () => {
+    const select = document.getElementById('tipoFinanciamento');
+    select.selectedIndex = -1;
+};
+
 const buscarElementosDOM = () => {
     const ids = [
         'entradaMinimaDisplay', 'entradaFgtsDisponivelDisplay', 'entradaDinheiroFinal',

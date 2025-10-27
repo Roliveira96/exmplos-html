@@ -150,7 +150,6 @@ const preAtualizarDados = () => {
             primeiraElegivel.selected = true;
             linhaFinalKey = primeiraElegivel.id;
         } else {
-            console.warn("Nenhuma linha de crédito elegível encontrada.");
             linhaFinalKey = null;
         }
     }
@@ -166,8 +165,12 @@ const preAtualizarDados = () => {
 
     // Atualiza o novo campo de input da taxa de juros
     const taxaJurosManualInput = document.getElementById('taxaJurosManual');
-    if (linhaFinalSelecionada) {
-        taxaJurosManualInput.value = (linhaFinalSelecionada.taxa * 100).toFixed(2).replace('.', ',');
+    const linhaParaTaxa = linhaFinalSelecionada || TAXAS.SBPE_BALCAO;
+    if (linhaParaTaxa) {
+        taxaJurosManualInput.value = (linhaParaTaxa.taxa * 100).toFixed(2).replace('.', ',');
+    } else {
+        // Fallback final para evitar erros, caso SBPE_BALCAO não exista
+        taxaJurosManualInput.value = '9,99';
     }
 
 
@@ -314,10 +317,8 @@ const calcularInvestimentoAlternativo = (parcelas, taxaCDIAnual, entrada) => {
 };
 
 const calcularSimulacaoCompleta = () => {
-    console.log("--- Início da Simulação ---");
     const elementosDOM = buscarElementosDOM();
     if (!elementosDOM) {
-        console.error("DOM elements not found. Aborting.");
         return;
     }
 
@@ -342,7 +343,6 @@ const calcularSimulacaoCompleta = () => {
     const entradaMinima = unmaskMoeda(elementosDOM.entradaMinimaDisplay.textContent);
 
     if (entradaTotalFinal < entradaMinima - 0.01) {
-        console.error('A entrada total final (Dinheiro + FGTS) é menor que a entrada mínima exigida. Ajuste o valor.');
         elementosDOM.avisoEntradaInsuficiente.classList.remove('hidden');
         return;
     } else {
@@ -350,7 +350,6 @@ const calcularSimulacaoCompleta = () => {
     }
 
     const valorFinanciado = Math.max(0, valorImovel - entradaTotalFinal);
-    console.log("Valor Financiado:", valorFinanciado);
     elementosDOM.valorFinanciadoDisplay.textContent = formatarMoeda(valorFinanciado);
 
     const avisoFgtsBienal = document.getElementById('avisoFgtsBienal');
@@ -362,15 +361,12 @@ const calcularSimulacaoCompleta = () => {
 
 
     if (valorFinanciado <= 0) {
-        console.warn('Entrada cobre o valor do imóvel. Não há financiamento a calcular.');
         limparResultados(elementosDOM);
         return;
     }
 
     const resultadoPadrao = calcularAmortizacao(valorFinanciado, taxaAnual, PRAZO_MESES, 'mensal', 0, 0, 0, [], false, 'prazo');
-    console.log("Resultado Padrão:", resultadoPadrao);
     const resultadoAporte = calcularAmortizacao(valorFinanciado, taxaAnual, PRAZO_MESES, aporteTipo, aporteValorMensal, aporteRendimentoAnual, dadosFamiliares.fgtsBienal, dadosFamiliares.proponentes, ativarAporte, objetivoAporte);
-    console.log("Resultado com Aporte:", resultadoAporte);
 
     elementosDOM.tempoPadrao.textContent = formatarAnosMeses(resultadoPadrao.tempoMeses);
     elementosDOM.custoTotalPadrao.textContent = formatarMoeda(resultadoPadrao.custoTotalPago);
@@ -438,17 +434,10 @@ const calcularSimulacaoCompleta = () => {
     }
 
     // Renderizar o gráfico somente com dados válidos
-    console.log("Histórico Imóvel:", historicoImovel);
-    console.log("Histórico CDI:", historicoCDI);
     if (typeof renderizarGraficoComparativo === 'function' && historicoImovel.length > 0 && historicoImovel.length === historicoCDI.length && historicoImovel.every(isFinite) && historicoCDI.every(isFinite)) {
-        console.log("Renderizando o gráfico.");
         renderizarGraficoComparativo(historicoImovel, historicoCDI);
-    } else {
-        console.warn("Não foi possível renderizar o gráfico devido a dados inválidos ou inconsistentes.");
     }
 
     // Habilitar o botão de exportar
-    console.log("Habilitando botão de exportar.");
     document.getElementById('exportarJson').disabled = false;
-    console.log("--- Fim da Simulação ---");
 };
