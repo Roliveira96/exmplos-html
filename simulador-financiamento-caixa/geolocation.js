@@ -33,8 +33,8 @@ const carregarDadosEstaticos = async () => {
         alert('Erro ao carregar a lista de estados e cidades. O simulador não pode ser iniciado. Verifique o arquivo estados-cidades.json.');
 
         window.CIDADES_BRASIL = {
-            "PR": {"nome": "Paraná", "cidades": ["Guarapuava"]},
-            "SP": {"nome": "São Paulo", "cidades": ["São Paulo"]}
+            "PR": { "nome": "Paraná", "cidades": ["Guarapuava"] },
+            "SP": { "nome": "São Paulo", "cidades": ["São Paulo"] }
         };
         return window.CIDADES_BRASIL;
     }

@@ -193,7 +193,7 @@ const preAtualizarDados = () => {
     atualizarAporteAluguelLink();
 };
 
-const calcularAmortizacao = (valorFinanciado, taxaAnual, prazoMeses, aporteTipo, aporteValorMensal, aporteRendimentoAnual, fgtsBienal, proponentes, ativarAporte) => {
+const calcularAmortizacao = (valorFinanciado, taxaAnual, prazoMeses, aporteTipo, aporteValorMensal, aporteRendimentoAnual, fgtsBienal, proponentes, ativarAporte, objetivoAporte) => {
     if (valorFinanciado <= 0 || prazoMeses <= 0 || taxaAnual < 0) {
         return { tempoMeses: 0, totalJuros: 0, parcelaInicial: 0, parcelas: [], custoTotalPago: 0, fgtsAmortizadoTotal: 0 };
     }
@@ -208,7 +208,7 @@ const calcularAmortizacao = (valorFinanciado, taxaAnual, prazoMeses, aporteTipo,
     let saldoDevedor = valorFinanciado;
     const taxaMensalFinanciamento = taxaAnual / 12;
     const taxaMensalRendimentoAporte = aporteRendimentoAnual / 12;
-    const amortizacaoFixa = valorFinanciado / prazoMeses;
+    let amortizacaoFixa = valorFinanciado / prazoMeses;
     let totalJuros = 0;
     let fgtsAmortizadoTotal = 0;
     let parcelas = [];
@@ -219,11 +219,10 @@ const calcularAmortizacao = (valorFinanciado, taxaAnual, prazoMeses, aporteTipo,
         mes++;
 
         const jurosDoMes = saldoDevedor * taxaMensalFinanciamento;
-        const parcelaRequerida = amortizacaoFixa + jurosDoMes + SEGUROS_MENSAIS;
+        const parcelaProgramada = amortizacaoFixa + jurosDoMes + SEGUROS_MENSAIS;
 
         let aporteExtraDoMes = 0;
         let aporteBienalAplicado = 0;
-
         if (ativarAporte) {
             if (aporteTipo === 'mensal') {
                 aporteExtraDoMes = aporteValorMensal;
@@ -236,18 +235,18 @@ const calcularAmortizacao = (valorFinanciado, taxaAnual, prazoMeses, aporteTipo,
             }
 
             if (mes > 0 && mes % 24 === 0 && algumElegivelFgtsFuturo) {
-                aporteExtraDoMes += fgtsBienal;
-                aporteBienalAplicado = fgtsBienal;
-                fgtsAmortizadoTotal += fgtsBienal;
+                const fgtsDoAporte = fgtsBienal;
+                aporteExtraDoMes += fgtsDoAporte;
+                aporteBienalAplicado = fgtsDoAporte;
+                fgtsAmortizadoTotal += fgtsDoAporte;
             }
         }
 
-        let totalAmortizado = amortizacaoFixa + aporteExtraDoMes;
-        totalAmortizado = Math.min(totalAmortizado, saldoDevedor);
+        const parcelaTotalPaga = parcelaProgramada + aporteExtraDoMes;
+        let totalAmortizadoNoMes = amortizacaoFixa + aporteExtraDoMes;
+        totalAmortizadoNoMes = Math.min(totalAmortizadoNoMes, saldoDevedor);
 
-        const parcelaTotalPaga = parcelaRequerida + (ativarAporte && aporteTipo === 'mensal' ? aporteValorMensal : 0);
-
-        const novoSaldo = Math.max(0, saldoDevedor - totalAmortizado);
+        const novoSaldo = Math.max(0, saldoDevedor - totalAmortizadoNoMes);
         totalJuros += jurosDoMes;
 
         parcelas.push({
@@ -255,9 +254,9 @@ const calcularAmortizacao = (valorFinanciado, taxaAnual, prazoMeses, aporteTipo,
             saldoDevedor: saldoDevedor,
             juros: jurosDoMes,
             amortizacao: amortizacaoFixa,
-            parcela: parcelaRequerida,
+            parcela: parcelaProgramada,
             parcelaTotalPaga: parcelaTotalPaga,
-            amortizacaoTotal: totalAmortizado,
+            amortizacaoTotal: totalAmortizadoNoMes,
             aporteAplicado: aporteExtraDoMes,
             aporteBienal: aporteBienalAplicado,
             novoSaldo: novoSaldo,
@@ -266,8 +265,17 @@ const calcularAmortizacao = (valorFinanciado, taxaAnual, prazoMeses, aporteTipo,
         saldoDevedor = novoSaldo;
         if (saldoDevedor <= 0.01) {
             saldoDevedor = 0;
-            if (parcelas.length > 0) { parcelas[parcelas.length-1].novoSaldo = 0; }
+            if (parcelas.length > 0) { parcelas[parcelas.length - 1].novoSaldo = 0; }
             break;
+        }
+
+        if (objetivoAporte === 'parcela' && aporteExtraDoMes > 0) {
+            const mesesRestantes = prazoMeses - mes;
+            if (mesesRestantes > 0) {
+                amortizacaoFixa = saldoDevedor / mesesRestantes;
+            } else {
+                amortizacaoFixa = saldoDevedor;
+            }
         }
     }
     const custoTotalReal = valorFinanciado + totalJuros + (SEGUROS_MENSAIS * mes);
@@ -298,6 +306,7 @@ const calcularSimulacaoCompleta = () => {
     const usarFgtsEntrada = document.getElementById('usarFgtsEntrada').checked;
     const taxaAumentoAluguel = unmaskPercent(document.getElementById('taxaAumentoAluguelInput').value);
     const taxaValorizacaoImovel = unmaskPercent(document.getElementById('taxaValorizacaoImovel').value);
+    const objetivoAporte = document.querySelector('input[name="objetivoAporte"]:checked').value;
 
     const dadosFamiliares = calcularDadosFamiliares();
     const fgtsNaEntrada = usarFgtsEntrada && dadosFamiliares.todosElegiveisFgtsEntrada ? dadosFamiliares.fgtsAcumuladoTotal : 0;
@@ -329,8 +338,8 @@ const calcularSimulacaoCompleta = () => {
         return;
     }
 
-    const resultadoPadrao = calcularAmortizacao(valorFinanciado, taxaAnual, PRAZO_MESES, 'mensal', 0, 0, 0, [], false);
-    const resultadoAporte = calcularAmortizacao(valorFinanciado, taxaAnual, PRAZO_MESES, aporteTipo, aporteValorMensal, aporteRendimentoAnual, dadosFamiliares.fgtsBienal, dadosFamiliares.proponentes, ativarAporte);
+    const resultadoPadrao = calcularAmortizacao(valorFinanciado, taxaAnual, PRAZO_MESES, 'mensal', 0, 0, 0, [], false, 'prazo');
+    const resultadoAporte = calcularAmortizacao(valorFinanciado, taxaAnual, PRAZO_MESES, aporteTipo, aporteValorMensal, aporteRendimentoAnual, dadosFamiliares.fgtsBienal, dadosFamiliares.proponentes, ativarAporte, objetivoAporte);
 
     elementosDOM.tempoPadrao.textContent = formatarAnosMeses(resultadoPadrao.tempoMeses);
     elementosDOM.custoTotalPadrao.textContent = formatarMoeda(resultadoPadrao.custoTotalPago);

@@ -10,438 +10,354 @@
 </head>
 <body class="p-4 md:p-8">
 
-<div class="max-w-6xl mx-auto bg-white rounded-xl shadow-2xl p-6 md:p-10">
-    <h1 class="text-3xl md:text-4xl font-extrabold mb-10 text-center text-gradient">
-        Simulador de Financiamento Caixa (com Amortização)
-    </h1>
+     <div class="max-w-6xl mx-auto bg-white rounded-xl shadow-2xl p-6 md:p-10">
+        <h1 class="text-3xl md:text-4xl font-extrabold mb-10 text-center text-gradient">
+            Simulador de Financiamento Caixa (com Amortização)
+        </h1>
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
-        <!-- COLUNA ESQUERDA: INPUTS -->
-        <div class="lg:col-span-1 space-y-6">
+            <!-- COLUNA ESQUERDA: INPUTS -->
+            <div class="lg:col-span-1 space-y-6">
 
-            <!-- ETAPA 1: Localização e Imóvel -->
-            <div class="card">
-                <h2 class="step-title">1. Imóvel e Localização</h2>
-                <div class="step-content space-y-4">
-                    <div>
-                        <label for="estado" class="block text-sm font-medium text-gray-700">Estado:</label>
-                        <select id="estado" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"
-                                onchange="atualizarCidades()">
-                            <option value="PR">Paraná</option>
-                            <option value="SC">Santa Catarina</option>
-                            <option value="SP">São Paulo</option>
-                            <option value="RJ">Rio de Janeiro</option>
-                            <option value="MG">Minas Gerais</option>
-                            <!-- Adicionar outros estados se necessário -->
-                        </select>
-                    </div>
-                    <div>
-                        <label for="cidade" class="block text-sm font-medium text-gray-700">Cidade:</label>
-                        <select id="cidade" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border">
-                            <!-- Cidades carregadas dinamicamente -->
-                        </select>
-                        <p class="text-xs text-gray-500 mt-1">A lista de cidades é limitada. Limites e regras locais
-                            podem variar.</p>
-                    </div>
-                    <div>
-                        <label for="valorImovel" class="block text-sm font-medium text-gray-700">Valor Aproximado do
-                            Imóvel (R$):</label>
-                        <input type="text" id="valorImovel" value="200.000,00"
-                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border input-moeda"
-                               oninput="formatarInputMoeda(this); preAtualizarDados()">
-                    </div>
-                    <div class="grid grid-cols-2 gap-4">
+                <!-- ETAPA 1: Localização e Imóvel -->
+                <div class="card">
+                    <h2 class="step-title">1. Imóvel e Localização</h2>
+                    <div class="step-content space-y-4">
                         <div>
-                            <label for="tipoImovel" class="block text-sm font-medium text-gray-700">Tipo:</label>
-                            <select id="tipoImovel"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border">
-                                <option value="Residencial" selected>Residencial</option>
-                                <option value="Comercial">Comercial</option>
+                            <label for="estado" class="block text-sm font-medium text-gray-700">Estado:</label>
+                            <select id="estado" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border" onchange="atualizarCidades()">
+                                <option value="PR">Paraná</option>
+                                <option value="SC">Santa Catarina</option>
+                                <option value="SP">São Paulo</option>
+                                <option value="RJ">Rio de Janeiro</option>
+                                <option value="MG">Minas Gerais</option>
+                                <!-- Adicionar outros estados se necessário -->
                             </select>
                         </div>
                         <div>
-                            <label for="condicaoImovel"
-                                   class="block text-sm font-medium text-gray-700">Condição:</label>
-                            <select id="condicaoImovel"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border">
-                                <option value="Usado" selected>Usado</option>
-                                <option value="Novo">Novo</option>
+                            <label for="cidade" class="block text-sm font-medium text-gray-700">Cidade:</label>
+                            <select id="cidade" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border">
+                                <!-- Cidades carregadas dinamicamente -->
                             </select>
+                            <p class="text-xs text-gray-500 mt-1">A lista de cidades é limitada. Limites e regras locais podem variar.</p>
+                        </div>
+                        <div>
+                            <label for="valorImovel" class="block text-sm font-medium text-gray-700">Valor Aproximado do Imóvel (R$):</label>
+                            <input type="text" id="valorImovel" value="200.000,00" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border input-moeda" oninput="formatarInputMoeda(this); preAtualizarDados()">
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label for="tipoImovel" class="block text-sm font-medium text-gray-700">Tipo:</label>
+                                <select id="tipoImovel" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border">
+                                    <option value="Residencial" selected>Residencial</option>
+                                    <option value="Comercial">Comercial</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="condicaoImovel" class="block text-sm font-medium text-gray-700">Condição:</label>
+                                <select id="condicaoImovel" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border">
+                                    <option value="Usado" selected>Usado</option>
+                                    <option value="Novo">Novo</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- ETAPA 2: Proponentes -->
-            <div class="card">
-                <h2 class="step-title">2. Proponentes e Renda</h2>
-                <div class="step-content">
-                    <p class="text-sm text-gray-600 mb-4">Adicione os participantes do financiamento.</p>
-                    <div id="integrantesContainer" class="space-y-4 mb-4">
-                        <!-- Proponentes adicionados dinamicamente -->
+                <!-- ETAPA 2: Proponentes -->
+                <div class="card">
+                    <h2 class="step-title">2. Proponentes e Renda</h2>
+                    <div class="step-content">
+                        <p class="text-sm text-gray-600 mb-4">Adicione os participantes do financiamento.</p>
+                        <div id="integrantesContainer" class="space-y-4 mb-4">
+                            <!-- Proponentes adicionados dinamicamente -->
+                        </div>
+                        <button onclick="adicionarIntegrante()" class="w-full py-2 bg-indigo-500 text-white font-semibold rounded-md hover:bg-indigo-600 transition duration-150 mb-4">
+                            + Adicionar Proponente/Cônjuge
+                        </button>
+                        <p class="text-sm text-gray-600">Renda Familiar Bruta Média Calculada: <span id="rendaFamiliarDisplay" class="font-bold text-lg text-blue-700">R$ 0,00</span></p>
+                        <!-- FGTS na Entrada Movido para cá -->
+                        <div class="mt-3 space-y-1 border-t pt-3">
+                             <h3 class="text-sm font-medium text-gray-800 mb-2">Uso do FGTS Acumulado na Entrada</h3>
+                            <div class="flex items-center">
+                                <input id="usarFgtsEntrada" type="checkbox" checked class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" onchange="preAtualizarDados()">
+                                <label for="usarFgtsEntrada" class="ml-2 block text-sm text-gray-900">Usar saldo de FGTS disponível na entrada?</label>
+                            </div>
+                            <p id="avisoFgtsElegibilidade" class="text-xs text-red-600 font-semibold hidden">Um ou mais proponentes não atendem à regra dos 3 anos de FGTS para uso na entrada.</p>
+                            <p class="text-sm text-gray-600">FGTS Acumulado Total Disponível: <span id="fgtsAcumuladoTotalDisplay" class="font-bold text-indigo-700">R$ 0,00</span></p>
+                        </div>
                     </div>
-                    <button onclick="adicionarIntegrante()"
-                            class="w-full py-2 bg-indigo-500 text-white font-semibold rounded-md hover:bg-indigo-600 transition duration-150 mb-4">
-                        + Adicionar Proponente/Cônjuge
-                    </button>
-                    <p class="text-sm text-gray-600">Renda Familiar Bruta Média Calculada: <span
-                            id="rendaFamiliarDisplay" class="font-bold text-lg text-blue-700">R$ 0,00</span></p>
-                    <!-- FGTS na Entrada Movido para cá -->
-                    <div class="mt-3 space-y-1 border-t pt-3">
-                        <h3 class="text-sm font-medium text-gray-800 mb-2">Uso do FGTS Acumulado na Entrada</h3>
+                </div>
+
+
+                <!-- ETAPA 3: Aporte Extra -->
+                <div class="card">
+                    <h2 class="step-title">3. Aporte Extra (p/ Amortizar)</h2>
+                    <div class="step-content space-y-4">
                         <div class="flex items-center">
-                            <input id="usarFgtsEntrada" type="checkbox" checked
-                                   class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                                   onchange="preAtualizarDados()">
-                            <label for="usarFgtsEntrada" class="ml-2 block text-sm text-gray-900">Usar saldo de FGTS
-                                disponível na entrada?</label>
-                        </div>
-                        <p id="avisoFgtsElegibilidade" class="text-xs text-red-600 font-semibold hidden">Um ou mais
-                            proponentes não atendem à regra dos 3 anos de FGTS para uso na entrada.</p>
-                        <p class="text-sm text-gray-600">FGTS Acumulado Total Disponível: <span
-                                id="fgtsAcumuladoTotalDisplay" class="font-bold text-indigo-700">R$ 0,00</span></p>
-                    </div>
-                </div>
-            </div>
+                             <input id="ativarAporte" type="checkbox" checked class="h-4 w-4 text-green-600 border-gray-300 rounded focus:ring-green-500" onchange="toggleSecaoAporte()">
+                             <label for="ativarAporte" class="ml-2 block text-sm font-medium text-gray-900">Ativar Aporte Extra para quitar mais rápido?</label>
+                         </div>
 
+                         <div id="secaoAporteDetalhes" class="secao-condicional space-y-4 mt-3 border-t pt-3">
+                             <div>
+                                 <label class="block text-sm font-medium text-gray-700 mb-2">Tipo de Aporte:</label>
+                                 <div class="flex items-center space-x-4">
+                                     <div class="flex items-center">
+                                         <input type="radio" id="aporteTipoMensal" name="aporteTipo" value="mensal" checked class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500" onchange="toggleRendimentoAnual()">
+                                         <label for="aporteTipoMensal" class="ml-2 block text-sm text-gray-900">Mensal Direto</label>
+                                     </div>
+                                     <div class="flex items-center">
+                                         <input type="radio" id="aporteTipoAnual" name="aporteTipo" value="anual" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500" onchange="toggleRendimentoAnual()">
+                                         <label for="aporteTipoAnual" class="ml-2 block text-sm text-gray-900">Anual Acumulado</label>
+                                     </div>
+                                 </div>
+                             </div>
 
-            <!-- ETAPA 3: Aporte Extra -->
-            <div class="card">
-                <h2 class="step-title">3. Aporte Extra (p/ Amortizar)</h2>
-                <div class="step-content space-y-4">
-                    <div class="flex items-center">
-                        <input id="ativarAporte" type="checkbox" checked
-                               class="h-4 w-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
-                               onchange="toggleSecaoAporte()">
-                        <label for="ativarAporte" class="ml-2 block text-sm font-medium text-gray-900">Ativar Aporte
-                            Extra para quitar mais rápido?</label>
-                    </div>
+                             <div>
+                                 <label class="block text-sm font-medium text-gray-700 mb-2">Objetivo do Aporte:</label>
+                                 <div class="flex items-center space-x-4">
+                                     <div class="flex items-center">
+                                         <input type="radio" id="objetivoAportePrazo" name="objetivoAporte" value="prazo" checked class="h-4 w-4 text-green-600 border-gray-300 focus:ring-green-500">
+                                         <label for="objetivoAportePrazo" class="ml-2 block text-sm text-gray-900">Diminuir Tempo</label>
+                                     </div>
+                                     <div class="flex items-center">
+                                         <input type="radio" id="objetivoAporteParcela" name="objetivoAporte" value="parcela" class="h-4 w-4 text-green-600 border-gray-300 focus:ring-green-500">
+                                         <label for="objetivoAporteParcela" class="ml-2 block text-sm text-gray-900">Diminuir Parcela</label>
+                                     </div>
+                                 </div>
+                             </div>
 
-                    <div id="secaoAporteDetalhes" class="secao-condicional space-y-4 mt-3 border-t pt-3">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Tipo de Aporte:</label>
-                            <div class="flex items-center space-x-4">
-                                <div class="flex items-center">
-                                    <input type="radio" id="aporteTipoMensal" name="aporteTipo" value="mensal" checked
-                                           class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"
-                                           onchange="toggleRendimentoAnual()">
-                                    <label for="aporteTipoMensal" class="ml-2 block text-sm text-gray-900">Mensal
-                                        Direto</label>
-                                </div>
-                                <div class="flex items-center">
-                                    <input type="radio" id="aporteTipoAnual" name="aporteTipo" value="anual"
-                                           class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"
-                                           onchange="toggleRendimentoAnual()">
-                                    <label for="aporteTipoAnual" class="ml-2 block text-sm text-gray-900">Anual
-                                        Acumulado</label>
-                                </div>
+                            <div>
+                                <label for="aporteValorMensal" class="block text-sm font-medium text-gray-700">Valor Mensal Guardado/Aportado (R$):</label>
+                                <input type="text" id="aporteValorMensal" value="100,00" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border input-moeda" oninput="formatarInputMoeda(this); atualizarAporteAluguelLink(false)">
+                                <p class="text-xs text-gray-500 mt-1">Este valor será guardado mensalmente. Se "Anual", será aplicado com rendimento. Se "Mensal", será amortizado direto na dívida.</p>
                             </div>
-                        </div>
 
-                        <div>
-                            <label for="aporteValorMensal" class="block text-sm font-medium text-gray-700">Valor Mensal
-                                Guardado/Aportado (R$):</label>
-                            <input type="text" id="aporteValorMensal" value="100,00"
-                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border input-moeda"
-                                   oninput="formatarInputMoeda(this); atualizarAporteAluguelLink(false)">
-                            <p class="text-xs text-gray-500 mt-1">Este valor será guardado mensalmente. Se "Anual", será
-                                aplicado com rendimento. Se "Mensal", será amortizado direto na dívida.</p>
-                        </div>
-
-                        <div id="rendimentoAnualContainer" class="hidden">
-                            <label for="aporteRendimentoAnual" class="block text-sm font-medium text-gray-700">Rendimento
-                                Anual Simulado (% a.a.):</label>
-                            <input type="text" id="aporteRendimentoAnual" value="10,00"
-                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border input-percent"
-                                   oninput="formatarInputPercent(this)">
-                            <p class="text-xs text-gray-500 mt-1">Simula o rendimento do valor guardado antes da
-                                amortização anual (ex: 10% para 100% CDI).</p>
-                        </div>
+                             <div id="rendimentoAnualContainer" class="hidden">
+                                 <label for="aporteRendimentoAnual" class="block text-sm font-medium text-gray-700">Rendimento Anual Simulado (% a.a.):</label>
+                                 <input type="text" id="aporteRendimentoAnual" value="10,00" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border input-percent" oninput="formatarInputPercent(this)">
+                                 <p class="text-xs text-gray-500 mt-1">Simula o rendimento do valor guardado antes da amortização anual (ex: 10% para 100% CDI).</p>
+                             </div>
+                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- ETAPA 4: Entrada Final -->
-            <div class="card">
-                <h2 class="step-title">4. Definição da Entrada Final</h2>
-                <div class="step-content space-y-4">
-                    <p class="text-sm text-gray-600">Entrada Mínima Exigida: <span id="entradaMinimaDisplay"
-                                                                                   class="font-bold text-gray-800">R$ 0,00</span>
-                    </p>
-                    <p class="text-sm text-gray-600">FGTS Acumulado Disponível p/ Entrada: <span
-                            id="entradaFgtsDisponivelDisplay" class="font-bold text-indigo-700">R$ 0,00</span></p>
-
-                    <div>
-                        <label for="entradaDinheiroFinal" class="block text-sm font-medium text-gray-700">Valor Final da
-                            Entrada em Dinheiro (R$):</label>
-                        <input type="text" id="entradaDinheiroFinal" value="0,00"
-                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border input-moeda"
-                               oninput="formatarInputMoeda(this); preAtualizarDados()">
-                        <p id="avisoEntradaInsuficiente" class="text-xs text-red-600 font-semibold mt-1 hidden">A
-                            entrada total (Dinheiro + FGTS) está abaixo do mínimo exigido.</p>
-                    </div>
-                    <p class="text-sm text-gray-600 mt-2">Entrada Total Final (Dinheiro + FGTS): <span
-                            id="entradaTotalFinalDisplay" class="font-bold text-lg text-blue-700">R$ 0,00</span></p>
-                </div>
-            </div>
-
-            <!-- ETAPA 5: Linha de Crédito -->
-            <div class="card">
-                <h2 class="step-title">5. Linha de Crédito e Taxa</h2>
-                <div class="step-content space-y-3">
-                    <p class="text-sm text-gray-600 mb-2">Selecione a Linha de Crédito (sugerida automaticamente):</p>
-                    <select id="tipoFinanciamento"
-                            class="block w-full rounded-md border-gray-300 shadow-sm p-2 border bg-blue-50 font-semibold text-blue-800"
-                            onchange="verificarSelecaoIneligivel()">
-                        <!-- Opções geradas por JS -->
-                    </select>
-                    <p id="avisoRendaSelect" class="text-xs text-red-600 font-semibold hidden">Atenção: A renda familiar
-                        excede o limite desta faixa.</p>
-
-                    <div class="flex items-center mt-3">
-                        <input id="forcarTaxaBalcao" type="checkbox"
-                               class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                               onchange="preAtualizarDados()">
-                        <label for="forcarTaxaBalcao" class="ml-2 block text-sm text-gray-900">Forçar Simulação com Taxa
-                            Balcão (SBPE)?</label>
-                    </div>
-
-                </div>
-            </div>
-
-            <!-- ETAPA 6: Aluguel -->
-            <div class="card">
-                <h2 class="step-title">6. Receita de Aluguel (Opcional)</h2>
-                <div class="step-content space-y-4">
-                    <div class="flex items-center">
-                        <input id="pretendeAlugar" type="checkbox"
-                               class="h-4 w-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500"
-                               onchange="toggleSecaoAluguel()">
-                        <label for="pretendeAlugar" class="ml-2 block text-sm font-medium text-gray-900">Pretende Alugar
-                            o Imóvel (após 1 ano)?</label>
-                    </div>
-
-                    <div id="secaoAluguelDetalhes"
-                         class="secao-condicional hidden grid grid-cols-2 gap-4 mt-3 border-t pt-3">
-                        <div>
-                            <label for="valorAluguel" class="block text-sm font-medium text-gray-700">Aluguel Mensal
-                                Inicial (R$):</label>
-                            <input type="text" id="valorAluguel" value="1.300,00"
-                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border input-moeda"
-                                   oninput="formatarInputMoeda(this); atualizarAporteAluguelLink(true)">k
-                        </div>
-                        <div>
-                            <label for="taxaAumentoAluguelInput" class="block text-sm font-medium text-gray-700">Reajuste
-                                Anual (%):</label>
-                            <input type="text" id="taxaAumentoAluguelInput" value="3,00"
-                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border input-percent"
-                                   oninput="formatarInputPercent(this)">
-                        </div>
-                        <div class="col-span-2 aviso-importante">
-                            Lembre-se: Para usar o FGTS na entrada, é obrigatório morar no imóvel por pelo menos 1 ano.
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ETAPA 7: Valorização do Imóvel -->
-            <div class="card">
-                <h2 class="step-title">7. Valorização do Imóvel (Estimativa)</h2>
-                <div class="step-content">
-                    <div>
-                        <label for="taxaValorizacaoImovel" class="block text-sm font-medium text-gray-700">Taxa de
-                            Valorização Anual Média (% a.a.):</label>
-                        <input type="text" id="taxaValorizacaoImovel" value="5,00"
-                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border input-percent"
-                               oninput="formatarInputPercent(this)">
-                        <p class="text-xs text-gray-500 mt-1">Estimativa baseada em índices como FipeZap ou média
-                            histórica da região.</p>
-                    </div>
-                </div>
-            </div>
-
-
-            <button onclick="calcularSimulacaoCompleta()"
-                    class="mt-6 w-full py-3 bg-blue-600 text-white font-bold text-lg rounded-md hover:bg-blue-700 transition duration-150 shadow-lg">
-                Calcular Simulação Completa
-            </button>
-        </div>
-
-        <!-- COLUNA DIREITA: RESULTADOS -->
-        <div class="lg:col-span-1 space-y-6">
-            <div id="resultados" class="sticky top-8 space-y-6"> {/* Faz a coluna de resultados fixar */}
+                 <!-- ETAPA 4: Entrada Final -->
                 <div class="card">
-                    <h2 class="step-title">Resultados da Simulação</h2>
+                     <h2 class="step-title">4. Definição da Entrada Final</h2>
+                     <div class="step-content space-y-4">
+                          <p class="text-sm text-gray-600">Entrada Mínima Exigida: <span id="entradaMinimaDisplay" class="font-bold text-gray-800">R$ 0,00</span></p>
+                          <p class="text-sm text-gray-600">FGTS Acumulado Disponível p/ Entrada: <span id="entradaFgtsDisponivelDisplay" class="font-bold text-indigo-700">R$ 0,00</span></p>
+
+                          <div>
+                            <label for="entradaDinheiroFinal" class="block text-sm font-medium text-gray-700">Valor Final da Entrada em Dinheiro (R$):</label>
+                            <input type="text" id="entradaDinheiroFinal" value="0,00" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border input-moeda" oninput="formatarInputMoeda(this); preAtualizarDados()">
+                            <p id="avisoEntradaInsuficiente" class="text-xs text-red-600 font-semibold mt-1 hidden">A entrada total (Dinheiro + FGTS) está abaixo do mínimo exigido.</p>
+                          </div>
+                          <p class="text-sm text-gray-600 mt-2">Entrada Total Final (Dinheiro + FGTS): <span id="entradaTotalFinalDisplay" class="font-bold text-lg text-blue-700">R$ 0,00</span></p>
+                     </div>
+                </div>
+
+                <!-- ETAPA 5: Linha de Crédito -->
+                <div class="card">
+                     <h2 class="step-title">5. Linha de Crédito e Taxa</h2>
+                     <div class="step-content space-y-3">
+                         <p class="text-sm text-gray-600 mb-2">Selecione a Linha de Crédito (sugerida automaticamente):</p>
+                         <select id="tipoFinanciamento" class="block w-full rounded-md border-gray-300 shadow-sm p-2 border bg-blue-50 font-semibold text-blue-800" onchange="verificarSelecaoIneligivel()">
+                             <!-- Opções geradas por JS -->
+                         </select>
+                         <p id="avisoRendaSelect" class="text-xs text-red-600 font-semibold hidden">Atenção: A renda familiar excede o limite desta faixa.</p>
+
+                         <div class="flex items-center mt-3">
+                             <input id="forcarTaxaBalcao" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" onchange="preAtualizarDados()">
+                             <label for="forcarTaxaBalcao" class="ml-2 block text-sm text-gray-900">Forçar Simulação com Taxa Balcão (SBPE)?</label>
+                         </div>
+
+                     </div>
+                </div>
+
+                <!-- ETAPA 6: Aluguel -->
+                 <div class="card">
+                     <h2 class="step-title">6. Receita de Aluguel (Opcional)</h2>
+                     <div class="step-content space-y-4">
+                          <div class="flex items-center">
+                             <input id="pretendeAlugar" type="checkbox" class="h-4 w-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500" onchange="toggleSecaoAluguel()">
+                             <label for="pretendeAlugar" class="ml-2 block text-sm font-medium text-gray-900">Pretende Alugar o Imóvel (após 1 ano)?</label>
+                         </div>
+
+                         <div id="secaoAluguelDetalhes" class="secao-condicional hidden grid grid-cols-2 gap-4 mt-3 border-t pt-3">
+                             <div>
+                                <label for="valorAluguel" class="block text-sm font-medium text-gray-700">Aluguel Mensal Inicial (R$):</label>
+                                <input type="text" id="valorAluguel" value="1.300,00" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border input-moeda" oninput="formatarInputMoeda(this); atualizarAporteAluguelLink(true)">
+                             </div>
+                             <div>
+                                 <label for="taxaAumentoAluguelInput" class="block text-sm font-medium text-gray-700">Reajuste Anual (%):</label>
+                                <input type="text" id="taxaAumentoAluguelInput" value="3,00" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border input-percent" oninput="formatarInputPercent(this)">
+                             </div>
+                             <div class="col-span-2 aviso-importante">
+                                 Lembre-se: Para usar o FGTS na entrada, é obrigatório morar no imóvel por pelo menos 1 ano.
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+
+                 <!-- ETAPA 7: Valorização do Imóvel -->
+                <div class="card">
+                    <h2 class="step-title">7. Valorização do Imóvel (Estimativa)</h2>
                     <div class="step-content">
-                        <div class="grid grid-cols-2 gap-4 text-center mb-4">
-                            <div class="p-3 bg-gray-100 rounded-lg">
-                                <p class="text-xs text-gray-600">Valor Financiado</p>
-                                <p id="valorFinanciadoDisplay" class="text-lg font-bold text-blue-700 mt-1">R$ 0,00</p>
+                         <div>
+                             <label for="taxaValorizacaoImovel" class="block text-sm font-medium text-gray-700">Taxa de Valorização Anual Média (% a.a.):</label>
+                            <input type="text" id="taxaValorizacaoImovel" value="5,00" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border input-percent" oninput="formatarInputPercent(this)">
+                            <p class="text-xs text-gray-500 mt-1">Estimativa baseada em índices como FipeZap ou média histórica da região.</p>
+                         </div>
+                    </div>
+                </div>
+
+
+                <button onclick="calcularSimulacaoCompleta()" class="mt-6 w-full py-3 bg-blue-600 text-white font-bold text-lg rounded-md hover:bg-blue-700 transition duration-150 shadow-lg">
+                    Calcular Simulação Completa
+                </button>
+            </div>
+
+            <!-- COLUNA DIREITA: RESULTADOS -->
+            <div class="lg:col-span-1 space-y-6">
+                 <div id="resultados" class="sticky top-8 space-y-6"> {/* Faz a coluna de resultados fixar */}
+                    <div class="card">
+                        <h2 class="step-title">Resultados da Simulação</h2>
+                        <div class="step-content">
+                            <div class="grid grid-cols-2 gap-4 text-center mb-4">
+                                <div class="p-3 bg-gray-100 rounded-lg">
+                                    <p class="text-xs text-gray-600">Valor Financiado</p>
+                                    <p id="valorFinanciadoDisplay" class="text-lg font-bold text-blue-700 mt-1">R$ 0,00</p>
+                                </div>
+                                <div class="p-3 bg-gray-100 rounded-lg">
+                                    <p class="text-xs text-gray-600">Parcela Inicial (SAC, sem aporte)</p>
+                                    <p id="parcelaInicialDisplay" class="text-lg font-bold text-green-700 mt-1">R$ 0,00</p>
+                                </div>
                             </div>
-                            <div class="p-3 bg-gray-100 rounded-lg">
-                                <p class="text-xs text-gray-600">Parcela Inicial (SAC, sem aporte)</p>
-                                <p id="parcelaInicialDisplay" class="text-lg font-bold text-green-700 mt-1">R$ 0,00</p>
+
+                            <div class="resultado-destaque p-4 rounded-lg mb-4">
+                                <h3 class="font-semibold text-blue-800 mb-2">Impacto Amortização (Aporte + FGTS Bienal)</h3>
+                                <div class="space-y-2 text-sm">
+                                    <div class="flex justify-between"><span>Tempo Quitação Padrão:</span> <span id="tempoPadrao" class="font-semibold">--</span></div>
+                                    <div class="flex justify-between"><span>Custo Total Padrão (Sem Amort.):</span> <span id="custoTotalPadrao" class="font-semibold">R$ 0,00</span></div>
+                                    <div class="flex justify-between"><span>Juros Totais Padrão:</span> <span id="jurosPadrao" class="font-semibold">R$ 0,00</span></div>
+                                    <hr class="my-1 border-blue-200">
+                                    <div class="flex justify-between text-green-700"><span>Novo Tempo Quitação:</span> <span id="tempoAporte" class="font-bold text-lg">--</span></div>
+                                    <div class="flex justify-between text-green-700"><span>Custo Total (com Amort.):</span> <span id="custoTotalAporte" class="font-bold">R$ 0,00</span></div>
+                                    <div class="flex justify-between text-green-700"><span>Juros Totais (com Amort.):</span> <span id="jurosAporte" class="font-bold">R$ 0,00</span></div>
+                                     <hr class="my-1 border-blue-200">
+                                    <div class="flex justify-between text-indigo-700"><span>Economia Total (Custo):</span> <span id="economiaTotal" class="font-bold text-xl">R$ 0,00</span></div>
+                                </div>
                             </div>
-                        </div>
-
-                        <div class="resultado-destaque p-4 rounded-lg mb-4">
-                            <h3 class="font-semibold text-blue-800 mb-2">Impacto Amortização (Aporte + FGTS Bienal)</h3>
-                            <div class="space-y-2 text-sm">
-                                <div class="flex justify-between"><span>Tempo Quitação Padrão:</span> <span
-                                        id="tempoPadrao" class="font-semibold">--</span></div>
-                                <div class="flex justify-between"><span>Custo Total Padrão (Sem Amort.):</span> <span
-                                        id="custoTotalPadrao" class="font-semibold">R$ 0,00</span></div>
-                                <div class="flex justify-between"><span>Juros Totais Padrão:</span> <span
-                                        id="jurosPadrao" class="font-semibold">R$ 0,00</span></div>
-                                <hr class="my-1 border-blue-200">
-                                <div class="flex justify-between text-green-700"><span>Novo Tempo Quitação:</span> <span
-                                        id="tempoAporte" class="font-bold text-lg">--</span></div>
-                                <div class="flex justify-between text-green-700"><span>Custo Total (com Amort.):</span>
-                                    <span id="custoTotalAporte" class="font-bold">R$ 0,00</span></div>
-                                <div class="flex justify-between text-green-700"><span>Juros Totais (com Amort.):</span>
-                                    <span id="jurosAporte" class="font-bold">R$ 0,00</span></div>
-                                <hr class="my-1 border-blue-200">
-                                <div class="flex justify-between text-indigo-700"><span>Economia Total (Custo):</span>
-                                    <span id="economiaTotal" class="font-bold text-xl">R$ 0,00</span></div>
+                            <div id="statusAprovacao" class="hidden mt-4 p-4 rounded-lg">
+                                <h3 class="font-semibold text-lg mb-2">Status da Aprovação</h3>
+                                <p id="statusAprovacaoMensagem" class="text-base"></p>
+                                <p class="text-xs text-gray-500 mt-2">
+                                    <strong>Observação:</strong> Esta é uma simulação e não garante a aprovação do financiamento. A decisão final está sujeita à análise de crédito e à aprovação do gerente da Caixa.
+                                </p>
                             </div>
-                        </div>
-                        <div id="statusAprovacao" class="hidden mt-4 p-4 rounded-lg">
-                            <h3 class="font-semibold text-lg mb-2">Status da Aprovação</h3>
-                            <p id="statusAprovacaoMensagem" class="text-base"></p>
-                            <p class="text-xs text-gray-500 mt-2">
-                                <strong>Observação:</strong> Esta é uma simulação e não garante a aprovação do
-                                financiamento. A decisão final está sujeita à análise de crédito e à aprovação do
-                                gerente da Caixa.
-                            </p>
-                        </div>
-                        <!-- <p class="text-sm text-gray-600 mt-3">FGTS Futuro (Bienal p/ Amort.): <span id="fgtsBienalDisplay" class="font-bold text-indigo-700">R$ 0,00</span></p> -->
-                        <p id="avisoFgtsBienal" class="text-xs text-indigo-500 font-semibold hidden">FGTS futuro não
-                            será usado (um ou mais proponentes não marcaram a opção ou não são elegíveis).</p>
+                           <!-- <p class="text-sm text-gray-600 mt-3">FGTS Futuro (Bienal p/ Amort.): <span id="fgtsBienalDisplay" class="font-bold text-indigo-700">R$ 0,00</span></p> -->
+                            <p id="avisoFgtsBienal" class="text-xs text-indigo-500 font-semibold hidden">FGTS futuro não será usado (um ou mais proponentes não marcaram a opção ou não são elegíveis).</p>
 
-                    </div>
-                </div>
-                <!-- DETALHAMENTO FGTS -->
-                <div class="card">
-                    <h2 class="step-title">Detalhamento Uso do FGTS</h2>
-                    <div id="detalheFgtsContainer" class="step-content space-y-3 text-sm">
-                        <p class="text-center text-gray-500">Preencha os dados e clique em Calcular.</p>
-                        <!-- Detalhes preenchidos por JS -->
-                    </div>
-                </div>
-
-                <!-- VALORIZAÇÃO IMÓVEL -->
-                <div class="card">
-                    <h2 class="step-title">Estimativa de Valorização</h2>
-                    <div class="step-content space-y-2 text-sm">
-                        <div class="flex justify-between"><span>Valor Original do Imóvel:</span> <span
-                                id="valorOriginalImovel" class="font-semibold">R$ 0,00</span></div>
-                        <div class="flex justify-between"><span>Tempo de Quitação (com amort.):</span> <span
-                                id="tempoQuitacaoValorizacao" class="font-semibold">--</span></div>
-                        <div class="flex justify-between"><span>Taxa Anual Considerada:</span> <span
-                                id="taxaValorizacaoUsada" class="font-semibold">0,00%</span></div>
-                        <hr class="my-1 border-gray-200">
-                        <div class="flex justify-between text-purple-700"><span>Valor Estimado ao Quitar:</span> <span
-                                id="valorFinalEstimadoImovel" class="font-bold text-lg">R$ 0,00</span></div>
-                        <div class="flex justify-between text-purple-700"><span>Ganho Estimado (Valorização):</span>
-                            <span id="ganhoValorizacaoEstimado" class="font-bold text-lg">R$ 0,00</span></div>
-                    </div>
-                </div>
-
-                <div class="card secao-condicional" id="cardFluxoCaixa">
-                    <h2 class="step-title">Projeção Anual: Fluxo de Caixa (Aluguel vs Parcela)</h2>
-                    <div class="step-content">
-                        <p class="text-xs text-gray-500 mb-2">(Aluguel Corrigido vs. Parcela Decrescente + Aporte)</p>
-                        <div class="overflow-y-auto max-h-96">
-                            <table id="tabelaAmortizacao" class="min-w-full divide-y divide-gray-200 text-xs">
-                                <thead id="tabelaAmortizacaoHead">
-                                <tr class="bg-gray-100">
-                                    <th class="px-2 py-1 text-left font-semibold text-gray-600">Mês</th>
-                                    <th class="px-2 py-1 text-right font-semibold text-gray-600">Parcela Paga</th>
-                                    <th class="px-2 py-1 text-right font-semibold text-gray-600" data-coluna-aluguel>
-                                        Aluguel
-                                    </th>
-                                    <th class="px-2 py-1 text-right font-semibold text-gray-600" data-coluna-aluguel>
-                                        Lucro
-                                    </th>
-                                    <th class="px-2 py-1 text-right font-semibold text-gray-600">Saldo Devedor</th>
-                                </tr>
-                                </thead>
-                                <tbody id="tabelaAmortizacaoBody" class="divide-y divide-gray-100">
-                                <tr>
-                                    <td colspan="5" class="text-center p-4 text-gray-500">Preencha os dados e clique em
-                                        Calcular.
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
                         </div>
                     </div>
-                </div>
+                     <!-- DETALHAMENTO FGTS -->
+                     <div class="card">
+                         <h2 class="step-title">Detalhamento Uso do FGTS</h2>
+                         <div id="detalheFgtsContainer" class="step-content space-y-3 text-sm">
+                             <p class="text-center text-gray-500">Preencha os dados e clique em Calcular.</p>
+                             <!-- Detalhes preenchidos por JS -->
+                         </div>
+                     </div>
+
+                     <!-- VALORIZAÇÃO IMÓVEL -->
+                     <div class="card">
+                         <h2 class="step-title">Estimativa de Valorização</h2>
+                         <div class="step-content space-y-2 text-sm">
+                             <div class="flex justify-between"><span>Valor Original do Imóvel:</span> <span id="valorOriginalImovel" class="font-semibold">R$ 0,00</span></div>
+                             <div class="flex justify-between"><span>Tempo de Quitação (com amort.):</span> <span id="tempoQuitacaoValorizacao" class="font-semibold">--</span></div>
+                             <div class="flex justify-between"><span>Taxa Anual Considerada:</span> <span id="taxaValorizacaoUsada" class="font-semibold">0,00%</span></div>
+                              <hr class="my-1 border-gray-200">
+                             <div class="flex justify-between text-purple-700"><span>Valor Estimado ao Quitar:</span> <span id="valorFinalEstimadoImovel" class="font-bold text-lg">R$ 0,00</span></div>
+                             <div class="flex justify-between text-purple-700"><span>Ganho Estimado (Valorização):</span> <span id="ganhoValorizacaoEstimado" class="font-bold text-lg">R$ 0,00</span></div>
+                         </div>
+                     </div>
+
+                     <div class="card secao-condicional" id="cardFluxoCaixa">
+                          <h2 class="step-title">Projeção Anual: Fluxo de Caixa (Aluguel vs Parcela)</h2>
+                          <div class="step-content">
+                               <p class="text-xs text-gray-500 mb-2">(Aluguel Corrigido vs. Parcela Decrescente + Aporte)</p>
+                               <div class="overflow-y-auto max-h-96"> {/* Scroll para a tabela */}
+                                  <table id="tabelaAmortizacao" class="min-w-full divide-y divide-gray-200 text-xs">
+                                      <thead id="tabelaAmortizacaoHead">
+                                          <tr class="bg-gray-100">
+                                              <th class="px-2 py-1 text-left font-semibold text-gray-600">Mês</th>
+                                              <th class="px-2 py-1 text-right font-semibold text-gray-600">Parcela Paga</th>
+                                              <th class="px-2 py-1 text-right font-semibold text-gray-600" data-coluna-aluguel>Aluguel</th>
+                                              <th class="px-2 py-1 text-right font-semibold text-gray-600" data-coluna-aluguel>Lucro</th>
+                                              <th class="px-2 py-1 text-right font-semibold text-gray-600">Saldo Devedor</th>
+                                          </tr>
+                                      </thead>
+                                      <tbody id="tabelaAmortizacaoBody" class="divide-y divide-gray-100">
+                                          <tr><td colspan="5" class="text-center p-4 text-gray-500">Preencha os dados e clique em Calcular.</td></tr>
+                                      </tbody>
+                                  </table>
+                               </div>
+                          </div>
+                     </div>
+                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<script src="data.js"></script>
-<script src="ui.js"></script>
-<script src="calculations.js"></script>
-<script src="geolocation.js"></script>
-<script src="main.js"></script>
-<script src="listeners.js"></script>
+    <script src="data.js"></script>
+    <script src="ui.js"></script>
+    <script src="calculations.js"></script>
+    <script src="geolocation.js"></script>
+    <script src="main.js"></script>
+    <script src="listeners.js"></script>
 
-<template id="integranteTemplate">
-    <div class="p-4 bg-white rounded-lg shadow space-y-3 border border-gray-200" data-id="">
-        <div class="flex justify-between items-center">
-            <h3 class="proponente-title font-semibold text-indigo-700"></h3>
-            <button class="text-red-500 hover:text-red-700 text-xs font-bold px-2 py-1 rounded hover:bg-red-50"
-                    onclick="removerIntegrante(this.parentElement.parentElement.id)">Remover
-            </button>
-        </div>
-        <div class="grid grid-cols-2 gap-3">
-            <div>
-                <label class="block text-xs font-medium text-gray-600">Nome:</label>
-                <input type="text" placeholder="Nome Proponente"
-                       class="integrante-nome mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 text-sm border"
-                       oninput="atualizarTituloProponente(this.parentElement.parentElement.parentElement.dataset.id)">
+    <template id="integranteTemplate">
+        <div class="p-4 bg-white rounded-lg shadow space-y-3 border border-gray-200" data-id="">
+            <div class="flex justify-between items-center">
+                <h3 class="proponente-title font-semibold text-indigo-700"></h3>
+                <button class="text-red-500 hover:text-red-700 text-xs font-bold px-2 py-1 rounded hover:bg-red-50" onclick="removerIntegrante(this.parentElement.parentElement.id)">Remover</button>
             </div>
-            <div>
-                <label class="block text-xs font-medium text-gray-600">Data Nasc.:</label>
-                <input type="text" placeholder="DD/MM/AAAA"
-                       class="integrante-nascimento mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 text-sm border input-data"
-                       oninput="formatarDataInput(this)">
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label class="block text-xs font-medium text-gray-600">Nome:</label>
+                    <input type="text" placeholder="Nome Proponente" class="integrante-nome mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 text-sm border" oninput="atualizarTituloProponente(this.parentElement.parentElement.parentElement.dataset.id)">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-600">Data Nasc.:</label>
+                    <input type="text" placeholder="DD/MM/AAAA" class="integrante-nascimento mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 text-sm border input-data" oninput="formatarDataInput(this)">
+                </div>
             </div>
-        </div>
-        <div class="grid grid-cols-2 gap-3">
-            <div>
-                <label class="block text-xs font-medium text-gray-600">Salário Bruto Médio (R$):</label>
-                <input type="text"
-                       class="integrante-salario mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 text-sm border input-moeda"
-                       oninput="formatarInputMoeda(this); preAtualizarDados()">
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label class="block text-xs font-medium text-gray-600">Salário Bruto Médio (R$):</label>
+                    <input type="text" class="integrante-salario mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 text-sm border input-moeda" oninput="formatarInputMoeda(this); preAtualizarDados()">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-600">FGTS Acumulado (R$):</label>
+                    <input type="text" class="integrante-fgts-acumulado mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 text-sm border input-moeda" oninput="formatarInputMoeda(this); preAtualizarDados()">
+                </div>
             </div>
-            <div>
-                <label class="block text-xs font-medium text-gray-600">FGTS Acumulado (R$):</label>
-                <input type="text"
-                       class="integrante-fgts-acumulado mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 text-sm border input-moeda"
-                       oninput="formatarInputMoeda(this); preAtualizarDados()">
-            </div>
-        </div>
-        <div class="grid grid-cols-2 gap-3 mt-2">
-            <div class="flex items-center">
-                <input type="checkbox"
-                       class="integrante-fgts-3anos h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                       onchange="preAtualizarDados()">
-                <label class="ml-2 block text-xs text-gray-800">Possui 3 anos trab. (FGTS)?</label>
-            </div>
-            <div class="flex items-center">
-                <input type="checkbox"
-                       class="integrante-usar-fgts-futuro h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
-                       onchange="preAtualizarDados()">
-                <label class="ml-2 block text-xs text-gray-800">Usar FGTS futuro p/ Amortizar?</label>
+            <div class="grid grid-cols-2 gap-3 mt-2">
+                <div class="flex items-center">
+                    <input type="checkbox" class="integrante-fgts-3anos h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" onchange="preAtualizarDados()">
+                    <label class="ml-2 block text-xs text-gray-800">Possui 3 anos trab. (FGTS)?</label>
+                </div>
+                <div class="flex items-center">
+                    <input type="checkbox" class="integrante-usar-fgts-futuro h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500" onchange="preAtualizarDados()">
+                    <label class="ml-2 block text-xs text-gray-800">Usar FGTS futuro p/ Amortizar?</label>
+                </div>
             </div>
         </div>
-    </div>
-</template>
+    </template>
 </body>
 </html>
 
