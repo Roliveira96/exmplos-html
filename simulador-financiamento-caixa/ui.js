@@ -206,13 +206,10 @@ const toggleSecaoAporte = () => {
 const toggleSecaoAluguel = () => {
     const pretendeAlugar = document.getElementById('pretendeAlugar').checked;
     const secaoDetalhes = document.getElementById('secaoAluguelDetalhes');
-    const cardFluxoCaixa = document.getElementById('cardFluxoCaixa');
     if (pretendeAlugar) {
         secaoDetalhes.classList.remove('hidden');
-        cardFluxoCaixa.classList.remove('hidden');
     } else {
         secaoDetalhes.classList.add('hidden');
-        cardFluxoCaixa.classList.add('hidden');
     }
     atualizarAporteAluguelLink();
 };
