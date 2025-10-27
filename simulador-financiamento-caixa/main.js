@@ -1,3 +1,5 @@
+// main.js
+
 const inicializarSimulador = async () => {
 
     if (typeof carregarDadosEstaticos === 'function') {
@@ -41,3 +43,5 @@ const inicializarSimulador = async () => {
 
     atualizarCidades('Guarapuava');
 };
+
+document.addEventListener('DOMContentLoaded', inicializarSimulador);

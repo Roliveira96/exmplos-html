@@ -74,6 +74,12 @@ const definirLinhaCreditoSugerida = (rendaTotal, elegivelFgts) => {
     return 'SBPE_BALCAO';
 };
 
+const obterCotaPorRenda = (rendaTotal) => {
+    if (rendaTotal <= 6000) return 0.90; // Entrada de 10%
+    if (rendaTotal <= 10000) return 0.80; // Entrada de 20%
+    return 0.70; // Entrada de 30%
+};
+
 const preAtualizarDados = () => {
     if (!isInitialized) return;
 
@@ -174,7 +180,9 @@ const preAtualizarDados = () => {
     }
 
 
-    const cotaAtual = linhaFinalSelecionada ? (linhaFinalSelecionada.cota || COTA_FINANCIAMENTO_PADRAO) : COTA_FINANCIAMENTO_PADRAO;
+    const cotaPorLinha = linhaFinalSelecionada ? (linhaFinalSelecionada.cota || COTA_FINANCIAMENTO_PADRAO) : COTA_FINANCIAMENTO_PADRAO;
+    const cotaPorRenda = obterCotaPorRenda(dadosFamiliares.rendaTotal);
+    const cotaAtual = Math.min(cotaPorLinha, cotaPorRenda);
     let entradaMinima = valorImovel * (1 - cotaAtual);
 
     if (dadosFamiliares.rendaTotal > 0) {
@@ -377,8 +385,8 @@ const calcularSimulacaoCompleta = () => {
     const economiaTotalValor = resultadoPadrao.custoTotalPago - resultadoAporte.custoTotalPago;
     elementosDOM.economiaTotal.textContent = formatarMoeda(economiaTotalValor);
 
-    const parcelaInicialValor = resultadoAporte.parcelas.length > 0 ? resultadoAporte.parcelas[0].parcelaTotalPaga : 0;
-    elementosDOM.parcelaInicialDisplay.textContent = formatarMoeda(parcelaInicialValor);
+    const parcelaInicialValor = resultadoAporte.parcelas.length > 0 ? resultadoAporte.parcelas[0].parcela : 0;
+    elementosDOM.parcelaInicialDisplay.textContent = formatarMoeda(resultadoAporte.parcelas.length > 0 ? resultadoAporte.parcelas[0].parcelaTotalPaga : 0);
 
     const statusAprovacao = document.getElementById('statusAprovacao');
     const statusAprovacaoMensagem = document.getElementById('statusAprovacaoMensagem');
@@ -434,7 +442,7 @@ const calcularSimulacaoCompleta = () => {
     }
 
     // Renderizar o gráfico somente com dados válidos
-    if (typeof renderizarGraficoComparativo === 'function' && historicoImovel.length > 0 && historicoImovel.length === historicoCDI.length && historicoImovel.every(isFinite) && historicoCDI.every(isFinite)) {
+    if (typeof renderizarGraficoComparativo === 'function' && historicoImovel.length > 0 && historicoCDI.length > 0 && historicoImovel.every(isFinite) && historicoCDI.every(isFinite)) {
         renderizarGraficoComparativo(historicoImovel, historicoCDI);
     }
 
