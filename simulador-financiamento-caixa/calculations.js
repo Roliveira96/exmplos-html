@@ -350,7 +350,7 @@ const calcularSimulacaoCompleta = () => {
     const economiaTotalValor = resultadoPadrao.custoTotalPago - resultadoAporte.custoTotalPago;
     elementosDOM.economiaTotal.textContent = formatarMoeda(economiaTotalValor);
 
-    const parcelaInicialValor = resultadoAporte.parcelas.length > 0 ? resultadoAporte.parcelas[0].parcela : 0;
+    const parcelaInicialValor = resultadoAporte.parcelas.length > 0 ? resultadoAporte.parcelas[0].parcelaTotalPaga : 0;
     elementosDOM.parcelaInicialDisplay.textContent = formatarMoeda(parcelaInicialValor);
 
     const statusAprovacao = document.getElementById('statusAprovacao');
