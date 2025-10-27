@@ -5,23 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Visualizador de PDF com Efeito de Livro</title>
     
-    <!-- Inclui o Tailwind CSS para estilização dos botões e layout -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Inclui jQuery, que é uma dependência do Turn.js -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    
-    <!-- Inclui a biblioteca Turn.js para o efeito de virar a página -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/turn.js/3/turn.min.js"></script>
-    
-    <!-- Inclui a biblioteca PDF.js para carregar e renderizar o PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js"></script>
 
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #d1d5db; /* Um cinza mais escuro para destacar o livro */
+            background-color: #d1d5db;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -35,23 +28,18 @@
         }
         #flipbook {
             width: 90vw;
-            height: 85vh; /* Altura ajustada para dar espaço à pesquisa */
+            height: 85vh;
             max-width: 1200px;
             max-height: 750px;
         }
         #flipbook .page {
             background-color: white;
             box-shadow: 0 0 20px rgba(0,0,0,0.2);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative; /* Necessário para o posicionamento do destaque */
+            position: relative;
         }
         #flipbook .page canvas {
-            max-width: 100%;
-            max-height: 100%;
-            height: auto;
-            width: auto;
+            width: 100%;
+            height: 100%;
         }
         #loading-message {
             position: absolute;
@@ -66,32 +54,36 @@
         #zoom-content.grabbing {
             cursor: grabbing;
         }
-        .highlight {
+        .textLayer {
             position: absolute;
-            background-color: yellow;
-            opacity: 0.5;
-        }
-        .highlight-container {
-            position: absolute;
-            top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            color: transparent;
             pointer-events: none;
+            line-height: 1.0;
+        }
+        .textLayer > span {
+            position: absolute;
+            white-space: pre;
+            transform-origin: 0% 0%;
+        }
+        .textLayer span.highlight {
+            background-color: rgba(255, 255, 0, 0.8); 
+            color: black !important;
         }
     </style>
 </head>
 <body>
-    <div id="loading-message" class="bg-white p-4 rounded-lg shadow-xl text-lg text-gray-700">
+    <div id="loading-message" class="bg-blue-100 p-4 rounded-lg shadow-xl text-lg text-gray-700">
         Carregando e renderizando as páginas do livro...
     </div>
 
-    <!-- Container do Livro -->
     <div id="flipbook-container">
         <div id="flipbook"></div>
     </div>
 
-    <!-- Controles de Navegação e Pesquisa -->
     <div class="mt-2 flex items-center justify-center flex-wrap gap-4 z-10">
         <button id="prev-page" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-5 rounded-lg shadow-md transition-transform transform hover:scale-105">Anterior</button>
         <span id="page-info" class="text-gray-800 font-semibold"></span>
@@ -104,9 +96,8 @@
             </button>
         </div>
     </div>
-    <div id="search-results-container" class="mt-2 text-sm text-gray-700 w-full max-w-2xl h-8 text-center"></div>
+    <div id="search-results-container" class="mt-2 text-sm text-gray-700 w-full max-w-2xl h-8 text-center overflow-x-auto whitespace-nowrap"></div>
 
-    <!-- Modal de Zoom -->
     <div id="zoom-modal" class="fixed inset-0 bg-black bg-opacity-75 hidden items-center justify-center p-4 z-50">
         <div id="zoom-content" class="bg-white p-2 rounded-lg shadow-2xl max-w-full max-h-full overflow-auto"></div>
         <div class="absolute top-4 right-4 flex items-center space-x-2">
@@ -128,7 +119,8 @@
         let isFlipbookInitialized = false;
         let pdfDoc = null;
         let modalZoomLevel = 2.5;
-        let pageTextContents = []; // Array para guardar o texto de cada página
+        let pageTextContents = []; 
+        let pendingHighlight = null;
 
         async function loadPdfAndInitFlipbook() {
             try {
@@ -137,40 +129,69 @@
                 const numPages = pdfDoc.numPages;
 
                 for (let pageNum = 1; pageNum <= numPages; pageNum++) {
-                    loadingMessage.text(`Renderizando página ${pageNum} de ${numPages}...`);
+                    loadingMessage.text(`Processando página ${pageNum} de ${numPages}...`);
                     const page = await pdfDoc.getPage(pageNum);
                     const viewport = page.getViewport({ scale: scale });
+                    
+                    const pageElement = $('<div>').addClass('page').attr('data-page-number', pageNum);
+
                     const canvas = document.createElement('canvas');
                     const ctx = canvas.getContext('2d');
                     canvas.height = viewport.height;
                     canvas.width = viewport.width;
+                    pageElement.append(canvas);
+
+                    const textLayerDiv = document.createElement('div');
+                    textLayerDiv.className = 'textLayer';
+                    pageElement.append(textLayerDiv);
+                    
                     const renderContext = { canvasContext: ctx, viewport: viewport };
                     await page.render(renderContext).promise;
                     
-                    const pageElement = $('<div>').addClass('page').attr('data-page-number', pageNum).append(canvas);
+                    const textContent = await page.getTextContent();
+                    pageTextContents.push(textContent); 
+                    
+                    pdfjsLib.renderTextLayer({
+                        textContent: textContent,
+                        container: textLayerDiv,
+                        viewport: viewport,
+                        textDivs: []
+                    });
+                    
                     flipbook.append(pageElement);
                 }
-                
-                for (let pageNum = 1; pageNum <= numPages; pageNum++) {
-                    loadingMessage.text(`Extraindo texto da página ${pageNum} de ${numPages}...`);
-                    const page = await pdfDoc.getPage(pageNum);
-                    const textContent = await page.getTextContent();
-                    pageTextContents.push(textContent);
-                }
 
-                loadingMessage.hide();
+                // Oculta a mensagem de carregamento inicial
+                setTimeout(() => {
+                    loadingMessage.hide();
+                }, 100);
 
                 flipbook.turn({
-                    width: flipbook.width(), height: flipbook.height(),
-                    autoCenter: true, elevation: 50, gradients: true,
-                    when: { turned: (event, page, view) => { updatePageInfo(); clearHighlights(); } }
+                    width: flipbook.width(),
+                    height: flipbook.height(),
+                    autoCenter: true,
+                    elevation: 50,
+                    gradients: true,
+                    when: {
+                        turned: (event, page, view) => {
+                            updatePageInfo();
+                            clearHighlights();
+                            if (pendingHighlight && view.includes(pendingHighlight.pageNum)) {
+                                highlightWords(pendingHighlight.pageNum, pendingHighlight.term);
+                                pendingHighlight = null;
+                            }
+                        }
+                    }
                 });
                 
                 isFlipbookInitialized = true;
                 updatePageInfo();
             } catch (error) {
                 console.error('Erro ao carregar o PDF:', error);
-                loadingMessage.text('Falha ao carregar o PDF.');
+                loadingMessage.text('Falha ao carregar o PDF.').show();
+                setTimeout(() => {
+                    loadingMessage.hide();
+                }, 3000);
             }
         }
         
@@ -185,28 +206,25 @@
         $('#next-page').on('click', () => flipbook.turn('next'));
         $(window).on('resize', () => { if (isFlipbookInitialized) flipbook.turn('size', flipbook.width(), flipbook.height()); });
         
-        // --- LÓGICA DA PESQUISA ---
         const searchInput = $('#search-input');
         const searchBtn = $('#search-btn');
         const searchResultsContainer = $('#search-results-container');
 
         function handleSearch() {
             const searchTerm = searchInput.val().trim();
+
             if (searchTerm.length < 2) {
                 searchResultsContainer.text('');
                 clearHighlights();
                 return;
             }
-
             const searchResults = [];
             pageTextContents.forEach((textContent, pageIndex) => {
-                const pageNum = pageIndex + 1;
-                const pageText = textContent.items.map(item => item.str).join(' ');
-                if (pageText.toLowerCase().includes(searchTerm.toLowerCase())) {
-                    searchResults.push(pageNum);
+                const { fullText } = buildTextAndMap(textContent);
+                if (fullText.toLowerCase().includes(searchTerm.toLowerCase())) {
+                    searchResults.push(pageIndex + 1);
                 }
             });
-
             displaySearchResults(searchResults, searchTerm);
         }
 
@@ -216,60 +234,87 @@
                 searchResultsContainer.text(`Nenhum resultado encontrado para "${term}".`);
                 return;
             }
-            
             searchResultsContainer.append(`<span>${results.length} resultado(s) em: </span>`);
-            results.forEach((pageNum, index) => {
+            results.forEach((pageNum) => {
                 const pageLink = $(`<a href="#" class="text-blue-600 hover:underline cursor-pointer ml-2">${pageNum}</a>`);
-                pageLink.on('click', async (e) => {
+                pageLink.on('click', (e) => {
                     e.preventDefault();
-                    flipbook.turn('page', pageNum);
-                    // Espera a animação de virar a página terminar antes de destacar
-                    setTimeout(async () => {
-                        await highlightWords(pageNum, term);
-                    }, 500);
+                    const view = flipbook.turn('view');
+                    if (view.includes(pageNum)) {
+                        highlightWords(pageNum, term);
+                    } else {
+                        pendingHighlight = { pageNum, term };
+                        flipbook.turn('page', pageNum);
+                    }
                 });
                 searchResultsContainer.append(pageLink);
             });
         }
         
-        async function highlightWords(pageNum, searchTerm) {
-            clearHighlights();
-            const pageElement = flipbook.find(`.page[data-page-number="${pageNum}"]`);
-            if (pageElement.length === 0) return;
-            
-            let highlightContainer = pageElement.find('.highlight-container');
-            if (highlightContainer.length === 0) {
-                highlightContainer = $('<div class="highlight-container"></div>');
-                pageElement.append(highlightContainer);
-            }
+        function buildTextAndMap(textContent) {
+            let fullText = '';
+            let charMap = [];
+            const items = textContent.items;
 
-            const textContent = pageTextContents[pageNum - 1];
-            const page = await pdfDoc.getPage(pageNum);
-            const viewport = page.getViewport({ scale: scale });
+            items.forEach((item, index) => {
+                const textItem = item.str;
+                
+                for (let i = 0; i < textItem.length; i++) {
+                    fullText += textItem[i];
+                    charMap.push(index);
+                }
 
-            textContent.items.forEach(item => {
-                if (item.str.toLowerCase().includes(searchTerm.toLowerCase())) {
-                    const tx = pdfjsLib.Util.transform(viewport.transform, item.transform);
-                    const highlight = $('<div></div>').addClass('highlight').css({
-                        left: tx[4] + 'px',
-                        top: tx[5] + 'px',
-                        width: item.width + 'px',
-                        height: item.height + 'px',
-                    });
-                    highlightContainer.append(highlight);
+                if (index < items.length - 1) {
+                    const nextItem = items[index + 1];
+                    if (textItem.length > 0 && textItem[textItem.length - 1] !== ' ' && nextItem.str.length > 0 && nextItem.str[0] !== ' ') {
+                         fullText += ' ';
+                         charMap.push(index); 
+                    }
                 }
             });
+            
+            return { fullText, charMap };
+        }
+
+        function highlightWords(pageNum, searchTerm) {
+            clearHighlights();
+            const pageIndex = pageNum - 1;
+            if (pageIndex < 0 || pageIndex >= pageTextContents.length) return;
+
+            const textContent = pageTextContents[pageIndex];
+            const pageElement = flipbook.find(`.page[data-page-number="${pageNum}"]`);
+            const textLayer = pageElement.find('.textLayer')[0];
+            if (!textLayer) return;
+
+            const allSpans = Array.from(textLayer.querySelectorAll('span'));
+            if (allSpans.length === 0) return;
+
+            const { fullText, charMap } = buildTextAndMap(textContent);
+            const lowerFullText = fullText.toLowerCase();
+            const lowerSearchTerm = searchTerm.toLowerCase();
+
+            let startIndex = 0;
+            
+            while ((startIndex = lowerFullText.indexOf(lowerSearchTerm, startIndex)) !== -1) {
+                const endIndex = startIndex + lowerSearchTerm.length;
+                
+                for (let i = startIndex; i < endIndex; i++) {
+                    const spanIndex = charMap[i];
+                    if (spanIndex !== undefined && spanIndex < allSpans.length) {
+                        allSpans[spanIndex].classList.add('highlight');
+                    }
+                }
+                startIndex = endIndex; 
+            }
         }
         
         function clearHighlights() {
-            $('.highlight-container').empty();
+            $('.textLayer span').removeClass('highlight');
         }
 
         searchBtn.on('click', handleSearch);
         searchInput.on('keyup', (e) => { if (e.key === 'Enter') handleSearch(); });
 
-
-        // --- LÓGICA DO ZOOM (EXISTENTE) ---
         const zoomBtn = $('#zoom-btn');
         const zoomModal = $('#zoom-modal');
         const zoomContent = $('#zoom-content');
@@ -280,8 +325,9 @@
             zoomContent.empty();
             const view = flipbook.turn('view');
             
+            loadingMessage.text('A aplicar zoom...').show();
+            
             try {
-                loadingMessage.text('A aplicar zoom...').show();
                 const canvasContainer = $('<div class="flex flex-col md:flex-row gap-2"></div>');
                 for (const pageNum of view) {
                     if (pageNum === 0) continue;
@@ -296,10 +342,16 @@
                     canvasContainer.append(canvas);
                 }
                 zoomContent.append(canvasContainer);
-                loadingMessage.hide().text('Carregando e renderizando as páginas do livro...');
             } catch (error) {
                 console.error("Erro ao aplicar zoom:", error);
-                loadingMessage.text('Falha ao aplicar zoom.').show().delay(2000).fadeOut();
+                loadingMessage.text('Falha ao aplicar zoom.').show();
+                setTimeout(() => loadingMessage.hide(), 2000); 
+            } finally {
+                // Esconde a mensagem de loading de forma garantida e reseta o texto padrão.
+                setTimeout(() => {
+                    loadingMessage.hide();
+                    loadingMessage.text('Carregando e renderizando as páginas do livro...');
+                }, 100);
             }
         }
 
@@ -309,12 +361,12 @@
         });
 
         $('#zoom-in-modal').on('click', () => {
-            modalZoomLevel = Math.min(5.0, modalZoomLevel + 0.5); // Limite máximo de zoom
+            modalZoomLevel = Math.min(5.0, modalZoomLevel + 0.5);
             renderZoomedPages(modalZoomLevel);
         });
 
         $('#zoom-out-modal').on('click', () => {
-            modalZoomLevel = Math.max(1.0, modalZoomLevel - 0.5); // Limite mínimo de zoom
+            modalZoomLevel = Math.max(1.0, modalZoomLevel - 0.5);
             renderZoomedPages(modalZoomLevel);
         });
 
@@ -334,4 +386,3 @@
     </script>
 </body>
 </html>
-
