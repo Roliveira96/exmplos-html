@@ -67,4 +67,25 @@ test.describe('Simulador de Financiamento Caixa', () => {
 
     expect(valorLucroPrejuizo).toBeCloseTo(valorAluguelTabela - valorPrimeiraParcelaTabela, 2);
   });
+
+  test('should correctly calculate and display the investment comparison', async ({ page }) => {
+    // Adiciona um proponente com dados de exemplo
+    await page.locator('.integrante-salario').fill('8.000,00');
+
+    // Define a taxa CDI
+    await page.locator('#taxaCDI').fill('12,00');
+
+    // Clica no botão para calcular a simulação
+    await page.click('button:has-text("Calcular Simulação Completa")');
+
+    // Aguarda a renderização dos resultados
+    await page.waitForSelector('#valorAcumuladoCDI:not(:has-text("R$ 0,00"))');
+
+    // Verifica se os valores são calculados e exibidos
+    const valorImovelComValorizacao = await page.locator('#valorImovelComValorizacao').innerText();
+    const valorAcumuladoCDI = await page.locator('#valorAcumuladoCDI').innerText();
+
+    expect(valorImovelComValorizacao).not.toEqual('R$ 0,00');
+    expect(valorAcumuladoCDI).not.toEqual('R$ 0,00');
+  });
 });

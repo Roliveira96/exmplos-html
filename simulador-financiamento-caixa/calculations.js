@@ -289,6 +289,18 @@ const calcularAmortizacao = (valorFinanciado, taxaAnual, prazoMeses, aporteTipo,
     };
 };
 
+const calcularInvestimentoAlternativo = (parcelas, taxaCDIAnual, entrada) => {
+    const taxaCDIMensal = taxaCDIAnual / 12;
+    let valorAcumulado = entrada;
+
+    parcelas.forEach(p => {
+        valorAcumulado += p.parcelaTotalPaga;
+        valorAcumulado *= (1 + taxaCDIMensal);
+    });
+
+    return valorAcumulado;
+};
+
 const calcularSimulacaoCompleta = () => {
     const elementosDOM = buscarElementosDOM();
     if (!elementosDOM) return;
@@ -305,6 +317,7 @@ const calcularSimulacaoCompleta = () => {
     const usarFgtsEntrada = document.getElementById('usarFgtsEntrada').checked;
     const taxaAumentoAluguel = unmaskPercent(document.getElementById('taxaAumentoAluguelInput').value);
     const taxaValorizacaoImovel = unmaskPercent(document.getElementById('taxaValorizacaoImovel').value);
+    const taxaCDI = unmaskPercent(document.getElementById('taxaCDI').value);
     const objetivoAporte = document.querySelector('input[name="objetivoAporte"]:checked').value;
 
     const dadosFamiliares = calcularDadosFamiliares();
@@ -382,4 +395,9 @@ const calcularSimulacaoCompleta = () => {
     elementosDOM.taxaValorizacaoUsada.textContent = `${(taxaValorizacaoImovel * 100).toFixed(2)}%`.replace('.', ',');
     elementosDOM.valorFinalEstimadoImovel.textContent = formatarMoeda(valorFinalEstimado);
     elementosDOM.ganhoValorizacaoEstimado.textContent = formatarMoeda(ganhoValorizacao);
+
+    // Calcular e exibir o comparativo de investimento
+    const valorAcumuladoCDI = calcularInvestimentoAlternativo(resultadoAporte.parcelas, taxaCDI, entradaTotalFinal);
+    document.getElementById('valorImovelComValorizacao').textContent = formatarMoeda(valorFinalEstimado);
+    document.getElementById('valorAcumuladoCDI').textContent = formatarMoeda(valorAcumuladoCDI);
 };
