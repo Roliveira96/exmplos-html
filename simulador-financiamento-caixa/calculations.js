@@ -300,18 +300,26 @@ const calcularAmortizacao = (valorFinanciado, taxaAnual, prazoMeses, aporteTipo,
 const calcularInvestimentoAlternativo = (parcelas, taxaCDIAnual, entrada) => {
     const taxaCDIMensal = taxaCDIAnual / 12;
     let valorAcumulado = entrada;
+    const historico = [];
 
     parcelas.forEach(p => {
         valorAcumulado += p.parcelaTotalPaga;
         valorAcumulado *= (1 + taxaCDIMensal);
+        if (p.mes % 12 === 0 || p.mes === parcelas.length) {
+            historico.push(valorAcumulado);
+        }
     });
 
-    return valorAcumulado;
+    return { valorFinal: valorAcumulado, historico: historico };
 };
 
 const calcularSimulacaoCompleta = () => {
+    console.log("--- Início da Simulação ---");
     const elementosDOM = buscarElementosDOM();
-    if (!elementosDOM) return;
+    if (!elementosDOM) {
+        console.error("DOM elements not found. Aborting.");
+        return;
+    }
 
     const valorImovel = unmaskMoeda(elementosDOM.valorImovel.value);
     const entradaDinheiroFinal = unmaskMoeda(elementosDOM.entradaDinheiroFinal.value);
@@ -342,6 +350,7 @@ const calcularSimulacaoCompleta = () => {
     }
 
     const valorFinanciado = Math.max(0, valorImovel - entradaTotalFinal);
+    console.log("Valor Financiado:", valorFinanciado);
     elementosDOM.valorFinanciadoDisplay.textContent = formatarMoeda(valorFinanciado);
 
     const avisoFgtsBienal = document.getElementById('avisoFgtsBienal');
@@ -359,7 +368,9 @@ const calcularSimulacaoCompleta = () => {
     }
 
     const resultadoPadrao = calcularAmortizacao(valorFinanciado, taxaAnual, PRAZO_MESES, 'mensal', 0, 0, 0, [], false, 'prazo');
+    console.log("Resultado Padrão:", resultadoPadrao);
     const resultadoAporte = calcularAmortizacao(valorFinanciado, taxaAnual, PRAZO_MESES, aporteTipo, aporteValorMensal, aporteRendimentoAnual, dadosFamiliares.fgtsBienal, dadosFamiliares.proponentes, ativarAporte, objetivoAporte);
+    console.log("Resultado com Aporte:", resultadoAporte);
 
     elementosDOM.tempoPadrao.textContent = formatarAnosMeses(resultadoPadrao.tempoMeses);
     elementosDOM.custoTotalPadrao.textContent = formatarMoeda(resultadoPadrao.custoTotalPago);
@@ -394,6 +405,18 @@ const calcularSimulacaoCompleta = () => {
 
     renderizarDetalheFgts(dadosFamiliares.proponentes, usarFgtsEntrada, ativarAporte, resultadoAporte.fgtsAmortizadoTotal);
 
+    // Gerar dados históricos para o gráfico
+    const historicoImovel = [];
+    const tempoTotalAnos = resultadoAporte.tempoMeses / 12;
+    const anosCompletos = Math.floor(tempoTotalAnos);
+    for (let i = 1; i <= anosCompletos; i++) {
+        historicoImovel.push(valorImovel * Math.pow((1 + taxaValorizacaoImovel), i));
+    }
+    // Adiciona o valor final exato no último ponto, caso não seja um ano completo
+    if (tempoTotalAnos > anosCompletos) {
+        historicoImovel.push(valorImovel * Math.pow((1 + taxaValorizacaoImovel), tempoTotalAnos));
+    }
+
     const tempoQuitacaoAnos = resultadoAporte.tempoMeses / 12;
     const valorFinalEstimado = valorImovel * Math.pow((1 + taxaValorizacaoImovel), tempoQuitacaoAnos);
     const ganhoValorizacao = valorFinalEstimado - valorImovel;
@@ -405,10 +428,27 @@ const calcularSimulacaoCompleta = () => {
     elementosDOM.ganhoValorizacaoEstimado.textContent = formatarMoeda(ganhoValorizacao);
 
     // Calcular e exibir o comparativo de investimento
-    const valorAcumuladoCDI = calcularInvestimentoAlternativo(resultadoAporte.parcelas, taxaCDI, entradaDinheiroFinal);
-    document.getElementById('valorImovelComValorizacao').textContent = formatarMoeda(valorFinalEstimado);
-    document.getElementById('valorAcumuladoCDI').textContent = formatarMoeda(valorAcumuladoCDI);
+    const { valorFinal: valorAcumuladoCDI, historico: historicoCDI } = calcularInvestimentoAlternativo(resultadoAporte.parcelas, taxaCDI, entradaDinheiroFinal);
+
+    if (isFinite(valorFinalEstimado)) {
+        document.getElementById('valorImovelComValorizacao').textContent = formatarMoeda(valorFinalEstimado);
+    }
+    if (isFinite(valorAcumuladoCDI)) {
+        document.getElementById('valorAcumuladoCDI').textContent = formatarMoeda(valorAcumuladoCDI);
+    }
+
+    // Renderizar o gráfico somente com dados válidos
+    console.log("Histórico Imóvel:", historicoImovel);
+    console.log("Histórico CDI:", historicoCDI);
+    if (typeof renderizarGraficoComparativo === 'function' && historicoImovel.length > 0 && historicoImovel.length === historicoCDI.length && historicoImovel.every(isFinite) && historicoCDI.every(isFinite)) {
+        console.log("Renderizando o gráfico.");
+        renderizarGraficoComparativo(historicoImovel, historicoCDI);
+    } else {
+        console.warn("Não foi possível renderizar o gráfico devido a dados inválidos ou inconsistentes.");
+    }
 
     // Habilitar o botão de exportar
+    console.log("Habilitando botão de exportar.");
     document.getElementById('exportarJson').disabled = false;
+    console.log("--- Fim da Simulação ---");
 };

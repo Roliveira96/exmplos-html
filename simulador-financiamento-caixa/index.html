@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simulador Detalhado de Financiamento Caixa - SAC com FGTS</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
     <link rel="stylesheet" href="style.css"></link>
 
 </head>
@@ -338,6 +339,9 @@
                                 <p id="valorAcumuladoCDI" class="text-lg font-bold text-green-700 mt-1">R$ 0,00</p>
                             </div>
                         </div>
+                        <div class="mt-4">
+                            <canvas id="graficoComparativo" height="200"></canvas>
+                        </div>
                     </div>
                  </div>
             </div>
@@ -349,6 +353,7 @@
     <script src="calculations.js"></script>
     <script src="export.js"></script>
     <script src="geolocation.js"></script>
+    <script src="chart.js"></script>
     <script src="main.js"></script>
     <script src="listeners.js"></script>
 
