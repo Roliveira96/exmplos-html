@@ -245,7 +245,7 @@ async function renderAllPages() {
     for (let i = 1; i <= state.numPages; i++) {
         const wrapper = document.createElement('div');
         wrapper.id = `page-${i}`;
-        wrapper.className = "flex flex-col items-center mb-10 w-full min-h-[600px]";
+        wrapper.className = "flex flex-col items-center mb-10 w-full";
         wrapper.dataset.pageNum = i;
 
         const canvasContainer = document.createElement('div');
