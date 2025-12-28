@@ -6,24 +6,20 @@ body {
 #pdf-viewport {
     touch-action: auto;
     -webkit-overflow-scrolling: touch;
-    display: flex;
-    /* Always uses flexbox */
-    flex-direction: column;
-    /* Stack content vertically */
-    align-items: center;
-    /* Horizontal centering */
+    display: block;
+    /* Use block to allow natural scroll overflow */
     overflow: auto;
+    /* Enable scrolling */
     background: #18181b;
     cursor: grab;
     width: 100%;
     height: 100%;
-    /* Ensure viewport takes space */
 }
 
 #pdf-content {
     display: block;
-    margin: 2rem 0;
-    /* Vertical spacing only */
+    margin: 2rem auto;
+    /* Auto margin centers the block horizontally */
     will-change: width;
     /* Zoom transitions */
     transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);

@@ -155,10 +155,18 @@ async function loadPDF() {
 
         showReadingView();
 
-        requestAnimationFrame(async () => {
+        requestAnimationFrame(() => {
             updateZoom(1.0);
-            await renderAllPages();
-            setupIntersectionObserver();
+            renderAllPages().then(() => {
+                setupIntersectionObserver();
+
+                // Auto-open sidebars on wide screens (Desktop)
+                if (window.innerWidth >= 1600) {
+                    toggleSidebar('pages', true);
+                    renderThumbnails();
+                    toggleSidebar('markers', true);
+                }
+            });
             syncUI();
             resetUiTimeout();
         });
