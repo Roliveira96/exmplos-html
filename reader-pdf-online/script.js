@@ -86,7 +86,10 @@ function setupEventListeners() {
         window.visualViewport.addEventListener('resize', syncUI);
         window.visualViewport.addEventListener('scroll', syncUI);
     }
-    window.addEventListener('resize', syncUI);
+    window.addEventListener('resize', () => {
+        syncUI();
+        updateZoom(state.zoom);
+    });
 
     els.readingView.addEventListener('mousemove', resetUiTimeout);
     els.readingView.addEventListener('touchstart', resetUiTimeout);
@@ -289,12 +292,23 @@ function updateZoom(newZoom, focalPoint = null, screenPoint = null) {
     const oldZoom = state.zoom;
     state.zoom = Math.max(state.minZoom, Math.min(state.maxZoom, newZoom));
 
-    if (oldZoom === state.zoom) return;
+    // if (oldZoom === state.zoom) return; // Removed to force width update on init
 
     const scaleRatio = state.zoom / oldZoom;
 
     // Apply zoom
-    els.pdfContent.style.width = `${state.zoom * 100}%`;
+    let newWidth;
+
+    if (window.matchMedia('(min-width: 1024px)').matches) {
+        // Desktop: Base width is FIXED at 794px (A4)
+        const baseWidth = 794;
+        newWidth = `${baseWidth * state.zoom}px`;
+    } else {
+        // Mobile: Base width is percentage of viewport
+        newWidth = `${state.zoom * 100}%`;
+    }
+
+    els.pdfContent.style.width = newWidth;
 
     // Adjust scroll to keep focal point under the finger/mouse
     if (focalPoint && screenPoint) {

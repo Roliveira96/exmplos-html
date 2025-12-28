@@ -6,21 +6,37 @@ body {
 #pdf-viewport {
     touch-action: auto;
     -webkit-overflow-scrolling: touch;
-    display: block;
+    display: flex;
+    /* Always uses flexbox */
+    flex-direction: column;
+    /* Stack content vertically */
+    align-items: center;
+    /* Horizontal centering */
     overflow: auto;
     background: #18181b;
     cursor: grab;
+    width: 100%;
+    height: 100%;
+    /* Ensure viewport takes space */
 }
 
 #pdf-content {
     display: block;
-    margin: 0 auto;
+    margin: 2rem 0;
+    /* Vertical spacing only */
     will-change: width;
+    /* Zoom transitions */
     transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* Default fallback */
     width: 100%;
     max-width: none;
+    /* Ensure visibility */
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    /* Always have shadow */
 }
 
+/* UI Overlay stays fixed */
 #ui-overlay {
     transform-origin: 0 0;
     will-change: transform, opacity;
@@ -33,7 +49,6 @@ body {
     transform-origin: center bottom;
 }
 
-/* Oculta scrollbar mas mantém funcionalidade */
 .scrollbar-hide::-webkit-scrollbar {
     display: none;
 }
@@ -52,3 +67,5 @@ body {
         transform: translateY(0);
     }
 }
+
+/* No desktop specific widths in CSS - We delegate full control to JS */
