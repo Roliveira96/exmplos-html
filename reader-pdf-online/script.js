@@ -31,6 +31,8 @@ const els = {
     pagesContainer: document.getElementById('pages-container'),
     btnZoomIn: document.getElementById('btn-zoom-in'),
     btnZoomOut: document.getElementById('btn-zoom-out'),
+    btnExitDesktop: document.getElementById('btn-exit-desktop'),
+
     btnOpenMarkers: document.getElementById('btn-open-markers'),
     btnCloseMarkers: document.getElementById('btn-close-markers'),
     sidebarMarkers: document.getElementById('sidebar-markers'),
@@ -53,7 +55,11 @@ const els = {
     btnOpenPages: document.getElementById('btn-open-pages'),
     btnClosePages: document.getElementById('btn-close-pages'),
     backdrop: document.getElementById('backdrop'),
-    uiOverlay: document.getElementById('ui-overlay')
+    uiOverlay: document.getElementById('ui-overlay'),
+
+    // New Elements
+    inputPageNum: document.getElementById('input-page-num'),
+    btnGoToPage: document.getElementById('btn-go-to-page')
 };
 
 async function init() {
@@ -68,6 +74,9 @@ function setupEventListeners() {
 
     els.btnZoomIn.addEventListener('click', () => updateZoom(state.zoom + 0.5));
     els.btnZoomOut.addEventListener('click', () => updateZoom(state.zoom - 0.5));
+    if (els.btnExitDesktop) {
+        els.btnExitDesktop.addEventListener('click', closeReader);
+    }
 
     els.btnOpenMarkers.addEventListener('click', () => toggleSidebar('markers', true));
     els.btnCloseMarkers.addEventListener('click', () => toggleSidebar('markers', false));
@@ -80,6 +89,29 @@ function setupEventListeners() {
         toggleSidebar('markers', false);
         toggleSidebar('pages', false);
     });
+
+    // Page Navigation Logic
+    const handleGoToPage = () => {
+        const val = parseInt(els.inputPageNum.value);
+        if (isNaN(val)) return;
+        let targetPage = val;
+        if (targetPage < 1) targetPage = 1;
+        if (targetPage > state.numPages) targetPage = state.numPages;
+
+        els.inputPageNum.value = targetPage; // Reflect corrected value
+        const pageEl = document.getElementById(`page-${targetPage}`);
+        if (pageEl) {
+            pageEl.scrollIntoView({ behavior: 'smooth' });
+            resetUiTimeout();
+        }
+    };
+
+    if (els.btnGoToPage && els.inputPageNum) {
+        els.btnGoToPage.addEventListener('click', handleGoToPage);
+        els.inputPageNum.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') handleGoToPage();
+        });
+    }
 
     // Sync UI with Browser Native Pinch Zoom
     if (window.visualViewport) {
@@ -517,11 +549,12 @@ async function renderThumbnails() {
     for (let i = 1; i <= state.numPages; i++) {
         const pageMarkers = state.markers.filter(m => m.page === i);
         const firstMarker = pageMarkers[0];
-        const isActive = state.pageNum === i;
+        // isActive check moved to updateActiveThumbnail
 
         const container = document.createElement('div');
+        container.id = `thumbnail-${i}`; // ID for updates
         container.onclick = () => scrollToPage(i);
-        container.className = `relative rounded-[2.5rem] p-3 border-8 transition-all active:scale-95 ${isActive ? 'border-blue-600 bg-white shadow-2xl' : 'border-transparent'}`;
+        container.className = `relative rounded-[2.5rem] p-3 border-8 transition-all active:scale-95 border-transparent thumbnail-item`; // default inactive
 
         const inner = document.createElement('div');
         inner.className = "aspect-[3/4] bg-zinc-200 rounded-[2rem] flex items-center justify-center relative overflow-hidden shadow-inner";
@@ -551,14 +584,30 @@ async function renderThumbnails() {
         container.appendChild(label);
         els.thumbnailsList.appendChild(container);
 
-        const page = await state.pdfDoc.getPage(i);
-        const viewport = page.getViewport({ scale: 0.2 });
-        const context = canvas.getContext('2d');
-        canvas.height = viewport.height;
-        canvas.width = viewport.width;
-        await page.render({ canvasContext: context, viewport }).promise;
+        state.pdfDoc.getPage(i).then(page => {
+            const viewport = page.getViewport({ scale: 0.2 });
+            const context = canvas.getContext('2d');
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
+            page.render({ canvasContext: context, viewport });
+        });
     }
+
+    updateActiveThumbnail(state.pageNum);
     lucide.createIcons();
+}
+
+function updateActiveThumbnail(pageNum) {
+    document.querySelectorAll('.thumbnail-item').forEach(el => {
+        el.classList.remove('border-blue-600', 'bg-white', 'shadow-2xl');
+        el.classList.add('border-transparent');
+    });
+    const active = document.getElementById(`thumbnail-${pageNum}`);
+    if (active) {
+        active.classList.remove('border-transparent');
+        active.classList.add('border-blue-600', 'bg-white', 'shadow-2xl');
+        active.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
 }
 
 // Initialization
