@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualizador de Arquivos Excel (Frontend)</title>
+    <!-- Carrega Tailwind CSS para estilização -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Carrega a biblioteca SheetJS/xlsx.js para ler arquivos Excel -->
+    <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+    <!-- Ícones Lucide (usado para validação) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Define a fonte e bordas arredondadas globalmente */
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
+        .card { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
+        /* Estilos básicos para a tabela */
+        #dataOutput table { width: 100%; border-collapse: collapse; }
+        #dataOutput th, #dataOutput td { padding: 12px 16px; border: 1px solid #e5e7eb; text-align: left; }
+        #dataOutput th { background-color: #1e40af; color: white; }
+        .success-bg { background-color: #d1fae5; border-color: #34d399; color: #065f46; }
+        .error-bg { background-color: #fee2e2; border-color: #f87171; color: #b91c1c; }
+        .valid { color: #10b981; } /* Tailwind green-500 */
+        .invalid { color: #ef4444; } /* Tailwind red-500 */
+        /* Estilos para o tooltip de erro na célula de status */
+        .tooltip-container { position: relative; display: inline-block; }
+        .tooltip-content {
+            position: absolute;
+            z-index: 100;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            padding: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 250px;
+            left: 100%;  /* Move para a DIREITA da célula */
+            margin-left: 8px; /* Adiciona um espaço */
+            top: 50%;
+            transform: translateY(-50%);
+            display: none;
+            text-align: left;
+            white-space: normal;
+        }
+        .group:hover .tooltip-content {
+            display: block;
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-8">
+
+    <div class="max-w-4xl mx-auto bg-white p-6 md:p-10 rounded-xl card">
+        <h1 class="text-3xl font-bold text-gray-800 mb-2">Visualizador de Planilhas</h1>
+        <!-- Alteração 1: Adiciona lista de colunas obrigatórias -->
+        <p class="text-gray-600 mb-6">
+            Carregue um arquivo Excel (.xlsx ou .xls) para visualizar, filtrar e validar os dados. 
+            <span class="font-bold text-blue-700">Colunas Obrigatórias: Nome, Sobrenome, CPF, Data de Nascimento, Email, É Terapeuta, Detalhes Terapeuta, Celular.</span>
+        </p>
+
+        <!-- Área de Upload do Arquivo -->
+        <div class="mb-8 p-6 bg-blue-50 border border-blue-200 rounded-lg">
+            <label for="excelFile" class="block text-lg font-medium text-blue-800 mb-3">Selecione o Arquivo Excel</label>
+            <input 
+                type="file" 
+                id="excelFile" 
+                accept=".xlsx, .xls"
+                class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-white focus:outline-none file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-500 file:text-white hover:file:bg-blue-600"
+            >
+        </div>
+
+        <!-- Indicador de Carregamento e Mensagens -->
+        <div id="statusMessage" class="text-center py-4 hidden">
+            <svg class="animate-spin h-5 w-5 mr-3 inline-block text-blue-500" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span class="text-blue-500 font-semibold">Processando... Por favor, aguarde.</span>
+        </div>
+
+        <!-- Área de Exibição da Tabela -->
+        <h2 class="text-2xl font-semibold text-gray-800 mt-8 mb-4 border-b pb-2">Dados Mapeados e Validados (Tabela)</h2>
+        <p class="text-sm text-gray-500 mb-4">Clique duas vezes em qualquer célula de dado (exceto Status e É Terapeuta) para editar e revalidar a linha. O campo "É Terapeuta" é editável por clique único.</p>
+        
+        <!-- NOVO: Botão Adicionar Linha -->
+        <button 
+            id="addRowButton"
+            onclick="addNewRow()" 
+            class="mb-4 py-2 px-4 bg-green-600 text-white font-bold rounded-lg shadow hover:bg-green-700 transition duration-150 disabled:bg-gray-400"
+            disabled
+            title="Carregue um arquivo primeiro para habilitar a adição de linhas."
+        >
+            <i data-lucide="plus-circle" class="w-5 h-5 inline-block mr-2 align-text-bottom"></i>
+            Adicionar Nova Linha
+        </button>
+
+        <div id="dataOutput" class="overflow-x-auto rounded-lg mb-8">
+            <p class="text-gray-500 p-4 bg-gray-100 rounded-lg">Nenhuma planilha carregada.</p>
+        </div>
+        
+        <!-- Área de Exibição JSON -->
+        <h2 class="text-2xl font-semibold text-gray-800 mt-8 mb-4 border-b pb-2">Linhas como JSON Filtrado e Mapeado</h2>
+        <div id="jsonOutput" class="space-y-4">
+            <p class="text-gray-500 p-4 bg-gray-100 rounded-lg">JSON será exibido aqui.</p>
+        </div>
+    </div>
+
+    <script>
+        const fileInput = document.getElementById('excelFile');
+        const dataOutput = document.getElementById('dataOutput');
+        const jsonOutput = document.getElementById('jsonOutput');
+        const statusMessage = document.getElementById('statusMessage');
+        const addRowButton = document.getElementById('addRowButton'); // NOVO ELEMENTO
+
+        // VARIÁVEL GLOBAL para armazenar os dados atuais (necessário para edição)
+        window.currentData = [];
+
+        // Mapeamento de Colunas de Saída (Chave interna para Chave final do JSON)
+        const OUTPUT_FIELD_MAP = {
+            'nome': 'nome', 
+            'sobrenome': 'sobrenome', 
+            'cpf': 'cpf', 
+            'nascimento': 'nascimento', 
+            'email': 'email', 
+            'terapeuta': 'terapeuta', 
+            'detalhesterapeuta': 'detalhesTerapeuta', 
+            'celular': 'celular', 
+            'sexo': 'sexo',
+            'nomeibinato': 'nomeMeio'
+        };
+        
+        // Mapeamento de Aliases: Define todas as variações de entrada (normalized) aceitas para cada CHAVE PRIMÁRIA (normalized).
+        const MAPPING_ALIASES = {
+            'nome': ['nome', 'primeironome'],
+            'sobrenome': ['sobrenome', 'ultimonome'],
+            'cpf': ['cpf', 'cpfnr'],
+            'nascimento': ['nascimento', 'datanascimento', 'datadenascimento'],
+            'email': ['email', 'emailcontato'],
+            'terapeuta': ['terapeuta', 'eterapeutamembro'], 
+            'detalhesterapeuta': ['detalhesterapeuta', 'detalhes', 'descricao', 'detalheterapeuta', 'descricaoterapeuta'], 
+            'celular': ['celular', 'tel', 'telefone', 'contato', 'fone', 'telefonecontato'], 
+            'sexo': ['sexo', 'genero'],
+            'nomeibinato': ['nomeibinato', 'nomedomeio'], 
+        };
+
+        // Chaves Primárias Obrigatórias (Chaves internas)
+        const REQUIRED_KEYS = ['nome', 'sobrenome', 'cpf', 'nascimento', 'email', 'terapeuta', 'detalhesterapeuta', 'celular'];
+
+        // Chaves que estarão no JSON final (na ordem desejada)
+        const FINAL_JSON_KEYS = [
+            'nome',
+            'sobrenome',
+            'cpf',
+            'nascimento',
+            'email',
+            'celular',
+            'terapeuta',
+            'detalhesTerapeuta'
+        ];
+
+        // ===========================================
+        // FUNÇÕES DE MÁSCARA
+        // ===========================================
+
+        function formatCpf(value) {
+            if (!value) return '';
+            const cleaned = String(value).replace(/\D/g, '').substring(0, 11);
+            if (cleaned.length < 11) return cleaned;
+            return cleaned.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, '$1.$2.$3-$4');
+        }
+
+        function formatCelular(value) {
+            if (!value) return '';
+            const cleaned = String(value).replace(/\D/g, '').substring(0, 11);
+            if (cleaned.length < 10) return cleaned;
+            if (cleaned.length === 11) {
+                return cleaned.replace(/^(\d{2})(\d{5})(\d{4})$/, '($1) $2-$3');
+            }
+            return cleaned.replace(/^(\d{2})(\d{4})(\d{4})$/, '($1) $2-$3');
+        }
+        
+        // NOVA FUNÇÃO: Aplica máscara DD/MM/AAAA
+        function formatNascimento(value) {
+            if (!value) return '';
+            const cleaned = String(value).replace(/\D/g, '').substring(0, 8);
+            if (cleaned.length <= 2) return cleaned;
+            if (cleaned.length <= 4) return cleaned.replace(/^(\d{2})$/, '$1/');
+            return cleaned.replace(/^(\d{2})(\d{2})(\d{4})$/, '$1/$2/$3');
+        }
+
+
+        // ===========================================
+        // FUNÇÕES DE VALIDAÇÃO
+        // ===========================================
+
+        const validationRules = {
+            // Nome e Sobrenome: obrigatório e não pode conter números
+            name: (value) => {
+                if (!value || String(value).trim() === '') return "Vazio";
+                if (/\d/.test(value)) return "Contém número";
+                return true;
+            },
+            // CPF: deve ser válido (apenas dígitos, 11 caracteres)
+            cpf: (value) => {
+                if (!value || String(value).trim() === '') return "Vazio";
+                const cpfDigits = String(value).replace(/[^0-9]/g, '');
+                if (cpfDigits.length !== 11) return "Tamanho incorreto";
+                // Regra simplificada, validação completa de dígito é complexa e exige biblioteca externa
+                return true; 
+            },
+            // Data de Nascimento: deve ser uma data válida formatada
+            nascimento: (value) => {
+                if (!value) return "Vazio ou Inválido";
+                
+                // Se for string (vindo da edição), valida o formato DD/MM/AAAA
+                if (typeof value === 'string') {
+                    const dateRegex = /^\d{2}\/\d{2}\/\d{4}$/;
+                    if (!dateRegex.test(value)) return "Formato deve ser DD/MM/AAAA";
+                    
+                    const [day, month, year] = value.split('/').map(Number);
+                    const date = new Date(year, month - 1, day);
+                    // Checa se os componentes da data são válidos (evita 30/02/2000)
+                    if (date.getFullYear() < 1900 || date.getFullYear() > 2100 || date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day) return "Data Inválida ou Inexistente";
+                    
+                    return true;
+                }
+
+                // Se for number (vindo do Excel), valida a conversão
+                return excelDateToJSDate(value) !== null ? true : "Data Inválida";
+            },
+            // Email: deve ter formato básico de email (ex: a@b.com)
+            email: (value) => {
+                if (!value || String(value).trim() === '') return "Vazio";
+                // RegEx simples para formato de email
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailRegex.test(value) ? true : "Formato inválido";
+            },
+            // Celular: deve ser válido (ex: 10 ou 11 dígitos numéricos brasileiros)
+            celular: (value) => {
+                if (!value || String(value).trim() === '') return "Vazio";
+                const phoneDigits = String(value).replace(/[^0-9]/g, '');
+                // Celular brasileiro tem 10 (cidade + 8 dígitos) ou 11 (cidade + 9 dígitos)
+                if (phoneDigits.length < 10 || phoneDigits.length > 11) return "Tamanho incorreto";
+                return true;
+            },
+            // Terapeuta: deve ser um booleano (true ou false)
+            terapeuta: (value) => {
+                // Checa se o valor já foi mapeado para boolean, ou seja, se não é null
+                if (typeof value === 'boolean') return true;
+                return "Deve ser Sim (true) ou Não (false)";
+            },
+            // Detalhes Terapeuta: Agora é totalmente opcional (anteriormente era obrigatório se terapeuta: true)
+            detalhesTerapeuta: (value, row) => {
+                // Permite ser vazio, independentemente de ser Terapeuta.
+                return true;
+            }
+        };
+
+        // Função para executar todas as validações em uma linha
+        function validateRow(row) {
+            let isValid = true;
+            const errors = {};
+
+            // Validações de Nome, Sobrenome, Email, Celular
+            if (validationRules.name(row.nome) !== true) { isValid = false; errors.nome = validationRules.name(row.nome); }
+            if (validationRules.name(row.sobrenome) !== true) { isValid = false; errors.sobrenome = validationRules.name(row.sobrenome); }
+            if (validationRules.cpf(row.cpf) !== true) { isValid = false; errors.cpf = validationRules.cpf(row.cpf); }
+            if (validationRules.nascimento(row.nascimento) !== true) { isValid = false; errors.nascimento = validationRules.nascimento(row.nascimento); }
+            if (validationRules.email(row.email) !== true) { isValid = false; errors.email = validationRules.email(row.email); }
+            if (validationRules.celular(row.celular) !== true) { isValid = false; errors.celular = validationRules.celular(row.celular); }
+            
+            // Validações de Terapeuta (terapeuta, detalhesTerapeuta)
+            if (validationRules.terapeuta(row.terapeuta) !== true) { isValid = false; errors.terapeuta = validationRules.terapeuta(row.terapeuta); }
+            
+            return { isValid, errors };
+        }
+        
+        // Função para converter o número de série do Excel para DD/MM/AAAA
+        function excelDateToJSDate(excelDate) {
+            if (typeof excelDate !== 'number' || excelDate <= 0) return null;
+            
+            const date = new Date(Math.round((excelDate - 25569) * 86400 * 1000));
+            
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+            
+            if (date.getFullYear() < 1900 || date.getFullYear() > 2100 || isNaN(date.getTime())) return null;
+
+            return `${day}/${month}/${year}`;
+        }
+        
+        // Função para normalizar uma string (remover acentos, espaços e converter para minúsculas)
+        const normalizeKey = (key) => {
+            if (typeof key !== 'string') return '';
+            return key.toLowerCase()
+                      .normalize("NFD")
+                      .replace(/[\u0300-\u036f]/g, "") 
+                      .replace(/[^a-z0-9]/g, ''); 
+        };
+
+        fileInput.addEventListener('change', handleFile, false);
+
+        function handleFile(e) {
+            const files = e.target.files;
+            if (files.length === 0) return;
+
+            const file = files[0];
+            const reader = new FileReader();
+
+            dataOutput.innerHTML = '';
+            jsonOutput.innerHTML = '';
+            statusMessage.classList.remove('hidden');
+            addRowButton.disabled = true;
+
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const firstSheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[firstSheetName];
+
+                    // 1. Obter cabeçalhos de forma robusta
+                    let rawHeaderRow = [];
+                    if (worksheet['!ref']) {
+                        const headerRange = XLSX.utils.decode_range(worksheet['!ref']);
+                        headerRange.e.r = headerRange.s.r; 
+                        
+                        const header_json = XLSX.utils.sheet_to_json(worksheet, { 
+                            range: XLSX.utils.encode_range(headerRange), 
+                            header: 1 
+                        });
+                        
+                        if (header_json && header_json.length > 0) {
+                            rawHeaderRow = header_json[0];
+                        }
+                    }
+                    const allOriginalKeys = rawHeaderRow.filter(h => h !== undefined && h !== null && h !== '');
+                    
+                    // 2. Obter todos os dados
+                    const jsonArrayFull = XLSX.utils.sheet_to_json(worksheet, { raw: true }); 
+
+                    // --- DEBUG CONSOLE LOG ---
+                    console.log(`[EXCEL DEBUG] Nome da Primeira Planilha: ${firstSheetName}`);
+                    console.log("[EXCEL DEBUG] Colunas Originais Encontradas na Planilha (Robust):", allOriginalKeys);
+                    // -------------------------
+
+                    if (jsonArrayFull.length === 0 && allOriginalKeys.length === 0) {
+                         const errorMsg = 'A planilha está vazia ou não contém dados formatados.';
+                         dataOutput.innerHTML = `<p class="text-red-600 p-4 bg-red-100 rounded-lg font-semibold">${errorMsg}</p>`;
+                         jsonOutput.innerHTML = '<p class="text-gray-500 p-4 bg-gray-100 rounded-lg">JSON não exibido.</p>';
+                         addRowButton.disabled = true;
+                         return;
+                    }
+
+                    const normalizedToOriginalKeyMap = {};
+                    allOriginalKeys.forEach(key => {
+                        const normalizedKey = normalizeKey(key);
+                        normalizedToOriginalKeyMap[normalizedKey] = key;
+                    });
+                    
+                    const mappingUsed = {}; 
+
+                    // ----------------------------------------------------
+                    // PASSO 3: Validação, Filtragem e Unificação
+                    // ----------------------------------------------------
+                    
+                    // Verifica quais chaves primárias foram realmente encontradas
+                    const foundPrimaryKeys = REQUIRED_KEYS.filter(primaryKey => {
+                        const aliasFound = MAPPING_ALIASES[primaryKey].find(alias => normalizedToOriginalKeyMap.hasOwnProperty(alias));
+                        if (aliasFound) {
+                            const originalKey = normalizedToOriginalKeyMap[aliasFound];
+                            mappingUsed[OUTPUT_FIELD_MAP[primaryKey]] = originalKey; 
+                            return true;
+                        }
+                        return false;
+                    });
+
+                    const missingKeys = REQUIRED_KEYS.filter(primaryKey => !foundPrimaryKeys.includes(primaryKey));
+                    let filteredJsonArray = [];
+                    let validationResults = []; // Array para armazenar resultados de validação
+
+                    if (missingKeys.length > 0) {
+                        // Caso 1: Validação de Cabeçalho Falha (Exibe Erro no JSON Output)
+                        statusMessage.classList.add('hidden');
+                        
+                        // Mapeia as chaves normalizadas FALTANTES para seus nomes de exibição em Português
+                        const missingDisplayKeys = missingKeys.map(key => OUTPUT_FIELD_MAP[key] || key);
+                        
+                        const missingList = `<ul class="list-disc ml-5 mt-2 space-y-1">${missingDisplayKeys.map(key => `<li class="font-bold">- ${key}</li>`).join('')}</ul>`;
+
+                        const foundKeys = allOriginalKeys.map(originalKey => {
+                            const normalizedKey = normalizeKey(originalKey);
+                            const isRequired = Object.values(MAPPING_ALIASES).flat().includes(normalizedKey);
+                            const statusColor = isRequired ? 'text-green-700' : 'text-gray-700';
+                            
+                            return `<li class="${statusColor}">Header Original: <span class="font-bold">${originalKey}</span> (Lido: <span class="text-blue-600">${normalizedKey}</span>)</li>`;
+                        });
+                        const foundList = `<ul class="list-disc ml-5 mt-2 space-y-1 text-sm text-left">${foundKeys.join('')}</ul>`;
+                        
+                        const errorMsgTitle = '⚠️ VALIDAÇÃO FALHOU: Colunas Obrigatórias Ausentes';
+                        
+                        // Exibe os dados brutos na tabela para referência (rawData: true)
+                        displayTable(jsonArrayFull, true); 
+                        addRowButton.disabled = true;
+
+                        jsonOutput.innerHTML = `
+                            <div class="error-bg p-4 rounded-xl border border-red-400 text-red-700 font-semibold card">
+                                <h4 class="text-xl mb-3">${errorMsgTitle}</h4>
+                                <p class="mb-3">O arquivo Excel deve conter as seguintes colunas para que o JSON seja gerado. Faltaram:</p>
+                                ${missingList}
+                                
+                                <h5 class="text-lg font-bold mt-6 text-red-800 border-t pt-4 border-red-300">Colunas Encontradas no Seu Arquivo (Informações de Depuração):</h5>
+                                <p class="text-sm font-normal text-gray-700 mb-2">Seu arquivo foi lido com os seguintes cabeçalhos:</p>
+                                <div class="bg-white p-3 rounded-lg text-gray-700">
+                                    ${foundList}
+                                    <p class="mt-3 text-xs text-gray-500">O código agora usa uma leitura robusta, garantindo que todos os cabeçalhos sejam capturados.</p>
+                                </div>
+                                
+                                <p class="mt-4 text-sm font-normal">A tabela acima mostra os dados brutos lidos. O JSON filtrado e a validação de linha não podem ser gerados.</p>
+                            </div>
+                        `;
+
+                    } else {
+                        // Caso 2: Validação de Cabeçalho Sucesso 
+                        
+                        filteredJsonArray = jsonArrayFull.map(row => {
+                            const newRow = {};
+
+                            // Mapeia os 8 campos obrigatórios
+                            REQUIRED_KEYS.forEach(primaryKey => {
+                                const outputKey = OUTPUT_FIELD_MAP[primaryKey];
+                                
+                                const originalKey = mappingUsed[outputKey];
+                                
+                                let value = row[originalKey] !== undefined ? row[originalKey] : null;
+
+                                // --- TRATAMENTO DE VALOR ---
+                                if (outputKey === 'terapeuta') { 
+                                    if (typeof value === 'string') {
+                                        const normalizedValue = value.toLowerCase().trim();
+                                        newRow[outputKey] = normalizedValue === 'sim' || normalizedValue === 'true' || normalizedValue === '1';
+                                    } else if (typeof value === 'number') {
+                                        newRow[outputKey] = value === 1;
+                                    } else {
+                                        newRow[outputKey] = false; 
+                                    }
+                                } else if (outputKey === 'nascimento') { 
+                                    // Guarda a data formatada como string no modelo de dados
+                                    newRow[outputKey] = excelDateToJSDate(value); 
+                                } else if (outputKey === 'cpf') { 
+                                    const rawCpf = String(value).replace(/[^0-9]/g, '');
+                                    newRow[outputKey] = rawCpf;
+                                } else {
+                                    newRow[outputKey] = value;
+                                }
+                                // ---------------------------
+                            });
+                            
+                            // ----------------------------------------------------
+                            // LÓGICA DE VALIDAÇÃO DE LINHA
+                            // ----------------------------------------------------
+                            const validation = validateRow(newRow);
+                            validationResults.push(validation);
+                            newRow.validationStatus = validation; // Anexa o status de validação na linha para uso na tabela
+                            
+                            // Lógica de Nome Completo (mantida como campo interno, não no JSON final)
+                            const nome = newRow['nome'] || '';
+                            const sobrenome = newRow['sobrenome'] || '';
+                            const sexoAlias = MAPPING_ALIASES['sexo'].find(alias => normalizedToOriginalKeyMap.hasOwnProperty(alias));
+                            const nomeMeioAlias = MAPPING_ALIASES['nomeibinato'].find(alias => normalizedToOriginalKeyMap.hasOwnProperty(alias));
+                            const sexoOriginalKey = sexoAlias ? normalizedToOriginalKeyMap[sexoAlias] : null;
+                            const nomeMeioOriginalKey = nomeMeioAlias ? normalizedToOriginalKeyMap[nomeMeioAlias] : null;
+                            const sexo = (sexoOriginalKey && row[sexoOriginalKey] !== undefined) ? String(row[sexoOriginalKey]).trim() : '';
+                            const nomeMeio = (nomeMeioOriginalKey && row[nomeMeioOriginalKey] !== undefined) ? String(row[nomeMeioOriginalKey]).trim() : '';
+                            let nomeParts = [nome];
+                            if (sexo) nomeParts.push(sexo);
+                            if (nomeMeio) nomeParts.push(nomeMeio);
+                            nomeParts.push(sobrenome);
+                            newRow['nomeCompleto'] = nomeParts.filter(p => p).join(' '); 
+                            
+                            return newRow;
+                        });
+                        
+                        // Armazena os dados atuais na variável global para edição
+                        window.currentData = filteredJsonArray; 
+                        
+                        // PASSO 1 (Final): Exibir Tabela Filtrada/Mapeada
+                        displayTable(window.currentData, false);
+                        setupEditing(); // Ativa a edição na nova tabela
+                        addRowButton.disabled = false; // Habilita o botão de adicionar linha
+
+                        // Alteração 3: Remove a mensagem de sucesso de mapeamento.
+                        jsonOutput.innerHTML = '';
+                        
+                        // PASSO 3: Exibir JSON Filtrado/Mapeado
+                        displayJson(window.currentData);
+                    }
+
+                } catch (error) {
+                    console.error("Erro ao processar o arquivo:", error);
+                    dataOutput.innerHTML = `<p class="text-red-600 p-4 bg-red-100 rounded-lg">Erro ao ler o arquivo: ${error.message}. Certifique-se de que é um formato Excel válido.</p>`;
+                    jsonOutput.innerHTML = '<p class="text-gray-500 p-4 bg-gray-100 rounded-lg">Erro ao processar o JSON.</p>';
+                    addRowButton.disabled = true;
+                } finally {
+                    statusMessage.classList.add('hidden');
+                    // Chama a renderização dos ícones do Lucide após a tabela ser montada
+                    lucide.createIcons();
+                }
+            };
+
+            reader.onerror = function(error) {
+                console.error("Erro do FileReader:", error);
+                statusMessage.classList.add('hidden');
+                dataOutput.innerHTML = '<p class="text-red-600 p-4 bg-red-100 rounded-lg">Erro ao carregar o arquivo. Tente novamente.</p>';
+                jsonOutput.innerHTML = '';
+                addRowButton.disabled = true;
+            };
+
+            reader.readAsArrayBuffer(file);
+        }
+
+        // NOVO: Função para adicionar uma nova linha vazia
+        window.addNewRow = function() {
+            // Cria um objeto de linha padrão com chaves finais e valores iniciais limpos
+            const newRow = {
+                nome: '',
+                sobrenome: '',
+                cpf: '',
+                nascimento: '',
+                email: '',
+                celular: '',
+                terapeuta: false, // Valor padrão booleano
+                detalhesTerapeuta: null,
+            };
+
+            // Roda a validação inicial (que falhará, deixando a linha vermelha)
+            newRow.validationStatus = validateRow(newRow); 
+            
+            // Adiciona a nova linha no INÍCIO do array
+            window.currentData.unshift(newRow);
+
+            // Re-renderiza a tabela e o JSON
+            displayTable(window.currentData, false);
+            displayJson(window.currentData);
+
+            // Recria os ícones do Lucide e re-configura a edição
+            lucide.createIcons();
+            setupEditing(); 
+
+            // Rola para o topo da tabela para ver a nova linha
+            dataOutput.scrollIntoView({ behavior: 'smooth' });
+        }
+
+
+        // Função para construir e exibir a tabela HTML
+        function displayTable(data, rawData) {
+            if (data.length === 0) {
+                dataOutput.innerHTML = '<p class="text-gray-500 p-4 bg-gray-100 rounded-lg">A planilha está vazia ou não contém dados.</p>';
+                return;
+            }
+
+            let html = '<table>';
+            
+            const orderedKeys = rawData ? Object.keys(data[0]) : FINAL_JSON_KEYS;
+            const headers = rawData ? orderedKeys : orderedKeys.filter(key => data[0].hasOwnProperty(key));
+            
+            // Adiciona o cabeçalho de Status e Ações se não for rawData
+            const displayHeaders = ['Status da Linha', ...headers.map(key => {
+                if (key === 'cpf') return 'CPF';
+                if (key === 'email') return 'Email';
+                if (key === 'celular') return 'Celular';
+                if (key === 'terapeuta') return 'É Terapeuta'; // Título correto na tabela
+                return key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1');
+            }), 'Ações'];
+
+            html += '<thead><tr>';
+            displayHeaders.forEach(header => {
+                html += `<th>${header || ''}</th>`;
+            });
+            html += '</tr></thead><tbody>';
+
+            // Itera sobre as linhas de dados
+            data.forEach((row, rowIndex) => {
+                const validation = row.validationStatus || { isValid: true, errors: {} };
+                
+                let rowClass = validation.isValid ? 'bg-white hover:bg-green-50' : 'bg-red-50 hover:bg-red-100';
+
+                html += `<tr class="${rowClass}">`;
+
+                // 1. Coluna de Status (Ícone)
+                if (!rawData) {
+                    let statusIconContent = '';
+
+                    if (validation.isValid) {
+                        statusIconContent = `<span class="valid flex items-center justify-center w-full h-full" title="Linha Válida"><i data-lucide="check-circle" class="w-5 h-5"></i></span>`;
+                    } else {
+                        // Monta o tooltip com os erros
+                        const errorList = Object.keys(validation.errors).map(key => {
+                            const errorName = key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1');
+                            return `<div class="font-semibold">${errorName}: <span class="font-normal">${validation.errors[key]}</span></div>`;
+                        }).join('');
+
+                        statusIconContent = `
+                            <div class="invalid cursor-pointer group tooltip-container flex items-center justify-center w-full h-full">
+                                <i data-lucide="x-circle" class="w-5 h-5"></i>
+                                <div class="tooltip-content bg-white border border-gray-300 rounded-lg shadow-lg text-gray-800 text-sm p-3 w-64 right-full -top-1/2">
+                                    <p class="font-bold mb-1">Motivos do Erro:</p>
+                                    ${errorList}
+                                </div>
+                            </div>`;
+                    }
+                    html += `<td>${statusIconContent}</td>`; // Adiciona a célula TD explicitamente com o ícone
+                } else {
+                    html += `<td>-</td>`;
+                }
+                
+                // 2. Colunas de Dados
+                headers.forEach(header => {
+                    let cellValue = row[header] !== undefined && row[header] !== null ? row[header] : '';
+                    let errorClass = validation.errors && validation.errors[header] ? 'bg-red-200/50' : '';
+                    let title = validation.errors && validation.errors[header] ? `title="Erro: ${validation.errors[header]}"` : '';
+                    
+                    let displayValue = cellValue;
+                    
+                    // Condição para edição de campos
+                    // Todos os campos de dados são editáveis, exceto o status
+                    const isEditable = !rawData && header !== 'terapeuta'; 
+                    const isTerapeutaField = header === 'terapeuta';
+
+                    let editableAttr = ''; // Default
+                    
+                    // Aplica formatação e trata exibição na tabela
+                    if (!rawData) {
+                        // --- BLOCO DE FORMATAÇÃO DE EXIBIÇÃO ---
+                        if (header === 'cpf') {
+                            displayValue = formatCpf(cellValue);
+                        } else if (header === 'celular') {
+                            displayValue = formatCelular(cellValue);
+                        }
+                        // --- FIM DO BLOCO DE FORMATAÇÃO ---
+
+                        // --- BLOCO DE DEFINIÇÃO DE EDIÇÃO ---
+                        if (isTerapeutaField) {
+                            // Renderiza como SELECT (sem data-editable="true" para evitar conflito com dblclick)
+                            const currentValue = row.terapeuta === true; // true/false
+                            const selectHtml = `
+                                <select 
+                                    class="w-full bg-white border border-gray-300 rounded-md p-1 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50 text-sm"
+                                    data-row-index="${rowIndex}" 
+                                    data-col-key="${header}"
+                                    onchange="handleSelectChange(this)"
+                                >
+                                    <option value="true" ${currentValue ? 'selected' : ''}>Sim</option>
+                                    <option value="false" ${!currentValue ? 'selected' : ''}>Não</option>
+                                </select>
+                            `;
+                            html += `<td class="${errorClass}" ${title}>${selectHtml}</td>`;
+                            return; // Pula para o próximo header
+                        } else if (isEditable) {
+                            // É um campo editável por duplo clique (Nome, Sobrenome, CPF, Celular, etc.)
+                            editableAttr = `data-editable="true" data-row-index="${rowIndex}" data-col-key="${header}"`;
+                        }
+                        // --- FIM DO BLOCO DE EDIÇÃO ---
+                    }
+                    
+                    // Renderiza a célula TD padrão (para campos normais, cpf, celular, ou rawData)
+                    html += `<td class="${errorClass}" ${title} ${editableAttr}>${displayValue}</td>`;
+                });
+
+                // 3. Coluna de Ações (Botão de Remoção)
+                if (!rawData) {
+                    html += `
+                        <td class="text-center">
+                            <button 
+                                onclick="removeRow(${rowIndex})" 
+                                title="Remover Linha"
+                                class="p-2 rounded-full bg-red-500 text-white hover:bg-red-600 transition duration-150"
+                            >
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </button>
+                        </td>`;
+                } else {
+                    html += `<td>-</td>`;
+                }
+
+                html += '</tr>';
+            });
+
+            html += '</tbody></table>';
+            
+            dataOutput.innerHTML = html;
+        }
+
+        // NOVO: Função para remover uma linha
+        window.removeRow = function(rowIndex) {
+            if (rowIndex >= 0 && rowIndex < window.currentData.length) {
+                // Remove o item do array
+                window.currentData.splice(rowIndex, 1);
+                
+                // Re-renderiza a tabela e o JSON
+                displayTable(window.currentData, false);
+                displayJson(window.currentData); 
+
+                // Recria os ícones do Lucide
+                lucide.createIcons();
+                setupEditing(); // Garante que os novos índices de linhas sejam editáveis
+            }
+        }
+
+
+        // Nova Função 1: Manipulador de Mudança do Select 'É Terapeuta'
+        window.handleSelectChange = function(selectElement) {
+            const rowIndex = parseInt(selectElement.dataset.rowIndex);
+            const colKey = selectElement.dataset.colKey;
+            const newValue = selectElement.value === 'true'; // Converte string 'true'/'false' para boolean
+            
+            // O updateCellValue espera uma string, então passamos a string 'true'/'false'
+            updateCellValue(rowIndex, colKey, String(newValue));
+        }
+
+
+        // Nova Função 2: Edição em Duplo Clique
+        function setupEditing() {
+            // Remove qualquer listener anterior para evitar duplicação
+            dataOutput.removeEventListener('dblclick', handleEditDblClick);
+            dataOutput.addEventListener('dblclick', handleEditDblClick);
+        }
+        
+        function handleEditDblClick(e) {
+            // Verifica se o clique foi em um elemento editável
+            let td = e.target.closest('td[data-editable="true"]');
+            
+            // Se não for td editável ou se já houver um input, retorna
+            if (!td || td.querySelector('input')) {
+                // Tenta encontrar o td editável através do pai, caso o clique tenha sido no tooltip
+                const parentTd = e.target.closest('td');
+                if (parentTd && parentTd.dataset.editable === 'true' && !parentTd.querySelector('input')) {
+                     td = parentTd;
+                } else {
+                    return;
+                }
+            }
+
+
+            const rowIndex = parseInt(td.dataset.rowIndex);
+            const colKey = td.dataset.colKey;
+            
+            if (isNaN(rowIndex) || !colKey || !window.currentData[rowIndex]) return;
+
+            // Pega o valor real do modelo de dados (sem máscara)
+            const currentValue = window.currentData[rowIndex][colKey] || '';
+            
+            // Cria o campo de input
+            const input = document.createElement('input');
+            input.type = 'text';
+            
+            // Usa o valor limpo (sem máscara) como valor base
+            let initialRawValue = String(currentValue).replace(/\D/g, ''); 
+            // CORREÇÃO: Para campos não-numéricos, o valor inicial deve ser o valor atual
+            if (colKey !== 'cpf' && colKey !== 'celular' && colKey !== 'nascimento') {
+                 input.value = currentValue;
+            } else {
+                 input.value = initialRawValue; 
+            }
+
+            input.className = 'w-full p-0.5 border-b-2 border-blue-500 focus:outline-none bg-transparent text-gray-800';
+
+            // NOVO: Adiciona a lógica de restrição e máscara em tempo real para CPF/Celular/Nascimento
+            if (colKey === 'cpf' || colKey === 'celular' || colKey === 'nascimento') {
+                input.setAttribute('inputmode', 'numeric');
+                
+                // Aplica a máscara no valor inicial limpo (IMPORTANTE!)
+                if (colKey === 'cpf') {
+                    input.value = formatCpf(initialRawValue);
+                } else if (colKey === 'celular') {
+                    input.value = formatCelular(initialRawValue);
+                } else if (colKey === 'nascimento') {
+                    // Para Nascimento, o valor armazenado é DD/MM/AAAA, então tentamos formatá-lo, ou usamos o valor cru
+                    // Se o valor armazenado for DD/MM/AAAA (string), ele já está pronto para formatação
+                    const isFormattedDate = /^\d{2}\/\d{2}\/\d{4}$/.test(currentValue);
+                    if (isFormattedDate) {
+                        input.value = formatNascimento(currentValue);
+                    } else {
+                        input.value = formatNascimento(initialRawValue);
+                    }
+                }
+                
+                // Aplica a máscara em tempo real
+                input.addEventListener('input', (e) => {
+                    let rawValue = e.target.value.replace(/\D/g, '');
+                    if (colKey === 'cpf') {
+                        e.target.value = formatCpf(rawValue); 
+                    } else if (colKey === 'celular') {
+                        e.target.value = formatCelular(rawValue); 
+                    } else if (colKey === 'nascimento') {
+                        e.target.value = formatNascimento(rawValue); 
+                    }
+                });
+            }
+
+            // Limpa a célula e anexa o input
+            td.innerHTML = '';
+            td.appendChild(input);
+            input.focus();
+
+            // Lógica para salvar o valor (em blur ou Enter)
+            const saveHandler = (e) => {
+                // Checa se o elemento que disparou o evento ainda é o input
+                if (e.target !== input) return; 
+
+                const newValue = input.value;
+                // Remove listeners para evitar chamadas duplicadas
+                input.removeEventListener('blur', saveHandler);
+                input.removeEventListener('keydown', saveOnEnter);
+                
+                // Atualiza o valor, revalida e re-renderiza
+                updateCellValue(rowIndex, colKey, newValue);
+            };
+            
+            const saveOnEnter = (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    // Garante que o handler de blur não seja chamado duas vezes
+                    input.removeEventListener('blur', saveHandler); 
+                    saveHandler(e);
+                }
+            };
+
+            input.addEventListener('blur', saveHandler);
+            input.addEventListener('keydown', saveOnEnter);
+        }
+
+        // Nova Função 3: Processa o Novo Valor, Valida e Re-renderiza
+        function updateCellValue(rowIndex, colKey, newValue) {
+            const dataRow = window.currentData[rowIndex];
+            if (!dataRow) return;
+
+            const sanitizedValue = String(newValue).trim();
+            let processedValue = sanitizedValue;
+
+            // Para colunas que esperam boolean, trata 'sim'/'não' ou 'true'/'false'
+            if (colKey === 'terapeuta') {
+                const normalized = processedValue.toLowerCase();
+                // O valor aqui é um boolean (se veio do select) ou uma string (se veio do input)
+                // Se o input é uma string 'true'/'false' ou 'sim'/'não', processa:
+                processedValue = (normalized === 'sim' || normalized === 'true' || normalized === '1');
+            } else if (colKey === 'cpf' || colKey === 'celular') {
+                 // Remove máscara para armazenar limpo no modelo de dados
+                processedValue = processedValue.replace(/\D/g, ''); 
+            }
+            // Para Nascimento, o valor já vem formatado (DD/MM/AAAA) e é armazenado como string
+            
+            // 1. Atualiza o modelo de dados
+            dataRow[colKey] = processedValue;
+
+            // 2. Re-valida a linha
+            dataRow.validationStatus = validateRow(dataRow);
+            
+            // 3. Re-renderiza a tabela e o JSON
+            displayTable(window.currentData, false);
+            displayJson(window.currentData); 
+
+            // Garante que os ícones de status são redesenhados
+            lucide.createIcons();
+        }
+
+        // FUNÇÃO ATUALIZADA: Exibe o array JSON [{}, {}, ...] com as chaves minúsculas/camelCase
+        function displayJson(data) {
+            if (data.length === 0) {
+                jsonOutput.innerHTML = '<p class="text-gray-500 p-4 bg-gray-100 rounded-lg">Sem dados JSON para exibir.</p>';
+                return;
+            }
+
+            // 1. Prepara os dados na ordem desejada antes de stringify
+            const finalArray = data.map(row => {
+                const displayRow = {};
+                // Filtra e ordena usando o array FINAL_JSON_KEYS
+                FINAL_JSON_KEYS.forEach(key => {
+                    if (row.hasOwnProperty(key)) {
+                        let value = row[key];
+                        // Se o valor for a string 'null', transforma no tipo null (JSON sem aspas)
+                        if (value === null || value === 'null') {
+                            displayRow[key] = null;
+                        } else {
+                            displayRow[key] = value;
+                        }
+                    }
+                });
+                return displayRow;
+            });
+
+            // 2. Converte o array final para uma única string JSON formatada
+            const formattedJson = JSON.stringify(finalArray, null, 2).replace(/"null"/g, 'null');
+            
+            // 3. Exibe o JSON completo em um único bloco <pre>
+            jsonOutput.innerHTML = `
+                <div class="bg-gray-800 p-4 rounded-xl text-white font-mono text-sm overflow-x-auto card">
+                    <pre class="whitespace-pre-wrap">${formattedJson}</pre>
+                </div>
+            `;
+        }
+
+    </script>
+</body>
+</html>

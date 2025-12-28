@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Presença - Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div class="container list-container">
+        <h1>Lista de Convidados</h1>
+
+        <div class="lists-wrapper">
+            <div class="list-box">
+                <h2 style="color: var(--accent-green);">Confirmados</h2>
+                <ul id="confirmed-list">
+                    <!-- Items will be added here by JS -->
+                </ul>
+            </div>
+
+            <div class="list-box">
+                <h2 style="color: var(--accent-red);">Recusados</h2>
+                <ul id="declined-list">
+                    <!-- Items will be added here by JS -->
+                </ul>
+            </div>
+        </div>
+
+        <div style="margin-top: 2rem;">
+            <a href="index.html" class="btn" style="text-decoration: none; display: inline-block; width: auto;">Voltar
+                para Início</a>
+        </div>
+    </div>
+
+    <script src="js/list.js"></script>
+</body>
+
+</html>

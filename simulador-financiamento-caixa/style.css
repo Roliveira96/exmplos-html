@@ -5,10 +5,10 @@ body {
         .card {
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
             border-radius: 12px;
-            overflow: hidden; 
+            overflow: hidden;
         }
         .text-gradient {
-            background-image: linear-gradient(to right, #1E40AF, #1D4ED8); 
+            background-image: linear-gradient(to right, #1E40AF, #1D4ED8);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
@@ -16,8 +16,8 @@ body {
             text-align: right;
         }
         .step-title {
-            background-color: #DBEAFE; 
-            color: #1E3A8A; 
+            background-color: #DBEAFE;
+            color: #1E3A8A;
             padding: 10px 15px;
             font-weight: bold;
             border-bottom: 1px solid #BFDBFE;
@@ -33,7 +33,7 @@ body {
         }
          input:disabled {
              background-color: #f3f4f6;
-             color: #6b7280; 
+             color: #6b7280;
              cursor: not-allowed;
              opacity: 0.7;
          }
@@ -44,23 +44,23 @@ body {
          }
         .resultado-destaque {
              background-color: #EFF6FF;
-             border-left: 4px solid #3B82F6; 
+             border-left: 4px solid #3B82F6;
         }
          .aviso-importante {
-             background-color: #FFFBEB; 
-             border-left: 4px solid #F59E0B; 
+             background-color: #FFFBEB;
+             border-left: 4px solid #F59E0B;
              padding: 10px;
              font-size: 0.875rem;
-             color: #B45309; 
+             color: #B45309;
              border-radius: 0 4px 4px 0;
          }
         option.ineligible {
-            color: #9ca3af; 
+            color: #9ca3af;
             background-color: #f3f4f6;
         }
         .secao-condicional.hidden {
             display: none;
         }
         .proponente-title {
-             font-semibold: text-indigo-700; 
+             font-semibold: text-indigo-700;
         }

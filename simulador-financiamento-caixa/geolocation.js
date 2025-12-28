@@ -17,7 +17,15 @@ const carregarDadosEstaticos = async () => {
         }
         const data = await response.json();
 
-        window.CIDADES_BRASIL = data;
+        const CIDADES_BRASIL_MAP = data.estados.reduce((acc, estado) => {
+            acc[estado.sigla] = {
+                nome: estado.nome,
+                cidades: estado.cidades
+            };
+            return acc;
+        }, {});
+
+        window.CIDADES_BRASIL = CIDADES_BRASIL_MAP;
 
         return window.CIDADES_BRASIL;
     } catch (error) {

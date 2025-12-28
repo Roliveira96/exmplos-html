@@ -1,0 +1,21 @@
+{
+  "name": "simulador-financiamento-caixa",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "start": "http-server -p 8080",
+    "test": "start-server-and-test start http://localhost:8080 test:e2e",
+    "test:e2e": "npx playwright test e2e.spec.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@playwright/test": "^1.56.1",
+    "http-server": "^14.1.1",
+    "playwright": "^1.56.1",
+    "start-server-and-test": "^2.1.2"
+  }
+}

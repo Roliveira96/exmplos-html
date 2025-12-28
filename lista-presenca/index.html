@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Presença - Entrar</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Confirme sua Presença</h1>
+        <div class="input-group">
+            <input type="text" id="code-input" placeholder="Digite seu código aqui...">
+        </div>
+        <button id="enter-btn" class="btn">Entrar</button>
+        <p style="margin-top: 1rem; font-size: 0.9rem;">
+            <a href="lista.html">Ver lista (Admin)</a>
+        </p>
+    </div>
+
+    <!-- Modal -->
+    <div id="invite-modal" class="modal">
+        <div class="modal-content">
+            <h2>Olá!</h2>
+            <p>Você está confirmando presença para o código: <strong id="current-code"></strong></p>
+            <p>Deseja aceitar o convite?</p>
+
+            <div class="modal-actions">
+                <button id="confirm-btn" class="btn btn-success">Confirmar</button>
+                <button id="decline-btn" class="btn btn-danger">Recusar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+</body>
+
+</html>

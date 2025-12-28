@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UI Kit V2 - Versão Completa</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        // Paleta Zinc (Cinza Neutro) para substituir o Slate azulado
+                        gray: {
+                            50: '#fafafa',
+                            100: '#f4f4f5',
+                            200: '#e4e4e7',
+                            300: '#d4d4d8',
+                            400: '#a1a1aa',
+                            500: '#71717a',
+                            600: '#52525b',
+                            700: '#3f3f46',
+                            800: '#27272a',
+                            900: '#18181b',
+                            950: '#09090b',
+                        },
+                        brand: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                        },
+                        // Cores Especiais Dark Mode
+                        dark: {
+                            bg: '#000000',       // Preto absoluto
+                            surface: '#121212',  // Superfície Material
+                            border: '#27272a'    // Borda sutil
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .transition-theme { transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease; }
+        
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #d4d4d8; border-radius: 20px; }
+        .dark .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #3f3f46; }
+
+        /* Toggle Switch */
+        input:checked + div { background-color: #2563eb; }
+        input:checked + div:after { transform: translateX(100%); }
+
+        /* FAB Animation */
+        .fab-options {
+            opacity: 0;
+            transform: translateY(20px) scale(0.8);
+            pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .fab-active .fab-options {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            pointer-events: auto;
+        }
+        .fab-trigger { transition: transform 0.3s ease; }
+        .fab-active .fab-trigger { transform: rotate(45deg); }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 dark:bg-dark-bg dark:text-gray-100 transition-theme antialiased overflow-hidden selection:bg-brand-500 selection:text-white">
+
+    <div class="flex h-screen overflow-hidden">
+        
+        <!-- SIDEBAR -->
+        <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-64 bg-white dark:bg-dark-surface border-r border-gray-200 dark:border-dark-border transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col shadow-xl md:shadow-none">
+            <div class="flex items-center justify-center h-16 border-b border-gray-200 dark:border-dark-border">
+                <div class="flex items-center gap-2 text-brand-600 font-bold text-xl tracking-tight">
+                    <div class="bg-brand-600 text-white p-1 rounded-lg">
+                        <i data-lucide="layout" class="w-5 h-5"></i>
+                    </div>
+                    <span>UI Kit Pro</span>
+                </div>
+            </div>
+            
+            <nav class="flex-1 overflow-y-auto custom-scrollbar p-4 space-y-1">
+                <p class="px-2 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3 mt-2">Analytics</p>
+                <a href="#dashboard" class="flex items-center gap-3 px-4 py-2.5 text-sm font-medium bg-brand-50 text-brand-700 dark:bg-brand-900/20 dark:text-brand-400 rounded-lg border-l-4 border-brand-600 transition-all">
+                    <i data-lucide="pie-chart" class="w-4 h-4"></i>
+                    Dashboard
+                </a>
+
+                <p class="px-2 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3 mt-6">Elementos</p>
+                <a href="#buttons" class="nav-item flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors group">
+                    <i data-lucide="mouse-pointer-2" class="w-4 h-4 group-hover:text-brand-600"></i>
+                    Botões e Ações
+                </a>
+                <a href="#alerts" class="nav-item flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors group">
+                    <i data-lucide="bell" class="w-4 h-4 group-hover:text-brand-600"></i>
+                    Alertas
+                </a>
+                <a href="#forms" class="nav-item flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors group">
+                    <i data-lucide="check-square" class="w-4 h-4 group-hover:text-brand-600"></i>
+                    Formulários
+                </a>
+                <a href="#cards" class="nav-item flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors group">
+                    <i data-lucide="grid" class="w-4 h-4 group-hover:text-brand-600"></i>
+                    Cards & Layouts
+                </a>
+                <a href="#lists" class="nav-item flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors group">
+                    <i data-lucide="list" class="w-4 h-4 group-hover:text-brand-600"></i>
+                    Listas & Tabelas
+                </a>
+            </nav>
+
+            <div class="p-4 border-t border-gray-200 dark:border-dark-border">
+                <div class="flex items-center gap-3 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 p-2 rounded-lg transition-colors">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" class="w-10 h-10 rounded-full border-2 border-white dark:border-gray-700">
+                        <span class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white dark:border-dark-surface rounded-full"></span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-medium text-gray-900 dark:text-white truncate">Admin User</p>
+                        <p class="text-xs text-gray-500 truncate">admin@uikit.com</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <div class="flex-1 flex flex-col md:pl-64 h-screen transition-all duration-300">
+            
+            <header class="h-16 bg-white dark:bg-dark-surface border-b border-gray-200 dark:border-dark-border flex items-center justify-between px-6 sticky top-0 z-30 transition-theme shadow-sm/50 backdrop-blur-md bg-white/80 dark:bg-dark-surface/80">
+                <div class="flex items-center gap-4">
+                    <button id="menu-toggle" class="md:hidden text-gray-500 hover:text-brand-600">
+                        <i data-lucide="menu" class="w-6 h-6"></i>
+                    </button>
+                    <nav class="hidden sm:flex items-center text-sm font-medium text-gray-500 dark:text-gray-400">
+                        <a href="#" class="hover:text-brand-600 transition-colors">Home</a>
+                        <i data-lucide="chevron-right" class="w-4 h-4 mx-1"></i>
+                        <span class="text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-900/30 px-2 py-0.5 rounded-md">UI Kit Completo</span>
+                    </nav>
+                </div>
+                <div class="flex items-center gap-4">
+                    <button id="theme-toggle" class="relative p-2 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors overflow-hidden">
+                        <i data-lucide="moon" class="w-5 h-5 hidden dark:block text-blue-400"></i>
+                        <i data-lucide="sun" class="w-5 h-5 block dark:hidden text-orange-500"></i>
+                    </button>
+                </div>
+            </header>
+
+            <main class="flex-1 overflow-y-auto custom-scrollbar p-6 space-y-12 bg-gray-50 dark:bg-dark-bg transition-theme">
+
+                <!-- 1. DASHBOARD & STATS -->
+                <section id="dashboard" class="space-y-6">
+                    <h2 class="text-2xl font-bold text-gray-800 dark:text-white tracking-tight">Dashboard</h2>
+                    <!-- Widgets -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div class="bg-white dark:bg-dark-surface p-6 rounded-xl shadow-sm border border-gray-200 dark:border-dark-border flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Receita</p>
+                                <h3 class="text-2xl font-bold text-gray-900 dark:text-white mt-1">R$ 45.2k</h3>
+                            </div>
+                            <div class="p-3 bg-brand-50 dark:bg-brand-900/20 rounded-lg text-brand-600"><i data-lucide="dollar-sign" class="w-6 h-6"></i></div>
+                        </div>
+                        <div class="bg-white dark:bg-dark-surface p-6 rounded-xl shadow-sm border border-gray-200 dark:border-dark-border flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Usuários</p>
+                                <h3 class="text-2xl font-bold text-gray-900 dark:text-white mt-1">1,240</h3>
+                            </div>
+                            <div class="p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg text-purple-600"><i data-lucide="users" class="w-6 h-6"></i></div>
+                        </div>
+                         <!-- Statistic Widget: Downloads -->
+                         <div class="bg-white dark:bg-dark-surface p-6 rounded-xl shadow-sm border border-gray-200 dark:border-dark-border flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Downloads</p>
+                                <h3 class="text-2xl font-bold text-gray-900 dark:text-white mt-1">85.4k</h3>
+                            </div>
+                            <div class="p-3 bg-green-50 dark:bg-green-900/20 rounded-lg text-green-600"><i data-lucide="download" class="w-6 h-6"></i></div>
+                        </div>
+                         <!-- Statistic Widget: Errors -->
+                         <div class="bg-white dark:bg-dark-surface p-6 rounded-xl shadow-sm border border-gray-200 dark:border-dark-border flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Erros</p>
+                                <h3 class="text-2xl font-bold text-gray-900 dark:text-white mt-1">0.12%</h3>
+                            </div>
+                            <div class="p-3 bg-red-50 dark:bg-red-900/20 rounded-lg text-red-600"><i data-lucide="alert-circle" class="w-6 h-6"></i></div>
+                        </div>
+                    </div>
+                    <!-- Charts -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="lg:col-span-2 bg-white dark:bg-dark-surface p-6 rounded-xl shadow-sm border border-gray-200 dark:border-dark-border">
+                            <h3 class="font-bold text-gray-800 dark:text-white mb-4">Análise de Receita</h3>
+                            <div id="chart-revenue" class="w-full h-80"></div>
+                        </div>
+                        <div class="bg-white dark:bg-dark-surface p-6 rounded-xl shadow-sm border border-gray-200 dark:border-dark-border">
+                            <h3 class="font-bold text-gray-800 dark:text-white mb-4">Tráfego</h3>
+                            <div id="chart-traffic" class="w-full flex justify-center"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <hr class="border-gray-200 dark:border-dark-border">
+
+                <!-- 2. BOTÕES E AÇÕES (RESTAURADO) -->
+                <section id="buttons" class="space-y-6">
+                    <h2 class="text-xl font-bold text-gray-800 dark:text-white">Botões e Ações</h2>
+                    <div class="p-6 bg-white dark:bg-dark-surface rounded-xl shadow-sm border border-gray-200 dark:border-dark-border space-y-8">
+                        
+                        <!-- Buttons Row -->
+                        <div class="flex flex-wrap items-center gap-4">
+                            <button class="px-6 py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-lg shadow-sm hover:shadow transition-all active:scale-95">Primary</button>
+                            <button class="px-6 py-2.5 border border-brand-600 text-brand-600 dark:text-brand-400 dark:border-brand-400 hover:bg-brand-50 dark:hover:bg-brand-900/20 font-medium rounded-lg transition-all">Secondary</button>
+                            <button class="px-6 py-2.5 text-gray-600 dark:text-gray-400 hover:text-brand-600 dark:hover:text-brand-300 font-medium hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors">Ghost</button>
+                            <button class="w-10 h-10 bg-brand-600 text-white rounded-lg flex items-center justify-center shadow-sm hover:bg-brand-700 transition-all"><i data-lucide="plus" class="w-5 h-5"></i></button>
+                            <button disabled class="px-6 py-2.5 bg-gray-200 dark:bg-gray-800 text-gray-400 cursor-not-allowed font-medium rounded-lg">Disabled</button>
+                        </div>
+
+                        <div class="h-px bg-gray-100 dark:bg-gray-800"></div>
+
+                        <!-- Badges & Loaders Row -->
+                        <div class="flex flex-wrap items-center gap-8">
+                            <div class="flex gap-2">
+                                <span class="bg-brand-100 text-brand-700 dark:bg-brand-900/50 dark:text-brand-300 px-2.5 py-0.5 rounded-full text-xs font-semibold">Novo</span>
+                                <span class="bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-300 px-2.5 py-0.5 rounded-full text-xs font-semibold">Sucesso</span>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <div class="w-6 h-6 border-2 border-brand-200 border-t-brand-600 rounded-full animate-spin"></div>
+                                <span class="text-sm text-gray-500 dark:text-gray-400">Processando...</span>
+                            </div>
+                            <div class="group relative">
+                                <i data-lucide="help-circle" class="w-5 h-5 text-gray-400 hover:text-brand-600 cursor-help transition-colors"></i>
+                                <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max bg-gray-900 text-white text-xs rounded py-1 px-3 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                                    Tooltip Informativo
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Stepper e Modal Trigger -->
+                        <div class="flex flex-wrap items-center justify-between gap-6 pt-4 border-t border-gray-100 dark:border-gray-800">
+                             <!-- Stepper -->
+                             <div class="flex items-center gap-2">
+                                <div class="w-8 h-8 rounded-full bg-brand-600 text-white flex items-center justify-center text-sm font-bold">1</div>
+                                <div class="w-12 h-1 bg-brand-600"></div>
+                                <div class="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-500 flex items-center justify-center text-sm font-bold">2</div>
+                                <div class="w-12 h-1 bg-gray-200 dark:bg-gray-700"></div>
+                                <div class="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-500 flex items-center justify-center text-sm font-bold">3</div>
+                            </div>
+
+                            <button onclick="document.getElementById('demo-modal').classList.remove('hidden'); document.getElementById('demo-modal').classList.add('flex');" class="bg-gray-800 hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                                Abrir Modal
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 3. ALERTAS (RESTAURADO) -->
+                <section id="alerts" class="space-y-4">
+                    <h2 class="text-xl font-bold text-gray-800 dark:text-white">Alertas & Feedback</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="flex items-start p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+                            <i data-lucide="check-circle-2" class="w-5 h-5 text-green-600 dark:text-green-400 mt-0.5 mr-3"></i>
+                            <div>
+                                <h4 class="text-sm font-semibold text-green-800 dark:text-green-300">Sucesso</h4>
+                                <p class="text-sm text-green-700 dark:text-green-400/80">Dados salvos corretamente.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+                            <i data-lucide="x-circle" class="w-5 h-5 text-red-600 dark:text-red-400 mt-0.5 mr-3"></i>
+                            <div>
+                                <h4 class="text-sm font-semibold text-red-800 dark:text-red-300">Erro</h4>
+                                <p class="text-sm text-red-700 dark:text-red-400/80">Falha na conexão com o servidor.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
+                            <i data-lucide="alert-triangle" class="w-5 h-5 text-amber-600 dark:text-amber-400 mt-0.5 mr-3"></i>
+                            <div>
+                                <h4 class="text-sm font-semibold text-amber-800 dark:text-amber-300">Atenção</h4>
+                                <p class="text-sm text-amber-700 dark:text-amber-400/80">Verifique seus dados antes de enviar.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+                            <i data-lucide="info" class="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5 mr-3"></i>
+                            <div>
+                                <h4 class="text-sm font-semibold text-blue-800 dark:text-blue-300">Info</h4>
+                                <p class="text-sm text-blue-700 dark:text-blue-400/80">Nova versão disponível.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 4. FORMS (COMPLETO RESTAURADO) -->
+                <section id="forms" class="space-y-6">
+                    <h2 class="text-xl font-bold text-gray-800 dark:text-white">Formulários & Inputs</h2>
+                    <div class="p-6 bg-white dark:bg-dark-surface rounded-xl shadow-sm border border-gray-200 dark:border-dark-border">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <!-- Coluna Esquerda: Inputs Padrão -->
+                            <div class="space-y-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Input Simples</label>
+                                    <input type="text" placeholder="Digite algo..." class="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none dark:text-white transition-all">
+                                </div>
+                                <div class="relative">
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Senha</label>
+                                    <div class="relative">
+                                        <input type="password" value="123456" class="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none dark:text-white pr-10">
+                                        <i data-lucide="eye" class="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 cursor-pointer hover:text-brand-600"></i>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Select</label>
+                                    <div class="relative">
+                                        <select class="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none appearance-none dark:text-white cursor-pointer">
+                                            <option>Opção 1</option>
+                                            <option>Opção 2</option>
+                                        </select>
+                                        <i data-lucide="chevron-down" class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none"></i>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Textarea</label>
+                                    <textarea rows="3" class="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none dark:text-white resize-y" placeholder="Mensagem..."></textarea>
+                                </div>
+                            </div>
+
+                            <!-- Coluna Direita: Checks, Radios, Toggle, Slider, Upload -->
+                            <div class="space-y-6">
+                                <div class="flex items-center gap-6">
+                                    <label class="flex items-center gap-3 cursor-pointer group">
+                                        <input type="checkbox" class="peer sr-only">
+                                        <div class="w-5 h-5 border-2 border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 peer-checked:bg-brand-600 peer-checked:border-brand-600 flex items-center justify-center transition-all">
+                                            <i data-lucide="check" class="w-3.5 h-3.5 text-white opacity-0 peer-checked:opacity-100"></i>
+                                        </div>
+                                        <span class="text-sm text-gray-700 dark:text-gray-300">Checkbox</span>
+                                    </label>
+                                    
+                                    <label class="flex items-center gap-2 cursor-pointer group">
+                                        <input type="radio" name="demo-radio" class="peer sr-only" checked>
+                                        <div class="w-5 h-5 rounded-full border-2 border-gray-300 dark:border-gray-600 peer-checked:border-brand-600 peer-checked:border-4 transition-all"></div>
+                                        <span class="text-sm text-gray-700 dark:text-gray-300">Radio</span>
+                                    </label>
+                                </div>
+
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Toggle Switch</span>
+                                    <label class="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" class="sr-only peer" checked>
+                                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-brand-600"></div>
+                                    </label>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Slider (Range)</label>
+                                    <input type="range" class="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-brand-600">
+                                </div>
+
+                                <div class="border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-lg p-6 flex flex-col items-center justify-center text-center hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer group">
+                                    <i data-lucide="cloud-upload" class="w-8 h-8 text-brand-500 mb-2 group-hover:scale-110 transition-transform"></i>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400">Upload de Arquivos</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 5. CARDS (TODOS RESTAURADOS) -->
+                <section id="cards" class="space-y-6">
+                    <h2 class="text-xl font-bold text-gray-800 dark:text-white">Galeria de Cards</h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Card Simples -->
+                        <div class="bg-white dark:bg-dark-surface rounded-xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all border border-gray-200 dark:border-dark-border flex flex-col p-6">
+                            <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-2">Card Simples</h3>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm leading-relaxed mb-4 flex-1">
+                                Estrutura básica para conteúdo textual rápido.
+                            </p>
+                            <a href="#" class="text-brand-600 dark:text-brand-400 text-sm font-semibold hover:underline flex items-center gap-1">Ler mais <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
+                        </div>
+
+                        <!-- Card Mídia Vertical -->
+                        <div class="bg-white dark:bg-dark-surface rounded-xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all border border-gray-200 dark:border-dark-border overflow-hidden group">
+                            <div class="h-40 bg-gray-200 dark:bg-gray-800 relative overflow-hidden">
+                                <img src="https://images.unsplash.com/photo-1497215728101-856f4ea42174?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            </div>
+                            <div class="p-5">
+                                <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-2">Card Mídia</h3>
+                                <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">Imagem full-width no topo, ideal para blogs.</p>
+                                <button class="w-full py-2 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 font-medium rounded hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-sm">Detalhes</button>
+                            </div>
+                        </div>
+
+                        <!-- Card de Evento -->
+                        <div class="bg-white dark:bg-dark-surface rounded-xl shadow-sm border border-gray-200 dark:border-dark-border overflow-hidden relative group hover:shadow-xl transition-all">
+                            <div class="h-40 relative overflow-hidden">
+                                <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-500">
+                                <div class="absolute top-3 right-3 bg-white dark:bg-dark-surface rounded-lg p-2 text-center shadow min-w-[50px]">
+                                    <span class="block text-xs font-bold text-red-500 uppercase">DEZ</span>
+                                    <span class="block text-xl font-bold text-gray-900 dark:text-white">25</span>
+                                </div>
+                            </div>
+                            <div class="p-5">
+                                <span class="text-xs font-semibold text-brand-600 tracking-wide uppercase">Meetup</span>
+                                <h3 class="text-lg font-bold text-gray-800 dark:text-white mt-1">Tech Night</h3>
+                                <div class="flex items-center gap-2 text-gray-500 text-xs mt-2">
+                                    <i data-lucide="map-pin" class="w-3.5 h-3.5"></i> São Paulo, SP
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Linha 2 de Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Card Horizontal -->
+                        <div class="bg-white dark:bg-dark-surface rounded-xl shadow-sm border border-gray-200 dark:border-dark-border flex overflow-hidden h-32 md:h-40 hover:border-brand-300 dark:hover:border-brand-800 transition-colors cursor-pointer">
+                            <div class="w-1/3 relative">
+                                <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80" class="w-full h-full object-cover">
+                            </div>
+                            <div class="w-2/3 p-4 flex flex-col justify-center">
+                                <span class="text-xs text-gray-400 mb-1">Notícia</span>
+                                <h3 class="text-base font-bold text-gray-800 dark:text-white leading-tight mb-2">Design Trends 2025</h3>
+                                <p class="text-xs text-gray-500 line-clamp-2">Tendências minimalistas dominando o mercado.</p>
+                            </div>
+                        </div>
+
+                        <!-- Card Perfil -->
+                        <div class="bg-white dark:bg-dark-surface rounded-xl shadow-sm border border-gray-200 dark:border-dark-border p-6 flex items-center gap-4 hover:shadow-md transition-all">
+                            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" class="w-16 h-16 rounded-full border-2 border-gray-100 dark:border-gray-700 shadow-sm">
+                            <div class="flex-1">
+                                <h3 class="text-lg font-bold text-gray-800 dark:text-white">Carlos Mendes</h3>
+                                <p class="text-sm text-gray-500">CTO & Founder</p>
+                                <div class="flex gap-2 mt-3 text-gray-400">
+                                    <i data-lucide="linkedin" class="w-4 h-4 hover:text-brand-600 cursor-pointer"></i>
+                                    <i data-lucide="github" class="w-4 h-4 hover:text-brand-600 cursor-pointer"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 6. LISTAS E TABELAS (COM PAGINAÇÃO) -->
+                <section id="lists" class="space-y-4">
+                    <h2 class="text-xl font-bold text-gray-800 dark:text-white">Listas e Tabelas</h2>
+                    <div class="bg-white dark:bg-dark-surface rounded-xl shadow-sm border border-gray-200 dark:border-dark-border overflow-hidden">
+                        
+                        <!-- Accordion dentro da seção de listas -->
+                        <div class="border-b border-gray-200 dark:border-dark-border">
+                            <details class="group p-4 cursor-pointer open:bg-gray-50 dark:open:bg-gray-800/50">
+                                <summary class="flex justify-between items-center font-medium text-gray-900 dark:text-white select-none">
+                                    <span>Filtros Avançados (Accordion)</span>
+                                    <i data-lucide="chevron-down" class="w-4 h-4 text-gray-500 transition group-open:rotate-180"></i>
+                                </summary>
+                                <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
+                                    Aqui você pode colocar filtros extras, datas, categorias, etc.
+                                </div>
+                            </details>
+                        </div>
+
+                        <!-- Lista Simples -->
+                        <ul class="divide-y divide-gray-100 dark:divide-dark-border">
+                            <li class="p-4 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer group">
+                                <div class="flex items-center gap-3">
+                                    <div class="bg-brand-100 dark:bg-brand-900/30 text-brand-600 dark:text-brand-400 w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm">A</div>
+                                    <div>
+                                        <p class="text-sm font-semibold text-gray-900 dark:text-white">Item Alpha</p>
+                                        <p class="text-xs text-gray-500">Detalhe do item</p>
+                                    </div>
+                                </div>
+                                <i data-lucide="chevron-right" class="w-4 h-4 text-gray-300 group-hover:text-gray-500"></i>
+                            </li>
+                            <li class="p-4 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer group">
+                                <div class="flex items-center gap-3">
+                                    <div class="bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm">B</div>
+                                    <div>
+                                        <p class="text-sm font-semibold text-gray-900 dark:text-white">Item Beta</p>
+                                        <p class="text-xs text-gray-500">Detalhe do item</p>
+                                    </div>
+                                </div>
+                                <i data-lucide="chevron-right" class="w-4 h-4 text-gray-300 group-hover:text-gray-500"></i>
+                            </li>
+                        </ul>
+
+                        <!-- Pagination -->
+                        <div class="bg-gray-50 dark:bg-gray-800/30 px-4 py-3 border-t border-gray-200 dark:border-dark-border flex items-center justify-between">
+                            <span class="text-xs text-gray-500 dark:text-gray-400">1-2 de 50</span>
+                            <div class="flex items-center gap-1">
+                                <button class="w-8 h-8 flex items-center justify-center rounded-md bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-600"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
+                                <button class="w-8 h-8 flex items-center justify-center rounded-md bg-brand-600 text-white font-bold text-xs shadow-sm">1</button>
+                                <button class="w-8 h-8 flex items-center justify-center rounded-md bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-600 text-xs">2</button>
+                                <button class="w-8 h-8 flex items-center justify-center rounded-md bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-600"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <footer class="text-center text-sm text-gray-500 py-8 border-t border-gray-200 dark:border-dark-border mt-12">
+                    &copy; 2025 UI Kit Specification. Versão Unificada.
+                </footer>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- MODAL -->
+    <div id="demo-modal" class="hidden fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm items-center justify-center p-4 transition-all">
+        <div class="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border w-full max-w-md rounded-xl shadow-2xl p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white">Confirmação</h3>
+                <button onclick="document.getElementById('demo-modal').classList.add('hidden'); document.getElementById('demo-modal').classList.remove('flex');" class="text-gray-400 hover:text-gray-600 dark:hover:text-white">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <p class="text-gray-600 dark:text-gray-300 mb-6 text-sm">
+                Esta ação não poderá ser desfeita. Tem certeza que deseja continuar?
+            </p>
+            <div class="flex justify-end gap-3">
+                <button onclick="document.getElementById('demo-modal').classList.add('hidden'); document.getElementById('demo-modal').classList.remove('flex');" class="px-4 py-2 rounded-lg text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 font-medium text-sm transition-colors">Cancelar</button>
+                <button onclick="showToast(); document.getElementById('demo-modal').classList.add('hidden'); document.getElementById('demo-modal').classList.remove('flex');" class="px-4 py-2 rounded-lg bg-brand-600 hover:bg-brand-700 text-white font-medium text-sm transition-colors">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST -->
+    <div id="toast" class="fixed bottom-6 right-6 translate-y-24 opacity-0 transition-all duration-500 z-[70] bg-white dark:bg-dark-surface border-l-4 border-green-500 shadow-2xl rounded-lg p-4 pr-8 flex items-center gap-3 max-w-sm border-t border-r border-b border-gray-100 dark:border-dark-border">
+        <div class="bg-green-100 dark:bg-green-900/30 rounded-full p-1 text-green-600 dark:text-green-400">
+            <i data-lucide="check" class="w-4 h-4"></i>
+        </div>
+        <div>
+            <h4 class="text-sm font-bold text-gray-800 dark:text-white">Sucesso!</h4>
+            <p class="text-xs text-gray-500 dark:text-gray-400">Operação concluída.</p>
+        </div>
+    </div>
+
+    <!-- FAB (Floating Action Button) -->
+    <div class="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3 group" id="fab-container">
+        <div class="fab-options flex flex-col items-end gap-3">
+            <button class="flex items-center gap-2 group/item">
+                <span class="bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 px-2 py-1 rounded text-xs font-medium shadow-md opacity-0 group-hover/item:opacity-100 transition-opacity mr-1">Nova Tarefa</span>
+                <div class="w-10 h-10 rounded-full bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 shadow-lg hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center justify-center border border-gray-200 dark:border-gray-700 transition-colors">
+                    <i data-lucide="file-plus" class="w-5 h-5"></i>
+                </div>
+            </button>
+            <button class="flex items-center gap-2 group/item">
+                <span class="bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 px-2 py-1 rounded text-xs font-medium shadow-md opacity-0 group-hover/item:opacity-100 transition-opacity mr-1">Adicionar</span>
+                <div class="w-10 h-10 rounded-full bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 shadow-lg hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center justify-center border border-gray-200 dark:border-gray-700 transition-colors">
+                    <i data-lucide="user-plus" class="w-5 h-5"></i>
+                </div>
+            </button>
+        </div>
+        <button id="fab-trigger" class="fab-trigger w-14 h-14 bg-brand-600 hover:bg-brand-700 text-white rounded-full shadow-xl flex items-center justify-center transition-all hover:scale-105 active:scale-95 focus:outline-none focus:ring-4 focus:ring-brand-500/30">
+            <i data-lucide="plus" class="w-8 h-8"></i>
+        </button>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        // Theme Logic
+        const themeToggle = document.getElementById('theme-toggle');
+        const html = document.documentElement;
+        
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            html.classList.add('dark');
+        } else {
+            html.classList.remove('dark');
+        }
+
+        themeToggle.addEventListener('click', () => {
+            html.classList.toggle('dark');
+            const isDark = html.classList.contains('dark');
+            localStorage.theme = isDark ? 'dark' : 'light';
+            updateChartsTheme(isDark);
+        });
+
+        // Menu Mobile
+        const menuToggle = document.getElementById('menu-toggle');
+        const sidebar = document.getElementById('sidebar');
+        let isMenuOpen = false;
+
+        menuToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            isMenuOpen = !isMenuOpen;
+            sidebar.classList.toggle('-translate-x-full', !isMenuOpen);
+        });
+
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth < 768 && isMenuOpen && !sidebar.contains(e.target) && e.target !== menuToggle) {
+                sidebar.classList.add('-translate-x-full');
+                isMenuOpen = false;
+            }
+        });
+
+        // FAB Logic
+        const fabTrigger = document.getElementById('fab-trigger');
+        const fabContainer = document.getElementById('fab-container');
+        fabTrigger.addEventListener('click', () => fabContainer.classList.toggle('fab-active'));
+        document.addEventListener('click', (e) => {
+            if (!fabContainer.contains(e.target)) fabContainer.classList.remove('fab-active');
+        });
+
+        // Toast Logic
+        function showToast() {
+            const toast = document.getElementById('toast');
+            toast.classList.remove('translate-y-24', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-24', 'opacity-0');
+            }, 3000);
+        }
+
+        // Charts Logic
+        const getChartColors = (isDark) => ({
+            text: isDark ? '#a1a1aa' : '#64748b',
+            grid: isDark ? '#27272a' : '#e2e8f0',
+            tooltipBg: isDark ? '#18181b' : '#ffffff'
+        });
+
+        let revenueChart, trafficChart;
+
+        function initCharts() {
+            const isDark = html.classList.contains('dark');
+            const colors = getChartColors(isDark);
+
+            const revenueOptions = {
+                series: [{ name: '2025', data: [31, 40, 28, 51, 42, 109, 100] }, { name: '2024', data: [11, 32, 45, 32, 34, 52, 41] }],
+                chart: { height: 320, type: 'area', toolbar: { show: false }, fontFamily: 'Inter', background: 'transparent' },
+                colors: ['#2563eb', '#94a3b8'],
+                stroke: { curve: 'smooth', width: 2 },
+                dataLabels: { enabled: false },
+                xaxis: { categories: ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul"], labels: { style: { colors: colors.text } }, axisBorder: { show: false }, axisTicks: { show: false } },
+                yaxis: { labels: { style: { colors: colors.text } } },
+                grid: { borderColor: colors.grid, strokeDashArray: 4 },
+                legend: { labels: { colors: colors.text } },
+                tooltip: { theme: isDark ? 'dark' : 'light' }
+            };
+
+            const trafficOptions = {
+                series: [44, 55, 13, 33],
+                labels: ['Direct', 'Social', 'Organic', 'Referral'],
+                chart: { type: 'donut', height: 320, fontFamily: 'Inter', background: 'transparent' },
+                colors: ['#2563eb', '#3b82f6', '#60a5fa', '#93c5fd'],
+                stroke: { show: false },
+                dataLabels: { enabled: false },
+                legend: { position: 'bottom', labels: { colors: colors.text } },
+                tooltip: { theme: isDark ? 'dark' : 'light' },
+                plotOptions: { pie: { donut: { labels: { show: true, name: { color: colors.text }, value: { color: isDark ? '#fff' : '#000' } } } } }
+            };
+
+            revenueChart = new ApexCharts(document.querySelector("#chart-revenue"), revenueOptions);
+            revenueChart.render();
+            trafficChart = new ApexCharts(document.querySelector("#chart-traffic"), trafficOptions);
+            trafficChart.render();
+        }
+
+        function updateChartsTheme(isDark) {
+            const colors = getChartColors(isDark);
+            revenueChart.updateOptions({ chart: { foreColor: colors.text }, grid: { borderColor: colors.grid }, tooltip: { theme: isDark ? 'dark' : 'light' }, xaxis: { labels: { style: { colors: colors.text } } }, yaxis: { labels: { style: { colors: colors.text } } }, legend: { labels: { colors: colors.text } } });
+            trafficChart.updateOptions({ legend: { labels: { colors: colors.text } }, tooltip: { theme: isDark ? 'dark' : 'light' }, plotOptions: { pie: { donut: { labels: { name: { color: colors.text }, value: { color: isDark ? '#fff' : '#000' } } } } } });
+        }
+
+        document.addEventListener('DOMContentLoaded', initCharts);
+    </script>
+</body>
+</html>
