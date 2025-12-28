@@ -8,6 +8,8 @@ body {
     -webkit-overflow-scrolling: touch;
     display: block;
     overflow: auto;
+    background: #18181b;
+    cursor: grab;
 }
 
 #pdf-content {
@@ -16,12 +18,15 @@ body {
     will-change: width;
     transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     width: 100%;
-    min-width: 100%;
+    max-width: none;
 }
 
 #ui-overlay {
     transform-origin: 0 0;
-    will-change: transform;
+    will-change: transform, opacity;
+    transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 100vw;
+    height: 100vh;
 }
 
 #bottom-bar {

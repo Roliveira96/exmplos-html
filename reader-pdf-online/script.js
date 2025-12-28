@@ -6,7 +6,7 @@ const state = {
     numPages: 0,
     zoom: 1.0,
     minZoom: 0.5,
-    maxZoom: 5.0,
+    maxZoom: 10.0,
     markers: [],
     isMarkersOpen: false,
     isPagesOpen: false,
@@ -14,7 +14,9 @@ const state = {
     targetMarkerIdForAnnotation: null,
     tempMarkerData: { name: '', color: '#2563eb' },
     tempAnnData: { title: '', description: '' },
-    isRendering: false
+    isRendering: false,
+    uiTimeout: null,
+    isUiVisible: true
 };
 
 const colors = ['#2563eb', '#dc2626', '#16a34a', '#d97706', '#7c3aed', '#0f172a'];
@@ -64,8 +66,8 @@ function setupEventListeners() {
     els.btnOpenReader.addEventListener('click', loadPDF);
     els.btnCloseReader.addEventListener('click', closeReader);
 
-    els.btnZoomIn.addEventListener('click', () => updateZoom(state.zoom + 0.2));
-    els.btnZoomOut.addEventListener('click', () => updateZoom(state.zoom - 0.2));
+    els.btnZoomIn.addEventListener('click', () => updateZoom(state.zoom + 0.5));
+    els.btnZoomOut.addEventListener('click', () => updateZoom(state.zoom - 0.5));
 
     els.btnOpenMarkers.addEventListener('click', () => toggleSidebar('markers', true));
     els.btnCloseMarkers.addEventListener('click', () => toggleSidebar('markers', false));
@@ -85,6 +87,44 @@ function setupEventListeners() {
         window.visualViewport.addEventListener('scroll', syncUI);
     }
     window.addEventListener('resize', syncUI);
+
+    els.readingView.addEventListener('mousemove', resetUiTimeout);
+    els.readingView.addEventListener('touchstart', resetUiTimeout);
+    els.readingView.addEventListener('click', resetUiTimeout);
+
+    // Drag-to-Scroll (Mouse)
+    let isDragging = false;
+    let startX, startY, scrollLeft, scrollTop;
+
+    els.pdfViewport.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        els.pdfViewport.style.cursor = 'grabbing';
+        startX = e.pageX - els.pdfViewport.offsetLeft;
+        startY = e.pageY - els.pdfViewport.offsetTop;
+        scrollLeft = els.pdfViewport.scrollLeft;
+        scrollTop = els.pdfViewport.scrollTop;
+    });
+
+    els.pdfViewport.addEventListener('mouseleave', () => {
+        isDragging = false;
+        els.pdfViewport.style.cursor = 'grab';
+    });
+
+    els.pdfViewport.addEventListener('mouseup', () => {
+        isDragging = false;
+        els.pdfViewport.style.cursor = 'grab';
+    });
+
+    els.pdfViewport.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        e.preventDefault();
+        const x = e.pageX - els.pdfViewport.offsetLeft;
+        const y = e.pageY - els.pdfViewport.offsetTop;
+        const walkX = (x - startX);
+        const walkY = (y - startY);
+        els.pdfViewport.scrollLeft = scrollLeft - walkX;
+        els.pdfViewport.scrollTop = scrollTop - walkY;
+    });
 
     els.btnCreateMarker.addEventListener('click', () => openMarkerModal());
     els.btnCancelMarker.addEventListener('click', closeMarkerModal);
@@ -117,6 +157,7 @@ async function loadPDF() {
             await renderAllPages();
             setupIntersectionObserver();
             syncUI();
+            resetUiTimeout();
         });
 
     } catch (error) {
@@ -162,7 +203,7 @@ async function renderAllPages() {
         wrapper.dataset.pageNum = i;
 
         const canvasContainer = document.createElement('div');
-        canvasContainer.className = "bg-white shadow-2xl border border-zinc-200 w-full max-w-4xl mx-auto";
+        canvasContainer.className = "bg-white shadow-2xl border border-zinc-200 w-full";
         canvasContainer.id = `canvas-container-${i}`;
 
         const canvas = document.createElement('canvas');
@@ -183,7 +224,8 @@ async function renderAllPages() {
 
 async function renderPageOnCanvas(num, canvas) {
     if (!state.pdfDoc) return;
-    const FIXED_HIGH_QUALITY_SCALE = 2.0;
+    // Boost quality for high zoom targets
+    const FIXED_HIGH_QUALITY_SCALE = 3.0;
     const page = await state.pdfDoc.getPage(num);
     const viewport = page.getViewport({ scale: FIXED_HIGH_QUALITY_SCALE });
     canvas.width = viewport.width;
@@ -208,13 +250,58 @@ function setupIntersectionObserver() {
     }
 }
 
+function resetUiTimeout() {
+    showUI();
+    if (state.uiTimeout) clearTimeout(state.uiTimeout);
+    state.uiTimeout = setTimeout(() => {
+        // Don't hide if a modal or sidebar is open
+        if (!state.isMarkersOpen && !state.isPagesOpen && els.modalMarker.classList.contains('hidden') && els.modalAnnotation.classList.contains('hidden')) {
+            hideUI();
+        }
+    }, 10000); // 10 seconds
+}
+
+function showUI() {
+    if (!state.isUiVisible) {
+        els.uiOverlay.style.opacity = "1";
+        // Do NOT set pointerEvents to auto on the overlay itself,
+        // it must remain 'none' to allow interacting with the PDF beneath.
+        state.isUiVisible = true;
+    }
+}
+
+function hideUI() {
+    if (state.isUiVisible) {
+        els.uiOverlay.style.opacity = "0";
+        state.isUiVisible = false;
+    }
+}
+
 /**
  * Programmatic Zoom targeting only the PDF Content.
+ * focalPoint: {x, y} coordinate in the old zoom level that should stay under screenPoint.
+ * screenPoint: {x, y} coordinate relative to the viewport.
  */
-function updateZoom(newZoom) {
+function updateZoom(newZoom, focalPoint = null, screenPoint = null) {
+    const oldZoom = state.zoom;
     state.zoom = Math.max(state.minZoom, Math.min(state.maxZoom, newZoom));
-    // Apply zoom by modifying width. Higher zoom = larger width.
+
+    if (oldZoom === state.zoom) return;
+
+    const scaleRatio = state.zoom / oldZoom;
+
+    // Apply zoom
     els.pdfContent.style.width = `${state.zoom * 100}%`;
+
+    // Adjust scroll to keep focal point under the finger/mouse
+    if (focalPoint && screenPoint) {
+        const newFocalX = focalPoint.x * scaleRatio;
+        const newFocalY = focalPoint.y * scaleRatio;
+
+        els.pdfViewport.scrollLeft = newFocalX - screenPoint.x;
+        els.pdfViewport.scrollTop = newFocalY - screenPoint.y;
+    }
+
     syncUI();
 }
 
