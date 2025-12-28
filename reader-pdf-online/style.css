@@ -43,6 +43,8 @@ body {
 
 #bottom-bar {
     transform-origin: center bottom;
+    bottom: calc(2.5rem + env(safe-area-inset-bottom));
+    /* Respect gesture bar */
 }
 
 .scrollbar-hide::-webkit-scrollbar {
