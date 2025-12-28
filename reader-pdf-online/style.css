@@ -16,13 +16,22 @@ body {
     height: 100%;
 }
 
+:root {
+    --pdf-zoom: 1;
+}
+
 #pdf-content {
     display: block;
-    margin: 2rem auto;
+    margin: 0 auto;
     /* Auto margin centers the block horizontally */
     will-change: width;
-    /* Zoom transitions */
-    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    /* Zoom transitions removed for precision */
+
+    /* Scaled padding */
+    padding-top: calc(8rem * var(--pdf-zoom));
+    padding-bottom: calc(15rem * var(--pdf-zoom));
+    padding-left: calc(1rem * var(--pdf-zoom));
+    padding-right: calc(1rem * var(--pdf-zoom));
 
     /* Default fallback */
     width: 100%;
@@ -30,6 +39,10 @@ body {
     /* Ensure visibility */
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
     /* Always have shadow */
+}
+
+.page-wrapper {
+    margin-bottom: calc(2.5rem * var(--pdf-zoom));
 }
 
 /* UI Overlay stays fixed */
