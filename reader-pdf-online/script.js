@@ -190,6 +190,9 @@ function closeReader() {
         els.thumbnailsList.innerHTML = '';
         state.markers = [];
         state.zoom = 1.0;
+        els.pdfContent.style.width = '100%';
+        els.pdfViewport.scrollLeft = 0;
+        els.pdfViewport.scrollTop = 0;
         renderMarkersList();
     }, 300);
 }
