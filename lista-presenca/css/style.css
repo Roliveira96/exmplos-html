@@ -1,0 +1,141 @@
+:root {
+    max-width: 600px;
+    text-align: center;
+    position: relative;
+}
+
+h1 {
+    font-weight: 300;
+    font-size: 3rem;
+    margin-bottom: 2rem;
+    letter-spacing: -0.02em;
+    background: linear-gradient(180deg, #FFFFFF 0%, #9AA0A6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.input-group {
+    margin-bottom: 2rem;
+    position: relative;
+}
+
+input[type="text"] {
+    width: 100%;
+    padding: 1rem 1.5rem;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 50px;
+    /* Pill shape */
+    color: var(--text-primary);
+    font-size: 1.1rem;
+    font-weight: 300;
+    text-align: center;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+input[type="text"]:focus {
+    outline: none;
+    border-color: var(--accent-blue);
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 0 20px rgba(138, 180, 248, 0.1);
+}
+
+.btn-danger {
+    color: var(--accent-red);
+    border-color: rgba(242, 139, 130, 0.3);
+}
+
+.btn-danger:hover {
+    background: rgba(242, 139, 130, 0.1);
+    border-color: var(--accent-red);
+}
+
+/* Links */
+a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.3s;
+    border-bottom: 1px solid transparent;
+}
+
+a:hover {
+    color: var(--accent-blue);
+    border-bottom-color: var(--accent-blue);
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    font-weight: 400;
+}
+
+.modal-content p {
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+    line-height: 1.6;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.modal-actions .btn {
+    width: auto;
+    padding: 0.8rem 2rem;
+}
+
+/* List Page Styles */
+.list-container {
+    max-width: 900px;
+}
+
+.lists-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    margin-top: 3rem;
+    text-align: left;
+}
+
+.list-box h2 {
+    margin-bottom: 1.5rem;
+    font-size: 1.4rem;
+    font-weight: 400;
+    border-bottom: 1px solid var(--glass-border);
+    padding-bottom: 0.5rem;
+}
+
+.list-box ul {
+    list-style: none;
+}
+
+.list-box li {
+    background: var(--glass-bg);
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 0.8rem;
+    border: 1px solid transparent;
+    color: var(--text-primary);
+    font-weight: 300;
+    transition: all 0.2s;
+}
+
+.list-box li:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--glass-border);
+}
+
+@media (max-width: 768px) {
+    .lists-wrapper {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    h1 {
+        font-size: 2.5rem;
+    }
+}

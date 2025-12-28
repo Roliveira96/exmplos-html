@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listagem Ajustável - UI Kit Pro</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        gray: {
+                            50: '#fafafa',
+                            100: '#f4f4f5',
+                            200: '#e4e4e7',
+                            300: '#d4d4d8',
+                            400: '#a1a1aa',
+                            500: '#71717a',
+                            600: '#52525b',
+                            700: '#3f3f46',
+                            800: '#27272a',
+                            900: '#18181b',
+                            950: '#09090b',
+                        },
+                        brand: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                        },
+                        dark: {
+                            bg: '#000000',
+                            surface: '#121212',
+                            border: '#27272a'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .transition-theme { transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease; }
+        
+        /* Dropdown Animation */
+        .dropdown-menu {
+            transform-origin: top right;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            opacity: 0;
+            transform: scale(0.95) translateY(-10px);
+            pointer-events: none;
+            visibility: hidden;
+        }
+        .dropdown-menu.active {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+            pointer-events: auto;
+            visibility: visible;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 dark:bg-dark-bg dark:text-gray-100 transition-theme antialiased h-screen w-screen overflow-hidden selection:bg-brand-500 selection:text-white flex">
+
+    <!-- SIDEBAR -->
+    <aside id="sidebar" class="flex-shrink-0 fixed inset-y-0 left-0 z-40 w-64 bg-white dark:bg-dark-surface border-r border-gray-200 dark:border-dark-border transform -translate-x-full md:translate-x-0 md:static transition-transform duration-300 ease-in-out flex flex-col shadow-xl md:shadow-none h-full">
+        <div class="flex items-center justify-center h-16 border-b border-gray-200 dark:border-dark-border flex-shrink-0">
+            <div class="flex items-center gap-2 text-brand-600 font-bold text-xl tracking-tight">
+                <div class="bg-brand-600 text-white p-1 rounded-lg">
+                    <i data-lucide="layout" class="w-5 h-5"></i>
+                </div>
+                <span>UI Kit Pro</span>
+            </div>
+        </div>
+        
+        <nav class="flex-1 overflow-y-auto p-4 space-y-1">
+            <p class="px-2 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3 mt-2">Módulos</p>
+            <a href="#" class="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors group">
+                <i data-lucide="pie-chart" class="w-4 h-4 group-hover:text-brand-600"></i>
+                Dashboard
+            </a>
+            <a href="#" class="flex items-center gap-3 px-4 py-2.5 text-sm font-medium bg-brand-50 text-brand-700 dark:bg-brand-900/20 dark:text-brand-400 rounded-lg border-l-4 border-brand-600 transition-all">
+                <i data-lucide="users" class="w-4 h-4"></i>
+                Usuários
+            </a>
+            <a href="#" class="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors group">
+                <i data-lucide="settings" class="w-4 h-4 group-hover:text-brand-600"></i>
+                Configurações
+            </a>
+        </nav>
+
+        <div class="p-4 border-t border-gray-200 dark:border-dark-border flex-shrink-0">
+            <div class="flex items-center gap-3 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 p-2 rounded-lg transition-colors">
+                <div class="relative">
+                    <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" class="w-10 h-10 rounded-full border-2 border-white dark:border-gray-700">
+                    <span class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white dark:border-dark-surface rounded-full"></span>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium text-gray-900 dark:text-white truncate">Admin User</p>
+                    <p class="text-xs text-gray-500 truncate">admin@uikit.com</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT WRAPPER -->
+    <div class="flex-1 flex flex-col h-full min-w-0 bg-gray-50 dark:bg-dark-bg transition-theme">
+        
+        <!-- NAVBAR -->
+        <header class="h-16 bg-white dark:bg-dark-surface border-b border-gray-200 dark:border-dark-border flex items-center justify-between px-6 flex-shrink-0 z-30 shadow-sm/50">
+            <div class="flex items-center gap-4">
+                <button id="menu-toggle" class="md:hidden text-gray-500 hover:text-brand-600">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+                <nav class="hidden sm:flex items-center text-sm font-medium text-gray-500 dark:text-gray-400">
+                    <a href="#" class="hover:text-brand-600 transition-colors">Home</a>
+                    <i data-lucide="chevron-right" class="w-4 h-4 mx-1"></i>
+                    <span class="text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-900/30 px-2 py-0.5 rounded-md">Lista de Usuários</span>
+                </nav>
+            </div>
+            <div class="flex items-center gap-4">
+                <button id="theme-toggle" class="relative p-2 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors overflow-hidden">
+                    <i data-lucide="moon" class="w-5 h-5 hidden dark:block text-blue-400"></i>
+                    <i data-lucide="sun" class="w-5 h-5 block dark:hidden text-orange-500"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- MAIN AREA - NO SCROLL ON BODY -->
+        <main class="flex-1 flex flex-col p-4 md:p-6 overflow-hidden min-h-0">
+            
+            <div class="max-w-7xl mx-auto w-full h-full flex flex-col gap-4">
+                
+                <!-- HEADER & FILTERS -->
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 flex-shrink-0">
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Gerenciar Usuários</h1>
+                        <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">Visualize e gerencie todos os membros da equipe.</p>
+                    </div>
+                    
+                    <div class="flex flex-col sm:flex-row gap-3">
+                        <div class="relative group">
+                            <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-brand-500 transition-colors"></i>
+                            <input type="text" placeholder="Buscar..." class="pl-10 pr-4 py-2 text-sm bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border rounded-lg focus:ring-2 focus:ring-brand-500 outline-none w-full sm:w-64 dark:text-white transition-all shadow-sm">
+                        </div>
+                        <div class="relative">
+                            <select class="w-full sm:w-40 px-3 py-2 text-sm bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border rounded-lg focus:ring-2 focus:ring-brand-500 outline-none appearance-none dark:text-white cursor-pointer shadow-sm">
+                                <option value="">Status</option>
+                                <option value="active">Ativo</option>
+                                <option value="pending">Pendente</option>
+                            </select>
+                            <i data-lucide="chevron-down" class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"></i>
+                        </div>
+                         <div class="relative">
+                            <button class="flex items-center justify-between w-full sm:w-auto gap-2 px-3 py-2 text-sm bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors shadow-sm text-gray-600 dark:text-gray-300">
+                                <i data-lucide="calendar" class="w-4 h-4"></i>
+                                <span>Data</span>
+                            </button>
+                         </div>
+                    </div>
+                </div>
+
+                <!-- TABLE CARD - FLEX GROW TO FILL SPACE -->
+                <div class="bg-white dark:bg-dark-surface rounded-xl shadow-sm border border-gray-200 dark:border-dark-border flex-1 flex flex-col min-h-0 overflow-hidden">
+                    
+                    <!-- TABLE WRAPPER -->
+                    <div id="table-wrapper" class="flex-1 overflow-hidden relative">
+                        <table class="w-full text-sm text-left">
+                            <thead id="table-head" class="text-xs text-gray-500 dark:text-gray-400 uppercase bg-gray-50/80 dark:bg-gray-900/50 border-b border-gray-200 dark:border-dark-border sticky top-0 z-10 backdrop-blur-sm">
+                                <tr>
+                                    <th class="px-6 py-4 font-semibold">Usuário</th>
+                                    <th class="px-6 py-4 font-semibold">Status</th>
+                                    <th class="px-6 py-4 font-semibold">Perfil Público</th>
+                                    <th class="px-6 py-4 font-semibold">Cadastro</th>
+                                    <th class="px-6 py-4 text-right font-semibold">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-body" class="divide-y divide-gray-100 dark:divide-dark-border">
+                                <!-- JS Populated -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- PAGINATION - FIXED AT BOTTOM -->
+                    <div id="pagination-footer" class="px-6 py-4 border-t border-gray-200 dark:border-dark-border flex flex-col sm:flex-row items-center justify-between gap-4 bg-gray-50/30 dark:bg-gray-900/10 flex-shrink-0">
+                        <span class="text-xs text-gray-500 dark:text-gray-400">
+                            Mostrando <span class="font-semibold text-gray-900 dark:text-white" id="showing-count"></span> resultados
+                        </span>
+                        <div class="flex items-center gap-1">
+                            <button class="p-1.5 rounded-lg border border-gray-200 dark:border-gray-700 text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-50 transition-colors">
+                                <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                            </button>
+                            <button class="w-8 h-8 flex items-center justify-center rounded-lg bg-brand-600 text-white text-xs font-bold shadow-sm">1</button>
+                            <button class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 text-xs transition-colors">2</button>
+                            <button class="p-1.5 rounded-lg border border-gray-200 dark:border-gray-700 text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                                <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- FOOTER -->
+                <footer class="text-center text-sm text-gray-500 py-4 flex-shrink-0">
+                    &copy; 2025 UI Kit.
+                </footer>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- MODAL DELETE -->
+    <div id="delete-modal" class="hidden fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm items-center justify-center p-4 transition-all opacity-0">
+        <div class="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border w-full max-w-md rounded-xl shadow-2xl p-6 transform scale-95 transition-all" id="delete-modal-content">
+            <div class="flex flex-col items-center text-center">
+                <div class="w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mb-4">
+                    <i data-lucide="alert-triangle" class="w-6 h-6 text-red-600 dark:text-red-500"></i>
+                </div>
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white">Excluir Usuário?</h3>
+                <p class="text-gray-500 dark:text-gray-400 mt-2 text-sm leading-relaxed">
+                    Você está prestes a remover este registro permanentemente.
+                </p>
+            </div>
+            <div class="flex gap-3 mt-6">
+                <button onclick="closeDeleteModal()" class="flex-1 px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 font-medium hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-sm">Cancelar</button>
+                <button onclick="confirmDelete()" class="flex-1 px-4 py-2.5 rounded-lg bg-red-600 hover:bg-red-700 text-white font-medium shadow-lg shadow-red-500/20 text-sm transition-colors">Sim, excluir</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST -->
+    <div id="toast-container" class="fixed bottom-6 right-6 z-[70] flex flex-col gap-3 pointer-events-none"></div>
+
+    <script>
+        // --- 1. THEME & SIDEBAR ---
+        const themeToggle = document.getElementById('theme-toggle');
+        const html = document.documentElement;
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) html.classList.add('dark');
+        themeToggle.addEventListener('click', () => { html.classList.toggle('dark'); localStorage.theme = html.classList.contains('dark') ? 'dark' : 'light'; });
+
+        const menuToggle = document.getElementById('menu-toggle');
+        const sidebar = document.getElementById('sidebar');
+        let isMenuOpen = false;
+        menuToggle.addEventListener('click', (e) => { e.stopPropagation(); isMenuOpen = !isMenuOpen; sidebar.classList.toggle('-translate-x-full', !isMenuOpen); });
+        document.addEventListener('click', (e) => { if (window.innerWidth < 768 && isMenuOpen && !sidebar.contains(e.target) && e.target !== menuToggle) { sidebar.classList.add('-translate-x-full'); isMenuOpen = false; }});
+
+        // --- 2. DYNAMIC TABLE DATA ---
+        const allUsers = [
+            { name: 'Arthur Melo', email: 'arthur@example.com', status: 'active', date: '24 Out' },
+            { name: 'Sarah Miller', email: 'sarah@example.com', status: 'pending', date: '22 Out' },
+            { name: 'Roberto Gomes', email: 'roberto@example.com', status: 'active', date: '20 Out' },
+            { name: 'Lúcia Ferreira', email: 'lucia@example.com', status: 'inactive', date: '19 Out' },
+            { name: 'Marcos Silva', email: 'marcos@example.com', status: 'active', date: '18 Out' },
+            { name: 'Júlia Costa', email: 'julia@example.com', status: 'pending', date: '18 Out' },
+            { name: 'Bruno Alves', email: 'bruno@example.com', status: 'active', date: '17 Out' },
+            { name: 'Camila Dias', email: 'camila@example.com', status: 'inactive', date: '16 Out' },
+            { name: 'Felipe Nunes', email: 'felipe@example.com', status: 'active', date: '15 Out' },
+            { name: 'Amanda Rocha', email: 'amanda@example.com', status: 'active', date: '14 Out' },
+            { name: 'Ricardo Oliveira', email: 'ricardo@example.com', status: 'pending', date: '13 Out' },
+            { name: 'Fernanda Lima', email: 'fernanda@example.com', status: 'active', date: '12 Out' },
+            { name: 'Diego Souza', email: 'diego@example.com', status: 'inactive', date: '11 Out' },
+            { name: 'Patricia Santos', email: 'patricia@example.com', status: 'active', date: '10 Out' },
+            { name: 'Lucas Pereira', email: 'lucas@example.com', status: 'active', date: '09 Out' }
+        ];
+
+        function getStatusBadge(status) {
+            if (status === 'active') return '<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"><span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> Ativo</span>';
+            if (status === 'pending') return '<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"><span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Pendente</span>';
+            return '<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-400"><span class="w-1.5 h-1.5 rounded-full bg-gray-500"></span> Inativo</span>';
+        }
+
+        // --- 3. DYNAMIC ROW CALCULATION ---
+        function calculateAndRender() {
+            const wrapper = document.getElementById('table-wrapper');
+            const thead = document.getElementById('table-head');
+            
+            // Available height for rows = wrapper height - thead height
+            // We use a small buffer (-10px) to be safe
+            const availableHeight = wrapper.clientHeight - thead.clientHeight - 10;
+            
+            // Estimated row height (based on py-4 and content)
+            const rowHeight = 73; 
+
+            // Calculate max rows that fit without scroll
+            let maxRows = Math.floor(availableHeight / rowHeight);
+            if (maxRows < 1) maxRows = 1;
+
+            // Update footer text
+            document.getElementById('showing-count').innerText = `1-${maxRows}`;
+
+            renderTable(maxRows);
+        }
+
+        function renderTable(count) {
+            const tableBody = document.getElementById('table-body');
+            const dataToShow = allUsers.slice(0, count);
+
+            tableBody.innerHTML = dataToShow.map((u, i) => `
+                <tr class="group hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors h-[72px]">
+                    <td class="px-6 py-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-brand-50 dark:bg-brand-900/20 text-brand-600 dark:text-brand-400 flex items-center justify-center font-bold text-sm border border-brand-100 dark:border-brand-900/30">${u.name.substring(0,2).toUpperCase()}</div>
+                            <div>
+                                <div class="font-medium text-gray-900 dark:text-white">${u.name}</div>
+                                <div class="text-xs text-gray-500">${u.email}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4">${getStatusBadge(u.status)}</td>
+                    <td class="px-6 py-4">
+                        <a href="#" class="flex items-center gap-1 text-gray-400 hover:text-brand-600 dark:hover:text-brand-400 font-medium text-xs transition-colors">
+                            Ver Perfil <i data-lucide="external-link" class="w-3 h-3"></i>
+                        </a>
+                    </td>
+                    <td class="px-6 py-4 text-gray-500 dark:text-gray-400">${u.date}</td>
+                    <td class="px-6 py-4 text-right relative">
+                        <button onclick="toggleDropdown(event, 'drop-${i}')" class="p-1.5 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors">
+                            <i data-lucide="more-horizontal" class="w-5 h-5"></i>
+                        </button>
+                        <div id="drop-${i}" class="dropdown-menu absolute right-8 top-10 w-40 bg-white dark:bg-gray-900 rounded-lg shadow-xl border border-gray-200 dark:border-gray-800 z-50 text-left">
+                            <a href="#" class="flex items-center gap-2 px-4 py-2.5 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-xs font-medium rounded-t-lg">
+                                <i data-lucide="eye" class="w-4 h-4 text-gray-400"></i> Visualizar
+                            </a>
+                            <a href="#" class="flex items-center gap-2 px-4 py-2.5 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-xs font-medium">
+                                <i data-lucide="edit-3" class="w-4 h-4 text-gray-400"></i> Editar
+                            </a>
+                            <div class="h-px bg-gray-100 dark:bg-gray-800"></div>
+                            <button onclick="openDeleteModal()" class="flex w-full items-center gap-2 px-4 py-2.5 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors text-xs font-medium rounded-b-lg">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i> Deletar
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+            
+            lucide.createIcons();
+        }
+
+        // --- 4. INIT & RESIZE LISTENER ---
+        window.addEventListener('load', calculateAndRender);
+        window.addEventListener('resize', calculateAndRender);
+
+        // --- 5. DROPDOWN & MODAL & TOAST ---
+        let activeDropdown = null;
+        function toggleDropdown(event, id) {
+            event.stopPropagation();
+            const el = document.getElementById(id);
+            if (activeDropdown && activeDropdown !== el) activeDropdown.classList.remove('active');
+            if (el.classList.contains('active')) { el.classList.remove('active'); activeDropdown = null; } 
+            else { el.classList.add('active'); activeDropdown = el; }
+        }
+        document.addEventListener('click', (e) => { if (activeDropdown && !activeDropdown.contains(e.target)) { activeDropdown.classList.remove('active'); activeDropdown = null; } });
+
+        const modal = document.getElementById('delete-modal');
+        const modalContent = document.getElementById('delete-modal-content');
+        function openDeleteModal() {
+            if (activeDropdown) { activeDropdown.classList.remove('active'); activeDropdown = null; }
+            modal.classList.remove('hidden');
+            setTimeout(() => { modal.classList.remove('opacity-0'); modalContent.classList.remove('scale-95'); modalContent.classList.add('scale-100'); }, 10);
+        }
+        function closeDeleteModal() {
+            modal.classList.add('opacity-0'); modalContent.classList.remove('scale-100'); modalContent.classList.add('scale-95');
+            setTimeout(() => { modal.classList.add('hidden'); }, 300);
+        }
+        function confirmDelete() {
+            closeDeleteModal();
+            createToast('success', 'Registro Excluído', 'Usuário removido com sucesso.');
+        }
+
+        function createToast(type, title, message) {
+            const container = document.getElementById('toast-container');
+            const el = document.createElement('div');
+            el.className = `transform translate-y-12 opacity-0 transition-all duration-500 bg-white dark:bg-dark-surface border-l-4 shadow-xl rounded-lg p-4 pr-10 flex items-start gap-3 w-80 pointer-events-auto border-t border-r border-b border-gray-100 dark:border-dark-border border-green-500`;
+            el.innerHTML = `<div class="bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 rounded-full p-1 shrink-0"><i data-lucide="check-circle-2" class="w-4 h-4"></i></div><div><h4 class="text-sm font-bold text-gray-800 dark:text-white">${title}</h4><p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5 leading-snug">${message}</p></div>`;
+            container.appendChild(el);
+            lucide.createIcons();
+            requestAnimationFrame(() => el.classList.remove('translate-y-12', 'opacity-0'));
+            setTimeout(() => { el.classList.add('translate-x-full', 'opacity-0'); setTimeout(() => el.remove(), 500); }, 4000);
+        }
+    </script>
+</body>
+</html>
