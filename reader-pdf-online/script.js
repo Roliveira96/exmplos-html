@@ -286,9 +286,10 @@ function setupIntersectionObserver() {
             if (entry.isIntersecting) {
                 const pageId = entry.target.id.split('-')[1];
                 state.pageNum = parseInt(pageId);
+                updateActiveThumbnail(state.pageNum); // Sync sidebar
             }
         });
-    }, { threshold: 0.1 });
+    }, { threshold: 0.5 });
 
     for (let i = 1; i <= state.numPages; i++) {
         const el = document.getElementById(`page-${i}`);
