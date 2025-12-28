@@ -1,23 +1,31 @@
 body {
     overscroll-behavior: none;
-    touch-action: pan-x pan-y;
-    /* Allows native pan (scroll), blocks native pinch-zoom to allow custom gesture */
+    touch-action: auto;
 }
 
 #pdf-viewport {
-    touch-action: pan-x pan-y;
+    touch-action: auto;
     -webkit-overflow-scrolling: touch;
-    /* Ensure it behaves as a container for centering */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    /* This centers the content horizontally */
+    display: block;
+    overflow: auto;
 }
 
 #pdf-content {
-    /* Critical for performance: isolate layer for transforms */
-    will-change: transform, width;
+    display: block;
+    margin: 0 auto;
+    will-change: width;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 100%;
+    min-width: 100%;
+}
+
+#ui-overlay {
     transform-origin: 0 0;
+    will-change: transform;
+}
+
+#bottom-bar {
+    transform-origin: center bottom;
 }
 
 /* Oculta scrollbar mas mantém funcionalidade */

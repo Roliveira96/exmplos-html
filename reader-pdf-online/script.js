@@ -5,8 +5,8 @@ const state = {
     pageNum: 1,
     numPages: 0,
     zoom: 1.0,
-    minZoom: 0.1,
-    maxZoom: 10.0,
+    minZoom: 0.5,
+    maxZoom: 5.0,
     markers: [],
     isMarkersOpen: false,
     isPagesOpen: false,
@@ -18,19 +18,6 @@ const state = {
 };
 
 const colors = ['#2563eb', '#dc2626', '#16a34a', '#d97706', '#7c3aed', '#0f172a'];
-
-// Zoom & Pan Logic State
-let isZooming = false;
-let startDist = 0;
-let startZoom = 1;
-
-// Pan tracking
-let panStart = { x: 0, y: 0 };
-let currentPan = { x: 0, y: 0 };
-let pinchStartOrigin = { x: 0, y: 0 }; // Store the origin relative to content
-
-// Double Tap State
-let lastTapTime = 0;
 
 const els = {
     landingView: document.getElementById('landing-view'),
@@ -63,7 +50,8 @@ const els = {
     thumbnailsList: document.getElementById('thumbnails-list'),
     btnOpenPages: document.getElementById('btn-open-pages'),
     btnClosePages: document.getElementById('btn-close-pages'),
-    backdrop: document.getElementById('backdrop')
+    backdrop: document.getElementById('backdrop'),
+    uiOverlay: document.getElementById('ui-overlay')
 };
 
 async function init() {
@@ -76,8 +64,8 @@ function setupEventListeners() {
     els.btnOpenReader.addEventListener('click', loadPDF);
     els.btnCloseReader.addEventListener('click', closeReader);
 
-    els.btnZoomIn.addEventListener('click', () => updateZoom(state.zoom + 0.5));
-    els.btnZoomOut.addEventListener('click', () => updateZoom(state.zoom - 0.5));
+    els.btnZoomIn.addEventListener('click', () => updateZoom(state.zoom + 0.2));
+    els.btnZoomOut.addEventListener('click', () => updateZoom(state.zoom - 0.2));
 
     els.btnOpenMarkers.addEventListener('click', () => toggleSidebar('markers', true));
     els.btnCloseMarkers.addEventListener('click', () => toggleSidebar('markers', false));
@@ -91,14 +79,12 @@ function setupEventListeners() {
         toggleSidebar('pages', false);
     });
 
-    // Zoom / Pinch Events
-    els.pdfViewport.addEventListener('touchstart', handleTouchStart, { passive: false });
-    els.pdfViewport.addEventListener('touchmove', handleTouchMove, { passive: false });
-    els.pdfViewport.addEventListener('touchend', handleTouchEnd);
-    els.pdfViewport.addEventListener('touchcancel', handleTouchEnd);
-
-    // Double Click for Desktop / fallback
-    els.pdfViewport.addEventListener('dblclick', handleDoubleClick);
+    // Sync UI with Browser Native Pinch Zoom
+    if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', syncUI);
+        window.visualViewport.addEventListener('scroll', syncUI);
+    }
+    window.addEventListener('resize', syncUI);
 
     els.btnCreateMarker.addEventListener('click', () => openMarkerModal());
     els.btnCancelMarker.addEventListener('click', closeMarkerModal);
@@ -126,22 +112,11 @@ async function loadPDF() {
 
         showReadingView();
 
-        // Wait for next frame to ensure layout is computed
         requestAnimationFrame(async () => {
-            const viewportWidth = els.pdfViewport.getBoundingClientRect().width;
-
-            // Desktop A4 Logic: Fixed 900px width
-            if (viewportWidth > 1024) {
-                state.zoom = 900 / viewportWidth;
-            } else {
-                state.zoom = 1.0;
-            }
-
-            // Apply immediately
-            els.pdfContent.style.width = `${state.zoom * 100}%`;
-
+            updateZoom(1.0);
             await renderAllPages();
             setupIntersectionObserver();
+            syncUI();
         });
 
     } catch (error) {
@@ -156,6 +131,7 @@ function showReadingView() {
     setTimeout(() => {
         els.landingView.classList.add('hidden');
         els.readingView.classList.remove('hidden');
+        document.documentElement.style.overflow = 'hidden';
         setTimeout(() => els.readingView.classList.remove('opacity-0'), 50);
     }, 300);
 }
@@ -165,14 +141,14 @@ function closeReader() {
     setTimeout(() => {
         els.readingView.classList.add('hidden');
         els.landingView.classList.remove('hidden');
+        document.documentElement.style.overflow = '';
+
         setTimeout(() => els.landingView.classList.remove('opacity-0'), 50);
         els.btnOpenReader.innerText = "Abrir Modo Leitura";
         els.pagesContainer.innerHTML = '';
         els.thumbnailsList.innerHTML = '';
         state.markers = [];
         state.zoom = 1.0;
-        els.pdfContent.style.width = '100%';
-        els.pdfContent.style.transform = '';
         renderMarkersList();
     }, 300);
 }
@@ -182,12 +158,11 @@ async function renderAllPages() {
     for (let i = 1; i <= state.numPages; i++) {
         const wrapper = document.createElement('div');
         wrapper.id = `page-${i}`;
-        // min-height placeholder to prevent jumpiness, adjust as needed
         wrapper.className = "flex flex-col items-center mb-10 w-full min-h-[600px]";
         wrapper.dataset.pageNum = i;
 
         const canvasContainer = document.createElement('div');
-        canvasContainer.className = "bg-white shadow-2xl border border-zinc-200 w-full";
+        canvasContainer.className = "bg-white shadow-2xl border border-zinc-200 w-full max-w-4xl mx-auto";
         canvasContainer.id = `canvas-container-${i}`;
 
         const canvas = document.createElement('canvas');
@@ -208,27 +183,14 @@ async function renderAllPages() {
 
 async function renderPageOnCanvas(num, canvas) {
     if (!state.pdfDoc) return;
-
-    // STRATEGY: Render ONLY ONCE at HIGH RESOLUTION (Scale 3.0 = ~2k/4k quality)
-    // We do NOT re-render on zoom. We let the browser scale this high-quality image.
-    const FIXED_HIGH_QUALITY_SCALE = 3.0; // Sharp up to 300% zoom
-
+    const FIXED_HIGH_QUALITY_SCALE = 2.0;
     const page = await state.pdfDoc.getPage(num);
     const viewport = page.getViewport({ scale: FIXED_HIGH_QUALITY_SCALE });
-
     canvas.width = viewport.width;
     canvas.height = viewport.height;
-
     const context = canvas.getContext('2d');
-
-    await page.render({
-        canvasContext: context,
-        viewport: viewport
-    }).promise;
+    await page.render({ canvasContext: context, viewport: viewport }).promise;
 }
-
-// NO reRenderContent needed anymore!
-// NO "flicker" possible because we never clear the canvas after load!
 
 function setupIntersectionObserver() {
     const observer = new IntersectionObserver((entries) => {
@@ -247,256 +209,36 @@ function setupIntersectionObserver() {
 }
 
 /**
- * Updates the 'real' zoom level (width) and adjusts scroll position.
+ * Programmatic Zoom targeting only the PDF Content.
  */
-function updateZoom(newZoom, centerPoint = null, contentOffset = { x: 0, y: 0 }) {
-    const oldZoom = state.zoom;
+function updateZoom(newZoom) {
     state.zoom = Math.max(state.minZoom, Math.min(state.maxZoom, newZoom));
-
-    if (Math.abs(oldZoom - state.zoom) < 0.001) return;
-
-    const scaleRatio = state.zoom / oldZoom;
-    const currentScrollLeft = els.pdfViewport.scrollLeft;
-    const currentScrollTop = els.pdfViewport.scrollTop;
-
-    // 1. Commit New Width (Browser scales high-res canvas efficiently)
+    // Apply zoom by modifying width. Higher zoom = larger width.
     els.pdfContent.style.width = `${state.zoom * 100}%`;
-
-    // 2. Adjust Scroll to keep focus
-    if (centerPoint) {
-        // centerPoint is the COORDINATE ON THE PAGE CONTENT that should stay under the given visual point.
-        // Wait, the previous logic passed "Finger Screen Pos" as centerPoint.
-        // But with the new geometric fix, we are passing {x: pointX, y: pointY} as centerPoint (Page Coords)
-        // and "Finger Screen Pos" as the SECOND argument?? No.
-
-        // Let's look at how handleTouchEnd calls it:
-        // updateZoom(targetZoom, { x: pointX, y: pointY }, { clientX: fingerScreenX, clientY: fingerScreenY });
-        // So centerPoint is NOT null. It is {x, y} on OLD content logic? No, on CONTENT.
-
-        // Let's redefine updateZoom signature to be clear:
-        // updateZoom(newZoom, fixedPointOnContent, fixedPointOnScreen)
-
-        // centerPoint = {x, y} coordinate relative to Top-Left of content element (unscaled logic)
-        // contentOffset = {clientX, clientY} coordinate on screen where we want centerPoint to end up.
-
-        const fixedPointOnContent = centerPoint;
-        const fixedPointOnScreen = contentOffset; // Renamed for clarity inside
-
-        const viewportRect = els.pdfViewport.getBoundingClientRect();
-
-        // Calculate where the content top-left should be relative to screen
-        // ScreenPos = ContentPos_New + LayoutOffset
-        // ScreenPos = (FixedPointOnContent * NewScaleMultiplier) + (Viewport_Left - NewScrollLeft) (?)
-
-        // Wait, state.zoom is the scale factor relative to "100% container".
-        // But our "PointOnContent" was calculated based on current element dimensions.
-
-        // With simpler math:
-        // New distance of point from top-left of content:
-        const newPointDistX = fixedPointOnContent.x * scaleRatio;
-        const newPointDistY = fixedPointOnContent.y * scaleRatio;
-
-        // We want this point to be at fixedPointOnScreen.clientX
-        // So:
-        // fixedPointOnScreen.clientX = (Viewport.left - NewScrollLeft) + newPointDistX
-        // NewScrollLeft = Viewport.left + newPointDistX - fixedPointOnScreen.clientX
-
-        // But wait, Viewport.left is screen coordinate of viewport left edge.
-        // ScrollLeft is positive.
-        // Content Left Edge on Screen = Viewport.left - ScrollLeft.
-
-        const contentLeftOnScreen = fixedPointOnScreen.clientX - newPointDistX;
-        const contentTopOnScreen = fixedPointOnScreen.clientY - newPointDistY;
-
-        // Viewport.left - NewScrollLeft = contentLeftOnScreen
-        // NewScrollLeft = Viewport.left - contentLeftOnScreen
-
-        const newScrollLeft = viewportRect.left - contentLeftOnScreen;
-        const newScrollTop = viewportRect.top - contentTopOnScreen;
-
-        els.pdfViewport.scrollLeft = newScrollLeft;
-        els.pdfViewport.scrollTop = newScrollTop;
-
-    } else {
-        // Center Zoom (Buttons)
-        const rect = els.pdfViewport.getBoundingClientRect();
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
-
-        const contentX = centerX + currentScrollLeft;
-        const contentY = centerY + currentScrollTop;
-
-        els.pdfViewport.scrollLeft = (contentX * scaleRatio) - centerX;
-        els.pdfViewport.scrollTop = (contentY * scaleRatio) - centerY;
-    }
+    syncUI();
 }
 
-// --- TOUCH HANDLING (PAN + ZOOM + DOUBLE TAP) ---
+/**
+ * Compensates UI Overlay for native Pinch Zoom (browser level).
+ */
+function syncUI() {
+    if (els.readingView.classList.contains('hidden')) return;
 
-function handleTouchStart(e) {
-    if (e.touches.length === 2) {
-        e.preventDefault();
-        isZooming = true;
+    const vv = window.visualViewport;
+    if (!vv) return;
 
-        const t1 = e.touches[0];
-        const t2 = e.touches[1];
+    // vv.scale is the pinch zoom level
+    const compensation = 1 / vv.scale;
 
-        startDist = Math.hypot(t1.pageX - t2.pageX, t1.pageY - t2.pageY);
-        startZoom = state.zoom;
+    // The uiOverlay container is layout-fixed. We translate and scale it
+    // so it perfectly overlays the user's visible physical screen area.
+    els.uiOverlay.style.width = `${vv.width * vv.scale}px`;
+    els.uiOverlay.style.height = `${vv.height * vv.scale}px`;
 
-        const midX = (t1.clientX + t2.clientX) / 2;
-        const midY = (t1.clientY + t2.clientY) / 2;
-
-        panStart = { x: midX, y: midY }; // Screen coordinates of centroid start
-        currentPan = { x: 0, y: 0 };
-
-        const rect = els.pdfContent.getBoundingClientRect();
-        // Origin relative to the content element
-        const originX = midX - rect.left;
-        const originY = midY - rect.top;
-
-        pinchStartOrigin = { x: originX, y: originY };
-
-        els.pdfContent.style.transformOrigin = `${originX}px ${originY}px`;
-        els.pdfContent.style.transition = 'none';
-    } else if (e.touches.length === 1) {
-        const currentTime = new Date().getTime();
-        const tapLength = currentTime - lastTapTime;
-        if (tapLength < 300 && tapLength > 0) {
-            e.preventDefault();
-            handleDoubleTap(e.touches[0].clientX, e.touches[0].clientY);
-        }
-        lastTapTime = currentTime;
-    }
-}
-
-function handleTouchMove(e) {
-    if (e.touches.length === 2 && isZooming) {
-        e.preventDefault();
-
-        const t1 = e.touches[0];
-        const t2 = e.touches[1];
-
-        const dist = Math.hypot(t1.pageX - t2.pageX, t1.pageY - t2.pageY);
-        if (startDist <= 0) return;
-        const scale = dist / startDist;
-
-        const midX = (t1.clientX + t2.clientX) / 2;
-        const midY = (t1.clientY + t2.clientY) / 2;
-
-        // Current Pan: Difference between current centroid and start centroid
-        const panX = midX - panStart.x;
-        const panY = midY - panStart.y;
-        currentPan = { x: panX, y: panY };
-
-        els.pdfContent.style.transform = `translate(${panX}px, ${panY}px) scale(${scale})`;
-    }
-}
-
-function handleTouchEnd(e) {
-    if (isZooming && e.touches.length < 2) {
-        isZooming = false;
-
-        const transform = els.pdfContent.style.transform;
-        const scaleMatch = transform.match(/scale\((.+)\)/);
-        const scale = scaleMatch ? parseFloat(scaleMatch[1]) : 1;
-
-        els.pdfContent.style.transform = '';
-        els.pdfContent.style.transformOrigin = '0 0';
-
-        const targetZoom = startZoom * scale;
-
-        // --- GEOMETRIC CORRECTION ---
-        // Goal: Find the point on the CONTENT that is currently under the finger centroid.
-        // We know:
-        // 1. Transform Origin (pinchStartOrigin) relative to Content TL.
-        // 2. Translation (currentPan).
-        // 3. Scale (scale).
-        // 4. Current Finger Position on Screen (panStart + currentPan).
-
-        // Formula to map Screen Coordinate S back to Element Coordinate P (relative to Top-Left):
-        // P = ((S - TL_Screen - Translate - Origin_Screen_Offset) / Scale) + Origin_Element_Offset ??
-
-        // Simpler:
-        // The point P_original (pinchStartOrigin) has moved to P_new on screen.
-        // P_new_screen = (VP_Left - ScrollLeft) + pinchStartOrigin + currentPan (Translation)
-        // Wait, scale happens around pinchStartOrigin. So pinchStartOrigin stays "fixed" relative to translation frame?
-        // Yes, the point 'pinchStartOrigin' on the content ends up at:
-        // ScreenPos(Origin) = (Content_TL_Screen + pinchStartOrigin) + currentPan.
-        // (Because scale doesn't move the origin point).
-
-        // But the user might not be centering their pinch on the origin anymore (fingers moved).
-        // The finger centroid is at: panStart + currentPan.
-
-        // We need the Content Point (X,Y) corresponding to the Finger Centroid.
-        // Vector from Origin to Finger (Screen Space):
-        // V_screen = Finger_Screen - ScreenPos(Origin)
-        // V_screen = (panStart + currentPan) - (Content_TL_Screen + pinchStartOrigin + currentPan)
-        // V_screen = panStart - (Content_TL_Screen + pinchStartOrigin)
-
-        // In Element Space (scaled), this vector is V_element_scaled = V_screen.
-        // In Unscaled Element Space, V_element = V_screen / scale.
-
-        // So: Point_Under_Finger = pinchStartOrigin + (V_screen / scale).
-
-        const viewportRect = els.pdfViewport.getBoundingClientRect();
-        const contentTLScreenX = viewportRect.left - els.pdfViewport.scrollLeft;
-        const contentTLScreenY = viewportRect.top - els.pdfViewport.scrollTop;
-
-        const originScreenX = contentTLScreenX + pinchStartOrigin.x + currentPan.x;
-        const originScreenY = contentTLScreenY + pinchStartOrigin.y + currentPan.y;
-
-        const fingerScreenX = panStart.x + currentPan.x;
-        const fingerScreenY = panStart.y + currentPan.y;
-
-        const vectorX = fingerScreenX - originScreenX;
-        const vectorY = fingerScreenY - originScreenY;
-
-        const pointOnContentX = pinchStartOrigin.x + (vectorX / scale);
-        const pointOnContentY = pinchStartOrigin.y + (vectorY / scale);
-
-        // Now update zoom, telling it that 'pointOnContent' MUST end up at 'fingerScreen'
-        updateZoom(targetZoom,
-            { x: pointOnContentX, y: pointOnContentY },
-            { clientX: fingerScreenX, clientY: fingerScreenY }
-        );
-    }
-}
-
-function handleDoubleClick(e) {
-    handleDoubleTap(e.clientX, e.clientY);
-}
-
-function handleDoubleTap(clientX, clientY) {
-    // If we double tap, we want the point under the cursor to become the new center/focus?
-    // Current simple logic:
-    if (state.zoom > 1.25) {
-        // Return to A4/Fit
-        const viewportWidth = els.pdfViewport.getBoundingClientRect().width;
-        const target = viewportWidth > 1024 ? (900 / viewportWidth) : 1.0;
-        updateZoom(target);
-    } else {
-        // Zoom in to 2.5x.
-        // Ideally we want the tapped point to stay under the tap (or center screen).
-        // For now, simple scaling relative to viewport center is often safer unless accurate 'centerPoint' is passed.
-        // Let's pass the click point so it zooms INTO that point.
-
-        // Point on content currently under click:
-        const viewportRect = els.pdfViewport.getBoundingClientRect();
-        const contentTLScreenX = viewportRect.left - els.pdfViewport.scrollLeft;
-        const contentTLScreenY = viewportRect.top - els.pdfViewport.scrollTop;
-
-        const pointX = clientX - contentTLScreenX;
-        const pointY = clientY - contentTLScreenY;
-
-        // But wait, pointX is in scaled coords if zoom > 1?
-        // No, current logic assumes updateZoom takes "Unscaled relative to current element".
-        // Actually updateZoom logic: "newPointDistX = fixedPointOnContent.x * scaleRatio"
-        // fixedPointOnContent.x is "Distance from Left in OLD ZOOM units".
-        // Yes, pointX is exactly that.
-
-        updateZoom(2.5, { x: pointX, y: pointY }, { clientX: clientX, clientY: clientY });
-    }
+    els.uiOverlay.style.transform = `
+        translate(${vv.offsetLeft}px, ${vv.offsetTop}px)
+        scale(${compensation})
+    `;
 }
 
 function toggleSidebar(type, open) {
@@ -522,8 +264,10 @@ function toggleSidebar(type, open) {
             setTimeout(() => els.backdrop.classList.add('hidden'), 300);
         }
     }
+    syncUI();
 }
 
+// Marker Logic
 function renderColorPicker() {
     els.colorPicker.innerHTML = colors.map(c => `
         <button onclick="selectColor('${c}')" class="color-btn w-16 h-16 rounded-[1.5rem] transition-all flex items-center justify-center border-8 border-transparent opacity-40 hover:opacity-100" style="background-color: ${c}" data-color="${c}">
@@ -562,8 +306,8 @@ function openMarkerModal(markerId = null) {
     }
     els.inputMarkerName.value = state.tempMarkerData.name;
     selectColor(state.tempMarkerData.color);
-
     els.modalMarker.classList.remove('hidden');
+    syncUI();
 }
 
 function closeMarkerModal() {
@@ -584,16 +328,11 @@ function saveMarker() {
     }
     closeMarkerModal();
     renderMarkersList();
-    if (state.isPagesOpen) renderThumbnails();
 }
 
 function renderMarkersList() {
     if (state.markers.length === 0) {
-        els.markersList.innerHTML = `
-            <div class="flex flex-col items-center justify-center h-full text-zinc-300 opacity-60">
-                <i data-lucide="bookmark" class="w-16 h-16 mb-4 stroke-1"></i>
-                <p class="font-bold text-lg">Sem marcadores</p>
-            </div>`;
+        els.markersList.innerHTML = `<div class="flex flex-col items-center justify-center h-full text-zinc-300 opacity-60"><i data-lucide="bookmark" class="w-16 h-16 mb-4 stroke-1"></i><p class="font-bold text-lg">Sem marcadores</p></div>`;
     } else {
         els.markersList.innerHTML = state.markers.map(m => `
             <div class="bg-white rounded-[2.5rem] p-6 shadow-sm border border-zinc-200" style="border-left-color: ${m.color}; border-left-width: 12px">
@@ -609,12 +348,8 @@ function renderMarkersList() {
                 </div>
                 ${renderAnnotations(m.annotations)}
                 <div class="mt-8 pt-6 border-t border-zinc-100 flex justify-between items-center">
-                    <span class="text-xs font-black text-zinc-400 flex items-center gap-2">
-                        <i data-lucide="message-square" class="w-4 h-4"></i> ${m.annotations.length} NOTAS
-                    </span>
-                    <button onclick="openAnnotationModal(${m.id})" class="text-xs font-black bg-blue-600 text-white px-6 py-3 rounded-2xl shadow-lg active:scale-95 transition-transform">
-                        + NOTA
-                    </button>
+                    <span class="text-xs font-black text-zinc-400 flex items-center gap-2"><i data-lucide="message-square" class="w-4 h-4"></i> ${m.annotations.length} NOTAS</span>
+                    <button onclick="openAnnotationModal(${m.id})" class="text-xs font-black bg-blue-600 text-white px-6 py-3 rounded-2xl shadow-lg active:scale-95 transition-transform">+ NOTA</button>
                 </div>
             </div>
         `).join('');
@@ -624,24 +359,17 @@ function renderMarkersList() {
 
 function renderAnnotations(anns) {
     if (!anns.length) return '';
-    return `<div class="mt-6 space-y-3">
-        ${anns.map(a => `
-            <div class="bg-zinc-50 p-5 rounded-3xl border border-zinc-100">
-                <p class="font-black text-zinc-800 text-base">${a.title}</p>
-                <p class="text-zinc-600 mt-3 text-sm leading-relaxed">${a.description}</p>
-            </div>
-        `).join('')}
-    </div>`;
+    return `<div class="mt-6 space-y-3">${anns.map(a => `<div class="bg-zinc-50 p-5 rounded-3xl border border-zinc-100"><p class="font-black text-zinc-800 text-base">${a.title}</p><p class="text-zinc-600 mt-3 text-sm leading-relaxed">${a.description}</p></div>`).join('')}</div>`;
 }
 
 window.deleteMarker = function (id) {
     state.markers = state.markers.filter(m => m.id !== id);
     renderMarkersList();
-    if (state.isPagesOpen) renderThumbnails();
 };
 
 window.scrollToPage = function (p) {
-    document.getElementById(`page-${p}`).scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const el = document.getElementById(`page-${p}`);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     toggleSidebar('markers', false);
     toggleSidebar('pages', false);
 };
@@ -652,6 +380,7 @@ window.openAnnotationModal = function (markerId) {
     els.inputAnnTitle.value = '';
     els.inputAnnDesc.value = '';
     els.modalAnnotation.classList.remove('hidden');
+    syncUI();
 };
 
 function closeAnnotationModal() {
@@ -698,10 +427,7 @@ async function renderThumbnails() {
         if (firstMarker) {
             const badge = document.createElement('div');
             badge.className = "absolute top-4 right-4";
-            badge.innerHTML = `
-                <div class="bg-white rounded-full px-5 py-2 text-sm font-black shadow-2xl flex items-center gap-2" style="color: ${firstMarker.color}">
-                    ${pageMarkers.length} <i data-lucide="bookmark" class="w-3 h-3 fill-current"></i>
-                </div>`;
+            badge.innerHTML = `<div class="bg-white rounded-full px-5 py-2 text-sm font-black shadow-2xl flex items-center gap-2" style="color: ${firstMarker.color}">${pageMarkers.length} <i data-lucide="bookmark" class="w-3 h-3 fill-current"></i></div>`;
             inner.appendChild(badge);
         }
 
@@ -714,7 +440,7 @@ async function renderThumbnails() {
         els.thumbnailsList.appendChild(container);
 
         const page = await state.pdfDoc.getPage(i);
-        const viewport = page.getViewport({ scale: 0.3 });
+        const viewport = page.getViewport({ scale: 0.2 });
         const context = canvas.getContext('2d');
         canvas.height = viewport.height;
         canvas.width = viewport.width;
