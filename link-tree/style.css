@@ -255,6 +255,26 @@ footer {
     transform: translateY(0);
 }
 
+body::after {
+    content: "";
+    position: fixed;
+    bottom: -10%;
+    right: -5%;
+    width: 60vh;
+    height: 60vh;
+    background-image: url('https://images.unsplash.com/photo-1594381898411-846e7d193883?auto=format&fit=crop&q=80&w=600');
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: bottom right;
+    opacity: 0.1;
+    z-index: 0;
+    pointer-events: none;
+    filter: grayscale(100%);
+    mask-image: radial-gradient(circle at bottom right, black 40%, transparent 80%);
+    -webkit-mask-image: radial-gradient(circle at bottom right, black 40%, transparent 80%);
+    transform: rotate(-10deg);
+}
+
 @keyframes fadeInDown {
     from {
         opacity: 0;
