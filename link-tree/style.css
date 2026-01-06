@@ -51,8 +51,8 @@ body {
 
 .profile-img-container {
     position: relative;
-    width: 100px;
-    height: 100px;
+    width: 140px;
+    height: 140px;
     margin: 0 auto 1.2rem;
 }
 
@@ -225,6 +225,27 @@ h1 span {
     background: rgba(190, 242, 100, 0.1);
     border-color: var(--primary);
     transform: translateY(-5px);
+}
+
+.whatsapp-btn {
+    background-color: #25D366 !important;
+    border-color: #25D366 !important;
+    color: #fff !important;
+}
+
+.whatsapp-btn .link-subtitle {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.whatsapp-btn .icon-box {
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+}
+
+.whatsapp-btn:hover {
+    background-color: #128C7E !important;
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 10px 20px rgba(37, 211, 102, 0.3);
 }
 
 footer {
