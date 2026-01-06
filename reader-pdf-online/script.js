@@ -1,4 +1,4 @@
-const PDF_URL = 'https://raw.githubusercontent.com/mozilla/pdf.js/ba2ccae/web/compressed.tracemonkey-pldi-09.pdf';
+const PDF_URL = 'https://testes.rmo.dev.br/01livro-contato.pdf';
 
 const state = {
     pdfDoc: null,
@@ -137,6 +137,7 @@ function setupEventListeners() {
     els.readingView.addEventListener('mousemove', resetUiTimeout);
     els.readingView.addEventListener('touchstart', resetUiTimeout);
     els.readingView.addEventListener('click', resetUiTimeout);
+    els.pdfViewport.addEventListener('scroll', resetUiTimeout);
 
     // Drag-to-Scroll (Mouse)
     let isDragging = false;
@@ -207,7 +208,7 @@ async function loadPDF() {
                 if (window.innerWidth >= 1600) {
                     toggleSidebar('pages', true);
                     renderThumbnails();
-                    toggleSidebar('markers', true);
+                    // toggleSidebar('markers', true); // Removido para iniciar fechado
                 }
             });
             syncUI();
@@ -321,7 +322,7 @@ function resetUiTimeout() {
         if (!state.isMarkersOpen && !state.isPagesOpen && els.modalMarker.classList.contains('hidden') && els.modalAnnotation.classList.contains('hidden')) {
             hideUI();
         }
-    }, 10000); // 10 seconds
+    }, 3000); // 3 seconds
 }
 
 function showUI() {
