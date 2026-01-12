@@ -90,6 +90,7 @@ body::before {
     background-clip: content-box, border-box;
     -webkit-background-clip: content-box, border-box;
     box-shadow: 0 0 30px rgba(0, 242, 254, 0.25);
+    object-position: 1px 0px;
 }
 
 /* Online Status - Pill Badge (Gold) */
