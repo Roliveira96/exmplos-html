@@ -297,6 +297,22 @@ body::after {
     -webkit-mask-composite: source-in;
 }
 
+@media (min-width: 1024px) {
+    body::after {
+        width: 60vw;
+        height: 100vh;
+        right: 0;
+        bottom: 0;
+        top: 0;
+        background-size: cover;
+        background-position: center;
+        mask-image: linear-gradient(to right, transparent, black);
+        -webkit-mask-image: linear-gradient(to right, transparent, black);
+        mask-composite: exclude;
+        -webkit-mask-composite: source-over;
+    }
+}
+
 @keyframes fadeInDown {
     from {
         opacity: 0;
