@@ -92,58 +92,44 @@ body::before {
     box-shadow: 0 0 30px rgba(0, 242, 254, 0.25);
 }
 
-/* Online Status - Top Right */
+/* Online Status - Pill Badge (Gold) */
 .status-badge {
     position: absolute;
-    top: 5px;
-    right: 5px;
-    background: #10B981;
-    /* Green */
-    color: #fff;
-    font-size: 0.6rem;
-    font-weight: 700;
-    padding: 2px 8px;
-    border-radius: 20px;
+    bottom: 5px;
+    right: -15px;
+    top: auto;
+    /* Override previous top positioning */
+    background: linear-gradient(135deg, #e4d68b, #f7a502);
+    color: #0F172A;
+    font-size: 0.7rem;
+    font-weight: 800;
+    padding: 6px 14px;
+    border-radius: 50px;
     border: 2px solid var(--bg-color);
     text-transform: uppercase;
-    box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
-    animation: pulse 2s infinite;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    z-index: 5;
+    letter-spacing: 0.5px;
 }
 
-/* Elite Badge - Bottom Center */
+/* Elite Text - Below Online Badge */
 .elite-badge {
     position: absolute;
-    bottom: -10px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: linear-gradient(135deg, #FFD700, #FDB931);
-    color: #000;
-    font-size: 0.65rem;
-    font-weight: 800;
-    padding: 4px 16px;
-    border-radius: 12px;
-    border: 3px solid var(--bg-color);
+    bottom: -13px;
+    right: -2px;
+    left: auto;
+    transform: none;
+    background: none;
+    border: none;
+    padding: 0;
+    color: #FFD700;
+    font-size: 0.9rem;
+    font-weight: 993;
     text-transform: uppercase;
-    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
-    white-space: nowrap;
-    z-index: 2;
-}
-
-@keyframes pulse {
-    0% {
-        transform: scale(1);
-        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
-    }
-
-    70% {
-        transform: scale(1.05);
-        box-shadow: 0 0 0 6px rgba(16, 185, 129, 0);
-    }
-
-    100% {
-        transform: scale(1);
-        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
-    }
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+    box-shadow: none;
+    z-index: 6;
+    letter-spacing: 1px;
 }
 
 h1 {
