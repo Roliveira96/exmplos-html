@@ -1,11 +1,20 @@
 :root {
-    --bg-color: #090e1a;
-    --card-bg: rgba(30, 41, 59, 0.5);
-    --primary: #bef264;
-    --primary-hover: #a3e635;
-    --text-main: #f8fafc;
-    --text-secondary: #94a3b8;
-    --accent: #22d3ee;
+    --bg-color: #0F172A;
+    /* Azul Marinho Profundo/Chumbo */
+    --card-bg: rgba(255, 255, 255, 0.03);
+    /* Vidro Fosco */
+    --primary: #00F2FE;
+    /* Ciano Neon */
+    --primary-gradient: linear-gradient(135deg, #00b09b, #96c93d);
+    /* Gradiente Biohacking */
+    --secondary-gradient: linear-gradient(135deg, #00F2FE, #4FACFE);
+    /* Gradiente Azul Ciano */
+    --text-main: #FFFFFF;
+    /* Branco Puro */
+    --text-secondary: #94A3B8;
+    /* Cinza Claro */
+    --gold: #FFD700;
+    /* Dourado para detalhes */
     --glass-border: rgba(255, 255, 255, 0.08);
     --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
 }
@@ -18,11 +27,11 @@
 }
 
 body {
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Inter', sans-serif;
     background-color: var(--bg-color);
     background-image:
-        radial-gradient(at 0% 0%, rgba(34, 211, 238, 0.12) 0px, transparent 50%),
-        radial-gradient(at 100% 100%, rgba(190, 242, 100, 0.12) 0px, transparent 50%);
+        radial-gradient(circle at 10% 20%, rgba(0, 176, 155, 0.1) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(0, 242, 254, 0.08) 0%, transparent 40%);
     background-attachment: fixed;
     min-height: 100vh;
     display: flex;
@@ -33,10 +42,23 @@ body {
     padding: 2rem 0;
 }
 
+/* Background Pattern/Texture Overlay */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+}
+
 .container {
     width: 100%;
     max-width: 450px;
-    padding: 0 1.5rem 160px;
+    padding: 0 1.5rem 200px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -53,7 +75,8 @@ body {
     position: relative;
     width: 140px;
     height: 140px;
-    margin: 0 auto 1.2rem;
+    margin: 0 auto 1.8rem;
+    /* Increased margin for bottom badge */
 }
 
 .profile-img {
@@ -61,41 +84,91 @@ body {
     height: 100%;
     border-radius: 50%;
     object-fit: cover;
-    border: 2px solid var(--primary);
-    box-shadow: 0 0 25px rgba(190, 242, 100, 0.2);
+    border: 3px solid transparent;
+    background-image: linear-gradient(white, white), var(--primary-gradient);
+    background-origin: border-box;
+    background-clip: content-box, border-box;
+    -webkit-background-clip: content-box, border-box;
+    box-shadow: 0 0 30px rgba(0, 242, 254, 0.25);
 }
 
+/* Online Status - Top Right */
 .status-badge {
     position: absolute;
-    bottom: 2px;
-    right: 2px;
-    background: var(--primary);
+    top: 5px;
+    right: 5px;
+    background: #10B981;
+    /* Green */
+    color: #fff;
+    font-size: 0.6rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 20px;
+    border: 2px solid var(--bg-color);
+    text-transform: uppercase;
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+    animation: pulse 2s infinite;
+}
+
+/* Elite Badge - Bottom Center */
+.elite-badge {
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, #FFD700, #FDB931);
     color: #000;
     font-size: 0.65rem;
     font-weight: 800;
-    padding: 3px 8px;
-    border-radius: 10px;
-    border: 2px solid var(--bg-color);
+    padding: 4px 16px;
+    border-radius: 12px;
+    border: 3px solid var(--bg-color);
     text-transform: uppercase;
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+    white-space: nowrap;
+    z-index: 2;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+    }
+
+    70% {
+        transform: scale(1.05);
+        box-shadow: 0 0 0 6px rgba(16, 185, 129, 0);
+    }
+
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+    }
 }
 
 h1 {
-    font-size: 1.6rem;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.8rem;
     font-weight: 700;
     margin-bottom: 0.5rem;
     letter-spacing: -0.5px;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 }
 
 h1 span {
-    color: var(--primary);
+    background: var(--primary-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 800;
 }
 
 .bio {
     color: var(--text-secondary);
     font-size: 0.9rem;
-    line-height: 1.5;
-    max-width: 320px;
+    line-height: 1.6;
+    max-width: 340px;
     margin: 0 auto;
+    font-weight: 300;
 }
 
 .links-container {
@@ -107,11 +180,12 @@ h1 span {
 
 .link-card {
     background: var(--card-bg);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border: 1px solid var(--glass-border);
-    padding: 1.1rem 1.25rem;
-    border-radius: 18px;
+    padding: 1rem 1.25rem;
+    border-radius: 12px;
+    /* Reduzido de 18px para 12px */
     display: flex;
     align-items: center;
     text-decoration: none;
@@ -139,17 +213,18 @@ h1 span {
 }
 
 .link-card:hover {
-    transform: translateY(-4px) scale(1.02);
-    background: rgba(45, 60, 85, 0.6);
-    border-color: var(--primary);
-    box-shadow: var(--shadow);
+    transform: translateY(-4px) scale(1.01);
+    background: rgba(255, 255, 255, 0.08);
+    /* Mais brilho ao hover */
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 10px 40px -10px rgba(0, 242, 254, 0.15);
 }
 
 .icon-box {
-    width: 44px;
-    height: 44px;
-    background: rgba(255, 255, 255, 0.04);
-    border-radius: 12px;
+    width: 42px;
+    height: 42px;
+    background: transparent;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -160,8 +235,8 @@ h1 span {
 }
 
 .link-card:hover .icon-box {
-    background: var(--primary);
-    color: #000;
+    color: #fff;
+    transform: scale(1.1);
 }
 
 .link-content {
@@ -172,175 +247,184 @@ h1 span {
     font-weight: 600;
     display: block;
     font-size: 1rem;
+    font-family: 'Montserrat', sans-serif;
 }
 
 .link-subtitle {
     font-size: 0.75rem;
     color: var(--text-secondary);
     display: block;
-    margin-top: 2px;
+    margin-top: 3px;
+    font-weight: 300;
 }
 
+/* --- Botão Principal --- */
 .featured {
-    border: 1px solid var(--primary);
-    background: linear-gradient(135deg, rgba(190, 242, 100, 0.08) 0%, transparent 100%);
+    background: var(--primary-gradient);
+    border: none;
+    box-shadow: 0 10px 30px -5px rgba(0, 176, 155, 0.4);
+}
+
+.featured .link-title {
+    color: #0F172A;
+    /* Contraste preto no gradiente */
+    font-weight: 700;
+}
+
+.featured .link-subtitle {
+    color: rgba(15, 23, 42, 0.8);
+}
+
+.featured .icon-box {
+    color: #0F172A;
+}
+
+.featured:hover {
+    box-shadow: 0 15px 40px -5px rgba(0, 176, 155, 0.6);
+    background: linear-gradient(135deg, #00c7b0, #a9e045);
+}
+
+.featured:hover .icon-box {
+    color: #0F172A;
 }
 
 .tag {
     position: absolute;
     top: 0;
     right: 0;
-    background: var(--primary);
-    color: #000;
+    background: #000;
+    /* Fundo preto ou escuro */
+    color: var(--gold);
+    /* Dourado */
     font-size: 0.6rem;
     font-weight: 800;
-    padding: 3px 10px;
-    border-bottom-left-radius: 10px;
+    padding: 4px 12px;
+    border-bottom-left-radius: 12px;
     text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: -2px 2px 10px rgba(0, 0, 0, 0.2);
 }
 
+/* --- Botão WhatsApp (Outline) --- */
+.whatsapp-btn {
+    background: transparent !important;
+    border: 1px solid rgba(37, 211, 102, 0.5);
+}
+
+.whatsapp-btn .icon-box {
+    color: #25D366;
+    background: rgba(37, 211, 102, 0.1);
+    border-radius: 50%;
+}
+
+.whatsapp-btn:hover {
+    background: rgba(37, 211, 102, 0.1) !important;
+    border-color: #25D366 !important;
+}
+
+/* --- Social Icons Minimalistas --- */
 .socials {
     display: flex;
-    gap: 1.2rem;
-    /* margin-top removed for fixed footer */
+    gap: 1.5rem;
     animation: fadeIn 1.2s ease 0.6s backwards;
+    padding: 0.5rem 0;
 }
 
 .social-link {
     color: var(--text-secondary);
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.03);
+    width: auto;
+    height: auto;
+    padding: 0.5rem;
+    border-radius: 0;
+    /* Remover círculos */
+    background: transparent;
+    border: none;
     display: flex;
     align-items: center;
     justify-content: center;
     text-decoration: none;
     transition: all 0.3s ease;
-    border: 1px solid var(--glass-border);
+    opacity: 0.7;
+}
+
+.social-link svg {
+    width: 24px;
+    height: 24px;
 }
 
 .social-link:hover {
     color: var(--primary);
-    background: rgba(190, 242, 100, 0.1);
-    border-color: var(--primary);
-    transform: translateY(-5px);
+    transform: translateY(-3px) scale(1.1);
+    opacity: 1;
+    background: transparent;
+    border: none;
 }
 
-.whatsapp-btn {
-    background-color: #25D366 !important;
-    border-color: #25D366 !important;
-    color: #fff !important;
-}
-
-.whatsapp-btn .link-subtitle {
-    color: rgba(255, 255, 255, 0.9);
-}
-
-.whatsapp-btn .icon-box {
-    background: rgba(255, 255, 255, 0.2);
-    color: #fff;
-}
-
-.whatsapp-btn:hover {
-    background-color: #128C7E !important;
-    transform: translateY(-4px) scale(1.02);
-    box-shadow: 0 10px 20px rgba(37, 211, 102, 0.3);
-}
-
+/* --- Footer --- */
 .fixed-footer {
     position: fixed;
     bottom: 0;
     left: 0;
     width: 100%;
-    background: rgba(9, 14, 26, 0.95);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    background: rgba(15, 23, 42, 0.9);
+    /* Chumbo Fosco */
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     border-top: 1px solid var(--glass-border);
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 1rem 0;
+    padding: 1.2rem 0;
+    padding-bottom: calc(1.2rem + env(safe-area-inset-bottom));
     z-index: 100;
 }
-
-.container {
-    padding-bottom: 160px;
-    /* Space for fixed footer */
-}
-
-.socials {
-    display: flex;
-    gap: 1.2rem;
-    margin-top: 0;
-    /* Removed margin */
-    margin-bottom: 1rem;
-    animation: fadeIn 1.2s ease 0.6s backwards;
-}
-
-/* ... existing social-link styles ... */
 
 footer {
     text-align: center;
     font-size: 0.75rem;
     color: var(--text-secondary);
-    opacity: 0.6;
+    opacity: 0.8;
 }
 
+/* Toast */
 .toast {
     position: fixed;
-    bottom: 24px;
-    background: var(--primary);
-    color: #000;
+    bottom: 120px;
+    /* Acima do footer fixo */
+    left: 50%;
+    transform: translateX(-50%) translateY(150px);
+    background: var(--primary-gradient);
+    color: #0F172A;
     padding: 12px 24px;
     border-radius: 50px;
     font-weight: 700;
     font-size: 0.85rem;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    transform: translateY(150px);
     transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
     z-index: 1000;
+    width: max-content;
 }
 
 .toast.active {
-    transform: translateY(0);
+    transform: translateX(-50%) translateY(0);
 }
 
+/* Background Image Element (Optional, hidden or blended) */
 body::after {
     content: "";
     position: fixed;
-    bottom: -10%;
-    right: -5%;
-    width: 60vh;
-    height: 60vh;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
     background-image: url('img/fundo.webp');
     background-repeat: no-repeat;
-    background-size: contain;
-    background-position: bottom right;
-    opacity: 0.1;
-    z-index: 0;
+    background-size: cover;
+    background-position: center;
+    opacity: 0.25;
+    /* Muito sutil */
+    z-index: -1;
     pointer-events: none;
-    filter: grayscale(100%);
-    mask-image: linear-gradient(to bottom, transparent 10%, black 40%), linear-gradient(to right, transparent 30%, black 60%);
-    mask-composite: intersect;
-    -webkit-mask-image: linear-gradient(to bottom, transparent 10%, black 40%), linear-gradient(to right, transparent 30%, black 60%);
-    -webkit-mask-composite: source-in;
-}
-
-@media (min-width: 1024px) {
-    body::after {
-        width: 60vw;
-        height: 100vh;
-        right: 0;
-        bottom: 0;
-        top: 0;
-        background-size: cover;
-        background-position: center;
-        mask-image: linear-gradient(to right, transparent, black);
-        -webkit-mask-image: linear-gradient(to right, transparent, black);
-        mask-composite: exclude;
-        -webkit-mask-composite: source-over;
-    }
 }
 
 @keyframes fadeInDown {
@@ -374,5 +458,11 @@ body::after {
 
     to {
         opacity: 1;
+    }
+}
+
+@media (min-width: 1024px) {
+    .container {
+        max-width: 500px;
     }
 }
