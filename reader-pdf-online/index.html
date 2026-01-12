@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Leitor de PDF</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -34,126 +34,147 @@
     </div>
 
     <div id="reading-view"
-        class="fixed inset-0 bg-zinc-950 z-50 flex flex-col overflow-hidden select-none touch-none hidden opacity-0 transition-opacity duration-300">
+        class="fixed inset-0 bg-zinc-950 z-50 flex flex-col overflow-hidden hidden opacity-0 transition-opacity duration-300">
 
-        <button id="btn-close-reader"
-            class="fixed top-6 right-6 z-[60] bg-red-600 text-white p-5 rounded-3xl active:scale-90 shadow-xl border-4 border-red-500 flex items-center justify-center transition-transform">
-            <i data-lucide="x" class="w-7 h-7 stroke-[3px]"></i>
-        </button>
+        <div id="ui-overlay" class="fixed top-0 left-0 pointer-events-none z-[60]">
+            <div id="backdrop"
+                class="absolute inset-0 bg-zinc-950/60 backdrop-blur-sm z-[65] hidden opacity-0 transition-opacity duration-300 pointer-events-auto lg:bg-transparent lg:backdrop-blur-none lg:pointer-events-none lg:z-auto">
+            </div>
 
-        <button id="btn-open-pages"
-            class="fixed top-6 left-6 z-[60] bg-blue-600 text-white p-5 rounded-3xl active:scale-90 shadow-xl border-4 border-blue-500 flex items-center justify-center transition-transform">
-            <i data-lucide="book-open" class="w-7 h-7 stroke-[3px]"></i>
-        </button>
+            <button id="btn-close-reader"
+                class="absolute top-6 right-6 pointer-events-auto bg-red-600 text-white p-5 rounded-3xl active:scale-90 shadow-xl border-4 border-red-500 flex items-center justify-center transition-transform z-[66]">
+                <i data-lucide="x" class="w-7 h-7 stroke-[3px]"></i>
+            </button>
+
+            <button id="btn-open-pages"
+                class="absolute top-6 left-6 pointer-events-auto bg-blue-600 text-white p-5 rounded-3xl active:scale-90 shadow-xl border-4 border-blue-500 flex items-center justify-center transition-transform z-[66]">
+                <i data-lucide="book-open" class="w-7 h-7 stroke-[3px]"></i>
+            </button>
+
+            <div id="bottom-bar"
+                class="absolute bottom-10 left-1/2 -translate-x-1/2 flex items-center gap-4 pointer-events-auto bg-white px-5 py-4 rounded-[3rem] shadow-2xl border-2 border-zinc-200 z-[66]">
+                <button id="btn-zoom-out"
+                    class="bg-zinc-100 text-zinc-900 p-4 rounded-full active:scale-90 transition-all shadow-sm">
+                    <i data-lucide="zoom-out" class="w-7 h-7 stroke-[3px]"></i>
+                </button>
+
+                <button id="btn-open-markers"
+                    class="bg-blue-600 text-white px-10 py-4 rounded-full font-black text-sm tracking-widest active:scale-95 flex items-center gap-2 shadow-lg">
+                    <i data-lucide="bookmark" class="w-5 h-5 fill-current"></i>
+                    MARCADORES
+                </button>
+
+                <button id="btn-zoom-in"
+                    class="bg-zinc-100 text-zinc-900 p-4 rounded-full active:scale-90 transition-all shadow-sm">
+                    <i data-lucide="zoom-in" class="w-7 h-7 stroke-[3px]"></i>
+                </button>
+
+                <button id="btn-exit-desktop"
+                    class="hidden lg:flex bg-red-100 text-red-600 px-6 py-4 rounded-full font-black text-sm tracking-widest active:scale-95 items-center gap-2 shadow-sm border border-red-200 hover:bg-red-200 transition-colors">
+                    SAIR
+                    <i data-lucide="log-out" class="w-5 h-5 stroke-[3px]"></i>
+                </button>
+            </div>
+
+            <div id="sidebar-markers"
+                class="absolute inset-y-0 right-0 w-[85%] max-w-sm bg-white shadow-2xl transform transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] z-[70] flex flex-col translate-x-full pointer-events-auto lg:w-96 lg:border-l lg:border-zinc-200">
+                <div class="p-8 border-b-2 border-zinc-50 flex justify-between items-center bg-white sticky top-0 z-20">
+                    <h2 class="font-black text-2xl text-zinc-900">Marcadores</h2>
+                    <button id="btn-close-markers" class="p-2 text-zinc-400"><i data-lucide="x"
+                            class="w-7 h-7"></i></button>
+                </div>
+
+                <div id="markers-list" class="flex-1 overflow-y-auto p-6 space-y-5 bg-zinc-50">
+                    <div class="flex flex-col items-center justify-center h-full text-zinc-300 opacity-60">
+                        <i data-lucide="bookmark" class="w-16 h-16 mb-4 stroke-1"></i>
+                        <p class="font-bold text-lg">Sem marcadores</p>
+                    </div>
+                </div>
+
+                <div class="p-8 bg-white border-t sticky bottom-0 z-20">
+                    <button id="btn-create-marker"
+                        class="w-full bg-zinc-900 text-white py-6 rounded-[2rem] font-black text-lg flex items-center justify-center gap-4 active:scale-95 shadow-xl transition-all">
+                        <i data-lucide="plus" class="w-7 h-7 stroke-[3px]"></i> CRIAR NOVO
+                    </button>
+                </div>
+            </div>
+
+            <div id="sidebar-pages"
+                class="absolute inset-y-0 left-0 w-[85%] max-w-xs bg-white shadow-2xl transform transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] z-[70] flex flex-col -translate-x-full pointer-events-auto lg:w-80 lg:border-r lg:border-zinc-200">
+                <div class="p-8 border-b-2 border-zinc-50 flex justify-between items-center bg-white sticky top-0 z-20">
+                    <h2 class="font-black text-2xl text-zinc-900">Páginas</h2>
+                    <button id="btn-close-pages" class="p-2 text-zinc-400"><i data-lucide="x"
+                            class="w-7 h-7"></i></button>
+                </div>
+
+                <div class="px-8 py-4 border-b border-zinc-100 bg-white flex gap-2">
+                    <input type="number" id="input-page-num" min="1" placeholder="Nº"
+                        class="w-full bg-zinc-100 rounded-xl px-4 py-3 font-bold text-zinc-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all">
+                    <button id="btn-go-to-page"
+                        class="bg-blue-600 text-white rounded-xl px-4 font-bold active:scale-95 transition-transform">
+                        IR
+                    </button>
+                </div>
+
+                <div id="thumbnails-list" class="flex-1 overflow-y-auto p-6 space-y-8 bg-zinc-50"></div>
+            </div>
+
+            <div id="modal-marker" class="absolute inset-0 z-[100] flex items-end hidden pointer-events-auto">
+                <div class="absolute inset-0 bg-zinc-950/90 backdrop-blur-md" id="overlay-marker"></div>
+                <div class="relative bg-white w-full rounded-t-[4rem] p-12 shadow-2xl animate-[slideIn_0.5s_ease-out]">
+                    <h3 id="modal-marker-title" class="text-3xl font-black text-zinc-900 mb-10">Criar Marcador</h3>
+                    <div class="space-y-10">
+                        <div>
+                            <label class="block text-xs font-black text-zinc-400 uppercase tracking-[0.2em] mb-4">Nome
+                                do
+                                Marcador</label>
+                            <input type="text" id="input-marker-name"
+                                class="w-full bg-zinc-100 border-none rounded-[2rem] p-6 outline-none font-black text-xl text-zinc-900 placeholder-zinc-400"
+                                placeholder="Ex: Introdução">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-black text-zinc-400 uppercase tracking-[0.2em] mb-6">Cor de
+                                Identificação</label>
+                            <div id="color-picker" class="flex flex-wrap gap-6 justify-center"></div>
+                        </div>
+                    </div>
+                    <div class="mt-16 flex gap-6">
+                        <button id="btn-cancel-marker"
+                            class="flex-1 py-6 font-black text-zinc-400 text-lg">CANCELAR</button>
+                        <button id="btn-save-marker"
+                            class="flex-[2] bg-blue-600 text-white py-6 rounded-[2rem] font-black text-xl shadow-2xl shadow-blue-300 transition-all active:scale-95">SALVAR</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="modal-annotation" class="absolute inset-0 z-[100] flex items-end hidden pointer-events-auto">
+                <div class="absolute inset-0 bg-zinc-950/90 backdrop-blur-md" id="overlay-annotation"></div>
+                <div class="relative bg-white w-full rounded-t-[4rem] p-12 shadow-2xl animate-[slideIn_0.5s_ease-out]">
+                    <h3 class="text-3xl font-black text-zinc-900 mb-10">Nova Anotação</h3>
+                    <div class="space-y-6">
+                        <input type="text" id="input-ann-title"
+                            class="w-full bg-zinc-100 border-none rounded-[2rem] p-6 outline-none font-black text-xl"
+                            placeholder="Título da nota">
+                        <textarea id="input-ann-desc"
+                            class="w-full bg-zinc-100 border-none rounded-[2rem] p-8 h-56 outline-none resize-none font-bold text-zinc-700"
+                            placeholder="O que deseja anotar?"></textarea>
+                    </div>
+                    <div class="mt-12 flex gap-6">
+                        <button id="btn-cancel-ann" class="flex-1 py-6 font-black text-zinc-400 text-lg">VOLTAR</button>
+                        <button id="btn-save-ann"
+                            class="flex-[2] bg-zinc-900 text-white py-6 rounded-[2rem] font-black text-xl shadow-2xl transition-all active:scale-95">ADICIONAR</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <div id="pdf-viewport" class="flex-1 overflow-auto bg-zinc-800 touch-pan-x touch-pan-y scrollbar-hide">
-            <div id="pdf-content"
-                class="inline-block p-4 pt-32 pb-60 origin-top-left min-w-full transition-transform duration-75 ease-out">
+            <div id="pdf-content" class="inline-block origin-top-left">
                 <div id="pages-container" class="flex flex-col items-center w-full"></div>
             </div>
         </div>
 
-        <div
-            class="fixed bottom-10 left-1/2 -translate-x-1/2 flex items-center gap-4 bg-white px-5 py-4 rounded-[3rem] shadow-2xl z-[55] border-2 border-zinc-200">
-            <button id="btn-zoom-out"
-                class="bg-zinc-100 text-zinc-900 p-4 rounded-full active:scale-90 transition-all shadow-sm">
-                <i data-lucide="zoom-out" class="w-7 h-7 stroke-[3px]"></i>
-            </button>
 
-            <button id="btn-open-markers"
-                class="bg-blue-600 text-white px-10 py-4 rounded-full font-black text-sm tracking-widest active:scale-95 flex items-center gap-2 shadow-lg">
-                <i data-lucide="bookmark" class="w-5 h-5 fill-current"></i>
-                MARCADORES
-            </button>
-
-            <button id="btn-zoom-in"
-                class="bg-zinc-100 text-zinc-900 p-4 rounded-full active:scale-90 transition-all shadow-sm">
-                <i data-lucide="zoom-in" class="w-7 h-7 stroke-[3px]"></i>
-            </button>
-        </div>
-
-        <div id="sidebar-markers"
-            class="fixed inset-y-0 right-0 w-[85%] max-w-sm bg-white shadow-2xl transform transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] z-[70] flex flex-col translate-x-full">
-            <div class="p-8 border-b-2 border-zinc-50 flex justify-between items-center bg-white sticky top-0 z-20">
-                <h2 class="font-black text-2xl text-zinc-900">Marcadores</h2>
-                <button id="btn-close-markers" class="p-2 text-zinc-400"><i data-lucide="x"
-                        class="w-7 h-7"></i></button>
-            </div>
-
-            <div id="markers-list" class="flex-1 overflow-y-auto p-6 space-y-5 bg-zinc-50">
-                <div class="flex flex-col items-center justify-center h-full text-zinc-300 opacity-60">
-                    <i data-lucide="bookmark" class="w-16 h-16 mb-4 stroke-1"></i>
-                    <p class="font-bold text-lg">Sem marcadores</p>
-                </div>
-            </div>
-
-            <div class="p-8 bg-white border-t sticky bottom-0 z-20">
-                <button id="btn-create-marker"
-                    class="w-full bg-zinc-900 text-white py-6 rounded-[2rem] font-black text-lg flex items-center justify-center gap-4 active:scale-95 shadow-xl transition-all">
-                    <i data-lucide="plus" class="w-7 h-7 stroke-[3px]"></i> CRIAR NOVO
-                </button>
-            </div>
-        </div>
-
-        <div id="sidebar-pages"
-            class="fixed inset-y-0 left-0 w-[85%] max-w-xs bg-white shadow-2xl transform transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] z-[70] flex flex-col -translate-x-full">
-            <div class="p-8 border-b-2 border-zinc-50 flex justify-between items-center bg-white sticky top-0 z-20">
-                <h2 class="font-black text-2xl text-zinc-900">Páginas</h2>
-                <button id="btn-close-pages" class="p-2 text-zinc-400"><i data-lucide="x" class="w-7 h-7"></i></button>
-            </div>
-            <div id="thumbnails-list" class="flex-1 overflow-y-auto p-6 space-y-8 bg-zinc-50"></div>
-        </div>
-
-        <div id="modal-marker" class="fixed inset-0 z-[100] flex items-end hidden">
-            <div class="absolute inset-0 bg-zinc-950/90 backdrop-blur-md" id="overlay-marker"></div>
-            <div class="relative bg-white w-full rounded-t-[4rem] p-12 shadow-2xl animate-[slideIn_0.5s_ease-out]">
-                <h3 id="modal-marker-title" class="text-3xl font-black text-zinc-900 mb-10">Criar Marcador</h3>
-                <div class="space-y-10">
-                    <div>
-                        <label class="block text-xs font-black text-zinc-400 uppercase tracking-[0.2em] mb-4">Nome do
-                            Marcador</label>
-                        <input type="text" id="input-marker-name"
-                            class="w-full bg-zinc-100 border-none rounded-[2rem] p-6 outline-none font-black text-xl text-zinc-900 placeholder-zinc-400"
-                            placeholder="Ex: Introdução">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-black text-zinc-400 uppercase tracking-[0.2em] mb-6">Cor de
-                            Identificação</label>
-                        <div id="color-picker" class="flex flex-wrap gap-6 justify-center"></div>
-                    </div>
-                </div>
-                <div class="mt-16 flex gap-6">
-                    <button id="btn-cancel-marker"
-                        class="flex-1 py-6 font-black text-zinc-400 text-lg">CANCELAR</button>
-                    <button id="btn-save-marker"
-                        class="flex-[2] bg-blue-600 text-white py-6 rounded-[2rem] font-black text-xl shadow-2xl shadow-blue-300 transition-all active:scale-95">SALVAR</button>
-                </div>
-            </div>
-        </div>
-
-        <div id="modal-annotation" class="fixed inset-0 z-[100] flex items-end hidden">
-            <div class="absolute inset-0 bg-zinc-950/90 backdrop-blur-md" id="overlay-annotation"></div>
-            <div class="relative bg-white w-full rounded-t-[4rem] p-12 shadow-2xl animate-[slideIn_0.5s_ease-out]">
-                <h3 class="text-3xl font-black text-zinc-900 mb-10">Nova Anotação</h3>
-                <div class="space-y-6">
-                    <input type="text" id="input-ann-title"
-                        class="w-full bg-zinc-100 border-none rounded-[2rem] p-6 outline-none font-black text-xl"
-                        placeholder="Título da nota">
-                    <textarea id="input-ann-desc"
-                        class="w-full bg-zinc-100 border-none rounded-[2rem] p-8 h-56 outline-none resize-none font-bold text-zinc-700"
-                        placeholder="O que deseja anotar?"></textarea>
-                </div>
-                <div class="mt-12 flex gap-6">
-                    <button id="btn-cancel-ann" class="flex-1 py-6 font-black text-zinc-400 text-lg">VOLTAR</button>
-                    <button id="btn-save-ann"
-                        class="flex-[2] bg-zinc-900 text-white py-6 rounded-[2rem] font-black text-xl shadow-2xl transition-all active:scale-95">ADICIONAR</button>
-                </div>
-            </div>
-        </div>
-
-        <div id="backdrop"
-            class="fixed inset-0 bg-zinc-950/60 backdrop-blur-sm z-[65] hidden opacity-0 transition-opacity duration-300">
-        </div>
     </div>
 
     <script src="script.js"></script>
