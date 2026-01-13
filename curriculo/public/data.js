@@ -133,31 +133,6 @@ const resumeData = {
                     "Preparing students with essential skills for the IT job market."
                 ]
             }
-        },
-        {
-            role: { br: "Laboratorista Digital", en: "Digital Lab Technician" },
-            company: { br: "Grafis Encadernadora, Guarapuava", en: "Grafis Encadernadora, Guarapuava" },
-            duration: { br: "2018-2019", en: "2018-2019" },
-            summary: {
-                br: "Laboratorista Digital responsável por processos de impressão, incluindo fotos para fotolivros e revelações fotográficas.",
-                en: "Digital Lab Technician responsible for printing processes, including photos for photobooks and photo developing."
-            },
-            description: {
-                br: "Na Grafis Encadernadora, minhas responsabilidades como Laboratorista Digital incluíam:",
-                en: "At Grafis Encadernadora, my responsibilities as a Digital Lab Technician included:"
-            },
-            responsibilities: {
-                br: [
-                    "Operação de equipamentos e processos de impressão digital.",
-                    "Tratamento e impressão de fotos para fotolivros e revelações fotográficas.",
-                    "Garantia da qualidade e fidelidade das cores nos produtos finais."
-                ],
-                en: [
-                    "Operating digital printing equipment and processes.",
-                    "Processing and printing photos for photobooks and photo developing.",
-                    "Ensuring quality and color accuracy in the final products."
-                ]
-            }
         }
     ],
     education: [
