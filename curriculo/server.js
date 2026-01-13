@@ -6,19 +6,38 @@ const cors = require('cors');
 // We will use dynamic import or require depending on version, but standard `require('node-fetch')` works for v2.
 const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 
+const path = require('path');
+// ... imports ...
+
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Serve static files from the current directory
-// IMPORTANT: In production, move these to a 'public' folder to avoid exposing server.js/.env
-app.use(express.static('public'));
-
-// Middleware to log requests
+// Middleware to log requests (Move to top)
 app.use((req, res, next) => {
     console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
     next();
 });
+
+const fs = require('fs');
+
+// Serve static files from the 'public' directory using absolute path
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Fallback: Force serve index.html for root if static fails
+app.get('/', (req, res) => {
+    const indexPath = path.join(__dirname, 'public', 'index.html');
+    console.log(`Attempting to serve index from: ${indexPath}`);
+
+    if (fs.existsSync(indexPath)) {
+        console.log("File exists, sending...");
+        res.sendFile(indexPath);
+    } else {
+        console.error("File NOT found at this path!");
+        res.status(404).send(`Index file not found at ${indexPath}`);
+    }
+});
+
 
 app.post('/synthesize', async (req, res) => {
     try {

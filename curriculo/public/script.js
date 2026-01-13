@@ -663,140 +663,194 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             function generateCustomPDF() {
-                // 1. Create a container for the PDF content (off-screen)
-                const pdfContainer = document.createElement('div');
-                pdfContainer.style.width = '800px'; // Approx A4 width at 72dpi, will be scaled
-                pdfContainer.style.backgroundColor = '#ffffff';
-                pdfContainer.style.color = '#333333';
-                pdfContainer.style.fontFamily = "'Helvetica', 'Arial', sans-serif";
-                pdfContainer.style.padding = '40px';
-                pdfContainer.style.position = 'absolute';
-                pdfContainer.style.left = '-9999px';
-                pdfContainer.style.top = '0';
+                // 1. Create Preview Modal Overlay
+                const overlay = document.createElement('div');
+                overlay.style.position = 'fixed';
+                overlay.style.top = '0';
+                overlay.style.left = '0';
+                overlay.style.width = '100%';
+                overlay.style.height = '100%';
+                overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.85)';
+                overlay.style.zIndex = '10000';
+                overlay.style.display = 'flex';
+                overlay.style.flexDirection = 'column';
+                overlay.style.alignItems = 'center';
+                overlay.style.overflowY = 'auto'; // scrollable
+                overlay.id = 'pdf-preview-overlay';
 
-                // Colors
-                const accentColor = '#10b981'; // Emerald 500
-                const darkColor = '#1e293b';   // Slate 800
+                // 2. Toolbar (Download / Close)
+                const toolbar = document.createElement('div');
+                toolbar.style.width = '100%';
+                toolbar.style.padding = '15px';
+                toolbar.style.backgroundColor = '#1e293b';
+                toolbar.style.display = 'flex';
+                toolbar.style.justifyContent = 'center';
+                toolbar.style.gap = '20px';
+                toolbar.style.position = 'sticky';
+                toolbar.style.top = '0';
+                toolbar.style.zIndex = '10001';
+                toolbar.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1)';
 
-                // Helper to format text
-                const lang = currentLang; // Uses the currently selected language in the app
+                const btnStyle = "padding: 8px 20px; border-radius: 6px; font-weight: 600; cursor: pointer; border: none; display: flex; align-items: center; gap: 8px;";
+
+                const btnDownload = document.createElement('button');
+                btnDownload.innerHTML = '<i class="fas fa-download"></i> Download PDF';
+                btnDownload.style.cssText = btnStyle + "background-color: #10b981; color: white;";
+
+                const btnClose = document.createElement('button');
+                btnClose.innerHTML = '<i class="fas fa-times"></i> Fechar';
+                btnClose.style.cssText = btnStyle + "background-color: #ef4444; color: white;";
+
+                toolbar.appendChild(btnDownload);
+                toolbar.appendChild(btnClose);
+                overlay.appendChild(toolbar);
+
+                // 3. The A4 Page Container
+                const page = document.createElement('div');
+                page.id = 'resume-page-content';
+                page.style.width = '210mm'; // A4 width
+                page.style.minHeight = '297mm'; // A4 height
+                page.style.backgroundColor = 'white';
+                page.style.margin = '20px auto';
+                page.style.padding = '15mm'; // Print margins
+                page.style.boxShadow = '0 0 20px rgba(0,0,0,0.5)';
+                page.style.color = '#333';
+                page.style.fontFamily = "'Roboto', 'Helvetica', 'Arial', sans-serif";
+                page.style.position = 'relative';
+
+                // Colors & Helpers
+                const accentColor = '#2563eb'; // Royal Blue for print (more professional than neon)
+                const darkColor = '#1e293b';
+                const grayColor = '#64748b';
+                const lang = currentLang;
                 const t = (pt, en) => lang === 'br' ? pt : en;
 
-                // 2. Build the HTML Structure from resumeData
-                // Header
+                // 4. Build Content
                 let html = `
-                    <div style="border-bottom: 2px solid ${accentColor}; padding-bottom: 20px; margin-bottom: 30px; display: flex; align-items: center; justify-content: space-between;">
-                        <div>
-                            <h1 style="color: ${darkColor}; font-size: 32px; margin: 0 0 5px 0; font-weight: 700;">${resumeData.profile.name}</h1>
-                            <p style="color: ${accentColor}; font-size: 18px; margin: 0; font-weight: 600;">Software Engineer & Tech Lead</p>
+                    <!-- Header -->
+                    <div style="display: flex; gap: 20px; margin-bottom: 30px; border-bottom: 2px solid #e2e8f0; padding-bottom: 20px;">
+                        <img src="${resumeData.profile.image}" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid ${accentColor};">
+                        <div style="flex: 1;">
+                            <h1 style="margin: 0; font-size: 28px; color: ${darkColor}; line-height: 1.2;">${resumeData.profile.name}</h1>
+                            <p style="margin: 5px 0 0; font-size: 16px; color: ${accentColor}; font-weight: 500;">Software Engineer & Tech Lead</p>
+                            <p style="margin: 5px 0 0; font-size: 14px; color: ${grayColor};">
+                                ${resumeData.profile.address} <br>
+                                ${resumeData.profile.contact.email.display} • ${resumeData.profile.contact.phone.display}
+                            </p>
+                            <div style="margin-top: 8px; font-size: 14px;">
+                                <a href="${resumeData.socialLinks.find(l => l.name === 'LinkedIn').url}" style="color: ${accentColor}; text-decoration: none; margin-right: 15px;">LinkedIn</a>
+                                <a href="${resumeData.socialLinks.find(l => l.name === 'GitHub').url}" style="color: ${accentColor}; text-decoration: none; margin-right: 15px;">GitHub</a>
+                                <a href="${resumeData.socialLinks.find(l => l.name === 'Site').url}" style="color: ${accentColor}; text-decoration: none;">Portfolio</a>
+                            </div>
                         </div>
-                        <div style="text-align: right; font-size: 12px; line-height: 1.6;">
-                            <div style="margin-bottom: 4px;">${resumeData.profile.address}</div>
-                            <div style="margin-bottom: 4px;">${resumeData.profile.contact.email.display}</div>
-                            <div>${resumeData.profile.contact.phone.display}</div>
-                            <div style="margin-top: 5px;">
-                                <a href="${resumeData.socialLinks.find(l => l.name === 'LinkedIn').url}" style="color: ${accentColor}; text-decoration: none; margin-left: 10px;">LinkedIn</a>
-                                <a href="${resumeData.socialLinks.find(l => l.name === 'GitHub').url}" style="color: ${accentColor}; text-decoration: none; margin-left: 10px;">GitHub</a>
+                    </div>
+
+                    <!-- Layout Grid -->
+                    <div style="display: flex; gap: 30px;">
+                        
+                        <!-- Left Column (Main) -->
+                        <div style="flex: 2;">
+                            <!-- Summary -->
+                            <div style="margin-bottom: 25px;">
+                                <h3 style="color: ${darkColor}; font-size: 16px; text-transform: uppercase; border-bottom: 1px solid ${accentColor}; padding-bottom: 5px; margin-bottom: 10px; letter-spacing: 1px;">${t('Resumo', 'Summary')}</h3>
+                                <p style="font-size: 14px; line-height: 1.6; color: #475569; text-align: justify;">
+                                    ${resumeData.summary[lang].replace(/<[^>]*>/g, '')}
+                                </p>
+                            </div>
+
+                            <!-- Experience -->
+                            <div style="margin-bottom: 25px;">
+                                <h3 style="color: ${darkColor}; font-size: 16px; text-transform: uppercase; border-bottom: 1px solid ${accentColor}; padding-bottom: 5px; margin-bottom: 15px; letter-spacing: 1px;">${t('Experiência', 'Experience')}</h3>
+                                ${resumeData.experience.map(exp => `
+                                    <div style="margin-bottom: 20px;">
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
+                                            <strong style="color: ${darkColor}; font-size: 15px;">${exp.role[lang]}</strong>
+                                        </div>
+                                        <div style="color: ${accentColor}; font-size: 13px; font-weight: 500; margin-bottom: 6px;">
+                                            ${exp.company[lang]} • <span style="color: ${grayColor}; font-weight: normal;">${exp.duration[lang]}</span>
+                                        </div>
+                                        <p style="font-size: 13px; line-height: 1.5; color: #475569; margin: 0 0 8px;">
+                                            ${exp.summary[lang]}
+                                        </p>
+                                        <ul style="margin: 0; padding-left: 18px; font-size: 13px; color: #475569;">
+                                            ${exp.responsibilities[lang].map(r => `<li style="margin-bottom: 2px;">${r}</li>`).join('')}
+                                        </ul>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <!-- Right Column (Sidebar) -->
+                        <div style="flex: 1;">
+                            <!-- Skills -->
+                            <div style="margin-bottom: 30px;">
+                                <h3 style="color: ${darkColor}; font-size: 16px; text-transform: uppercase; border-bottom: 1px solid ${accentColor}; padding-bottom: 5px; margin-bottom: 15px; letter-spacing: 1px;">Skills</h3>
+                                ${resumeData.skills[lang].map(group => `
+                                    <div style="margin-bottom: 15px;">
+                                        <strong style="display: block; font-size: 14px; color: ${darkColor}; margin-bottom: 5px;">${group.groupName}</strong>
+                                        <div style="display: flex; flex-wrap: wrap; gap: 5px;">
+                                            ${group.skills.map(s => `
+                                                <span style="background: #f1f5f9; padding: 3px 8px; border-radius: 4px; font-size: 12px; color: #475569; border: 1px solid #e2e8f0;">${s.name}</span>
+                                            `).join('')}
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+
+                            <!-- Education -->
+                            <div style="margin-bottom: 30px;">
+                                <h3 style="color: ${darkColor}; font-size: 16px; text-transform: uppercase; border-bottom: 1px solid ${accentColor}; padding-bottom: 5px; margin-bottom: 15px; letter-spacing: 1px;">${t('Educação', 'Education')}</h3>
+                                ${resumeData.education.map(edu => `
+                                    <div style="margin-bottom: 12px;">
+                                        <strong style="display: block; font-size: 14px; color: ${darkColor};">${edu.institution[lang]}</strong>
+                                        <span style="display: block; font-size: 12px; color: ${grayColor}; margin-bottom: 2px;">${edu.location}</span>
+                                        <span style="display: block; font-size: 13px; color: ${accentColor};">${edu.course[lang]}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+
+                            <!-- Certifications & Languages -->
+                             <div style="margin-bottom: 30px;">
+                                <h3 style="color: ${darkColor}; font-size: 16px; text-transform: uppercase; border-bottom: 1px solid ${accentColor}; padding-bottom: 5px; margin-bottom: 15px; letter-spacing: 1px;">${t('Outros', 'Others')}</h3>
+                                
+                                <div style="margin-bottom: 15px;">
+                                    <strong style="font-size: 14px; color: ${darkColor};">${t('Idiomas', 'Languages')}</strong>
+                                    <p style="font-size: 13px; color: #475569; margin: 2px 0;">${resumeData.languages[lang].join(', ')}</p>
+                                </div>
                             </div>
                         </div>
                     </div>
                 `;
 
-                // Summary
-                html += `
-                    <div style="margin-bottom: 25px;">
-                        <h2 style="color: ${darkColor}; font-size: 18px; border-left: 5px solid ${accentColor}; padding-left: 10px; margin-bottom: 12px; text-transform: uppercase;">${t('Resumo Profissional', 'Professional Summary')}</h2>
-                        <p style="font-size: 13px; line-height: 1.6; text-align: justify; margin: 0;">
-                            ${resumeData.summary[lang].replace(/<[^>]*>/g, '')} <!-- Strip HTML tags from summary -->
-                        </p>
-                    </div>
-                `;
+                page.innerHTML = html;
+                overlay.appendChild(page);
+                document.body.appendChild(overlay);
 
-                // Experience
-                html += `
-                    <div style="margin-bottom: 25px;">
-                        <h2 style="color: ${darkColor}; font-size: 18px; border-left: 5px solid ${accentColor}; padding-left: 10px; margin-bottom: 15px; text-transform: uppercase;">${t('Experiência Profissional', 'Work Experience')}</h2>
-                `;
+                // Actions
+                btnClose.onclick = () => document.body.removeChild(overlay);
 
-                resumeData.experience.forEach(exp => {
-                    html += `
-                        <div style="margin-bottom: 20px;">
-                            <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 5px;">
-                                <h3 style="font-size: 16px; font-weight: 700; color: ${darkColor}; margin: 0;">${exp.role[lang]}</h3>
-                                <span style="font-size: 12px; font-weight: 600; color: ${accentColor}; font-family: monospace;">${exp.duration[lang]}</span>
-                            </div>
-                            <div style="font-size: 14px; font-style: italic; color: #555; margin-bottom: 8px;">${exp.company[lang]}</div>
-                            <div style="font-size: 13px; line-height: 1.5; margin-bottom: 8px;">${exp.summary[lang]}</div>
-                            <ul style="font-size: 13px; margin: 0; padding-left: 20px; line-height: 1.4;">
-                                ${exp.responsibilities[lang].map(r => `<li style="margin-bottom: 4px;">${r}</li>`).join('')}
-                            </ul>
-                        </div>
-                    `;
-                });
-                html += `</div>`;
+                btnDownload.onclick = () => {
+                    btnDownload.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Gerando...';
+                    btnDownload.disabled = true;
 
-                // Skills (Two Columns)
-                html += `
-                    <div style="margin-bottom: 25px; page-break-inside: avoid;">
-                        <h2 style="color: ${darkColor}; font-size: 18px; border-left: 5px solid ${accentColor}; padding-left: 10px; margin-bottom: 15px; text-transform: uppercase;">${t('Habilidades Técnicas', 'Technical Skills')}</h2>
-                        <div style="display: flex; flex-wrap: wrap; gap: 20px;">
-                `;
+                    const opt = {
+                        margin: 0,
+                        filename: `CV_Ricardo_Oliveira_${lang.toUpperCase()}.pdf`,
+                        image: { type: 'jpeg', quality: 0.98 },
+                        html2canvas: { scale: 2, useCORS: true },
+                        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                    };
 
-                resumeData.skills[lang].forEach(group => {
-                    const skillNames = group.skills.map(s => s.name).join(', ');
-                    html += `
-                        <div style="flex: 1 1 30%; min-width: 200px; margin-bottom: 10px;">
-                            <h4 style="font-size: 14px; font-weight: 700; color: ${darkColor}; margin: 0 0 5px 0;">${group.groupName}</h4>
-                            <p style="font-size: 12px; line-height: 1.4; margin: 0; color: #555;">${skillNames}</p>
-                        </div>
-                    `;
-                });
-                html += `</div></div>`;
-
-                // Education
-                html += `
-                    <div style="margin-bottom: 25px; page-break-inside: avoid;">
-                        <h2 style="color: ${darkColor}; font-size: 18px; border-left: 5px solid ${accentColor}; padding-left: 10px; margin-bottom: 15px; text-transform: uppercase;">${t('Formação Acadêmica', 'Education')}</h2>
-                `;
-                resumeData.education.forEach(edu => {
-                    html += `
-                    <div style="margin-bottom: 10px;">
-                        <h4 style="font-size: 14px; font-weight: 700; margin: 0; color: ${darkColor};">${edu.institution[lang]}</h4>
-                        <div style="font-size: 12px; color: #555; display: flex; justify-content: space-between;">
-                            <span>${edu.course[lang]}</span>
-                            <span>${edu.location}</span>
-                        </div>
-                    </div>
-                    `;
-                });
-                html += `</div>`;
-
-                // Languages
-                const langs = resumeData.languages[lang].join(' • ');
-                html += `
-                    <div style="margin-bottom: 0px; page-break-inside: avoid;">
-                         <h2 style="color: ${darkColor}; font-size: 18px; border-left: 5px solid ${accentColor}; padding-left: 10px; margin-bottom: 15px; text-transform: uppercase;">${t('Idiomas', 'Languages')}</h2>
-                         <p style="font-size: 13px;">${langs}</p>
-                    </div>
-                `;
-
-                pdfContainer.innerHTML = html;
-                document.body.appendChild(pdfContainer);
-
-                // 3. Generate PDF
-                const opt = {
-                    margin: [10, 10, 10, 10], // mm
-                    filename: `CV_Ricardo_Oliveira_${lang.toUpperCase()}.pdf`,
-                    image: { type: 'jpeg', quality: 0.98 },
-                    html2canvas: { scale: 2, useCORS: true },
-                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                    html2pdf().set(opt).from(page).save().then(() => {
+                        document.body.removeChild(overlay);
+                    }).catch(err => {
+                        console.error(err);
+                        alert("Erro ao gerar PDF");
+                        document.body.removeChild(overlay);
+                    });
                 };
-
-                html2pdf().set(opt).from(pdfContainer).save().then(() => {
-                    // Cleanup
-                    document.body.removeChild(pdfContainer);
-                });
             }
         });
     }
 });
+
