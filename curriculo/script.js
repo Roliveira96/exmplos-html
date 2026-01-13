@@ -25,59 +25,104 @@ document.addEventListener('DOMContentLoaded', function () {
     // Utility for dynamic HTML generation
     const render = {
         profile: () => {
-            const header = document.querySelector('header');
-            if (!header) return;
-            header.innerHTML = `
-                <img src="${resumeData.profile.image}" alt="Foto de Perfil de ${resumeData.profile.name}" class="w-32 h-32 rounded-full mx-auto mb-6 border-4 border-indigo-500 shadow-lg transform hover:scale-105 transition-all duration-300">
-                <h1 class="text-6xl sm:text-7xl font-extrabold text-indigo-900 mb-4 tracking-tight">${resumeData.profile.name}</h1>
-                <p class="text-xl sm:text-2xl text-gray-600 mb-4">${resumeData.profile.address}</p>
-                <div class="text-xl sm:text-2xl text-gray-700 space-x-4 p-2 bg-indigo-50 rounded-xl shadow-inner inline-block">
-                    <a href="${resumeData.profile.contact.phone.link}" class="text-indigo-700 hover:text-indigo-900 transition duration-300 ease-in-out px-3 py-1 rounded-lg animated-link"><i class="${resumeData.profile.contact.phone.icon} mr-2"></i>${resumeData.profile.contact.phone.display}</a>
-                    <span class="text-gray-400">|</span>
-                    <a href="${resumeData.profile.contact.email.link}" class="text-indigo-700 hover:text-indigo-900 transition duration-300 ease-in-out px-3 py-1 rounded-lg animated-link"><i class="${resumeData.profile.contact.email.icon} mr-2"></i>${resumeData.profile.contact.email.display}</a>
+            const container = document.getElementById('profile-card');
+            if (!container) return;
+
+            let socialHtml = resumeData.socialLinks.map(link => `
+                <a href="${link.url}" target="_blank" class="text-gray-400 hover:text-emerald-400 transition-all duration-300 transform hover:scale-110 p-2 bg-slate-800/50 rounded-full border border-slate-700 hover:border-emerald-500/50 flex items-center justify-center w-10 h-10" title="${link.name}">
+                    <i class="${link.icon}"></i>
+                </a>
+             `).join('');
+
+            container.innerHTML = `
+                <div class="relative inline-block mb-6 group">
+                    <div class="absolute -inset-1 bg-gradient-to-r from-emerald-500 to-blue-600 rounded-full blur opacity-25 group-hover:opacity-75 transition duration-1000 group-hover:duration-200"></div>
+                    <img src="${resumeData.profile.image}" alt="Foto de Perfil" class="relative w-40 h-40 rounded-full mx-auto border-4 border-slate-800 shadow-2xl object-cover">
+                    <div class="absolute bottom-2 right-4 w-4 h-4 bg-emerald-500 rounded-full border-2 border-slate-800 animate-pulse"></div>
+                </div>
+                <h1 class="text-3xl font-bold text-white mb-2 font-heading tracking-tight">${resumeData.profile.name}</h1>
+                <p class="text-emerald-400 text-sm font-mono mb-6 bg-emerald-500/10 inline-block px-3 py-1 rounded-full border border-emerald-500/20">Software Engineer & Tech Lead</p>
+                <div class="flex justify-center gap-3 flex-wrap mt-4 pt-6 border-t border-slate-700/50">
+                    ${socialHtml}
                 </div>
              `;
         },
-        socialLinks: () => {
-            const container = document.querySelector('#social-links-container');
+        contact: (lang) => {
+            const container = document.getElementById('contact-card');
             if (!container) return;
-            container.innerHTML = resumeData.socialLinks.map(link => `
-                <a href="${link.url}" target="_blank" class="flex items-center ${link.colorClass} text-white py-3 px-6 rounded-full font-semibold shadow-md transition duration-300 ease-in-out transform hover:scale-105">
-                    <i class="${link.icon} mr-2"></i> ${link.name}
-                </a>
-             `).join('');
+            container.innerHTML = `
+                <h2 class="text-sm font-bold text-gray-400 uppercase tracking-widest mb-6 flex items-center gap-2">
+                    <i class="fas fa-terminal text-emerald-500"></i> ${lang === 'br' ? 'Contato' : 'Contact'}
+                </h2>
+                 <div class="space-y-4">
+                    <a href="${resumeData.profile.contact.phone.link}" class="flex items-center gap-4 text-gray-300 hover:text-white group transition-all p-2 rounded-lg hover:bg-slate-800/50 -mx-2">
+                        <div class="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center border border-slate-700 group-hover:border-emerald-500/50 transition-colors">
+                            <i class="${resumeData.profile.contact.phone.icon} text-emerald-400"></i>
+                        </div>
+                        <span class="text-sm font-mono">${resumeData.profile.contact.phone.display}</span>
+                    </a>
+                    <a href="${resumeData.profile.contact.email.link}" class="flex items-center gap-4 text-gray-300 hover:text-white group transition-all p-2 rounded-lg hover:bg-slate-800/50 -mx-2">
+                         <div class="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center border border-slate-700 group-hover:border-emerald-500/50 transition-colors">
+                            <i class="${resumeData.profile.contact.email.icon} text-emerald-400"></i>
+                        </div>
+                        <span class="text-sm truncate font-mono">${resumeData.profile.contact.email.display}</span>
+                    </a>
+                    <div class="flex items-center gap-4 text-gray-300 p-2 rounded-lg -mx-2">
+                         <div class="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center border border-slate-700">
+                            <i class="fas fa-map-marker-alt text-emerald-400"></i>
+                        </div>
+                        <span class="text-sm">${resumeData.profile.address}</span>
+                    </div>
+                </div>
+             `;
         },
         summary: (lang) => {
             const container = document.querySelector('#summary-content');
             if (!container) return;
-            container.innerHTML = `<p class="text-lg leading-relaxed text-gray-700 mt-8">${resumeData.summary[lang]}</p>`;
+            container.innerHTML = `<p class="leading-relaxed text-slate-300 text-lg">${resumeData.summary[lang]}</p>`;
         },
         experience: (lang) => {
             const container = document.getElementById('experience-container');
             if (!container) return;
             container.innerHTML = resumeData.experience.map(exp => `
-                <div class="p-6 bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.01] transition-all duration-300 ease-in-out border border-gray-200 relative overflow-hidden group experience-card">
-                    <span class="experience-card-left-border"></span>
-                    <div class="relative z-10">
-                        <h3 class="text-xl sm:text-2xl font-semibold text-indigo-700 mb-1 exp-role">${exp.role[lang]}</h3>
-                        <p class="text-gray-600 text-lg mb-1 exp-company">${exp.company[lang]}</p>
-                        <p class="text-gray-500 text-base mb-3 exp-duration">${exp.duration[lang]}</p>
-                        <p class="text-gray-700 mb-4 exp-summary">${exp.summary[lang]}</p>
+                <div class="group relative pl-8 pb-8 border-l border-slate-800 last:border-0 last:pb-0">
+                    <!-- Timeline Dot -->
+                    <div class="absolute left-0 top-0 -translate-x-1/2 w-4 h-4 rounded-full bg-slate-900 border-2 border-slate-700 group-hover:border-emerald-500 group-hover:scale-125 transition-all"></div>
+                    
+                    <div class="bg-slate-800/20 rounded-xl p-6 border border-slate-700/50 hover:bg-slate-800/40 hover:border-emerald-500/30 transition-all experience-card cursor-pointer">
+                        <div class="flex flex-col sm:flex-row sm:items-baseline justify-between mb-2">
+                            <h3 class="text-xl font-bold text-white group-hover:text-emerald-400 transition-colors exp-role font-heading">${exp.role[lang]}</h3>
+                            <span class="text-xs font-mono text-emerald-500 bg-emerald-500/10 px-2 py-1 rounded border border-emerald-500/20 mt-2 sm:mt-0 w-fit exp-duration">${exp.duration[lang]}</span>
+                        </div>
+                        
+                        <div class="text-lg text-slate-400 mb-4 font-medium exp-company flex items-center gap-2">
+                            <i class="fas fa-building text-sm"></i> ${exp.company[lang]}
+                        </div>
+                        
+                        <p class="text-slate-400 text-sm mb-4 line-clamp-3 leading-relaxed exp-summary">${exp.summary[lang]}</p>
+                        
+                        <!-- Hidden content -->
                         <div class="hidden exp-description">${exp.description[lang]}</div>
                         <ul class="hidden exp-responsibilities">
-                            ${exp.responsibilities[lang].map(req => `<li>${req}</li>`).join('')}
+                             ${exp.responsibilities[lang].map(req => `<li>${req}</li>`).join('')}
                         </ul>
-                        <button class="bg-indigo-500 text-white py-2 px-4 rounded-lg font-semibold text-sm hover:bg-indigo-600 transition duration-300 ease-in-out transform hover:scale-105 view-more-btn">
-                             ${lang === 'br' ? 'Ver Mais' : 'View More'}
+
+                        <button class="text-sm text-emerald-400 font-semibold flex items-center gap-2 hover:gap-3 transition-all view-more-btn">
+                             ${lang === 'br' ? 'Ver Mais' : 'View More'} <i class="fas fa-arrow-right"></i>
                         </button>
                     </div>
                 </div>
              `).join('');
 
-            // Re-attach event listeners for view more buttons
             document.querySelectorAll('.experience-card .view-more-btn').forEach(button => {
                 button.addEventListener('click', (e) => {
+                    e.stopPropagation();
                     openExperienceModal(e.currentTarget.closest('.experience-card'));
+                });
+            });
+            document.querySelectorAll('.experience-card').forEach(card => {
+                card.addEventListener('click', (e) => {
+                    openExperienceModal(e.currentTarget);
                 });
             });
         },
@@ -85,10 +130,15 @@ document.addEventListener('DOMContentLoaded', function () {
             const container = document.getElementById('education-container');
             if (!container) return;
             container.innerHTML = resumeData.education.map(edu => `
-                 <div class="p-6 bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.01] transition-all duration-300 ease-in-out border border-gray-200">
-                    <h3 class="text-xl font-semibold text-indigo-700 mb-2">${edu.institution[lang]}</h3>
-                    <p class="text-gray-600">${edu.location}</p>
-                    <p class="text-gray-700 mt-2">${edu.course[lang]}</p>
+                 <div class="bg-slate-800/30 p-5 rounded-xl border border-slate-700/50 flex gap-4 items-center">
+                    <div class="flex-shrink-0 w-12 h-12 bg-blue-500/10 text-blue-400 rounded-lg flex items-center justify-center border border-blue-500/20">
+                        <i class="fas fa-graduation-cap fa-lg"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-base font-bold text-white font-heading">${edu.institution[lang]}</h4>
+                        <p class="text-sm text-slate-500">${edu.location}</p>
+                        <p class="text-sm font-medium text-slate-300 mt-1">${edu.course[lang]}</p>
+                    </div>
                 </div>
              `).join('');
         },
@@ -96,23 +146,34 @@ document.addEventListener('DOMContentLoaded', function () {
             const container = document.getElementById('courses-container');
             if (!container) return;
             container.innerHTML = resumeData.courses.map(course => `
-                <div class="bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.01] transition-all duration-300 ease-in-out border border-gray-200 overflow-hidden course-card">
-                    <a href="#" class="certificate-link" data-img-src="${course.image}" data-pdf-src="${course.pdf}">
-                        <img src="${course.image}" alt="${course.title[lang]}" class="w-full h-auto">
-                    </a>
-                    <div class="p-4">
-                        <h3 class="text-lg font-semibold text-indigo-700 mb-2">${course.title[lang]}</h3>
-                        <p class="text-sm text-gray-700">${course.description[lang]}</p>
-                        <p class="text-xs text-gray-500 mt-2">${course.date[lang]}</p>
+                 <div class="group bg-slate-800/30 rounded-xl border border-slate-700/50 overflow-hidden hover:border-emerald-500/40 transition-all course-card flex flex-col h-full">
+                    <!-- Image Container: Fixed height, White background, full width -->
+                    <div class="h-56 bg-white w-full flex items-center justify-center relative border-b border-slate-700/50 overflow-hidden">
+                         <img src="${course.image}" alt="${course.title[lang]}" class="w-full h-full object-contain transform group-hover:scale-105 transition-all duration-300">
+                    </div>
+                    
+                    <div class="p-5 flex-grow flex flex-col">
+                        <div class="mb-4">
+                            <h4 class="text-base font-bold text-white mb-2 leading-snug group-hover:text-emerald-400 transition-colors font-heading" title="${course.title[lang]}">${course.title[lang]}</h4>
+                            <p class="text-xs font-mono text-slate-500 flex items-center gap-2">
+                                <i class="far fa-calendar-alt"></i> ${course.date[lang]}
+                            </p>
+                        </div>
+                        
+                        <a href="#" class="certificate-link mt-auto w-full py-2.5 px-4 bg-slate-800 hover:bg-emerald-500/10 border border-slate-700 hover:border-emerald-500/50 text-slate-300 hover:text-emerald-400 text-sm font-medium rounded-lg transition-all flex items-center justify-center gap-2 group/btn"
+                           data-img-src="${course.image}" data-pdf-src="${course.pdf}">
+                            <i class="fas fa-certificate group-hover/btn:rotate-12 transition-transform"></i>
+                            ${lang === 'br' ? 'Ver Certificado' : 'View Certificate'}
+                        </a>
                         <div class="hidden course-details">${course.longDescription[lang]}</div>
                     </div>
                 </div>
              `).join('');
 
-            // Re-attach event listeners
             document.querySelectorAll('.certificate-link').forEach(link => {
                 link.addEventListener('click', (e) => {
                     e.preventDefault();
+                    e.stopPropagation();
                     const card = e.currentTarget.closest('.course-card');
                     const description = card.querySelector('.course-details').innerHTML;
 
@@ -127,13 +188,16 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!skillsContainer) return;
             skillsContainer.innerHTML = '';
             resumeData.skills[lang].forEach(group => {
-                let groupHtml = `<div>
-                    <h3 class="text-2xl font-semibold text-gray-700 mt-8 mb-4 border-b border-gray-200 pb-2">${group.groupName}</h3>
-                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">`;
+                let groupHtml = `<div class="mb-6 last:mb-0">
+                    <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3 flex items-center gap-2">
+                        <span class="w-1 h-1 bg-emerald-500 rounded-full"></span> ${group.groupName}
+                    </h3>
+                    <div class="flex flex-wrap gap-2">`;
                 group.skills.forEach(skill => {
-                    groupHtml += `<div class="flex flex-col items-center justify-center p-3 bg-gray-50 rounded-lg shadow-sm hover:shadow-lg hover:border-indigo-400 transform hover:scale-105 transition-all duration-300 ease-in-out border border-gray-200 skill-card-glow cursor-pointer">
-                        <i class="${skill.icon} fa-2x ${skill.color} mb-2"></i>
-                        <span class="text-base font-medium ${skill.color} text-center">${skill.name}</span>
+                    groupHtml += `
+                    <div class="px-3 py-1.5 bg-slate-800/80 border border-slate-700 text-slate-300 rounded-lg text-xs font-medium flex items-center gap-2 hover:border-emerald-500/50 hover:text-white transition-all cursor-default shadow-sm">
+                        <i class="${skill.icon}"></i>
+                        <span>${skill.name}</span>
                     </div>`;
                 });
                 groupHtml += `</div></div>`;
@@ -143,28 +207,34 @@ document.addEventListener('DOMContentLoaded', function () {
         languages: (lang) => {
             const container = document.getElementById('languages-list');
             if (!container) return;
-            container.innerHTML = resumeData.languages[lang].map(l => `<li>${l}</li>`).join('');
+            container.innerHTML = resumeData.languages[lang].map(l => `
+                <li class="flex items-center justify-between p-3 rounded-lg bg-slate-800/50 border border-slate-700/50">
+                    <span class="text-sm font-medium text-slate-300">${l}</span>
+                    <i class="fas fa-check text-emerald-500 text-xs"></i>
+                </li>
+             `).join('');
         },
         footer: (lang) => {
             const footer = document.querySelector('footer');
             if (!footer) return;
             const text = lang === 'br' ?
-                `&copy; ${resumeData.footerYear} Ricardo Martins de Oliveira. Todos os direitos reservados.` :
-                `&copy; ${resumeData.footerYear} Ricardo Martins de Oliveira. All rights reserved.`;
-            footer.innerHTML = `<span class="version-content">${text}</span>`;
+                `&copy; ${resumeData.footerYear} Ricardo Martins de Oliveira. <br> <span class="text-xs text-slate-600">Built with VS Code & AI</span>` :
+                `&copy; ${resumeData.footerYear} Ricardo Martins de Oliveira. <br> <span class="text-xs text-slate-600">Built with VS Code & AI</span>`;
+            footer.innerHTML = `<span class="text-slate-500">${text}</span>`;
         },
         sectionTitles: (lang) => {
             const titles = {
-                'summary-title': { br: 'Resumo Profissional', en: 'Professional Summary' },
-                'experience-title': { br: 'Experiência Profissional', en: 'Professional Experience' },
-                'education-title': { br: 'Formação Acadêmica', en: 'Academic Education' },
-                'courses-title': { br: 'Cursos e Certificados', en: 'Courses and Certificates' },
-                'skills-title': { br: 'Competências', en: 'Skills' },
+                'summary-title': { br: 'Sobre Mim', en: 'About Me' },
+                'experience-title': { br: 'Experiência Profissional', en: 'Work Experience' },
+                'education-title': { br: 'Formação Acadêmica', en: 'Education' },
+                'courses-title': { br: 'Certificações & Cursos', en: 'Certifications & Courses' },
+                'skills-title': { br: 'Tech Stack', en: 'Tech Stack' },
                 'languages-title': { br: 'Idiomas', en: 'Languages' }
             };
             for (const [id, text] of Object.entries(titles)) {
                 const el = document.getElementById(id);
-                if (el) el.textContent = text[lang];
+                if (el && el.querySelector('span:last-child')) el.querySelector('span:last-child').textContent = text[lang];
+                else if (el) el.textContent = text[lang];
             }
         }
     };
@@ -181,14 +251,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }, { root: null, rootMargin: '0px', threshold: 0.1 });
     sections.forEach(section => { observer.observe(section); });
 
-    const progressBar = document.getElementById('progressBar');
-    window.addEventListener('scroll', () => {
-        const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
-        const scrollPosition = window.scrollY;
-        const progress = (scrollPosition / totalHeight) * 100;
-        if (progressBar) progressBar.style.width = `${progress}%`;
-    });
-
     let currentLang = 'br';
     const langPtButton = document.getElementById('lang-pt-btn');
     const langEnButton = document.getElementById('lang-en-btn');
@@ -200,36 +262,21 @@ document.addEventListener('DOMContentLoaded', function () {
         if (langPtButton) langPtButton.classList.toggle('active', lang === 'br');
         if (langEnButton) langEnButton.classList.toggle('active', lang === 'eua');
 
-        // Render content dependent on language
-        render.summary(lang);
-        render.experience(lang);
-        render.education(lang);
-        render.courses(lang);
-        render.skills(lang);
-        render.languages(lang);
-        render.footer(lang);
-        render.sectionTitles(lang);
+        Object.values(render).forEach(fn => fn(lang));
     }
 
     if (langPtButton) langPtButton.addEventListener('click', () => switchLanguage('br'));
     if (langEnButton) langEnButton.addEventListener('click', () => switchLanguage('eua'));
 
-    // Modal de Experiência
+    // Modal Logic
     const generalModal = document.getElementById('generalModal');
     const closeModalButton = document.getElementById('closeModal');
     const modalTitle = document.getElementById('modalTitle');
     const modalSubTitle = document.getElementById('modalSubTitle');
     const modalDescription = document.getElementById('modalDescription');
     const modalResponsibilities = document.getElementById('modalResponsibilities');
-    const audioPlayer = document.getElementById('audioPlayer');
 
     function openExperienceModal(cardElement) {
-        // cardElement is the .experience-card div.
-        // We will pull the CURRENTLY RENDERED data in that card.
-        // Because re-rendering destroys the DOM references, we must be careful.
-        // However, we are attaching the listener AFTER render, so it should be fine.
-
-        // We can just grab the text content from the card as it is already in the correct language.
         const role = cardElement.querySelector('.exp-role').textContent;
         const company = cardElement.querySelector('.exp-company').textContent;
         const duration = cardElement.querySelector('.exp-duration').textContent;
@@ -237,16 +284,19 @@ document.addEventListener('DOMContentLoaded', function () {
         const responsibilitiesHtml = cardElement.querySelector('.exp-responsibilities').innerHTML;
 
         modalTitle.textContent = role;
-        modalSubTitle.textContent = `${company} (${duration})`;
-        modalDescription.innerHTML = descriptionHtml;
-        modalResponsibilities.innerHTML = responsibilitiesHtml;
-        modalResponsibilities.style.display = responsibilitiesHtml ? 'block' : 'none';
+        modalTitle.className = "text-2xl font-bold text-white mb-2 font-heading";
 
-        // Update Read Content text based on language
+        modalSubTitle.textContent = `${company} | ${duration}`;
+        modalSubTitle.className = "text-emerald-400 text-sm font-mono mb-6";
+
+        modalDescription.innerHTML = descriptionHtml;
+        modalDescription.className = "text-slate-300 leading-relaxed mb-6";
+
+        modalResponsibilities.innerHTML = responsibilitiesHtml;
+        modalResponsibilities.className = "list-disc list-inside text-slate-300 space-y-2 ml-4";
+
         const readBtn = document.getElementById('readContentButton');
-        if (readBtn) {
-            readBtn.querySelector('span').textContent = currentLang === 'br' ? 'Ler Conteúdo' : 'Read Content';
-        }
+        if (readBtn) readBtn.querySelector('span').textContent = currentLang === 'br' ? 'Ler Conteúdo' : 'Read Content';
 
         generalModal.classList.add('open');
         document.body.style.overflow = 'hidden';
@@ -255,10 +305,6 @@ document.addEventListener('DOMContentLoaded', function () {
     function closeExperienceModal() {
         generalModal.classList.remove('open');
         document.body.style.overflow = '';
-        if (audioPlayer) {
-            audioPlayer.pause();
-            audioPlayer.currentTime = 0;
-        }
     }
 
     if (closeModalButton) closeModalButton.addEventListener('click', closeExperienceModal);
@@ -266,7 +312,6 @@ document.addEventListener('DOMContentLoaded', function () {
         if (e.target === generalModal) closeExperienceModal();
     });
 
-    // Modal de Certificado
     const certificateModal = document.getElementById('certificateModal');
     const closeCertificateModalButton = document.getElementById('closeCertificateModal');
     const certificateImage = document.getElementById('certificateImage');
@@ -277,8 +322,8 @@ document.addEventListener('DOMContentLoaded', function () {
         certificateImage.src = imgSrc;
         certificatePdfLink.href = pdfSrc;
         certificateDescription.innerHTML = description;
+        certificateDescription.className = "text-slate-300 text-sm my-4 leading-relaxed";
 
-        // Update View PDF text based on language
         const pdfBtn = document.getElementById('certificatePdfLink');
         if (pdfBtn) {
             const span = pdfBtn.querySelector('span');
@@ -299,16 +344,10 @@ document.addEventListener('DOMContentLoaded', function () {
         if (e.target === certificateModal) closeCertificateModal();
     });
 
-
-    // Initial Render
-    // Static content that doesn't change with language
-    render.profile();
-    render.socialLinks();
-
-    // Content that defaults to BR
+    // Init
     switchLanguage('br');
 
-    // PDF Download Logic
+    // PDF Download
     const downloadPdfBtn = document.getElementById('download-pdf-btn');
     if (downloadPdfBtn) {
         downloadPdfBtn.addEventListener('click', function () {
@@ -316,19 +355,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 alert('Erro: Biblioteca PDF não carregada.');
                 return;
             }
-            const element = document.querySelector('.container');
+            const element = document.body;
             const opt = {
-                margin: 0.2,
+                margin: 0,
                 filename: 'Ricardo_Martins_Curriculo.pdf',
                 image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, useCORS: true, scrollY: 0 },
+                html2canvas: { scale: 2, useCORS: true, scrollY: 0, backgroundColor: '#0b1120' }, // Dark BG for PDF
                 jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
             };
-            const originalBoxShadow = element.style.boxShadow;
-            element.style.boxShadow = 'none';
-            html2pdf().set(opt).from(element).save().then(() => {
-                element.style.boxShadow = originalBoxShadow;
-            });
+            html2pdf().set(opt).from(element).save();
         });
     }
 });

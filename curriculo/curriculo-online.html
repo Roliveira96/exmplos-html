@@ -9,13 +9,13 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-        integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0V4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA=="
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="style.css">
 </head>
 
-<body class="bg-gradient-to-br from-indigo-50 to-purple-100 text-gray-800 leading-relaxed antialiased relative">
+<body
+    class="bg-slate-900 text-slate-200 leading-relaxed antialiased relative selection:bg-emerald-500 selection:text-white">
     <!-- Progress Bar -->
     <div id="progressBar"
         class="fixed top-0 left-0 w-0 h-1 bg-gradient-to-r from-indigo-500 to-purple-500 z-50 rounded-r-full"></div>
@@ -43,59 +43,79 @@
         <i class="fas fa-file-pdf fa-lg"></i>
     </button>
 
-    <div class="container mx-auto p-4 sm:p-6 lg:p-8 max-w-4xl bg-white shadow-2xl rounded-3xl my-10 relative z-10">
-        <!-- Header: Profile Info -->
-        <header class="text-center mb-12 pb-8 border-b-2 border-indigo-300"></header>
+    <div class="main-wrapper max-w-7xl mx-auto p-4 lg:p-8 relative z-10 transition-all duration-500">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
-        <!-- Social Links -->
-        <section class="mb-12 p-8 bg-indigo-50 rounded-2xl shadow-xl fade-in">
-            <div id="social-links-container" class="flex flex-wrap justify-center gap-4 mt-4"></div>
-        </section>
+            <!-- Sidebar (Mobile: Top, Desktop: Left) -->
+            <aside class="lg:col-span-4 space-y-8">
+                <!-- Profile Card -->
+                <div id="profile-card" class="glass-panel p-8 rounded-3xl text-center fade-in">
+                    <!-- Injected via JS -->
+                </div>
 
-        <!-- Professional Summary -->
-        <section class="mb-12 p-8 bg-white rounded-2xl shadow-xl fade-in">
-            <h2 id="summary-title" class="text-3xl sm:text-4xl font-bold text-gray-800 mb-5"></h2>
-            <div class="section-separator"></div>
-            <div id="summary-content"></div>
-        </section>
+                <!-- Contact Info -->
+                <div id="contact-card" class="glass-panel p-6 rounded-3xl fade-in">
+                    <!-- Injected via JS -->
+                </div>
 
-        <!-- Professional Experience -->
-        <section class="mb-12 p-8 bg-white rounded-2xl shadow-xl fade-in">
-            <h2 id="experience-title" class="text-3xl sm:text-4xl font-bold text-gray-800 mb-5"></h2>
-            <div class="section-separator"></div>
-            <div id="experience-container" class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8"></div>
-        </section>
+                <!-- Skills (Moved to Sidebar for visibility) -->
+                <div id="skills-card" class="glass-panel p-6 rounded-3xl fade-in">
+                    <h2 id="skills-title" class="text-xl font-bold text-emerald-400 mb-6 flex items-center gap-2">
+                        <i class="fas fa-code"></i> <span></span>
+                    </h2>
+                    <div id="skills-container"></div>
+                </div>
 
-        <!-- Academic Education -->
-        <section class="mb-12 p-8 bg-white rounded-2xl shadow-xl fade-in">
-            <h2 id="education-title" class="text-3xl sm:text-4xl font-bold text-gray-800 mb-5"></h2>
-            <div class="section-separator"></div>
-            <div id="education-container" class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8"></div>
-        </section>
+                <!-- Languages -->
+                <div id="languages-card" class="glass-panel p-6 rounded-3xl fade-in">
+                    <h2 id="languages-title" class="text-xl font-bold text-emerald-400 mb-4 flex items-center gap-2">
+                        <i class="fas fa-language"></i> <span></span>
+                    </h2>
+                    <ul id="languages-list" class="space-y-2"></ul>
+                </div>
+            </aside>
 
-        <!-- Courses -->
-        <section class="mb-12 p-8 bg-white rounded-2xl shadow-xl fade-in">
-            <h2 id="courses-title" class="text-3xl sm:text-4xl font-bold text-gray-800 mb-5"></h2>
-            <div class="section-separator"></div>
-            <div id="courses-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8"></div>
-        </section>
+            <!-- Main Content (Mobile: Bottom, Desktop: Right) -->
+            <main class="lg:col-span-8 space-y-8">
 
-        <!-- Skills -->
-        <section class="mb-12 p-8 bg-white rounded-2xl shadow-xl fade-in">
-            <h2 id="skills-title" class="text-3xl sm:text-4xl font-bold text-gray-800 mb-5"></h2>
-            <div class="section-separator"></div>
-            <div id="skills-container" class="mt-8"></div>
-        </section>
+                <!-- Professional Summary -->
+                <section id="summary-card" class="glass-panel p-8 rounded-3xl fade-in relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 opacity-10">
+                        <i class="fas fa-quote-right fa-4x text-white"></i>
+                    </div>
+                    <h2 id="summary-title"
+                        class="text-2xl font-bold text-emerald-400 mb-4 border-b border-gray-700 pb-2"></h2>
+                    <div id="summary-content" class="text-gray-300 leading-relaxed text-lg"></div>
+                </section>
 
-        <!-- Languages -->
-        <section class="mb-12 p-8 bg-white rounded-2xl shadow-xl fade-in">
-            <h2 id="languages-title" class="text-3xl sm:text-4xl font-bold text-gray-800 mb-5"></h2>
-            <div class="section-separator"></div>
-            <ul id="languages-list" class="list-disc list-inside space-y-4 text-xl text-gray-700 mt-8"></ul>
-        </section>
+                <!-- Experience -->
+                <section id="experience-section" class="fade-in">
+                    <h2 id="experience-title" class="text-3xl font-bold text-white mb-6 flex items-center gap-3">
+                        <span class="bg-emerald-500 w-2 h-8 rounded-full"></span> <span></span>
+                    </h2>
+                    <div id="experience-container" class="space-y-6"></div>
+                </section>
 
-        <!-- Footer -->
-        <footer class="text-center text-gray-500 text-sm mt-12 pt-8 border-t-2 border-gray-300"></footer>
+                <!-- Education -->
+                <section id="education-section" class="fade-in">
+                    <h2 id="education-title" class="text-3xl font-bold text-white mb-6 flex items-center gap-3">
+                        <span class="bg-blue-500 w-2 h-8 rounded-full"></span> <span></span>
+                    </h2>
+                    <div id="education-container" class="grid grid-cols-1 gap-6"></div>
+                </section>
+
+                <!-- Courses/Certificates -->
+                <section id="courses-section" class="fade-in">
+                    <h2 id="courses-title" class="text-3xl font-bold text-white mb-6 flex items-center gap-3">
+                        <span class="bg-purple-500 w-2 h-8 rounded-full"></span> <span></span>
+                    </h2>
+                    <div id="courses-container" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+                </section>
+
+                <!-- Footer -->
+                <footer class="text-center text-gray-500 text-sm pt-8 border-t border-gray-800"></footer>
+            </main>
+        </div>
     </div>
 
     <!-- Experience Details Modal -->
