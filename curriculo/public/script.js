@@ -402,8 +402,8 @@ document.addEventListener('DOMContentLoaded', function () {
             const footer = document.querySelector('footer');
             if (!footer) return;
             const text = lang === 'br' ?
-                `&copy; ${resumeData.footerYear} Ricardo Martins de Oliveira. <br> <span class="text-xs text-slate-600">Built with VS Code & AI</span>` :
-                `&copy; ${resumeData.footerYear} Ricardo Martins de Oliveira. <br> <span class="text-xs text-slate-600">Built with VS Code & AI</span>`;
+                `&copy; ${resumeData.footerYear} Ricardo Martins de Oliveira.` :
+                `&copy; ${resumeData.footerYear} Ricardo Martins de Oliveira.`;
             footer.innerHTML = `<span class="text-slate-500">${text}</span>`;
         },
         sectionTitles: (lang) => {

@@ -237,12 +237,26 @@ function generateAndOpenModal() {
 
     // Download Action
     btnDownload.onclick = () => {
-        const element = pageContent.querySelector('.pdf-page');
+        const originalElement = pageContent.querySelector('.pdf-page');
+
+        // Clone the element to render it in a clean context (avoiding modal scroll/fixed positioning issues)
+        const clonedElement = originalElement.cloneNode(true);
+
+        // Create a temporary container
+        const container = document.createElement('div');
+        container.style.position = 'absolute';
+        container.style.top = '-9999px';
+        container.style.left = '0';
+        container.style.width = '210mm'; // Force A4 width
+        container.style.zIndex = '-1';
+        container.appendChild(clonedElement);
+        document.body.appendChild(container);
+
         const opt = {
             margin: 0,
             filename: `CV_Ricardo_Oliveira_${lang.toUpperCase()}.pdf`,
             image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2, useCORS: true },
+            html2canvas: { scale: 2, useCORS: true, scrollY: 0 },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
             pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
         };
@@ -250,12 +264,14 @@ function generateAndOpenModal() {
         const originalText = btnDownload.innerHTML;
         btnDownload.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ${t('Gerando...', 'Generating...')}`;
 
-        html2pdf().set(opt).from(element).save().then(() => {
+        html2pdf().set(opt).from(clonedElement).save().then(() => {
             btnDownload.innerHTML = originalText;
+            document.body.removeChild(container); // Clean up
         }).catch(err => {
             console.error(err);
             alert("Erro ao gerar PDF: " + err.message);
             btnDownload.innerHTML = originalText;
+            document.body.removeChild(container); // Clean up
         });
     };
 }
