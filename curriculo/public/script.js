@@ -649,19 +649,31 @@ document.addEventListener('DOMContentLoaded', function () {
     const downloadPdfBtn = document.getElementById('download-pdf-btn');
     if (downloadPdfBtn) {
         downloadPdfBtn.addEventListener('click', function () {
+            // Check if loaded, if not load it
             if (typeof html2pdf === 'undefined') {
-                alert('Erro: Biblioteca PDF não carregada.');
-                return;
+                downloadPdfBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                const script = document.createElement('script');
+                script.src = "https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js";
+                script.onload = () => {
+                    generatePDF();
+                    downloadPdfBtn.innerHTML = '<i class="fas fa-file-pdf fa-lg"></i>';
+                };
+                document.body.appendChild(script);
+            } else {
+                generatePDF();
             }
-            const element = document.body;
-            const opt = {
-                margin: 0,
-                filename: 'Ricardo_Martins_Curriculo.pdf',
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, useCORS: true, scrollY: 0, backgroundColor: '#0b1120' }, // Dark BG for PDF
-                jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-            };
-            html2pdf().set(opt).from(element).save();
+
+            function generatePDF() {
+                const element = document.body;
+                const opt = {
+                    margin: 0,
+                    filename: 'Ricardo_Martins_Curriculo.pdf',
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 2, useCORS: true, scrollY: 0, backgroundColor: '#0b1120' },
+                    jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+                };
+                html2pdf().set(opt).from(element).save();
+            }
         });
     }
 });

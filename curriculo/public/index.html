@@ -4,7 +4,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ricardo Martins de Oliveira - Portfólio</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Performance Optimization: Preconnect -->
+    <link rel="preconnect" href="https://cdn.tailwindcss.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://flagcdn.com">
+
+    <!-- Primary Meta Tags -->
+    <title>Ricardo Martins de Oliveira - Portfólio | Software Engineer & Tech Lead</title>
+    <meta name="title" content="Ricardo Martins de Oliveira - Portfólio | Software Engineer & Tech Lead">
+    <meta name="description"
+        content="Engenheiro de Software e Tech Lead especialista em Go (Golang), Docker e IA. Descubra projetos de arquitetura escalável e inovação. Acesse meu portfólio!">
+    <meta name="keywords"
+        content="Ricardo Martins de Oliveira, Software Engineer, Tech Lead, Go, Golang, Docker, AI, Backend Developer, Full Stack, Microservices, DevOps, Brasil">
+    <meta name="author" content="Ricardo Martins de Oliveira">
+    <meta name="robots" content="index, follow">
+
+    <!-- Canonical URL (Yoast Standard) -->
+    <link rel="canonical" href="https://studio4you.com.br/profile.php">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://studio4you.com.br/profile.php">
+    <meta property="og:title" content="Ricardo Martins de Oliveira - Portfólio | Tech Lead Go & AI">
+    <meta property="og:description"
+        content="Engenheiro de Software e Tech Lead especialista em Go (Golang), Docker e IA. Descubra projetos de arquitetura escalável e inovação. Acesse meu portfólio!">
+    <meta property="og:image" content="https://studio4you.com.br/perfil.webp">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://studio4you.com.br/profile.php">
+    <meta property="twitter:title" content="Ricardo Martins de Oliveira - Portfólio | Tech Lead Go & AI">
+    <meta property="twitter:description"
+        content="Engenheiro de Software e Tech Lead especialista em Go (Golang), Docker e IA. Descubra projetos de arquitetura escalável e inovação. Acesse meu portfólio!">
+    <meta property="twitter:image" content="https://studio4you.com.br/perfil.webp">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="https://studio4you.com.br/perfil.webp">
+
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Ricardo Martins de Oliveira",
+      "jobTitle": "Software Engineer & Tech Lead",
+      "url": "https://studio4you.com.br/profile.php",
+      "image": "https://studio4you.com.br/perfil.webp",
+      "sameAs": [
+        "https://www.linkedin.com/in/ricardodeoliveira96/",
+        "https://github.com/Roliveira96",
+        "https://wa.me/5542999486362"
+      ],
+      "knowsAbout": ["Go", "Golang", "Docker", "Artificial Intelligence", "Microservices", "DevOps", "Angular", "PostgreSQL", "Software Architecture"]
+    }
+    </script>
+
     <!-- Dependencies -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
@@ -32,8 +90,8 @@
 
     <!-- Language Switcher -->
     <div class="language-switcher">
-        <img src="https://flagcdn.com/w40/br.png" alt="Português" id="lang-pt-btn">
-        <img src="https://flagcdn.com/w40/us.png" alt="English" id="lang-en-btn">
+        <img src="https://flagcdn.com/w40/br.png" alt="Português" id="lang-pt-btn" width="40" height="26">
+        <img src="https://flagcdn.com/w40/us.png" alt="English" id="lang-en-btn" width="40" height="26">
     </div>
 
     <!-- Download PDF Button -->
@@ -163,9 +221,9 @@
     </div>
 
     <!-- Scripts -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <script src="data.js"></script>
-    <script src="script.js"></script>
+    <!-- html2pdf loaded dynamically for performance -->
+    <script src="data.js" defer></script>
+    <script src="script.js" defer></script>
 </body>
 
 </html>
