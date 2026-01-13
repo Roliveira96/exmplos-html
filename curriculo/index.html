@@ -121,31 +121,44 @@
     <!-- Experience Details Modal -->
     <div id="generalModal" class="modal-overlay">
         <div class="modal-content">
-            <button class="modal-close-button" id="closeModal">&times;</button>
-            <h3 id="modalTitle" class="text-3xl font-bold text-indigo-800 mb-4"></h3>
-            <p id="modalSubTitle" class="text-xl text-gray-600 mb-4"></p>
-            <div id="modalDescription" class="text-lg text-gray-700 mb-4"></div>
-            <ul id="modalResponsibilities" class="list-disc list-inside text-lg text-gray-700 ml-4 mb-6 space-y-2"></ul>
-            <button id="readContentButton"
-                class="bg-indigo-600 text-white py-3 px-6 rounded-lg font-semibold shadow-md hover:bg-indigo-700 transition duration-300 ease-in-out transform hover:scale-100 flex items-center justify-center space-x-2">
-                <i class="fas fa-volume-up mr-2"></i>
-                <span>Ler Conteúdo</span>
-            </button>
+            <button class="modal-close-button" id="closeModal"><i class="fas fa-times"></i></button>
+            <h3 id="modalTitle" class="text-3xl font-bold text-white mb-2 font-heading"></h3>
+            <p id="modalSubTitle" class="text-emerald-400 text-sm font-mono mb-6"></p>
+            <div id="modalDescription" class="text-gray-300 leading-relaxed text-lg mb-6"></div>
+            <ul id="modalResponsibilities" class="list-disc list-inside text-gray-300 ml-4 mb-6 space-y-2"></ul>
+
+            <div class="modal-actions">
+                <button id="modalCloseBtnAction" class="btn-secondary-modal">
+                    <span>Fechar</span>
+                </button>
+                <button id="readContentButton" class="btn-primary-modal">
+                    <i class="fas fa-volume-up"></i>
+                    <span>Ler Conteúdo</span>
+                </button>
+            </div>
             <audio id="audioPlayer" src="" style="display: none;"></audio>
         </div>
     </div>
 
     <!-- Certificate Modal -->
     <div id="certificateModal" class="modal-overlay">
-        <div class="modal-content p-4">
-            <button class="modal-close-button" id="closeCertificateModal">&times;</button>
-            <img id="certificateImage" src="" alt="Certificado" class="w-full h-auto rounded-lg mb-4">
-            <p id="certificateDescription" class="text-gray-700 text-sm my-4"></p>
-            <a id="certificatePdfLink" href="" target="_blank"
-                class="bg-indigo-600 text-white py-2 px-4 text-sm rounded-lg font-semibold shadow-md hover:bg-indigo-700 transition duration-300 ease-in-out transform hover:scale-100 flex items-center justify-center space-x-2 w-auto">
-                <i class="fas fa-file-pdf mr-2"></i>
-                <span>Ver PDF</span>
-            </a>
+        <div class="modal-content">
+            <button class="modal-close-button" id="closeCertificateModal"><i class="fas fa-times"></i></button>
+            <div class="bg-black/40 p-4 rounded-xl border border-white/5 mb-4">
+                <img id="certificateImage" src="" alt="Certificado"
+                    class="w-full h-auto object-contain max-h-[60vh] mx-auto rounded-lg">
+            </div>
+            <p id="certificateDescription" class="text-gray-300 text-sm leading-relaxed mb-6"></p>
+
+            <div class="modal-actions">
+                <button id="certModalCloseBtnAction" class="btn-secondary-modal">
+                    <span>Fechar</span>
+                </button>
+                <a id="certificatePdfLink" href="" target="_blank" class="btn-primary-modal w-auto">
+                    <i class="fas fa-file-pdf"></i>
+                    <span>Ver PDF</span>
+                </a>
+            </div>
         </div>
     </div>
 

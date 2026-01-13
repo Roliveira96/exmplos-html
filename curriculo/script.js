@@ -178,7 +178,91 @@ document.addEventListener('DOMContentLoaded', function () {
         summary: (lang) => {
             const container = document.querySelector('#summary-content');
             if (!container) return;
-            container.innerHTML = `<p class="leading-relaxed text-slate-300 text-lg">${resumeData.summary[lang]}</p>`;
+            // Append the button after the text
+            const buttonText = lang === 'br' ? 'Ouvir minha história' : 'Listen to my story';
+
+            container.innerHTML = `
+                <p class="leading-relaxed text-slate-300 text-lg mb-6">${resumeData.summary[lang]}</p>
+                <div class="flex justify-start">
+                    <button id="btn-listen-story" class="flex items-center gap-3 px-5 py-2.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-lg transition-all group">
+                        <i class="fas fa-play text-sm group-hover:scale-110 transition-transform"></i>
+                        <span class="text-sm font-semibold tracking-wide">${buttonText}</span>
+                    </button>
+                    <!-- Visualizer placeholder could go here -->
+                </div>
+            `;
+
+            // Bind click event for the story button
+            const storyBtn = document.getElementById('btn-listen-story');
+            if (storyBtn) {
+                storyBtn.addEventListener('click', async () => {
+                    const originalText = storyBtn.querySelector('span').textContent;
+                    const originalIcon = storyBtn.querySelector('i').className;
+
+                    // Loading State
+                    storyBtn.disabled = true;
+                    storyBtn.querySelector('span').textContent = lang === 'br' ? 'Gerando Áudio...' : 'Generating Audio...';
+                    storyBtn.querySelector('i').className = 'fas fa-spinner fa-spin';
+                    storyBtn.classList.add('opacity-75', 'cursor-not-allowed');
+
+                    try {
+                        // Stop any existing audio
+                        window.speechSynthesis.cancel();
+                        if (audioPlayer) {
+                            audioPlayer.pause();
+                            audioPlayer.currentTime = 0;
+                        }
+
+                        // Use the 'story' text from data.js
+                        const storyText = resumeData.story[lang];
+
+                        const response = await fetch('http://localhost:3001/synthesize', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ text: storyText, lang: lang })
+                        });
+
+                        if (!response.ok) throw new Error('Network response was not ok');
+
+                        const blob = await response.blob();
+                        const url = URL.createObjectURL(blob);
+
+                        if (audioPlayer) {
+                            audioPlayer.src = url;
+                            audioPlayer.onplay = () => {
+                                storyBtn.querySelector('span').textContent = lang === 'br' ? 'Reproduzindo...' : 'Playing...';
+                                storyBtn.querySelector('i').className = 'fas fa-volume-up animate-pulse';
+                            };
+                            audioPlayer.onended = () => {
+                                storyBtn.disabled = false;
+                                storyBtn.querySelector('span').textContent = originalText;
+                                storyBtn.querySelector('i').className = originalIcon;
+                                storyBtn.classList.remove('opacity-75', 'cursor-not-allowed');
+                                URL.revokeObjectURL(url);
+                            };
+                            audioPlayer.play();
+                        } else {
+                            // Fallback
+                            const audio = new Audio(url);
+                            audio.play();
+                            audio.onended = () => {
+                                storyBtn.disabled = false;
+                                storyBtn.querySelector('span').textContent = originalText;
+                                storyBtn.querySelector('i').className = originalIcon;
+                                storyBtn.classList.remove('opacity-75', 'cursor-not-allowed');
+                            }
+                        }
+
+                    } catch (err) {
+                        console.error("Story Audio Error:", err);
+                        alert("Erro ao gerar áudio da história.");
+                        storyBtn.disabled = false;
+                        storyBtn.querySelector('span').textContent = originalText;
+                        storyBtn.querySelector('i').className = originalIcon;
+                        storyBtn.classList.remove('opacity-75', 'cursor-not-allowed');
+                    }
+                });
+            }
         },
         experience: (lang) => {
             const container = document.getElementById('experience-container');
@@ -360,18 +444,28 @@ document.addEventListener('DOMContentLoaded', function () {
         document.documentElement.lang = lang === 'br' ? 'pt-BR' : 'en';
 
         if (langPtButton) langPtButton.classList.toggle('active', lang === 'br');
-        if (langEnButton) langEnButton.classList.toggle('active', lang === 'eua');
+        if (langEnButton) langEnButton.classList.toggle('active', lang === 'en');
 
         Object.values(render).forEach(fn => fn(lang));
         applyMatrixToCards(); // Re-apply Matrix Effect after re-render
+
+        // Update Modal Button Texts
+        const closeText = lang === 'br' ? 'Fechar' : 'Close';
+
+        const modalCloseBtnAction = document.getElementById('modalCloseBtnAction');
+        if (modalCloseBtnAction) modalCloseBtnAction.querySelector('span').textContent = closeText;
+
+        const certModalCloseBtnAction = document.getElementById('certModalCloseBtnAction');
+        if (certModalCloseBtnAction) certModalCloseBtnAction.querySelector('span').textContent = closeText;
     }
 
     if (langPtButton) langPtButton.addEventListener('click', () => switchLanguage('br'));
-    if (langEnButton) langEnButton.addEventListener('click', () => switchLanguage('eua'));
+    if (langEnButton) langEnButton.addEventListener('click', () => switchLanguage('en'));
 
     // Modal Logic
     const generalModal = document.getElementById('generalModal');
     const closeModalButton = document.getElementById('closeModal');
+    const modalCloseBtnAction = document.getElementById('modalCloseBtnAction'); // New Hook
     const modalTitle = document.getElementById('modalTitle');
     const modalSubTitle = document.getElementById('modalSubTitle');
     const modalDescription = document.getElementById('modalDescription');
@@ -399,6 +493,9 @@ document.addEventListener('DOMContentLoaded', function () {
         const readBtn = document.getElementById('readContentButton');
         if (readBtn) readBtn.querySelector('span').textContent = currentLang === 'br' ? 'Ler Conteúdo' : 'Read Content';
 
+        // Update Close Button Text on Open as well just in case
+        if (modalCloseBtnAction) modalCloseBtnAction.querySelector('span').textContent = currentLang === 'br' ? 'Fechar' : 'Close';
+
         generalModal.classList.add('open');
         document.body.style.overflow = 'hidden';
     }
@@ -409,12 +506,14 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     if (closeModalButton) closeModalButton.addEventListener('click', closeExperienceModal);
+    if (modalCloseBtnAction) modalCloseBtnAction.addEventListener('click', closeExperienceModal); // New Listener
     if (generalModal) generalModal.addEventListener('click', (e) => {
         if (e.target === generalModal) closeExperienceModal();
     });
 
     const certificateModal = document.getElementById('certificateModal');
     const closeCertificateModalButton = document.getElementById('closeCertificateModal');
+    const certModalCloseBtnAction = document.getElementById('certModalCloseBtnAction'); // New Hook
     const certificateImage = document.getElementById('certificateImage');
     const certificatePdfLink = document.getElementById('certificatePdfLink');
     const certificateDescription = document.getElementById('certificateDescription');
@@ -431,6 +530,8 @@ document.addEventListener('DOMContentLoaded', function () {
             if (span) span.textContent = currentLang === 'br' ? 'Ver PDF' : 'View PDF';
         }
 
+        if (certModalCloseBtnAction) certModalCloseBtnAction.querySelector('span').textContent = currentLang === 'br' ? 'Fechar' : 'Close';
+
         certificateModal.classList.add('open');
         document.body.style.overflow = 'hidden';
     }
@@ -441,12 +542,108 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     if (closeCertificateModalButton) closeCertificateModalButton.addEventListener('click', closeCertificateModal);
+    if (certModalCloseBtnAction) certModalCloseBtnAction.addEventListener('click', closeCertificateModal); // New Listener
     if (certificateModal) certificateModal.addEventListener('click', (e) => {
         if (e.target === certificateModal) closeCertificateModal();
     });
 
     // Init
     switchLanguage('br');
+
+    // --- Audio / TTS Logic ---
+    const readBtn = document.getElementById('readContentButton');
+    const audioPlayer = document.getElementById('audioPlayer');
+
+    if (readBtn) {
+        readBtn.addEventListener('click', async () => {
+            const description = document.getElementById('modalDescription').innerText;
+            const title = document.getElementById('modalTitle').innerText;
+            const fullText = `${title}. ${description}`;
+
+            // 1. Loading State
+            const originalText = currentLang === 'br' ? 'Ler Conteúdo' : 'Read Content'; // Force correct text
+            const originalIconClass = 'fas fa-volume-up';
+
+            readBtn.disabled = true;
+            readBtn.querySelector('span').textContent = currentLang === 'br' ? 'Carregando...' : 'Loading...';
+            readBtn.querySelector('i').className = 'fas fa-spinner fa-spin';
+            readBtn.classList.add('opacity-75', 'cursor-not-allowed');
+
+            try {
+                // Cancel any current speech (browser) and reset state if needed
+                window.speechSynthesis.cancel();
+
+                // If using Audio Element from previous attempts or global
+                if (audioPlayer) {
+                    audioPlayer.pause();
+                    audioPlayer.currentTime = 0;
+                }
+
+                const response = await fetch('http://localhost:3001/synthesize', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        text: fullText,
+                        lang: currentLang // Send language context if needed by backend for voice selection logic
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Falha ao gerar áudio. Verifique se o servidor está rodando.');
+                }
+
+                const blob = await response.blob();
+                const url = URL.createObjectURL(blob);
+
+                if (audioPlayer) {
+                    audioPlayer.src = url;
+                    audioPlayer.onplay = () => {
+                        readBtn.querySelector('span').textContent = currentLang === 'br' ? 'Reproduzindo...' : 'Playing...';
+                        readBtn.querySelector('i').className = 'fas fa-volume-up animate-pulse';
+                    };
+                    audioPlayer.onended = () => {
+                        resetButton();
+                        URL.revokeObjectURL(url); // Cleanup
+                    };
+                    audioPlayer.onerror = (e) => {
+                        console.error('Audio Playback Error:', e);
+                        resetButton();
+                    };
+
+                    await audioPlayer.play();
+                } else {
+                    // Fallback if no audio tag found
+                    const audio = new Audio(url);
+                    audio.play();
+                    audio.onended = resetButton;
+                }
+
+            } catch (error) {
+                console.error("Audio Generation Error:", error);
+                alert("Erro ao conectar com o serviço de voz. Verifique se o 'node server.js' está rodando.");
+                resetButton();
+            }
+
+            function resetButton() {
+                readBtn.disabled = false;
+                readBtn.querySelector('span').textContent = currentLang === 'br' ? 'Ler Conteúdo' : 'Read Content';
+                readBtn.querySelector('i').className = originalIconClass;
+                readBtn.classList.remove('opacity-75', 'cursor-not-allowed');
+            }
+        });
+    }
+
+    // Stop audio when closing modal
+    const stopAudio = () => {
+        if (audioPlayer) {
+            audioPlayer.pause();
+            audioPlayer.currentTime = 0;
+        }
+        window.speechSynthesis.cancel();
+    };
+    if (closeModalButton) closeModalButton.addEventListener('click', stopAudio);
+    if (modalCloseBtnAction) modalCloseBtnAction.addEventListener('click', stopAudio);
+    if (generalModal) generalModal.addEventListener('click', (e) => { if (e.target === generalModal) stopAudio(); });
 
     // PDF Download
     const downloadPdfBtn = document.getElementById('download-pdf-btn');
