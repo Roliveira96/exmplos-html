@@ -645,34 +645,157 @@ document.addEventListener('DOMContentLoaded', function () {
     if (modalCloseBtnAction) modalCloseBtnAction.addEventListener('click', stopAudio);
     if (generalModal) generalModal.addEventListener('click', (e) => { if (e.target === generalModal) stopAudio(); });
 
-    // PDF Download
+    // PDF Download - Custom A4 Layout from data.js
     const downloadPdfBtn = document.getElementById('download-pdf-btn');
     if (downloadPdfBtn) {
         downloadPdfBtn.addEventListener('click', function () {
-            // Check if loaded, if not load it
             if (typeof html2pdf === 'undefined') {
                 downloadPdfBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
                 const script = document.createElement('script');
                 script.src = "https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js";
                 script.onload = () => {
-                    generatePDF();
+                    generateCustomPDF();
                     downloadPdfBtn.innerHTML = '<i class="fas fa-file-pdf fa-lg"></i>';
                 };
                 document.body.appendChild(script);
             } else {
-                generatePDF();
+                generateCustomPDF();
             }
 
-            function generatePDF() {
-                const element = document.body;
+            function generateCustomPDF() {
+                // 1. Create a container for the PDF content (off-screen)
+                const pdfContainer = document.createElement('div');
+                pdfContainer.style.width = '800px'; // Approx A4 width at 72dpi, will be scaled
+                pdfContainer.style.backgroundColor = '#ffffff';
+                pdfContainer.style.color = '#333333';
+                pdfContainer.style.fontFamily = "'Helvetica', 'Arial', sans-serif";
+                pdfContainer.style.padding = '40px';
+                pdfContainer.style.position = 'absolute';
+                pdfContainer.style.left = '-9999px';
+                pdfContainer.style.top = '0';
+
+                // Colors
+                const accentColor = '#10b981'; // Emerald 500
+                const darkColor = '#1e293b';   // Slate 800
+
+                // Helper to format text
+                const lang = currentLang; // Uses the currently selected language in the app
+                const t = (pt, en) => lang === 'br' ? pt : en;
+
+                // 2. Build the HTML Structure from resumeData
+                // Header
+                let html = `
+                    <div style="border-bottom: 2px solid ${accentColor}; padding-bottom: 20px; margin-bottom: 30px; display: flex; align-items: center; justify-content: space-between;">
+                        <div>
+                            <h1 style="color: ${darkColor}; font-size: 32px; margin: 0 0 5px 0; font-weight: 700;">${resumeData.profile.name}</h1>
+                            <p style="color: ${accentColor}; font-size: 18px; margin: 0; font-weight: 600;">Software Engineer & Tech Lead</p>
+                        </div>
+                        <div style="text-align: right; font-size: 12px; line-height: 1.6;">
+                            <div style="margin-bottom: 4px;">${resumeData.profile.address}</div>
+                            <div style="margin-bottom: 4px;">${resumeData.profile.contact.email.display}</div>
+                            <div>${resumeData.profile.contact.phone.display}</div>
+                            <div style="margin-top: 5px;">
+                                <a href="${resumeData.socialLinks.find(l => l.name === 'LinkedIn').url}" style="color: ${accentColor}; text-decoration: none; margin-left: 10px;">LinkedIn</a>
+                                <a href="${resumeData.socialLinks.find(l => l.name === 'GitHub').url}" style="color: ${accentColor}; text-decoration: none; margin-left: 10px;">GitHub</a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                // Summary
+                html += `
+                    <div style="margin-bottom: 25px;">
+                        <h2 style="color: ${darkColor}; font-size: 18px; border-left: 5px solid ${accentColor}; padding-left: 10px; margin-bottom: 12px; text-transform: uppercase;">${t('Resumo Profissional', 'Professional Summary')}</h2>
+                        <p style="font-size: 13px; line-height: 1.6; text-align: justify; margin: 0;">
+                            ${resumeData.summary[lang].replace(/<[^>]*>/g, '')} <!-- Strip HTML tags from summary -->
+                        </p>
+                    </div>
+                `;
+
+                // Experience
+                html += `
+                    <div style="margin-bottom: 25px;">
+                        <h2 style="color: ${darkColor}; font-size: 18px; border-left: 5px solid ${accentColor}; padding-left: 10px; margin-bottom: 15px; text-transform: uppercase;">${t('Experiência Profissional', 'Work Experience')}</h2>
+                `;
+
+                resumeData.experience.forEach(exp => {
+                    html += `
+                        <div style="margin-bottom: 20px;">
+                            <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 5px;">
+                                <h3 style="font-size: 16px; font-weight: 700; color: ${darkColor}; margin: 0;">${exp.role[lang]}</h3>
+                                <span style="font-size: 12px; font-weight: 600; color: ${accentColor}; font-family: monospace;">${exp.duration[lang]}</span>
+                            </div>
+                            <div style="font-size: 14px; font-style: italic; color: #555; margin-bottom: 8px;">${exp.company[lang]}</div>
+                            <div style="font-size: 13px; line-height: 1.5; margin-bottom: 8px;">${exp.summary[lang]}</div>
+                            <ul style="font-size: 13px; margin: 0; padding-left: 20px; line-height: 1.4;">
+                                ${exp.responsibilities[lang].map(r => `<li style="margin-bottom: 4px;">${r}</li>`).join('')}
+                            </ul>
+                        </div>
+                    `;
+                });
+                html += `</div>`;
+
+                // Skills (Two Columns)
+                html += `
+                    <div style="margin-bottom: 25px; page-break-inside: avoid;">
+                        <h2 style="color: ${darkColor}; font-size: 18px; border-left: 5px solid ${accentColor}; padding-left: 10px; margin-bottom: 15px; text-transform: uppercase;">${t('Habilidades Técnicas', 'Technical Skills')}</h2>
+                        <div style="display: flex; flex-wrap: wrap; gap: 20px;">
+                `;
+
+                resumeData.skills[lang].forEach(group => {
+                    const skillNames = group.skills.map(s => s.name).join(', ');
+                    html += `
+                        <div style="flex: 1 1 30%; min-width: 200px; margin-bottom: 10px;">
+                            <h4 style="font-size: 14px; font-weight: 700; color: ${darkColor}; margin: 0 0 5px 0;">${group.groupName}</h4>
+                            <p style="font-size: 12px; line-height: 1.4; margin: 0; color: #555;">${skillNames}</p>
+                        </div>
+                    `;
+                });
+                html += `</div></div>`;
+
+                // Education
+                html += `
+                    <div style="margin-bottom: 25px; page-break-inside: avoid;">
+                        <h2 style="color: ${darkColor}; font-size: 18px; border-left: 5px solid ${accentColor}; padding-left: 10px; margin-bottom: 15px; text-transform: uppercase;">${t('Formação Acadêmica', 'Education')}</h2>
+                `;
+                resumeData.education.forEach(edu => {
+                    html += `
+                    <div style="margin-bottom: 10px;">
+                        <h4 style="font-size: 14px; font-weight: 700; margin: 0; color: ${darkColor};">${edu.institution[lang]}</h4>
+                        <div style="font-size: 12px; color: #555; display: flex; justify-content: space-between;">
+                            <span>${edu.course[lang]}</span>
+                            <span>${edu.location}</span>
+                        </div>
+                    </div>
+                    `;
+                });
+                html += `</div>`;
+
+                // Languages
+                const langs = resumeData.languages[lang].join(' • ');
+                html += `
+                    <div style="margin-bottom: 0px; page-break-inside: avoid;">
+                         <h2 style="color: ${darkColor}; font-size: 18px; border-left: 5px solid ${accentColor}; padding-left: 10px; margin-bottom: 15px; text-transform: uppercase;">${t('Idiomas', 'Languages')}</h2>
+                         <p style="font-size: 13px;">${langs}</p>
+                    </div>
+                `;
+
+                pdfContainer.innerHTML = html;
+                document.body.appendChild(pdfContainer);
+
+                // 3. Generate PDF
                 const opt = {
-                    margin: 0,
-                    filename: 'Ricardo_Martins_Curriculo.pdf',
+                    margin: [10, 10, 10, 10], // mm
+                    filename: `CV_Ricardo_Oliveira_${lang.toUpperCase()}.pdf`,
                     image: { type: 'jpeg', quality: 0.98 },
-                    html2canvas: { scale: 2, useCORS: true, scrollY: 0, backgroundColor: '#0b1120' },
-                    jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+                    html2canvas: { scale: 2, useCORS: true },
+                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
                 };
-                html2pdf().set(opt).from(element).save();
+
+                html2pdf().set(opt).from(pdfContainer).save().then(() => {
+                    // Cleanup
+                    document.body.removeChild(pdfContainer);
+                });
             }
         });
     }

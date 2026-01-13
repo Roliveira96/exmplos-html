@@ -43,7 +43,7 @@ const resumeData = {
         },
         {
             name: "Site",
-            url: "https://studio4you.com.br/profile.php",
+            url: "https://rmo.dev.br/",
             icon: "fas fa-globe fa-lg",
             colorClass: "bg-blue-500 hover:bg-blue-600"
         }
