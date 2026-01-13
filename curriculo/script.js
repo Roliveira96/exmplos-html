@@ -21,8 +21,107 @@ function pcmToWav(pcmData, sampleRate) {
     return new Blob([view], { type: 'audio/wav' });
 }
 
+// Matrix Effect Class
+class MatrixEffect {
+    constructor(element) {
+        this.element = element;
+        // Check if canvas already exists to avoid duplication
+        if (this.element.querySelector('.matrix-canvas')) return;
+
+        this.canvas = document.createElement('canvas');
+        this.canvas.classList.add('matrix-canvas');
+        this.element.appendChild(this.canvas);
+        this.ctx = this.canvas.getContext('2d');
+
+        this.resize();
+        this.init();
+
+        // Use ResizeObserver for more robust resizing
+        this.observer = new ResizeObserver(() => this.resize());
+        this.observer.observe(this.element);
+
+        this.animate();
+    }
+
+    resize() {
+        // Canvas is sized by CSS (40% width), but we need internal resolution to match physical pixels?
+        // Actually, let's trust offsetWidth/Height of the canvas itself if populated, 
+        // OR layout is absolute, so we need to match the parent's dimensions but maybe restricted?
+        // CSS rules say width: 40%, height: 100%. 
+        // So canvas.width should be offsetWidth.
+        this.width = this.canvas.offsetWidth;
+        this.height = this.canvas.offsetHeight;
+
+        // Handle case where element might be hidden or 0 size
+        if (this.width === 0 || this.height === 0) return;
+
+        this.canvas.width = this.width;
+        this.canvas.height = this.height;
+
+        this.fontSize = 14;
+        this.columns = Math.floor(this.width / this.fontSize);
+        this.drops = [];
+        for (let i = 0; i < this.columns; i++) {
+            this.drops[i] = Math.random() * -100; // Start random above
+        }
+    }
+
+    init() {
+        this.characters = "01ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        this.characters = this.characters.split("");
+    }
+
+    animate() {
+        if (!this.ctx || this.width === 0) {
+            requestAnimationFrame(() => this.animate());
+            return;
+        }
+
+        // Clear the entire canvas to have NO background color (transparent)
+        // This removes the trails fading effect, but the user requested "remove the background".
+        // To keep the text visible and moving without a background block:
+        this.ctx.clearRect(0, 0, this.width, this.height);
+
+        this.ctx.fillStyle = "#10b981"; // Emerald 500 (Text Color)
+        this.ctx.font = `${this.fontSize}px 'JetBrains Mono'`;
+
+        for (let i = 0; i < this.drops.length; i++) {
+            // Random chance to drop a character to look simpler? No, standard matrix is constant stream.
+            const text = this.characters[Math.floor(Math.random() * this.characters.length)];
+
+            // Draw text
+            this.ctx.fillText(text, i * this.fontSize, this.drops[i] * this.fontSize);
+
+            // Reset drop if it goes off screen
+            if (this.drops[i] * this.fontSize > this.height && Math.random() > 0.98) {
+                this.drops[i] = 0;
+            }
+            this.drops[i]++;
+        }
+        requestAnimationFrame(() => this.animate());
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function () {
-    // Utility for dynamic HTML generation
+    // Helper to apply effect to eligible cards
+    const applyMatrixToCards = () => {
+        // IDs: profile-card, contact-card, skills-card, languages-card, summary-card
+        const ids = ['profile-card', 'contact-card', 'skills-card', 'languages-card', 'summary-card'];
+        ids.forEach(id => {
+            const el = document.getElementById(id);
+            if (el && !el.querySelector('.matrix-canvas')) {
+                new MatrixEffect(el);
+            }
+        });
+
+        // Classes: experience-card (inside experience-container), education-card (we'll add this class)
+        document.querySelectorAll('.experience-card, .education-card').forEach(el => {
+            if (!el.querySelector('.matrix-canvas')) {
+                new MatrixEffect(el);
+            }
+        });
+    };
+
     const render = {
         profile: () => {
             const container = document.getElementById('profile-card');
@@ -129,8 +228,9 @@ document.addEventListener('DOMContentLoaded', function () {
         education: (lang) => {
             const container = document.getElementById('education-container');
             if (!container) return;
+            // Added 'education-card' class for Matrix Targeting
             container.innerHTML = resumeData.education.map(edu => `
-                 <div class="bg-slate-800/30 p-5 rounded-xl border border-slate-700/50 flex gap-4 items-center">
+                 <div class="bg-slate-800/30 p-5 rounded-xl border border-slate-700/50 flex gap-4 items-center education-card">
                     <div class="flex-shrink-0 w-12 h-12 bg-blue-500/10 text-blue-400 rounded-lg flex items-center justify-center border border-blue-500/20">
                         <i class="fas fa-graduation-cap fa-lg"></i>
                     </div>
@@ -263,6 +363,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (langEnButton) langEnButton.classList.toggle('active', lang === 'eua');
 
         Object.values(render).forEach(fn => fn(lang));
+        applyMatrixToCards(); // Re-apply Matrix Effect after re-render
     }
 
     if (langPtButton) langPtButton.addEventListener('click', () => switchLanguage('br'));

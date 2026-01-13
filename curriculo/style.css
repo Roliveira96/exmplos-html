@@ -52,12 +52,47 @@ body::before {
     background: #475569;
 }
 
-/* Utilities */
-.glass-panel {
-    background: rgba(30, 41, 59, 0.4);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+/* Glassmorphism Panels */
+.glass-panel,
+.experience-card,
+.education-card {
+    position: relative;
+    overflow: hidden;
+    /* Standard overflow hidden, removed !important */
+    background: rgba(30, 41, 59, 0.7);
+    /* Slate 800 with opacity */
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.matrix-canvas {
+    position: absolute !important;
+    top: 0;
+    right: 0;
+    width: 40%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.15;
+    /* Radial Mask: Explicitly start visibility at Top Right */
+    mask-image: radial-gradient(circle at top right, black 0%, transparent 70%);
+    -webkit-mask-image: radial-gradient(circle at top right, black 0%, transparent 70%);
+}
+
+/* Ensure content stays on top of matrix bg */
+.glass-panel>*,
+.experience-card>*,
+.education-card>* {
+    position: relative;
+    z-index: 10;
+}
+
+.glass-panel:hover {
+    border-color: rgba(16, 185, 129, 0.2);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
 }
 
 .fade-in {
