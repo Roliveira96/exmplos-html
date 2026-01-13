@@ -26,7 +26,8 @@ function updateStatus() {
 }
 
 // Executa quando a página carrega
-window.addEventListener('load', updateStatus);
+// Executa assim que o DOM estiver pronto (mais rápido que 'load')
+document.addEventListener('DOMContentLoaded', updateStatus);
 // Atualiza a cada minuto
 setInterval(updateStatus, 60000);
 

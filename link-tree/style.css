@@ -69,6 +69,7 @@ body::before {
     text-align: center;
     margin-bottom: 2.5rem;
     animation: fadeInDown 0.8s ease-out;
+    will-change: transform, opacity;
 }
 
 .profile-img-container {

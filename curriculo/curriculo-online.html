@@ -1,936 +1,138 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ricardo Martins de Oliveira - Portfólio</title>
-    <!-- Carrega o Tailwind CSS CDN para estilização -->
+    <!-- Dependencies -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Carrega a fonte Poppins do Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Carrega o Font Awesome para ícones -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" xintegrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0V4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            overflow-x: hidden; /* Evita rolagem horizontal devido às animações */
-        }
-        /* Lógica de visibilidade do idioma */
-        .version-br, .version-eua, .version-br-inline, .version-eua-inline { display: none; }
-        body.version-br-active .version-br { display: block; }
-        body.version-eua-active .version-eua { display: block; }
-        /* Para elementos inline */
-        body.version-br-active .version-br-inline { display: inline; }
-        body.version-eua-active .version-eua-inline { display: inline; }
-
-
-        /* Animação de fade-in para as seções */
-        .fade-in {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
-        }
-        .fade-in.appear {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        /* Estilo para links hover mais pronunciado */
-        .animated-link {
-            transition: all 0.3s ease-in-out;
-        }
-        .animated-link:hover {
-            color: #4c51bf;
-            transform: translateY(-3px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-        /* Separador de seção com gradiente animado */
-        .section-separator {
-            content: '';
-            display: block;
-            width: 80px;
-            height: 4px;
-            background: linear-gradient(to right, #6366f1, #a78bfa, #6366f1); /* Gradiente repetido */
-            background-size: 200% 100%; /* Duplica o tamanho para permitir a animação */
-            animation: gradientMove 3s linear infinite alternate; /* Animação suave */
-            margin: 0 auto;
-            margin-top: 1.25rem;
-            border-radius: 9999px;
-        }
-
-        @keyframes gradientMove {
-            0% { background-position: 0% 50%; }
-            100% { background-position: 100% 50%; }
-        }
-
-        /* Estilos e Animações para o Fundo Animado */
-        .animated-background-shapes {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            z-index: -1;
-        }
-
-        .animated-background-shapes > div {
-            position: absolute;
-            background: rgba(167, 139, 250, 0.2);
-            border-radius: 50%;
-            animation: moveShapes 15s infinite alternate ease-in-out;
-            filter: blur(10px);
-        }
-
-        .animated-background-shapes > div:nth-child(1) { width: 80px; height: 80px; left: 10%; top: 20%; animation-duration: 18s; animation-delay: 0s; }
-        .animated-background-shapes > div:nth-child(2) { width: 120px; height: 120px; left: 60%; top: 50%; background: rgba(99, 102, 241, 0.2); animation-duration: 20s; animation-delay: 2s; }
-        .animated-background-shapes > div:nth-child(3) { width: 70px; height: 70px; left: 30%; top: 80%; animation-duration: 16s; animation-delay: 4s; }
-        .animated-background-shapes > div:nth-child(4) { width: 100px; height: 100px; left: 80%; top: 10%; background: rgba(167, 139, 250, 0.15); animation-duration: 22s; animation-delay: 6s; }
-        .animated-background-shapes > div:nth-child(5) { width: 90px; height: 90px; left: 5%; top: 60%; animation-duration: 17s; animation-delay: 8s; }
-        .animated-background-shapes > div:nth-child(6) { width: 110px; height: 110px; left: 70%; top: 30%; background: rgba(99, 102, 241, 0.15); animation-duration: 19s; animation-delay: 10s; }
-
-        @keyframes moveShapes {
-            0% { transform: translate(0, 0) scale(1); opacity: 0.6; }
-            25% { transform: translate(20px, -20px) scale(1.1); opacity: 0.8; }
-            50% { transform: translate(0, 40px) scale(0.9); opacity: 0.7; }
-            75% { transform: translate(-30px, -10px) scale(1.2); opacity: 0.9; }
-            100% { transform: translate(0, 0) scale(1); opacity: 0.6; }
-        }
-
-        .experience-card-left-border {
-            position: absolute;
-            top: 0;
-            left: 0;
-            height: 100%;
-            width: 8px;
-            background: linear-gradient(to bottom, #6366f1, #a78bfa, #6366f1);
-            background-size: 100% 200%;
-            animation: auroraMove 5s linear infinite alternate;
-            border-radius: 6px 0 0 6px;
-            z-index: 0;
-        }
-        @keyframes auroraMove {
-            0% { background-position: 0% 0%; }
-            100% { background-position: 0% 100%; }
-        }
-
-        .skill-card-glow:hover {
-            box-shadow: 0 0 15px rgba(99, 102, 241, 0.4), 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
-        }
-        .modal-overlay.open {
-            opacity: 1;
-            visibility: visible;
-        }
-        .modal-content {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            max-width: 600px;
-            width: 90%;
-            transform: scale(0.9);
-            transition: transform 0.3s ease-in-out;
-            position: relative;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-        #certificateModal .modal-content {
-             max-width: 900px; /* Aumenta a largura para o certificado */
-        }
-        .modal-overlay.open .modal-content {
-            transform: scale(1);
-        }
-        .modal-close-button {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: #6366f1;
-            transition: color 0.2s;
-        }
-        .modal-close-button:hover {
-            color: #4338ca;
-        }
-        
-        .language-switcher {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1001;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .language-switcher img {
-            width: 40px;
-            height: 40px;
-            cursor: pointer;
-            border-radius: 50%;
-            border: 2px solid transparent;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-        }
-        .language-switcher img:hover {
-            transform: scale(1.1);
-        }
-        .language-switcher img.active {
-            border-color: #6366f1;
-            box-shadow: 0 0 15px rgba(99, 102, 241, 0.5);
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+        integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0V4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-gradient-to-br from-indigo-50 to-purple-100 text-gray-800 leading-relaxed antialiased relative">
-    <!-- Barra de Progresso de Rolagem -->
-    <div id="progressBar" class="fixed top-0 left-0 w-0 h-1 bg-gradient-to-r from-indigo-500 to-purple-500 z-50 rounded-r-full"></div>
 
-    <!-- Fundo Animado -->
+<body class="bg-gradient-to-br from-indigo-50 to-purple-100 text-gray-800 leading-relaxed antialiased relative">
+    <!-- Progress Bar -->
+    <div id="progressBar"
+        class="fixed top-0 left-0 w-0 h-1 bg-gradient-to-r from-indigo-500 to-purple-500 z-50 rounded-r-full"></div>
+
+    <!-- Animated Background -->
     <div class="animated-background-shapes">
-        <div></div><div></div><div></div><div></div><div></div><div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
     </div>
-    
-    <!-- Seletor de Idioma -->
+
+    <!-- Language Switcher -->
     <div class="language-switcher">
         <img src="https://flagcdn.com/w40/br.png" alt="Português" id="lang-pt-btn">
         <img src="https://flagcdn.com/w40/us.png" alt="English" id="lang-en-btn">
     </div>
 
+    <!-- Download PDF Button -->
+    <button id="download-pdf-btn"
+        class="fixed bottom-5 right-5 z-50 bg-indigo-600 text-white p-4 rounded-full shadow-lg hover:bg-indigo-700 hover:scale-105 transition-all duration-300 flex items-center justify-center group"
+        title="Download PDF">
+        <i class="fas fa-file-pdf fa-lg"></i>
+    </button>
+
     <div class="container mx-auto p-4 sm:p-6 lg:p-8 max-w-4xl bg-white shadow-2xl rounded-3xl my-10 relative z-10">
-        <!-- Seção de Cabeçalho: Nome e Contato -->
-        <header class="text-center mb-12 pb-8 border-b-2 border-indigo-300">
-            <img src="https://1.gravatar.com/avatar/f45cc0a11dca2ddea73cf9bcd7cc823d138d29e3dbf15a29646ea348ec4b8205?size=256&d=initials" alt="Foto de Perfil de Ricardo Martins de Oliveira" class="w-32 h-32 rounded-full mx-auto mb-6 border-4 border-indigo-500 shadow-lg transform hover:scale-105 transition-all duration-300">
-            <h1 class="text-6xl sm:text-7xl font-extrabold text-indigo-900 mb-4 tracking-tight">Ricardo Martins de Oliveira</h1>
-            <p class="text-xl sm:text-2xl text-gray-600 mb-4">Trav. Arlindo Antunes, Guarapuava, Paraná</p>
-            <div class="text-xl sm:text-2xl text-gray-700 space-x-4 p-2 bg-indigo-50 rounded-xl shadow-inner inline-block">
-                <a href="https://wa.me/5542999486362" class="text-indigo-700 hover:text-indigo-900 transition duration-300 ease-in-out px-3 py-1 rounded-lg animated-link"><i class="fab fa-whatsapp mr-2"></i>42 9 9948 6362</a>
-                <span class="text-gray-400">|</span>
-                <a href="mailto:ricardo.de.oliveira96@gmail.com" class="text-indigo-700 hover:text-indigo-900 transition duration-300 ease-in-out px-3 py-1 rounded-lg animated-link"><i class="fas fa-envelope mr-2"></i>ricardo.de.oliveira96@gmail.com</a>
-            </div>
-        </header>
+        <!-- Header: Profile Info -->
+        <header class="text-center mb-12 pb-8 border-b-2 border-indigo-300"></header>
 
-        <!-- Seção de Links Sociais -->
+        <!-- Social Links -->
         <section class="mb-12 p-8 bg-indigo-50 rounded-2xl shadow-xl fade-in">
-            <div class="flex flex-wrap justify-center gap-4 mt-4">
-                <a href="https://www.linkedin.com/in/ricardodeoliveira96/" target="_blank" class="flex items-center bg-indigo-600 text-white py-3 px-6 rounded-full font-semibold shadow-md hover:bg-indigo-700 transition duration-300 ease-in-out transform hover:scale-105"> <i class="fab fa-linkedin fa-lg mr-2"></i> LinkedIn </a>
-                <a href="https://github.com/Roliveira96" target="_blank" class="flex items-center bg-gray-700 text-white py-3 px-6 rounded-full font-semibold shadow-md hover:bg-gray-800 transition duration-300 ease-in-out transform hover:scale-105"> <i class="fab fa-github fa-lg mr-2"></i> GitHub </a>
-                <a href="https://www.udemy.com/user/ricardo-martins-de-oliveira/" target="_blank" class="flex items-center bg-red-600 text-white py-3 px-6 rounded-full font-semibold shadow-md hover:bg-red-700 transition duration-300 ease-in-out transform hover:scale-105"> <i class="fas fa-graduation-cap fa-lg mr-2"></i> Udemy </a>
-                <a href="https://wa.me/5542999486362" target="_blank" class="flex items-center bg-green-500 text-white py-3 px-6 rounded-full font-semibold shadow-md hover:bg-green-600 transition duration-300 ease-in-out transform hover:scale-105"> <i class="fab fa-whatsapp fa-lg mr-2"></i> WhatsApp </a>
-                <a href="https://studio4you.com.br/profile.php" target="_blank" class="flex items-center bg-blue-500 text-white py-3 px-6 rounded-full font-semibold shadow-md hover:bg-blue-600 transition duration-300 ease-in-out transform hover:scale-105"> <i class="fas fa-globe fa-lg mr-2"></i> Site </a>
-            </div>
+            <div id="social-links-container" class="flex flex-wrap justify-center gap-4 mt-4"></div>
         </section>
 
-        <!-- Seção de Resumo Profissional -->
+        <!-- Professional Summary -->
         <section class="mb-12 p-8 bg-white rounded-2xl shadow-xl fade-in">
-            <h2 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-5 version-br">Resumo Profissional</h2>
-            <h2 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-5 version-eua">Professional Summary</h2>
+            <h2 id="summary-title" class="text-3xl sm:text-4xl font-bold text-gray-800 mb-5"></h2>
             <div class="section-separator"></div>
-            <p class="text-lg leading-relaxed text-gray-700 mt-8 version-br"> <span class="font-semibold text-indigo-700">Engenheiro de Software e Tech Lead</span> com uma trajetória que evoluiu do suporte técnico à direção e, atualmente, à liderança em desenvolvimento. Especializado em <span class="font-semibold text-indigo-700">Go (Golang), PostgreSQL e Angular</span>, atuo no <span class="font-semibold text-indigo-700">design e implementação de Microserviços (Docker)</span> e na <span class="font-semibold text-indigo-700">integração de sistemas com Inteligência Artificial</span>. Além da minha expertise em desenvolvimento back-end, tenho experiência com <span class="font-semibold text-indigo-700">DevOps</span> e um amplo espectro de tecnologias web, garantindo soluções robustas e inovadoras. </p>
-            <p class="text-lg leading-relaxed text-gray-700 mt-8 version-eua"> <span class="font-semibold text-indigo-700">Software Engineer and Tech Lead</span> with a career path that has evolved from technical support to management and, currently, to development leadership. Specializing in <span class="font-semibold text-indigo-700">Go (Golang), PostgreSQL, and Angular</span>, I work on the <span class="font-semibold text-indigo-700">design and implementation of Microservices (Docker)</span> and the <span class="font-semibold text-indigo-700">integration of systems with Artificial Intelligence</span>. In addition to my expertise in back-end development, I have experience with <span class="font-semibold text-indigo-700">DevOps</span> and a broad spectrum of web technologies, ensuring robust and innovative solutions. </p>
+            <div id="summary-content"></div>
         </section>
 
-        <!-- Seção de Experiência Profissional -->
+        <!-- Professional Experience -->
         <section class="mb-12 p-8 bg-white rounded-2xl shadow-xl fade-in">
-            <h2 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-5 version-br">Experiência Profissional</h2>
-            <h2 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-5 version-eua">Professional Experience</h2>
+            <h2 id="experience-title" class="text-3xl sm:text-4xl font-bold text-gray-800 mb-5"></h2>
             <div class="section-separator"></div>
-            <div id="experience-container" class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-                <!-- Card 1 -->
-                <div class="p-6 bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.01] transition-all duration-300 ease-in-out border border-gray-200 relative overflow-hidden group experience-card">
-                    <span class="experience-card-left-border"></span>
-                    <div class="relative z-10">
-                        <div class="version-br">
-                            <h3 class="text-xl sm:text-2xl font-semibold text-indigo-700 mb-1 exp-role">Tech Lead & Desenvolvedor Back-end Sênior</h3>
-                            <p class="text-gray-600 text-lg mb-1 exp-company">Grownt, São Paulo</p>
-                            <p class="text-gray-500 text-base mb-3 exp-duration">Desde 2023 até o momento</p>
-                            <p class="text-gray-700 mb-4 exp-summary">Líder técnico responsável pela organização e análise de projetos, garantindo a entrega de soluções eficientes.</p>
-                            <div class="hidden exp-description">Na Grownt, atuo como Tech Lead e Desenvolvedor Back-end Sênior, sendo responsável por:</div>
-                            <ul class="hidden exp-responsibilities"><li>Liderança técnica na organização e análise de projetos, garantindo a entrega de soluções eficientes.</li><li>Desenvolvimento e manutenção de sistemas web com Go, com foco em arquitetura de APIs e modelagem de banco de dados.</li><li>Atuação na integração de sistemas com Inteligência Artificial e implementação de Microserviços (Docker).</li><li>Colaboração com equipes multifuncionais para levantar requisitos e otimizar processos de desenvolvimento.</li></ul>
-                            <button class="bg-indigo-500 text-white py-2 px-4 rounded-lg font-semibold text-sm hover:bg-indigo-600 transition duration-300 ease-in-out transform hover:scale-105 view-more-btn">Ver Mais</button>
-                        </div>
-                        <div class="version-eua">
-                            <h3 class="text-xl sm:text-2xl font-semibold text-indigo-700 mb-1 exp-role">Tech Lead & Senior Back-end Developer</h3>
-                            <p class="text-gray-600 text-lg mb-1 exp-company">Grownt, São Paulo</p>
-                            <p class="text-gray-500 text-base mb-3 exp-duration">2023 to present</p>
-                            <p class="text-gray-700 mb-4 exp-summary">Technical leader responsible for project organization and analysis, ensuring the delivery of efficient solutions.</p>
-                            <div class="hidden exp-description">At Grownt, I work as a Tech Lead and Senior Back-end Developer, responsible for:</div>
-                            <ul class="hidden exp-responsibilities"><li>Technical leadership in project organization and analysis, ensuring the delivery of efficient solutions.</li><li>Development and maintenance of web systems with Go, focusing on API architecture and database modeling.</li><li>Integration of systems with Artificial Intelligence and implementation of Microservices (Docker).</li><li>Collaboration with cross-functional teams to gather requirements and optimize development processes.</li></ul>
-                            <button class="bg-indigo-500 text-white py-2 px-4 rounded-lg font-semibold text-sm hover:bg-indigo-600 transition duration-300 ease-in-out transform hover:scale-105 view-more-btn">View More</button>
-                        </div>
-                    </div>
-                </div>
-                <!-- Card 2 -->
-                <div class="p-6 bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.01] transition-all duration-300 ease-in-out border border-gray-200 relative overflow-hidden group experience-card">
-                    <span class="experience-card-left-border"></span>
-                    <div class="relative z-10">
-                        <div class="version-br">
-                            <h3 class="text-xl sm:text-2xl font-semibold text-indigo-700 mb-1 exp-role">Diretor de Suporte & Desenvolvedor Back-end PHP</h3>
-                            <p class="text-gray-600 text-lg mb-1 exp-company">K13 Agência Web, Guarapuava</p>
-                            <p class="text-gray-500 text-base mb-3 exp-duration">2020 — 2023</p>
-                            <p class="text-gray-700 mb-4 exp-summary">Liderei a equipe de suporte técnico e aprimorei a gestão de operações, com transição para desenvolvimento PHP.</p>
-                            <div class="hidden exp-description">Na K13 Agência Web, minha trajetória começou na liderança da equipe de suporte técnico, onde aprimorei a gestão de operações. Posteriormente, transicionei para a área de desenvolvimento, atuando com PHP, WordPress e Laravel. Minhas principais responsabilidades incluíram:</div>
-                            <ul class="hidden exp-responsibilities"><li>Liderança da equipe de suporte técnico e otimização de processos operacionais.</li><li>Desenvolvimento e manutenção de sistemas web utilizando PHP, WordPress e Laravel.</li><li>Criação de soluções personalizadas e garantia da qualidade do código.</li></ul>
-                            <button class="bg-indigo-500 text-white py-2 px-4 rounded-lg font-semibold text-sm hover:bg-indigo-600 transition duration-300 ease-in-out transform hover:scale-105 view-more-btn">Ver Mais</button>
-                        </div>
-                        <div class="version-eua">
-                            <h3 class="text-xl sm:text-2xl font-semibold text-indigo-700 mb-1 exp-role">Support Director & PHP Back-end Developer</h3>
-                            <p class="text-gray-600 text-lg mb-1 exp-company">K13 Web Agency, Guarapuava</p>
-                            <p class="text-gray-500 text-base mb-3 exp-duration">2020 — 2023</p>
-                            <p class="text-gray-700 mb-4 exp-summary">Led the technical support team and improved operations management, transitioning to PHP development.</p>
-                            <div class="hidden exp-description">At K13 Web Agency, my journey began leading the technical support team, where I improved operations management. Later, I transitioned to development, working with PHP, WordPress, and Laravel. My main responsibilities included:</div>
-                            <ul class="hidden exp-responsibilities"><li>Leading the technical support team and optimizing operational processes.</li><li>Developing and maintaining web systems using PHP, WordPress, and Laravel.</li><li>Creating custom solutions and ensuring code quality.</li></ul>
-                            <button class="bg-indigo-500 text-white py-2 px-4 rounded-lg font-semibold text-sm hover:bg-indigo-600 transition duration-300 ease-in-out transform hover:scale-105 view-more-btn">View More</button>
-                        </div>
-                    </div>
-                </div>
-                 <!-- Card 3 -->
-                 <div class="p-6 bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.01] transition-all duration-300 ease-in-out border border-gray-200 relative overflow-hidden group experience-card">
-                    <span class="experience-card-left-border"></span>
-                    <div class="relative z-10">
-                        <div class="version-br">
-                            <h3 class="text-xl sm:text-2xl font-semibold text-indigo-700 mb-1 exp-role">Instrutor Técnico</h3>
-                            <p class="text-gray-600 text-lg mb-1 exp-company">Colégio Estadual Floriano Peixoto, Laranjeiras do Sul</p>
-                            <p class="text-gray-500 text-base mb-3 exp-duration">2016 — 2017</p>
-                            <p class="text-gray-700 mb-4 exp-summary">Responsável por capacitar alunos em curso técnico nas disciplinas de Banco de Dados, Desenvolvimento Web I e Lógica de Programação.</p>
-                            <div class="hidden exp-description">No Colégio Estadual Floriano Peixoto, atuei como Instrutor Técnico, com foco em:</div>
-                            <ul class="hidden exp-responsibilities"><li>Capacitação de alunos em curso técnico nas disciplinas de Banco de Dados.</li><li>Ensino de Desenvolvimento Web I e Lógica de Programação.</li><li>Preparação dos alunos com habilidades essenciais para o mercado de trabalho em TI.</li></ul>
-                            <button class="bg-indigo-500 text-white py-2 px-4 rounded-lg font-semibold text-sm hover:bg-indigo-600 transition duration-300 ease-in-out transform hover:scale-105 view-more-btn">Ver Mais</button>
-                        </div>
-                        <div class="version-eua">
-                            <h3 class="text-xl sm:text-2xl font-semibold text-indigo-700 mb-1 exp-role">Technical Instructor</h3>
-                            <p class="text-gray-600 text-lg mb-1 exp-company">State College Floriano Peixoto, Laranjeiras do Sul</p>
-                            <p class="text-gray-500 text-base mb-3 exp-duration">2016 — 2017</p>
-                            <p class="text-gray-700 mb-4 exp-summary">Responsible for training students in a technical course on Database, Web Development I, and Programming Logic.</p>
-                            <div class="hidden exp-description">At State College Floriano Peixoto, I worked as a Technical Instructor, focusing on:</div>
-                            <ul class="hidden exp-responsibilities"><li>Training students in a technical course on Database subjects.</li><li>Teaching Web Development I and Programming Logic.</li><li>Preparing students with essential skills for the IT job market.</li></ul>
-                            <button class="bg-indigo-500 text-white py-2 px-4 rounded-lg font-semibold text-sm hover:bg-indigo-600 transition duration-300 ease-in-out transform hover:scale-105 view-more-btn">View More</button>
-                        </div>
-                    </div>
-                </div>
-                <!-- Card 4 -->
-                <div class="p-6 bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.01] transition-all duration-300 ease-in-out border border-gray-200 relative overflow-hidden group experience-card">
-                    <span class="experience-card-left-border"></span>
-                    <div class="relative z-10">
-                        <div class="version-br">
-                            <h3 class="text-xl sm:text-2xl font-semibold text-indigo-700 mb-1 exp-role">Laboratorista Digital</h3>
-                            <p class="text-gray-600 text-lg mb-1 exp-company">Grafis Encadernadora, Guarapuava</p>
-                            <p class="text-gray-500 text-base mb-3 exp-duration">2018-2019</p>
-                            <p class="text-gray-700 mb-4 exp-summary">Laboratorista Digital responsável por processos de impressão, incluindo fotos para fotolivros e revelações fotográficas.</p>
-                            <div class="hidden exp-description">Na Grafis Encadernadora, minhas responsabilidades como Laboratorista Digital incluíam:</div>
-                            <ul class="hidden exp-responsibilities"><li>Operação de equipamentos e processos de impressão digital.</li><li>Tratamento e impressão de fotos para fotolivros e revelações fotográficas.</li><li>Garantia da qualidade e fidelidade das cores nos produtos finais.</li></ul>
-                            <button class="bg-indigo-500 text-white py-2 px-4 rounded-lg font-semibold text-sm hover:bg-indigo-600 transition duration-300 ease-in-out transform hover:scale-105 view-more-btn">Ver Mais</button>
-                        </div>
-                        <div class="version-eua">
-                            <h3 class="text-xl sm:text-2xl font-semibold text-indigo-700 mb-1 exp-role">Digital Lab Technician</h3>
-                            <p class="text-gray-600 text-lg mb-1 exp-company">Grafis Encadernadora, Guarapuava</p>
-                            <p class="text-gray-500 text-base mb-3 exp-duration">2018-2019</p>
-                            <p class="text-gray-700 mb-4 exp-summary">Digital Lab Technician responsible for printing processes, including photos for photobooks and photo developing.</p>
-                            <div class="hidden exp-description">At Grafis Encadernadora, my responsibilities as a Digital Lab Technician included:</div>
-                            <ul class="hidden exp-responsibilities"><li>Operating digital printing equipment and processes.</li><li>Processing and printing photos for photobooks and photo developing.</li><li>Ensuring quality and color accuracy in the final products.</li></ul>
-                            <button class="bg-indigo-500 text-white py-2 px-4 rounded-lg font-semibold text-sm hover:bg-indigo-600 transition duration-300 ease-in-out transform hover:scale-105 view-more-btn">View More</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <div id="experience-container" class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8"></div>
         </section>
 
-        <!-- Seção de Formação Acadêmica -->
+        <!-- Academic Education -->
         <section class="mb-12 p-8 bg-white rounded-2xl shadow-xl fade-in">
-            <h2 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-5 version-br">Formação Acadêmica</h2>
-            <h2 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-5 version-eua">Academic Education</h2>
+            <h2 id="education-title" class="text-3xl sm:text-4xl font-bold text-gray-800 mb-5"></h2>
             <div class="section-separator"></div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-                <!-- Card UTFPR -->
-                <div class="p-6 bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.01] transition-all duration-300 ease-in-out border border-gray-200">
-                    <div class="version-br">
-                        <h3 class="text-xl font-semibold text-indigo-700 mb-2">UTFPR - Universidade Tecnológica Federal do Paraná</h3>
-                        <p class="text-gray-600">Guarapuava</p>
-                        <p class="text-gray-700 mt-2">Curso Tecnologias em Sistemas para Internet.</p>
-                    </div>
-                    <div class="version-eua">
-                        <h3 class="text-xl font-semibold text-indigo-700 mb-2">UTFPR - Federal University of Technology of Paraná</h3>
-                        <p class="text-gray-600">Guarapuava</p>
-                        <p class="text-gray-700 mt-2">Course in Technologies for Internet Systems.</p>
-                    </div>
-                </div>
-                <!-- Card Colégio -->
-                <div class="p-6 bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.01] transition-all duration-300 ease-in-out border border-gray-200">
-                    <div class="version-br">
-                        <h3 class="text-xl font-semibold text-indigo-700 mb-2">Colégio Estadual Floriano Peixoto</h3>
-                        <p class="text-gray-600">Laranjeiras do Sul</p>
-                        <p class="text-gray-700 mt-2">Curso Técnico em Informática.</p>
-                    </div>
-                    <div class="version-eua">
-                        <h3 class="text-xl font-semibold text-indigo-700 mb-2">State College Floriano Peixoto</h3>
-                        <p class="text-gray-600">Laranjeiras do Sul</p>
-                        <p class="text-gray-700 mt-2">Technical Course in Informatics.</p>
-                    </div>
-                </div>
-            </div>
+            <div id="education-container" class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8"></div>
         </section>
 
-        <!-- Seção de Cursos -->
+        <!-- Courses -->
         <section class="mb-12 p-8 bg-white rounded-2xl shadow-xl fade-in">
-            <h2 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-5 version-br">Cursos e Certificados</h2>
-            <h2 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-5 version-eua">Courses and Certificates</h2>
+            <h2 id="courses-title" class="text-3xl sm:text-4xl font-bold text-gray-800 mb-5"></h2>
             <div class="section-separator"></div>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
-                
-                <!-- Card Curso: Planejamento e Gestão de Projetos -->
-                <div class="bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.01] transition-all duration-300 ease-in-out border border-gray-200 overflow-hidden course-card">
-                    <a href="#" class="certificate-link" data-img-src="https://udemy-certificate.s3.amazonaws.com/image/UC-c114c8a4-1ea8-4d70-8220-16bc1aea7b02.jpg" data-pdf-src="https://udemy-certificate.s3.amazonaws.com/pdf/UC-c114c8a4-1ea8-4d70-8220-16bc1aea7b02.pdf">
-                        <img src="https://udemy-certificate.s3.amazonaws.com/image/UC-c114c8a4-1ea8-4d70-8220-16bc1aea7b02.jpg" alt="Certificado Planejamento e Gestão de Projetos" class="w-full h-auto">
-                    </a>
-                    <div class="p-4">
-                        <div class="version-br">
-                            <h3 class="text-lg font-semibold text-indigo-700 mb-2">Planejamento e Gestão de Projetos</h3>
-                            <p class="text-sm text-gray-700">Curso completo sobre planejamento e gestão de projetos.</p>
-                             <p class="text-xs text-gray-500 mt-2">Concluído em 09/04/2025.</p>
-                             <div class="hidden course-details">O certificado acima atesta que Ricardo Martins de Oliveira concluiu com êxito o curso Planejamento e Gestão de Projetos COMPLETO + 5 cursos Extras em 09/04/2025, ministrado por Gustavo Farias 500.000+ Alunos na Udemy. O certificado indica que todo o curso foi concluído, conforme validado pelo aluno. A duração do curso representa a duração total dos vídeos no curso no momento da conclusão mais recente.</div>
-                        </div>
-                        <div class="version-eua">
-                            <h3 class="text-lg font-semibold text-indigo-700 mb-2">Project Planning and Management</h3>
-                            <p class="text-sm text-gray-700">Complete course on project planning and management.</p>
-                            <p class="text-xs text-gray-500 mt-2">Completed on 04/09/2025.</p>
-                            <div class="hidden course-details">The certificate above attests that Ricardo Martins de Oliveira successfully completed the course Project Planning and Management COMPLETE + 5 Extra courses on 04/09/2025, taught by Gustavo Farias 500,000+ Students on Udemy. The certificate indicates that the entire course was completed, as validated by the student. The course duration represents the total video length at the time of the most recent completion.</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Card Curso: Product Owner para iniciantes -->
-                <div class="bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.01] transition-all duration-300 ease-in-out border border-gray-200 overflow-hidden course-card">
-                    <a href="#" class="certificate-link" data-img-src="https://udemy-certificate.s3.amazonaws.com/image/UC-4bd96bcd-8e62-42b2-b080-0cbe85823dc2.jpg" data-pdf-src="https://udemy-certificate.s3.amazonaws.com/pdf/UC-4bd96bcd-8e62-42b2-b080-0cbe85823dc2.pdf">
-                        <img src="https://udemy-certificate.s3.amazonaws.com/image/UC-4bd96bcd-8e62-42b2-b080-0cbe85823dc2.jpg" alt="Certificado Product Owner" class="w-full h-auto">
-                    </a>
-                    <div class="p-4">
-                        <div class="version-br">
-                            <h3 class="text-lg font-semibold text-indigo-700 mb-2">Product Owner para iniciantes</h3>
-                            <p class="text-sm text-gray-700">Curso introdutório para a função de Product Owner.</p>
-                            <p class="text-xs text-gray-500 mt-2">Concluído em 07/02/2025.</p>
-                            <div class="hidden course-details">O certificado acima atesta que Ricardo Martins de Oliveira concluiu com êxito o curso Product Owner para iniciantes em 07/02/2025, ministrado por Thalita Maia na Udemy. O certificado indica que todo o curso foi concluído, conforme validado pelo aluno. A duração do curso representa a duração total dos vídeos no curso no momento da conclusão mais recente.</div>
-                        </div>
-                        <div class="version-eua">
-                            <h3 class="text-lg font-semibold text-indigo-700 mb-2">Product Owner for Beginners</h3>
-                            <p class="text-sm text-gray-700">Introductory course for the Product Owner role.</p>
-                            <p class="text-xs text-gray-500 mt-2">Completed on 02/07/2025.</p>
-                            <div class="hidden course-details">The certificate above attests that Ricardo Martins de Oliveira successfully completed the course Product Owner for beginners on 02/07/2025, taught by Thalita Maia on Udemy. The certificate indicates that the entire course was completed, as validated by the student. The course duration represents the total video length at the time of the most recent completion.</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Card Curso: DevOps Linux Force -->
-                <div class="bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.01] transition-all duration-300 ease-in-out border border-gray-200 overflow-hidden course-card">
-                    <a href="#" class="certificate-link" data-img-src="https://linuxforce.com.br/wp-content/uploads/2025/01/curso-devops-linux-force-security.jpg" data-pdf-src="https://e-certificado.com/login/visualizar?c=2435539A0C77326015803960">
-                        <img src="https://linuxforce.com.br/wp-content/uploads/2025/01/curso-devops-linux-force-security.jpg" alt="Certificado DevOps" class="w-full h-auto">
-                    </a>
-                    <div class="p-4">
-                        <div class="version-br">
-                            <h3 class="text-lg font-semibold text-indigo-700 mb-2">Curso de DevOps</h3>
-                            <p class="text-sm text-gray-700">Curso de 50 horas que abrange de Linux e Git a Kubernetes e Terraform, focando em CI/CD e automação de infraestrutura.</p>
-                            <p class="text-xs text-gray-500 mt-2">Concluído em 28/01/2025.</p>
-                            <div class="hidden course-details">Este curso de DevOps foi projetado para levar você do básico ao avançado, proporcionando uma compreensão sólida e prática sobre automação de processos de desenvolvimento e operações. Com uma carga horária de 50 horas, você será capacitado a executar e monitorar processos de integração contínua (CI), entrega contínua (CD) e automação de infraestrutura utilizando as ferramentas mais demandadas no mercado, como Linux, Git, Docker, Jenkins, Ansible, Kubernetes, Grafana, Terraform e Vagrant. Ao longo do treinamento, você aprenderá a implementar soluções de DevOps em ambientes reais, colaborando eficazmente entre equipes de desenvolvimento e operações, aumentando a agilidade e a qualidade dos serviços de TI. Com uma abordagem prática e dinâmica, o curso oferece a preparação ideal para você se tornar um especialista em DevOps, com experiência valiosa para sua trajetória profissional.</div>
-                        </div>
-                        <div class="version-eua">
-                            <h3 class="text-lg font-semibold text-indigo-700 mb-2">DevOps Course</h3>
-                            <p class="text-sm text-gray-700">A 50-hour course covering from Linux and Git to Kubernetes and Terraform, focusing on CI/CD and infrastructure automation.</p>
-                            <p class="text-xs text-gray-500 mt-2">Completed on 01/28/2025.</p>
-                            <div class="hidden course-details">This DevOps course was designed to take you from basic to advanced, providing a solid and practical understanding of automating development and operations processes. With a workload of 50 hours, you will be trained to execute and monitor continuous integration (CI), continuous delivery (CD), and infrastructure automation processes using the most in-demand tools on the market, such as Linux, Git, Docker, Jenkins, Ansible, Kubernetes, Grafana, Terraform, and Vagrant. Throughout the training, you will learn to implement DevOps solutions in real environments, collaborating effectively between development and operations teams, increasing the agility and quality of IT services. With a practical and dynamic approach, the course offers the ideal preparation for you to become a DevOps specialist, with valuable experience for your professional career.</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card Curso: Aprenda Go (Golang) sem Enrolação -->
-                <div class="bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.01] transition-all duration-300 ease-in-out border border-gray-200 overflow-hidden course-card">
-                    <a href="#" class="certificate-link" data-img-src="https://udemy-certificate.s3.amazonaws.com/image/UC-87fe3c89-64c3-4024-8fa2-bde534b9fa19.jpg" data-pdf-src="https://udemy-certificate.s3.amazonaws.com/pdf/UC-87fe3c89-64c3-4024-8fa2-bde534b9fa19.pdf">
-                        <img src="https://udemy-certificate.s3.amazonaws.com/image/UC-87fe3c89-64c3-4024-8fa2-bde534b9fa19.jpg" alt="Certificado Aprenda Go" class="w-full h-auto">
-                    </a>
-                    <div class="p-4">
-                        <div class="version-br">
-                            <h3 class="text-lg font-semibold text-indigo-700 mb-2">Aprenda Go (Golang) sem Enrolação</h3>
-                            <p class="text-sm text-gray-700">Curso direto ao ponto para aprender Go.</p>
-                            <p class="text-xs text-gray-500 mt-2">Concluído em 07/12/2023.</p>
-                            <div class="hidden course-details">O certificado acima atesta que Ricardo Martins de Oliveira concluiu com êxito o curso Aprenda Go (Golang) sem Enrolação em 07/12/2023, ministrado por Escola de Devs Oficial na Udemy. O certificado indica que todo o curso foi concluído, conforme validado pelo aluno. A duração do curso representa a duração total dos vídeos no curso no momento da conclusão mais recente.</div>
-                        </div>
-                        <div class="version-eua">
-                            <h3 class="text-lg font-semibold text-indigo-700 mb-2">Learn Go (Golang) Straight to the Point</h3>
-                            <p class="text-sm text-gray-700">A straightforward course to learn Go.</p>
-                            <p class="text-xs text-gray-500 mt-2">Completed on 12/07/2023.</p>
-                            <div class="hidden course-details">The certificate above attests that Ricardo Martins de Oliveira successfully completed the course Learn Go (Golang) Straight to the Point on 12/07/2023, taught by Escola de Devs Oficial on Udemy. The certificate indicates that the entire course was completed, as validated by the student. The course duration represents the total video length at the time of the most recent completion.</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card Curso: Programação Go para DevOps e SREs -->
-                <div class="bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.01] transition-all duration-300 ease-in-out border border-gray-200 overflow-hidden course-card">
-                    <a href="#" class="certificate-link" data-img-src="https://udemy-certificate.s3.amazonaws.com/image/UC-527f804e-176d-414b-a8f2-64628a4792d1.jpg" data-pdf-src="https://udemy-certificate.s3.amazonaws.com/pdf/UC-527f804e-176d-414b-a8f2-64628a4792d1.pdf">
-                        <img src="https://udemy-certificate.s3.amazonaws.com/image/UC-527f804e-176d-414b-a8f2-64628a4792d1.jpg" alt="Certificado Go para DevOps" class="w-full h-auto">
-                    </a>
-                    <div class="p-4">
-                        <div class="version-br">
-                            <h3 class="text-lg font-semibold text-indigo-700 mb-2">Programação Go para DevOps e SREs</h3>
-                            <p class="text-sm text-gray-700">Focado na aplicação de Go para práticas de DevOps e SRE.</p>
-                            <p class="text-xs text-gray-500 mt-2">Concluído em 28/11/2023.</p>
-                             <div class="hidden course-details">O certificado acima atesta que Ricardo Martins de Oliveira concluiu com êxito o curso Programação Go para DevOps e SREs em 28/11/2023, ministrado por Glaucio Guerra na Udemy. O certificado indica que todo o curso foi concluído, conforme validado pelo aluno. A duração do curso representa a duração total dos vídeos no curso no momento da conclusão mais recente.</div>
-                        </div>
-                        <div class="version-eua">
-                            <h3 class="text-lg font-semibold text-indigo-700 mb-2">Go Programming for DevOps and SREs</h3>
-                            <p class="text-sm text-gray-700">Focused on applying Go to DevOps and SRE practices.</p>
-                            <p class="text-xs text-gray-500 mt-2">Completed on 11/28/2023.</p>
-                             <div class="hidden course-details">The certificate above attests that Ricardo Martins de Oliveira successfully completed the course Go Programming for DevOps and SREs on 11/28/2023, taught by Glaucio Guerra on Udemy. The certificate indicates that the entire course was completed, as validated by the student. The course duration represents the total video length at the time of the most recent completion.</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card Curso: Go (Golang) - Do zero ao avançado -->
-                <div class="bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.01] transition-all duration-300 ease-in-out border border-gray-200 overflow-hidden course-card">
-                    <a href="#" class="certificate-link" data-img-src="https://udemy-certificate.s3.amazonaws.com/image/UC-4b49ec2a-acc8-4b6a-befd-d51f3695e4cb.jpg" data-pdf-src="https://udemy-certificate.s3.amazonaws.com/pdf/UC-4b49ec2a-acc8-4b6a-befd-d51f3695e4cb.pdf">
-                        <img src="https://udemy-certificate.s3.amazonaws.com/image/UC-4b49ec2a-acc8-4b6a-befd-d51f3695e4cb.jpg" alt="Certificado Go do Zero ao Avançado" class="w-full h-auto">
-                    </a>
-                    <div class="p-4">
-                        <div class="version-br">
-                            <h3 class="text-lg font-semibold text-indigo-700 mb-2">Go (Golang) - Do zero ao avançado</h3>
-                            <p class="text-sm text-gray-700">Curso completo de Go, incluindo testes de unidade.</p>
-                            <p class="text-xs text-gray-500 mt-2">Concluído em 18/11/2023.</p>
-                            <div class="hidden course-details">O certificado acima atesta que Ricardo Martins de Oliveira concluiu com êxito o curso Go (Golang) - Do zero ao avançado (com teste de unidade) em 18/11/2023, ministrado por Stephany Henrique de Almeida Batista na Udemy. O certificado indica que todo o curso foi concluído, conforme validado pelo aluno. A duração do curso representa a duração total dos vídeos no curso no momento da conclusão mais recente.</div>
-                        </div>
-                        <div class="version-eua">
-                            <h3 class="text-lg font-semibold text-indigo-700 mb-2">Go (Golang) - From Zero to Advanced</h3>
-                            <p class="text-sm text-gray-700">Complete Go course, including unit tests.</p>
-                            <p class="text-xs text-gray-500 mt-2">Completed on 11/18/2023.</p>
-                            <div class="hidden course-details">The certificate above attests that Ricardo Martins de Oliveira successfully completed the course Go (Golang) - From zero to advanced (with unit testing) on 11/18/2023, taught by Stephany Henrique de Almeida Batista on Udemy. The certificate indicates that the entire course was completed, as validated by the student. The course duration represents the total video length at the time of the most recent completion.</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card Curso: PostgreSQL Completo -->
-                <div class="bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.01] transition-all duration-300 ease-in-out border border-gray-200 overflow-hidden course-card">
-                    <a href="#" class="certificate-link" data-img-src="https://udemy-certificate.s3.amazonaws.com/image/UC-91686520-f529-4ab6-833d-c8eaa6337405.jpg" data-pdf-src="https://udemy-certificate.s3.amazonaws.com/pdf/UC-91686520-f529-4ab6-833d-c8eaa6337405.pdf">
-                        <img src="https://udemy-certificate.s3.amazonaws.com/image/UC-91686520-f529-4ab6-833d-c8eaa6337405.jpg" alt="Certificado PostgreSQL" class="w-full h-auto">
-                    </a>
-                    <div class="p-4">
-                        <div class="version-br">
-                            <h3 class="text-lg font-semibold text-indigo-700 mb-2">Curso completo de PostgreSQL!</h3>
-                            <p class="text-sm text-gray-700">Curso completo de PostgreSQL, do básico ao avançado.</p>
-                            <p class="text-xs text-gray-500 mt-2">Concluído em 18/07/2023.</p>
-                             <div class="hidden course-details">O certificado acima atesta que Ricardo Martins de Oliveira concluiu com êxito o curso Curso completo de PostgreSQL! Do Básico ao Avançado v2025! em 18/07/2023, ministrado por Vitor Mazuco na Udemy. O certificado indica que todo o curso foi concluído, conforme validado pelo aluno. A duração do curso representa a duração total dos vídeos no curso no momento da conclusão mais recente.</div>
-                        </div>
-                        <div class="version-eua">
-                            <h3 class="text-lg font-semibold text-indigo-700 mb-2">Complete PostgreSQL Course!</h3>
-                            <p class="text-sm text-gray-700">Complete PostgreSQL course, from basic to advanced.</p>
-                            <p class="text-xs text-gray-500 mt-2">Completed on 07/18/2023.</p>
-                            <div class="hidden course-details">The certificate above attests that Ricardo Martins de Oliveira successfully completed the course Complete PostgreSQL Course! From Basic to Advanced v2025! on 07/18/2023, taught by Vitor Mazuco on Udemy. The certificate indicates that the entire course was completed, as validated by the student. The course duration represents the total video length at the time of the most recent completion.</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card Curso: DOCKER Completo -->
-                <div class="bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.01] transition-all duration-300 ease-in-out border border-gray-200 overflow-hidden course-card">
-                    <a href="#" class="certificate-link" data-img-src="https://udemy-certificate.s3.amazonaws.com/image/UC-4f212bba-5c77-48e4-9476-5cf1c2756d12.jpg" data-pdf-src="https://udemy-certificate.s3.amazonaws.com/pdf/UC-4f212bba-5c77-48e4-9476-5cf1c2756d12.pdf">
-                        <img src="https://udemy-certificate.s3.amazonaws.com/image/UC-4f212bba-5c77-48e4-9476-5cf1c2756d12.jpg" alt="Certificado Docker" class="w-full h-auto">
-                    </a>
-                    <div class="p-4">
-                        <div class="version-br">
-                            <h3 class="text-lg font-semibold text-indigo-700 mb-2">DOCKER Completo do Zero ao Avançado</h3>
-                            <p class="text-sm text-gray-700">Curso completo sobre Docker, do básico ao avançado.</p>
-                            <p class="text-xs text-gray-500 mt-2">Concluído em 13/03/2023.</p>
-                            <div class="hidden course-details">O certificado acima atesta que Ricardo Martins de Oliveira concluiu com êxito o curso DOCKER Completo do Zero ao Avançado em 13/03/2023, ministrado por Andre Iacono | 350000+ Students | AI · Cloud · Developer | na Udemy. O certificado indica que todo o curso foi concluído, conforme validado pelo aluno. A duração do curso representa a duração total dos vídeos no curso no momento da conclusão mais recente.</div>
-                        </div>
-                        <div class="version-eua">
-                            <h3 class="text-lg font-semibold text-indigo-700 mb-2">DOCKER Complete from Zero to Advanced</h3>
-                            <p class="text-sm text-gray-700">Complete course on Docker, from basic to advanced.</p>
-                            <p class="text-xs text-gray-500 mt-2">Completed on 03/13/2023.</p>
-                            <div class="hidden course-details">The certificate above attests that Ricardo Martins de Oliveira successfully completed the course DOCKER Complete from Zero to Advanced on 03/13/2023, taught by Andre Iacono | 350000+ Students | AI · Cloud · Developer | on Udemy. The certificate indicates that the entire course was completed, as validated by the student. The course duration represents the total video length at the time of the most recent completion.</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card Curso: Go (Golang): Explorando a Linguagem -->
-                <div class="bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.01] transition-all duration-300 ease-in-out border border-gray-200 overflow-hidden course-card">
-                    <a href="#" class="certificate-link" data-img-src="https://udemy-certificate.s3.amazonaws.com/image/UC-29210c82-4f0c-4d72-84d6-0ba10ab281a1.jpg" data-pdf-src="https://udemy-certificate.s3.amazonaws.com/pdf/UC-29210c82-4f0c-4d72-84d6-0ba10ab281a1.pdf">
-                        <img src="https://udemy-certificate.s3.amazonaws.com/image/UC-29210c82-4f0c-4d72-84d6-0ba10ab281a1.jpg" alt="Certificado Go Explorando" class="w-full h-auto">
-                    </a>
-                    <div class="p-4">
-                        <div class="version-br">
-                            <h3 class="text-lg font-semibold text-indigo-700 mb-2">Go (Golang): Explorando a Linguagem</h3>
-                            <p class="text-sm text-gray-700">Curso para explorar os recursos da linguagem Go (Golang).</p>
-                            <p class="text-xs text-gray-500 mt-2">Concluído em 23/02/2023.</p>
-                             <div class="hidden course-details">O certificado acima atesta que Ricardo Martins de Oliveira concluiu com êxito o curso Go (Golang): Explorando a Linguagem do Google em 23/02/2023, ministrado por Leonardo Moura Leitao, Cod3r Cursos Online na Udemy. O certificado indica que todo o curso foi concluído, conforme validado pelo aluno. A duração do curso representa a duração total dos vídeos no curso no momento da conclusão mais recente.</div>
-                        </div>
-                        <div class="version-eua">
-                            <h3 class="text-lg font-semibold text-indigo-700 mb-2">Go (Golang): Exploring the Language</h3>
-                            <p class="text-sm text-gray-700">Course to explore the features of the Go (Golang) language.</p>
-                            <p class="text-xs text-gray-500 mt-2">Completed on 02/23/2023.</p>
-                            <div class="hidden course-details">The certificate above attests that Ricardo Martins de Oliveira successfully completed the course Go (Golang): Exploring the Google Language on 02/23/2023, taught by Leonardo Moura Leitao, Cod3r Cursos Online on Udemy. The certificate indicates that the entire course was completed, as validated by the student. The course duration represents the total video length at the time of the most recent completion.</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card Curso: Aprenda Golang do Zero! -->
-                <div class="bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.01] transition-all duration-300 ease-in-out border border-gray-200 overflow-hidden course-card">
-                    <a href="#" class="certificate-link" data-img-src="https://udemy-certificate.s3.amazonaws.com/image/UC-5988ea38-875d-4c86-867b-c42186af6cd6.jpg" data-pdf-src="https://udemy-certificate.s3.amazonaws.com/pdf/UC-5988ea38-875d-4c86-867b-c42186af6cd6.pdf">
-                        <img src="https://udemy-certificate.s3.amazonaws.com/image/UC-5988ea38-875d-4c86-867b-c42186af6cd6.jpg" alt="Certificado Golang" class="w-full h-auto">
-                    </a>
-                    <div class="p-4">
-                        <div class="version-br">
-                            <h3 class="text-lg font-semibold text-indigo-700 mb-2">Aprenda Golang do Zero!</h3>
-                            <p class="text-sm text-gray-700">Este curso aborda o desenvolvimento de uma aplicação completa com Go, do zero.</p>
-                            <p class="text-xs text-gray-500 mt-2">Concluído em 22/02/2023.</p>
-                            <div class="hidden course-details">O certificado acima atesta que Ricardo Martins de Oliveira concluiu com êxito o curso Aprenda Golang do Zero! Desenvolva uma APLICAÇÃO COMPLETA! em 22/02/2023, ministrado por Otávio Augusto Gallego na Udemy. O certificado indica que todo o curso foi concluído, conforme validado pelo aluno. A duração do curso representa a duração total dos vídeos no curso no momento da conclusão mais recente.</div>
-                        </div>
-                        <div class="version-eua">
-                            <h3 class="text-lg font-semibold text-indigo-700 mb-2">Learn Golang from Scratch!</h3>
-                            <p class="text-sm text-gray-700">This course covers the development of a complete application with Go, from scratch.</p>
-                            <p class="text-xs text-gray-500 mt-2">Completed on 02/22/2023.</p>
-                             <div class="hidden course-details">The certificate above attests that Ricardo Martins de Oliveira successfully completed the course Learn Golang from Scratch! Develop a COMPLETE APPLICATION! on 02/22/2023, taught by Otávio Augusto Gallego on Udemy. The certificate indicates that the entire course was completed, as validated by the student. The course duration represents the total video length at the time of the most recent completion.</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card Curso: Mobile app Prototype -->
-                <div class="bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.01] transition-all duration-300 ease-in-out border border-gray-200 overflow-hidden course-card">
-                    <a href="#" class="certificate-link" data-img-src="https://udemy-certificate.s3.amazonaws.com/image/UC-f70f4d39-cffb-4146-a982-ed42e57bcda7.jpg" data-pdf-src="https://udemy-certificate.s3.amazonaws.com/pdf/UC-f70f4d39-cffb-4146-a982-ed42e57bcda7.pdf">
-                        <img src="https://udemy-certificate.s3.amazonaws.com/image/UC-f70f4d39-cffb-4146-a982-ed42e57bcda7.jpg" alt="Certificado Mobile Prototype" class="w-full h-auto">
-                    </a>
-                    <div class="p-4">
-                        <div class="version-br">
-                            <h3 class="text-lg font-semibold text-indigo-700 mb-2">How to Build a Mobile app Prototype</h3>
-                            <p class="text-sm text-gray-700">Aprenda a construir protótipos de aplicativos móveis de forma rápida e fácil.</p>
-                            <p class="text-xs text-gray-500 mt-2">Concluído em 20/02/2023.</p>
-                            <div class="hidden course-details">O certificado acima atesta que Ricardo Martins de Oliveira concluiu com êxito o curso How to Build a Mobile app Prototype Fast and Easy em 20/02/2023, ministrado por Erick Bulatowicz na Udemy. O certificado indica que todo o curso foi concluído, conforme validado pelo aluno. A duração do curso representa a duração total dos vídeos no curso no momento da conclusão mais recente.</div>
-                        </div>
-                        <div class="version-eua">
-                            <h3 class="text-lg font-semibold text-indigo-700 mb-2">How to Build a Mobile app Prototype</h3>
-                            <p class="text-sm text-gray-700">Learn to build mobile app prototypes quickly and easily.</p>
-                            <p class="text-xs text-gray-500 mt-2">Completed on 02/20/2023.</p>
-                            <div class="hidden course-details">The certificate above attests that Ricardo Martins de Oliveira successfully completed the course How to Build a Mobile app Prototype Fast and Easy on 02/20/2023, taught by Erick Bulatowicz on Udemy. The certificate indicates that the entire course was completed, as validated by the student. The course duration represents the total video length at the time of the most recent completion.</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card Curso: Introduction To Graphic Design -->
-                <div class="bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.01] transition-all duration-300 ease-in-out border border-gray-200 overflow-hidden course-card">
-                    <a href="#" class="certificate-link" data-img-src="https://udemy-certificate.s3.amazonaws.com/image/UC-f4e273f3-037b-4b2d-90e1-0f4a29cd7456.jpg" data-pdf-src="https://udemy-certificate.s3.amazonaws.com/pdf/UC-f4e273f3-037b-4b2d-90e1-0f4a29cd7456.pdf">
-                        <img src="https://udemy-certificate.s3.amazonaws.com/image/UC-f4e273f3-037b-4b2d-90e1-0f4a29cd7456.jpg" alt="Certificado Design Gráfico" class="w-full h-auto">
-                    </a>
-                    <div class="p-4">
-                        <div class="version-br">
-                            <h3 class="text-lg font-semibold text-indigo-700 mb-2">Introduction To Graphic Design</h3>
-                            <p class="text-sm text-gray-700">Curso introdutório sobre os fundamentos do Design Gráfico.</p>
-                            <p class="text-xs text-gray-500 mt-2">Concluído em 20/02/2023.</p>
-                            <div class="hidden course-details">O certificado acima atesta que Ricardo Martins de Oliveira concluiu com êxito o curso Introduction To Graphic Design em 20/02/2023, ministrado por Anthony Isaac na Udemy. O certificado indica que todo o curso foi concluído, conforme validado pelo aluno. A duração do curso representa a duração total dos vídeos no curso no momento da conclusão mais recente.</div>
-                        </div>
-                        <div class="version-eua">
-                            <h3 class="text-lg font-semibold text-indigo-700 mb-2">Introduction To Graphic Design</h3>
-                            <p class="text-sm text-gray-700">Introductory course on the fundamentals of Graphic Design.</p>
-                            <p class="text-xs text-gray-500 mt-2">Completed on 02/20/2023.</p>
-                            <div class="hidden course-details">The certificate above attests that Ricardo Martins de Oliveira successfully completed the course Introduction To Graphic Design on 02/20/2023, taught by Anthony Isaac on Udemy. The certificate indicates that the entire course was completed, as validated by the student. The course duration represents the total video length at the time of the most recent completion.</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card Curso: NodeJS with Mongodb -->
-                <div class="bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.01] transition-all duration-300 ease-in-out border border-gray-200 overflow-hidden course-card">
-                    <a href="#" class="certificate-link" data-img-src="https://udemy-certificate.s3.amazonaws.com/image/UC-192d8cd6-031c-4901-9eff-b1611170959e.jpg" data-pdf-src="https://udemy-certificate.s3.amazonaws.com/pdf/UC-192d8cd6-031c-4901-9eff-b1611170959e.pdf">
-                        <img src="https://udemy-certificate.s3.amazonaws.com/image/UC-192d8cd6-031c-4901-9eff-b1611170959e.jpg" alt="Certificado NodeJS" class="w-full h-auto">
-                    </a>
-                    <div class="p-4">
-                        <div class="version-br">
-                            <h3 class="text-lg font-semibold text-indigo-700 mb-2">Build NodeJS applications with Mongodb</h3>
-                            <p class="text-sm text-gray-700">Focado na construção de aplicações NodeJS com MongoDB.</p>
-                            <p class="text-xs text-gray-500 mt-2">Concluído em 19/02/2023.</p>
-                            <div class="hidden course-details">O certificado acima atesta que Ricardo Martins de Oliveira concluiu com êxito o curso Build NodeJS applications with Mongodb em 19/02/2023, ministrado por Frantz Kati na Udemy. O certificado indica que todo o curso foi concluído, conforme validado pelo aluno. A duração do curso representa a duração total dos vídeos no curso no momento da conclusão mais recente.</div>
-                        </div>
-                        <div class="version-eua">
-                            <h3 class="text-lg font-semibold text-indigo-700 mb-2">Build NodeJS applications with Mongodb</h3>
-                            <p class="text-sm text-gray-700">Focused on building NodeJS applications with MongoDB.</p>
-                            <p class="text-xs text-gray-500 mt-2">Completed on 02/19/2023.</p>
-                            <div class="hidden course-details">The certificate above attests that Ricardo Martins de Oliveira successfully completed the course Build NodeJS applications with Mongodb on 02/19/2023, taught by Frantz Kati on Udemy. The certificate indicates that the entire course was completed, as validated by the student. The course duration represents the total video length at the time of the most recent completion.</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card Curso: LGPD -->
-                <div class="bg-gray-50 rounded-xl shadow-md transform hover:scale-[1.01] transition-all duration-300 ease-in-out border border-gray-200 overflow-hidden course-card">
-                    <a href="#" class="certificate-link" data-img-src="https://udemy-certificate.s3.amazonaws.com/image/UC-fc865835-49a1-44fc-9a1a-451a395e988e.jpg" data-pdf-src="https://udemy-certificate.s3.amazonaws.com/pdf/UC-fc865835-49a1-44fc-9a1a-451a395e988e.pdf">
-                        <img src="https://udemy-certificate.s3.amazonaws.com/image/UC-fc865835-49a1-44fc-9a1a-451a395e988e.jpg" alt="Certificado LGPD" class="w-full h-auto">
-                    </a>
-                    <div class="p-4">
-                        <div class="version-br">
-                            <h3 class="text-lg font-semibold text-indigo-700 mb-2">LGPD - Lei Geral de Proteção de Dados</h3>
-                            <p class="text-sm text-gray-700">Curso sobre a Lei Geral de Proteção de Dados (LGPD).</p>
-                            <p class="text-xs text-gray-500 mt-2">Concluído em 03/02/2023.</p>
-                            <div class="hidden course-details">O certificado acima atesta que Ricardo Martins de Oliveira concluiu com êxito o curso LGPD - Lei Geral de Proteção de Dados em 03/02/2023, ministrado por Andrade Bueno Treinamentos, Eduardo Morelli na Udemy. O certificado indica que todo o curso foi concluído, conforme validado pelo aluno. A duração do curso representa a duração total dos vídeos no curso no momento da conclusão mais recente.</div>
-                        </div>
-                        <div class="version-eua">
-                            <h3 class="text-lg font-semibold text-indigo-700 mb-2">LGPD - General Data Protection Law</h3>
-                            <p class="text-sm text-gray-700">Course on the General Data Protection Law (LGPD).</p>
-                            <p class="text-xs text-gray-500 mt-2">Completed on 02/03/2023.</p>
-                            <div class="hidden course-details">The certificate above attests that Ricardo Martins de Oliveira successfully completed the course LGPD - General Data Protection Law on 02/03/2023, taught by Andrade Bueno Treinamentos, Eduardo Morelli on Udemy. The certificate indicates that the entire course was completed, as validated by the student. The course duration represents the total video length at the time of the most recent completion.</div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
+            <div id="courses-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8"></div>
         </section>
 
-        <!-- Seção de Competências -->
+        <!-- Skills -->
         <section class="mb-12 p-8 bg-white rounded-2xl shadow-xl fade-in">
-            <h2 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-5 version-br">Competências</h2>
-            <h2 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-5 version-eua">Skills</h2>
+            <h2 id="skills-title" class="text-3xl sm:text-4xl font-bold text-gray-800 mb-5"></h2>
             <div class="section-separator"></div>
-            <div id="skills-container" class="mt-8">
-                <!-- Conteúdo das skills será inserido aqui, já que é muito repetitivo para o HTML -->
-            </div>
+            <div id="skills-container" class="mt-8"></div>
         </section>
 
-        <!-- Seção de Idiomas -->
+        <!-- Languages -->
         <section class="mb-12 p-8 bg-white rounded-2xl shadow-xl fade-in">
-            <h2 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-5 version-br">Idiomas</h2>
-            <h2 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-5 version-eua">Languages</h2>
+            <h2 id="languages-title" class="text-3xl sm:text-4xl font-bold text-gray-800 mb-5"></h2>
             <div class="section-separator"></div>
-            <ul class="list-disc list-inside space-y-4 text-xl text-gray-700 mt-8">
-                <li class="version-br">Inglês</li>
-                <li class="version-eua">English</li>
-            </ul>
+            <ul id="languages-list" class="list-disc list-inside space-y-4 text-xl text-gray-700 mt-8"></ul>
         </section>
 
-        <!-- Rodapé -->
-        <footer class="text-center text-gray-500 text-sm mt-12 pt-8 border-t-2 border-gray-300">
-           <span class="version-br">&copy; 2025 Ricardo Martins de Oliveira. Todos os direitos reservados.</span>
-           <span class="version-eua">&copy; 2025 Ricardo Martins de Oliveira. All rights reserved.</span>
-        </footer>
+        <!-- Footer -->
+        <footer class="text-center text-gray-500 text-sm mt-12 pt-8 border-t-2 border-gray-300"></footer>
     </div>
 
-    <!-- Modal de Detalhes da Experiência -->
+    <!-- Experience Details Modal -->
     <div id="generalModal" class="modal-overlay">
         <div class="modal-content">
             <button class="modal-close-button" id="closeModal">&times;</button>
             <h3 id="modalTitle" class="text-3xl font-bold text-indigo-800 mb-4"></h3>
             <p id="modalSubTitle" class="text-xl text-gray-600 mb-4"></p>
-            <p id="modalDescription" class="text-lg text-gray-700 mb-4"></p>
+            <div id="modalDescription" class="text-lg text-gray-700 mb-4"></div>
             <ul id="modalResponsibilities" class="list-disc list-inside text-lg text-gray-700 ml-4 mb-6 space-y-2"></ul>
-            <button id="readContentButton" class="bg-indigo-600 text-white py-3 px-6 rounded-lg font-semibold shadow-md hover:bg-indigo-700 transition duration-300 ease-in-out transform hover:scale-100 flex items-center justify-center space-x-2">
-                <i class="fas fa-volume-up mr-2"></i> 
-                <span class="version-br-inline">Ler Conteúdo</span>
-                <span class="version-eua-inline">Read Content</span>
+            <button id="readContentButton"
+                class="bg-indigo-600 text-white py-3 px-6 rounded-lg font-semibold shadow-md hover:bg-indigo-700 transition duration-300 ease-in-out transform hover:scale-100 flex items-center justify-center space-x-2">
+                <i class="fas fa-volume-up mr-2"></i>
+                <span>Ler Conteúdo</span>
             </button>
             <audio id="audioPlayer" src="" style="display: none;"></audio>
         </div>
     </div>
 
-    <!-- Modal de Certificado -->
+    <!-- Certificate Modal -->
     <div id="certificateModal" class="modal-overlay">
         <div class="modal-content p-4">
             <button class="modal-close-button" id="closeCertificateModal">&times;</button>
             <img id="certificateImage" src="" alt="Certificado" class="w-full h-auto rounded-lg mb-4">
             <p id="certificateDescription" class="text-gray-700 text-sm my-4"></p>
-            <a id="certificatePdfLink" href="" target="_blank" class="bg-indigo-600 text-white py-2 px-4 text-sm rounded-lg font-semibold shadow-md hover:bg-indigo-700 transition duration-300 ease-in-out transform hover:scale-100 flex items-center justify-center space-x-2 w-auto">
+            <a id="certificatePdfLink" href="" target="_blank"
+                class="bg-indigo-600 text-white py-2 px-4 text-sm rounded-lg font-semibold shadow-md hover:bg-indigo-700 transition duration-300 ease-in-out transform hover:scale-100 flex items-center justify-center space-x-2 w-auto">
                 <i class="fas fa-file-pdf mr-2"></i>
-                <span class="version-br-inline">Ver PDF</span>
-                <span class="version-eua-inline">View PDF</span>
+                <span>Ver PDF</span>
             </a>
         </div>
     </div>
 
-
-    <script>
-        function base64ToArrayBuffer(base64) {
-            const binaryString = atob(base64);
-            const len = binaryString.length;
-            const bytes = new Uint8Array(len);
-            for (let i = 0; i < len; i++) {
-                bytes[i] = binaryString.charCodeAt(i);
-            }
-            return bytes.buffer;
-        }
-
-        function pcmToWav(pcmData, sampleRate) {
-            const dataLength = pcmData.length * 2;
-            const buffer = new ArrayBuffer(44 + dataLength);
-            const view = new DataView(buffer);
-            let offset = 0;
-            function writeString(str) { for (let i = 0; i < str.length; i++) { view.setUint8(offset + i, str.charCodeAt(i)); } offset += str.length; }
-            function writeUint32(val) { view.setUint32(offset, val, true); offset += 4; }
-            function writeUint16(val) { view.setUint16(offset, val, true); offset += 2; }
-            writeString('RIFF'); writeUint32(36 + dataLength); writeString('WAVE'); writeString('fmt '); writeUint32(16); writeUint16(1); writeUint16(1); writeUint32(sampleRate); writeUint32(sampleRate * 2); writeUint16(2); writeUint16(16); writeString('data'); writeUint32(dataLength);
-            for (let i = 0; i < pcmData.length; i++) { view.setInt16(offset, pcmData[i], true); offset += 2; }
-            return new Blob([view], { type: 'audio/wav' });
-        }
-        
-        document.addEventListener('DOMContentLoaded', function() {
-            const sections = document.querySelectorAll('.fade-in');
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('appear');
-                        observer.unobserve(entry.target);
-                    }
-                });
-            }, { root: null, rootMargin: '0px', threshold: 0.1 });
-            sections.forEach(section => { observer.observe(section); });
-
-            const progressBar = document.getElementById('progressBar');
-            window.addEventListener('scroll', () => {
-                const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
-                const scrollPosition = window.scrollY;
-                const progress = (scrollPosition / totalHeight) * 100;
-                progressBar.style.width = `${progress}%`;
-            });
-
-            let currentLang = 'br';
-
-            const langPtButton = document.getElementById('lang-pt-btn');
-            const langEnButton = document.getElementById('lang-en-btn');
-
-            function switchLanguage(lang) {
-                currentLang = lang;
-                document.documentElement.lang = lang === 'br' ? 'pt-BR' : 'en';
-                document.body.classList.remove('version-br-active', 'version-eua-active');
-                document.body.classList.add(`version-${lang}-active`);
-                langPtButton.classList.toggle('active', lang === 'br');
-                langEnButton.classList.toggle('active', lang === 'eua');
-            }
-
-            langPtButton.addEventListener('click', () => switchLanguage('br'));
-            langEnButton.addEventListener('click', () => switchLanguage('eua'));
-
-            // Modal de Experiência
-            const generalModal = document.getElementById('generalModal');
-            const closeModalButton = document.getElementById('closeModal');
-            const modalTitle = document.getElementById('modalTitle');
-            const modalSubTitle = document.getElementById('modalSubTitle');
-            const modalDescription = document.getElementById('modalDescription');
-            const modalResponsibilities = document.getElementById('modalResponsibilities');
-            const audioPlayer = document.getElementById('audioPlayer');
-
-            function openExperienceModal(cardElement) {
-                const langVersion = currentLang === 'br' ? 'br' : 'eua';
-                const content = cardElement.querySelector(`.version-${langVersion}`);
-                if (!content) return;
-                modalTitle.textContent = content.querySelector('.exp-role')?.textContent || '';
-                modalSubTitle.textContent = `${content.querySelector('.exp-company')?.textContent} (${content.querySelector('.exp-duration')?.textContent})`;
-                modalDescription.innerHTML = content.querySelector('.exp-description')?.innerHTML || '';
-                const responsibilitiesList = content.querySelector('.exp-responsibilities');
-                modalResponsibilities.innerHTML = responsibilitiesList?.innerHTML || '';
-                modalResponsibilities.style.display = responsibilitiesList?.innerHTML ? 'block' : 'none';
-                generalModal.classList.add('open');
-                document.body.style.overflow = 'hidden';
-            }
-
-            function closeExperienceModal() {
-                generalModal.classList.remove('open');
-                document.body.style.overflow = '';
-                audioPlayer.pause();
-                audioPlayer.currentTime = 0;
-            }
-
-            closeModalButton.addEventListener('click', closeExperienceModal);
-            generalModal.addEventListener('click', (e) => {
-                if (e.target === generalModal) closeExperienceModal();
-            });
-
-            document.querySelectorAll('.experience-card .view-more-btn').forEach(button => {
-                button.addEventListener('click', (e) => {
-                    openExperienceModal(e.currentTarget.closest('.experience-card'));
-                });
-            });
-
-            // Modal de Certificado
-            const certificateModal = document.getElementById('certificateModal');
-            const closeCertificateModalButton = document.getElementById('closeCertificateModal');
-            const certificateImage = document.getElementById('certificateImage');
-            const certificatePdfLink = document.getElementById('certificatePdfLink');
-            const certificateDescription = document.getElementById('certificateDescription');
-
-            function openCertificateModal(imgSrc, pdfSrc, description) {
-                certificateImage.src = imgSrc;
-                certificatePdfLink.href = pdfSrc;
-                certificateDescription.innerHTML = description;
-                certificateModal.classList.add('open');
-                document.body.style.overflow = 'hidden';
-            }
-
-            function closeCertificateModal() {
-                certificateModal.classList.remove('open');
-                document.body.style.overflow = '';
-            }
-            
-            closeCertificateModalButton.addEventListener('click', closeCertificateModal);
-            certificateModal.addEventListener('click', (e) => {
-                if (e.target === certificateModal) closeCertificateModal();
-            });
-
-            document.querySelectorAll('.certificate-link').forEach(link => {
-                link.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const card = e.currentTarget.closest('.course-card');
-                    const langVersion = currentLang === 'br' ? 'br' : 'eua';
-                    const content = card.querySelector(`.version-${langVersion}`);
-                    const description = content.querySelector('.course-details').innerHTML;
-                    
-                    const imgSrc = e.currentTarget.dataset.imgSrc;
-                    const pdfSrc = e.currentTarget.dataset.pdfSrc;
-                    openCertificateModal(imgSrc, pdfSrc, description);
-                });
-            });
-
-
-            // Gerar Skills dinamicamente para não poluir tanto o HTML
-            const skillsData = {
-                br: [
-                    { groupName: 'Linguagens & Frameworks', skills: [ { name: 'Go (Golang)', icon: 'fas fa-code', color: 'text-blue-700' }, { name: 'Angular', icon: 'fab fa-angular', color: 'text-red-600' }, { name: 'HTML', icon: 'fab fa-html5', color: 'text-orange-500' }, { name: 'CSS', icon: 'fab fa-css3-alt', color: 'text-blue-500' }, { name: 'JavaScript', icon: 'fab fa-js', color: 'text-yellow-500' }, { name: 'PHP', icon: 'fab fa-php', color: 'text-purple-600' }, { name: 'Java', icon: 'fab fa-java', color: 'text-red-600' }, { name: 'RESTful', icon: 'fas fa-exchange-alt', color: 'text-green-600' }, { name: 'Composer', icon: 'fas fa-box-open', color: 'text-gray-700' } ] },
-                    { groupName: 'Bancos de Dados', skills: [ { name: 'PostgreSQL', icon: 'fas fa-database', color: 'text-indigo-700' }, { name: 'MySQL', icon: 'fas fa-database', color: 'text-indigo-600' } ] },
-                    { groupName: 'DevOps & Cloud', skills: [ { name: 'Docker', icon: 'fab fa-docker', color: 'text-blue-500' }, { name: 'Kubernetes', icon: 'fas fa-cubes', color: 'text-blue-400' }, { name: 'AWS', icon: 'fab fa-aws', color: 'text-orange-400' }, { name: 'Pipelines', icon: 'fas fa-stream', color: 'text-green-500' }, { name: 'Jenkins', icon: 'fab fa-jenkins', color: 'text-red-500' }, { name: 'Git', icon: 'fab fa-git-alt', color: 'text-red-700' }, { name: 'GitHub', icon: 'fab fa-github', color: 'text-gray-800' }, { name: 'GitLab', icon: 'fab fa-gitlab', color: 'text-orange-600' }, { name: 'Bitbucket', icon: 'fab fa-bitbucket', color: 'text-blue-700' }, { name: 'SSH', icon: 'fas fa-terminal', color: 'text-green-700' } ] },
-                ],
-                eua: [
-                    { groupName: 'Languages & Frameworks', skills: [ { name: 'Go (Golang)', icon: 'fas fa-code', color: 'text-blue-700' }, { name: 'Angular', icon: 'fab fa-angular', color: 'text-red-600' }, { name: 'HTML', icon: 'fab fa-html5', color: 'text-orange-500' }, { name: 'CSS', icon: 'fab fa-css3-alt', color: 'text-blue-500' }, { name: 'JavaScript', icon: 'fab fa-js', color: 'text-yellow-500' }, { name: 'PHP', icon: 'fab fa-php', color: 'text-purple-600' }, { name: 'Java', icon: 'fab fa-java', color: 'text-red-600' }, { name: 'RESTful', icon: 'fas fa-exchange-alt', color: 'text-green-600' }, { name: 'Composer', icon: 'fas fa-box-open', color: 'text-gray-700' } ] },
-                    { groupName: 'Databases', skills: [ { name: 'PostgreSQL', icon: 'fas fa-database', color: 'text-indigo-700' }, { name: 'MySQL', icon: 'fas fa-database', color: 'text-indigo-600' } ] },
-                    { groupName: 'DevOps & Cloud', skills: [ { name: 'Docker', icon: 'fab fa-docker', color: 'text-blue-500' }, { name: 'Kubernetes', icon: 'fas fa-cubes', color: 'text-blue-400' }, { name: 'AWS', icon: 'fab fa-aws', color: 'text-orange-400' }, { name: 'Pipelines', icon: 'fas fa-stream', color: 'text-green-500' }, { name: 'Jenkins', icon: 'fab fa-jenkins', color: 'text-red-500' }, { name: 'Git', icon: 'fab fa-git-alt', color: 'text-red-700' }, { name: 'GitHub', icon: 'fab fa-github', color: 'text-gray-800' }, { name: 'GitLab', icon: 'fab fa-gitlab', color: 'text-orange-600' }, { name: 'Bitbucket', icon: 'fab fa-bitbucket', color: 'text-blue-700' }, { name: 'SSH', icon: 'fas fa-terminal', color: 'text-green-700' } ] },
-                ]
-            };
-            const skillsContainer = document.getElementById('skills-container');
-            function loadSkills() {
-                skillsContainer.innerHTML = '';
-                const lang = currentLang;
-                skillsData[lang].forEach(group => {
-                    let groupHtml = `<div class="version-${lang}">
-                        <h3 class="text-2xl font-semibold text-gray-700 mt-8 mb-4 border-b border-gray-200 pb-2">${group.groupName}</h3>
-                        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">`;
-                    group.skills.forEach(skill => {
-                        groupHtml += `<div class="flex flex-col items-center justify-center p-3 bg-gray-50 rounded-lg shadow-sm hover:shadow-lg hover:border-indigo-400 transform hover:scale-105 transition-all duration-300 ease-in-out border border-gray-200 skill-card-glow cursor-pointer">
-                            <i class="${skill.icon} fa-2x ${skill.color} mb-2"></i>
-                            <span class="text-base font-medium ${skill.color} text-center">${skill.name}</span>
-                        </div>`;
-                    });
-                    groupHtml += `</div></div>`;
-                    skillsContainer.innerHTML += groupHtml;
-                });
-            }
-            // Recarregar skills na troca de idioma
-            langPtButton.addEventListener('click', loadSkills);
-            langEnButton.addEventListener('click', loadSkills);
-
-
-            // Inicializa a página
-            switchLanguage('br');
-            loadSkills();
-        });
-    </script>
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="data.js"></script>
+    <script src="script.js"></script>
 </body>
+
 </html>
