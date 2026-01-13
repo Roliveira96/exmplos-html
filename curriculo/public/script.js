@@ -564,4 +564,83 @@ document.addEventListener('DOMContentLoaded', function () {
     if (modalCloseBtnAction) modalCloseBtnAction.addEventListener('click', stopAudio);
     if (generalModal) generalModal.addEventListener('click', (e) => { if (e.target === generalModal) stopAudio(); });
 
+    // --- Easter Egg: Matrix ---
+    const matrixResumo = [
+        "TRINITY: O sinal está limpo? ... Você gosta dele, não gosta?",
+        "CYPHER: Não seja ridícula. Só queremos as informações.",
+        "NEO: De novo aquela sensação... de não saber se estou acordado ou sonhando.",
+        "TRINITY: A Matrix tem você...",
+        "TRINITY: Siga o coelho branco.",
+        "AGENT SMITH: Sr. Anderson... Parece que você tem vivido duas vidas.",
+        "AGENT SMITH: Uma delas tem futuro. A outra não.",
+        "MORPHEUS: Eu imagino que, agora, você se sinta um pouco como a Alice. Caindo pela toca do coelho.",
+        "MORPHEUS: A Matrix está em todo lugar. É o mundo que foi colocado diante dos seus olhos para cegá-lo da verdade.",
+        "NEO: Que verdade?",
+        "MORPHEUS: Que você é um escravo, Neo.",
+        "MORPHEUS: Você toma a pílula azul... a história acaba, você acorda em sua cama e acredita no que quiser.",
+        "MORPHEUS: Você toma a pílula vermelha... você fica no País das Maravilhas, e eu mostro quão fundo vai a toca do coelho.",
+        "MORPHEUS: Bem-vindo ao mundo real.",
+        "NEO: Por que meus olhos doem?",
+        "MORPHEUS: Porque você nunca os usou.",
+        "MORPHEUS: O que é 'real'? Se você fala do que pode sentir, cheirar, provar e ver, então 'real' são apenas sinais elétricos interpretados pelo seu cérebro.",
+        "NEO: Eu sei Kung Fu.",
+        "MORPHEUS: Mostre-me.",
+        "MORPHEUS: Pare de tentar me bater e me bata!",
+        "MORPHEUS: Você acha que é ar que está respirando agora?",
+        "CYPHER: Sabe, eu sei que este bife não existe. Eu sei que quando coloco na boca, a Matrix diz ao meu cérebro que é suculento e delicioso.",
+        "CYPHER: Depois de nove anos, sabe o que eu percebi? A ignorância é uma bênção.",
+        "MOUSE: A mulher de vermelho. Eu que desenhei ela... Se quiser, posso arranjar um encontro.",
+        "ORÁCULO: Eu diria para se sentar, mas você não vai fazer isso. E não se preocupe com o vaso.",
+        "NEO: Que vaso? [CRASH]",
+        "ORÁCULO: Aquele vaso.",
+        "ORÁCULO: O que vai fritar sua mente mais tarde é: será que você o teria quebrado se eu não tivesse dito nada?",
+        "MENINO: Não tente dobrar a colher. Isso é impossível. Apenas tente perceber a verdade: Não existe colher.",
+        "ORÁCULO: Ser o Escolhido é como estar apaixonado. Ninguém pode te dizer que você está. Você apenas sabe.",
+        "AGENT SMITH: Eu odeio este lugar. Este zoológico. Esta prisão. Eu preciso sair daqui.",
+        "AGENT SMITH: Seres humanos são uma doença. Um câncer neste planeta. E nós somos a cura.",
+        "TANK: O que você precisa? Além de um milagre.",
+        "NEO: Armas. Muitas armas.",
+        "TRINITY: Neo, ninguém nunca fez isso antes.",
+        "NEO: É por isso que vai dar certo.",
+        "TRINITY: Desvie disto.",
+        "MORPHEUS: Ele está começando a acreditar.",
+        "AGENT SMITH: Você ouve isso, Sr. Anderson? É o som da inevitabilidade. É o som da sua morte.",
+        "NEO: Meu nome... é Neo.",
+        "TRINITY: Neo, eu não tenho medo mais. O Oráculo me disse que eu me apaixonaria e que o homem que eu amasse seria o Escolhido.",
+        "TRINITY: Então você não pode estar morto. Porque eu amo você.",
+        "NEO: Eu sei que vocês estão com medo... medo de nós. Medo da mudança.",
+        "NEO: Eu não conheço o futuro. Não vim aqui dizer como isso vai acabar. Vim dizer como vai começar.",
+        "NEO: Vou desligar o telefone e mostrar a essas pessoas o que vocês não querem que elas vejam.",
+        "NEO: Um mundo sem regras e controles, sem fronteiras ou limites. Um mundo onde tudo é possível."
+    ];
+
+    async function playMatrixStory(frases) {
+        console.clear();
+        for (const frase of frases) {
+            console.log("%c" + frase, "color: #00FF41; font-family: monospace; font-size: 14px; font-weight: bold; text-shadow: 0px 0px 5px #003300;");
+            await new Promise(r => setTimeout(r, 4500));
+        }
+    }
+
+    // Expose to console
+    window.enterTheMatrix = () => playMatrixStory(matrixResumo);
+
+    // Konami Code Trigger (Up, Up, Down, Down, Left, Right, Left, Right, B, A)
+    let konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+    let konamiIndex = 0;
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key.toLowerCase() === konamiCode[konamiIndex].toLowerCase()) {
+            konamiIndex++;
+            if (konamiIndex === konamiCode.length) {
+                console.log("%cMatrix Protocol Initiated...", "color: #10b981; font-size: 20px; font-weight: bold;");
+                playMatrixStory(matrixResumo);
+                konamiIndex = 0;
+            }
+        } else {
+            konamiIndex = 0;
+        }
+    });
+
+    console.log("%cWake up, Neo... (Press Up,Up,Down,Down,Left,Right,Left,Right,B,A or type window.enterTheMatrix())", "color: #0dbc79; font-size: 10px; font-family: monospace;");
 });
