@@ -490,8 +490,7 @@ document.addEventListener('DOMContentLoaded', function () {
         modalResponsibilities.innerHTML = responsibilitiesHtml;
         modalResponsibilities.className = "list-disc list-inside text-slate-300 space-y-2 ml-4";
 
-        const readBtn = document.getElementById('readContentButton');
-        if (readBtn) readBtn.querySelector('span').textContent = currentLang === 'br' ? 'Ler Conteúdo' : 'Read Content';
+
 
         // Update Close Button Text on Open as well just in case
         if (modalCloseBtnAction) modalCloseBtnAction.querySelector('span').textContent = currentLang === 'br' ? 'Fechar' : 'Close';
@@ -551,87 +550,7 @@ document.addEventListener('DOMContentLoaded', function () {
     switchLanguage('br');
 
     // --- Audio / TTS Logic ---
-    const readBtn = document.getElementById('readContentButton');
     const audioPlayer = document.getElementById('audioPlayer');
-
-    if (readBtn) {
-        readBtn.addEventListener('click', async () => {
-            const description = document.getElementById('modalDescription').innerText;
-            const title = document.getElementById('modalTitle').innerText;
-            const fullText = `${title}. ${description}`;
-
-            // 1. Loading State
-            const originalText = currentLang === 'br' ? 'Ler Conteúdo' : 'Read Content'; // Force correct text
-            const originalIconClass = 'fas fa-volume-up';
-
-            readBtn.disabled = true;
-            readBtn.querySelector('span').textContent = currentLang === 'br' ? 'Carregando...' : 'Loading...';
-            readBtn.querySelector('i').className = 'fas fa-spinner fa-spin';
-            readBtn.classList.add('opacity-75', 'cursor-not-allowed');
-
-            try {
-                // Cancel any current speech (browser) and reset state if needed
-                window.speechSynthesis.cancel();
-
-                // If using Audio Element from previous attempts or global
-                if (audioPlayer) {
-                    audioPlayer.pause();
-                    audioPlayer.currentTime = 0;
-                }
-
-                const response = await fetch('/synthesize', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        text: fullText,
-                        lang: currentLang // Send language context if needed by backend for voice selection logic
-                    })
-                });
-
-                if (!response.ok) {
-                    throw new Error('Falha ao gerar áudio. Verifique se o servidor está rodando.');
-                }
-
-                const blob = await response.blob();
-                const url = URL.createObjectURL(blob);
-
-                if (audioPlayer) {
-                    audioPlayer.src = url;
-                    audioPlayer.onplay = () => {
-                        readBtn.querySelector('span').textContent = currentLang === 'br' ? 'Reproduzindo...' : 'Playing...';
-                        readBtn.querySelector('i').className = 'fas fa-volume-up animate-pulse';
-                    };
-                    audioPlayer.onended = () => {
-                        resetButton();
-                        URL.revokeObjectURL(url); // Cleanup
-                    };
-                    audioPlayer.onerror = (e) => {
-                        console.error('Audio Playback Error:', e);
-                        resetButton();
-                    };
-
-                    await audioPlayer.play();
-                } else {
-                    // Fallback if no audio tag found
-                    const audio = new Audio(url);
-                    audio.play();
-                    audio.onended = resetButton;
-                }
-
-            } catch (error) {
-                console.error("Audio Generation Error:", error);
-                alert("Erro ao conectar com o serviço de voz. Verifique se o 'node server.js' está rodando.");
-                resetButton();
-            }
-
-            function resetButton() {
-                readBtn.disabled = false;
-                readBtn.querySelector('span').textContent = currentLang === 'br' ? 'Ler Conteúdo' : 'Read Content';
-                readBtn.querySelector('i').className = originalIconClass;
-                readBtn.classList.remove('opacity-75', 'cursor-not-allowed');
-            }
-        });
-    }
 
     // Stop audio when closing modal
     const stopAudio = () => {
