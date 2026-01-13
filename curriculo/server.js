@@ -12,7 +12,7 @@ app.use(express.json());
 
 // Serve static files from the current directory
 // IMPORTANT: In production, move these to a 'public' folder to avoid exposing server.js/.env
-app.use(express.static('.'));
+app.use(express.static('public'));
 
 // Middleware to log requests
 app.use((req, res, next) => {
@@ -61,5 +61,5 @@ app.post('/synthesize', async (req, res) => {
     }
 });
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => console.log(`Servidor rodando em http://localhost:${PORT}/`));

@@ -216,7 +216,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         // Use the 'story' text from data.js
                         const storyText = resumeData.story[lang];
 
-                        const response = await fetch('http://localhost:3001/synthesize', {
+                        const response = await fetch('/synthesize', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ text: storyText, lang: lang })
@@ -579,7 +579,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     audioPlayer.currentTime = 0;
                 }
 
-                const response = await fetch('http://localhost:3001/synthesize', {
+                const response = await fetch('/synthesize', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
