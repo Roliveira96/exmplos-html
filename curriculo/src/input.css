@@ -2,6 +2,33 @@
 @import "./fonts.css";
 @source "../public/**/*.{html,js}";
 
+@theme {
+    /* Matrix Palette */
+    --color-matrix-50: #e3fce9;
+    --color-matrix-100: #c1f7ce;
+    --color-matrix-200: #8eedaa;
+    --color-matrix-300: #4ade80;
+    /* Brilhante para texto (Terminal) */
+    --color-matrix-400: #22c55e;
+    --color-matrix-500: #146831;
+    /* SUA COR (Base) */
+    --color-matrix-600: #0f5228;
+    --color-matrix-700: #0b3d1d;
+    --color-matrix-800: #082d16;
+    --color-matrix-900: #020c06;
+
+    /* Override Emerald to use Matrix tones if desired, or keep separate */
+    /* --color-emerald-400: var(--color-matrix-300); */
+    /* Deixando emerald normal por enquanto para evitar site apagado, use 'text-matrix-500' se quiser a cor específica */
+
+    /* Mapeando emerald-400 para algo legível mas Matrix-like, já que é muito usado */
+    --color-emerald-400: #4ade80;
+    /* Matrix Green Bright (Subtitulo/Texto) */
+    --color-emerald-500: #146831;
+    /* Matrix Green Darker (Seu tom - Detalhes/Bordas) */
+    --color-emerald-600: #0f5228;
+}
+
 /* Reset & Base */
 body {
     font-family: 'Inter', sans-serif;
@@ -109,6 +136,16 @@ body::before {
     }
 }
 
+/* Force Absolute Position for Quote */
+.quote-bg {
+    position: absolute !important;
+    top: 0;
+    right: 0;
+    padding: 1rem;
+    pointer-events: none;
+    z-index: 0;
+}
+
 /* PDF Button */
 #download-pdf-btn {
     box-shadow: 0 4px 14px 0 rgba(16, 185, 129, 0.39);
@@ -146,31 +183,39 @@ body::before {
     transform: translateY(-2px);
 }
 
-.language-switcher img {
+.language-switcher button {
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 50%;
+    display: flex;
+    /* Remove line-height issues */
+}
+
+.language-switcher button img {
     width: 32px;
-    /* Fixed larger width */
     height: 32px;
-    /* Start as square-ish or circle */
     object-fit: cover;
     border-radius: 50%;
-    /* Circle flags */
-    cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     opacity: 0.5;
     filter: grayscale(100%) brightness(0.8);
     border: 2px solid transparent;
+    display: block;
 }
 
-.language-switcher img:hover {
+.language-switcher button:hover img {
     transform: scale(1.1);
     opacity: 0.9;
     filter: grayscale(0%) brightness(1);
 }
 
-.language-switcher img.active {
+.language-switcher button.active img {
     opacity: 1;
     filter: grayscale(0%) brightness(1.1);
-    border-color: #10b981;
+    border-color: #146831;
     /* Emerald border */
     box-shadow: 0 0 12px rgba(16, 185, 129, 0.5);
     transform: scale(1.15);

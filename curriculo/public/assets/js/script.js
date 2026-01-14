@@ -390,6 +390,9 @@ document.addEventListener('DOMContentLoaded', function () {
         skills: (lang) => {
             const skillsContainer = document.getElementById('skills-container');
             if (!skillsContainer) return;
+            // CRITICAL: Remove pulse animation
+            skillsContainer.classList.remove('animate-pulse');
+
             skillsContainer.innerHTML = '';
             resumeData.skills[lang].forEach(group => {
                 let groupHtml = `<div class="mb-6 last:mb-0">
@@ -411,6 +414,9 @@ document.addEventListener('DOMContentLoaded', function () {
         languages: (lang) => {
             const container = document.getElementById('languages-list');
             if (!container) return;
+            // CRITICAL: Remove pulse animation
+            container.classList.remove('animate-pulse');
+
             container.innerHTML = resumeData.languages[lang].map(l => `
                 <li class="flex items-center justify-between p-3 rounded-lg bg-slate-800/80 border border-slate-700">
                     <span class="text-sm font-semibold text-slate-100">${l}</span>
@@ -461,15 +467,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Ensure buttons exist before manipulating
         if (brBtn) {
-            if (!brBtn.src.includes('w80')) brBtn.src = 'https://flagcdn.com/w80/br.png';
+            const img = brBtn.querySelector('img');
+            if (img && !img.src.includes('w80')) img.src = 'https://flagcdn.com/w80/br.png';
+
+            // Apply active class to the BUTTON, not the image
             brBtn.classList.toggle('active', lang === 'br');
-            brBtn.setAttribute('aria-pressed', lang === 'br');
         }
 
         if (enBtn) {
-            if (!enBtn.src.includes('w80')) enBtn.src = 'https://flagcdn.com/w80/us.png';
+            const img = enBtn.querySelector('img');
+            if (img && !img.src.includes('w80')) img.src = 'https://flagcdn.com/w80/us.png';
+
             enBtn.classList.toggle('active', lang === 'en');
-            enBtn.setAttribute('aria-pressed', lang === 'en');
         }
     };
 
@@ -479,7 +488,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const langBrButton = document.getElementById('lang-br-btn');
     const langEnButton = document.getElementById('lang-en-btn');
 
-    const setLanguage = (lang) => {
+    // Renamed back to switchLanguage to fix references or kept specific name but ensuring all calls match
+    const switchLanguage = (lang) => {
         if (currentLang === lang) return;
         currentLang = lang;
         document.documentElement.lang = lang === 'br' ? 'pt-BR' : 'en';
@@ -499,11 +509,11 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     if (langBrButton) {
-        langBrButton.addEventListener('click', () => setLanguage('br'));
+        langBrButton.addEventListener('click', () => switchLanguage('br'));
     }
 
     if (langEnButton) {
-        langEnButton.addEventListener('click', () => setLanguage('en'));
+        langEnButton.addEventListener('click', () => switchLanguage('en'));
     }
 
     // Initialize
