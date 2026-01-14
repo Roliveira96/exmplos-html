@@ -136,7 +136,7 @@ document.addEventListener('DOMContentLoaded', function () {
             container.innerHTML = `
                 <div class="relative inline-block mb-6 group">
                     <div class="absolute -inset-1 bg-gradient-to-r from-emerald-500 to-blue-600 rounded-full blur opacity-25 group-hover:opacity-75 transition duration-1000 group-hover:duration-200"></div>
-                    <img src="${resumeData.profile.image}" alt="Foto de Perfil" class="relative w-40 h-40 rounded-full mx-auto border-4 border-slate-800 shadow-2xl object-cover">
+                    <img src="${resumeData.profile.image}" alt="Foto de Perfil" width="160" height="160" class="relative w-40 h-40 rounded-full mx-auto border-4 border-slate-800 shadow-2xl object-cover" fetchpriority="high">
                     <div class="absolute bottom-2 right-4 w-4 h-4 bg-emerald-500 rounded-full border-2 border-slate-800 animate-pulse"></div>
                 </div>
                 <h1 class="text-3xl font-bold text-white mb-2 font-heading tracking-tight">${resumeData.profile.name}</h1>
@@ -314,13 +314,13 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!container) return;
             // Added 'education-card' class for Matrix Targeting
             container.innerHTML = resumeData.education.map(edu => `
-                 <div class="bg-slate-800/30 p-5 rounded-xl border border-slate-700/50 flex gap-4 items-center education-card">
+                <div class="bg-slate-800/30 p-5 rounded-xl border border-slate-700/50 flex gap-4 items-center education-card">
                     <div class="flex-shrink-0 w-12 h-12 bg-blue-500/10 text-blue-400 rounded-lg flex items-center justify-center border border-blue-500/20">
                         <i class="fas fa-graduation-cap fa-lg"></i>
                     </div>
                     <div>
                         <h4 class="text-base font-bold text-white font-heading">${edu.institution[lang]}</h4>
-                        <p class="text-sm text-slate-500">${edu.location}</p>
+                        <p class="text-sm text-slate-400">${edu.location}</p>
                         <p class="text-sm font-medium text-slate-300 mt-1">${edu.course[lang]}</p>
                     </div>
                 </div>
@@ -333,13 +333,13 @@ document.addEventListener('DOMContentLoaded', function () {
                  <div class="group bg-slate-800/30 rounded-xl border border-slate-700/50 overflow-hidden hover:border-emerald-500/40 transition-all course-card flex flex-col h-full">
                     <!-- Image Container: Fixed height, White background, full width -->
                     <div class="h-56 bg-white w-full flex items-center justify-center relative border-b border-slate-700/50 overflow-hidden">
-                         <img src="${course.image}" alt="${course.title[lang]}" class="w-full h-full object-contain transform group-hover:scale-105 transition-all duration-300">
+                         <img src="${course.image}" alt="${course.title[lang]}" width="525" height="390" class="w-full h-full object-contain transform group-hover:scale-105 transition-all duration-300">
                     </div>
                     
                     <div class="p-5 flex-grow flex flex-col">
                         <div class="mb-4">
                             <h4 class="text-base font-bold text-white mb-2 leading-snug group-hover:text-emerald-400 transition-colors font-heading" title="${course.title[lang]}">${course.title[lang]}</h4>
-                            <p class="text-xs font-mono text-slate-500 flex items-center gap-2">
+                            <p class="text-xs font-mono text-slate-400 flex items-center gap-2">
                                 <i class="far fa-calendar-alt"></i> ${course.date[lang]}
                             </p>
                         </div>
@@ -373,7 +373,7 @@ document.addEventListener('DOMContentLoaded', function () {
             skillsContainer.innerHTML = '';
             resumeData.skills[lang].forEach(group => {
                 let groupHtml = `<div class="mb-6 last:mb-0">
-                    <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3 flex items-center gap-2">
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-2">
                         <span class="w-1 h-1 bg-emerald-500 rounded-full"></span> ${group.groupName}
                     </h3>
                     <div class="flex flex-wrap gap-2">`;

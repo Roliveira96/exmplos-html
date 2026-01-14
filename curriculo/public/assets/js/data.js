@@ -1,7 +1,7 @@
 const resumeData = {
     profile: {
         name: "Ricardo Martins de Oliveira",
-        image: "perfil.webp",
+        image: "assets/img/perfil.webp",
         address: "Trav. Arlindo Antunes, Guarapuava, Paraná",
         contact: {
             phone: {
@@ -152,7 +152,7 @@ const resumeData = {
             title: { br: "Planejamento e Gestão de Projetos", en: "Project Planning and Management" },
             description: { br: "Curso completo sobre planejamento e gestão de projetos.", en: "Complete course on project planning and management." },
             date: { br: "Concluído em 09/04/2025.", en: "Completed on 04/09/2025." },
-            image: "https://udemy-certificate.s3.amazonaws.com/image/UC-c114c8a4-1ea8-4d70-8220-16bc1aea7b02.jpg",
+            image: "assets/img/certificates/thumb-cert-gestao-projetos.webp",
             pdf: "https://udemy-certificate.s3.amazonaws.com/pdf/UC-c114c8a4-1ea8-4d70-8220-16bc1aea7b02.pdf",
             longDescription: {
                 br: "O certificado acima atesta que Ricardo Martins de Oliveira concluiu com êxito o curso Planejamento e Gestão de Projetos COMPLETO + 5 cursos Extras em 09/04/2025, ministrado por Gustavo Farias 500.000+ Alunos na Udemy.",
@@ -163,7 +163,7 @@ const resumeData = {
             title: { br: "Product Owner para iniciantes", en: "Product Owner for Beginners" },
             description: { br: "Curso introdutório para a função de Product Owner.", en: "Introductory course for the Product Owner role." },
             date: { br: "Concluído em 07/02/2025.", en: "Completed on 02/07/2025." },
-            image: "https://udemy-certificate.s3.amazonaws.com/image/UC-4bd96bcd-8e62-42b2-b080-0cbe85823dc2.jpg",
+            image: "assets/img/certificates/thumb-cert-product-owner.webp",
             pdf: "https://udemy-certificate.s3.amazonaws.com/pdf/UC-4bd96bcd-8e62-42b2-b080-0cbe85823dc2.pdf",
             longDescription: {
                 br: "O certificado acima atesta que Ricardo Martins de Oliveira concluiu com êxito o curso Product Owner para iniciantes em 07/02/2025, ministrado por Thalita Maia na Udemy.",
@@ -174,7 +174,7 @@ const resumeData = {
             title: { br: "Curso de DevOps", en: "DevOps Course" },
             description: { br: "Curso de 50 horas que abrange de Linux e Git a Kubernetes e Terraform, focando em CI/CD e automação de infraestrutura.", en: "A 50-hour course covering from Linux and Git to Kubernetes and Terraform, focusing on CI/CD and infrastructure automation." },
             date: { br: "Concluído em 28/01/2025.", en: "Completed on 01/28/2025." },
-            image: "https://linuxforce.com.br/wp-content/uploads/2025/01/curso-devops-linux-force-security.jpg",
+            image: "assets/img/certificates/thumb-cert-devops-linux.webp",
             pdf: "https://e-certificado.com/login/visualizar?c=2435539A0C77326015803960",
             longDescription: {
                 br: "Este curso de DevOps foi projetado para levar você do básico ao avançado, proporcionando uma compreensão sólida e prática sobre automação de processos de desenvolvimento e operações.",
@@ -185,7 +185,7 @@ const resumeData = {
             title: { br: "Aprenda Go (Golang) sem Enrolação", en: "Learn Go (Golang) Straight to the Point" },
             description: { br: "Curso direto ao ponto para aprender Go.", en: "A straightforward course to learn Go." },
             date: { br: "Concluído em 07/12/2023.", en: "Completed on 12/07/2023." },
-            image: "https://udemy-certificate.s3.amazonaws.com/image/UC-87fe3c89-64c3-4024-8fa2-bde534b9fa19.jpg",
+            image: "assets/img/certificates/thumb-cert-go-sem-enrolacao.webp",
             pdf: "https://udemy-certificate.s3.amazonaws.com/pdf/UC-87fe3c89-64c3-4024-8fa2-bde534b9fa19.pdf",
             longDescription: {
                 br: "O certificado acima atesta que Ricardo Martins de Oliveira concluiu com êxito o curso Aprenda Go (Golang) sem Enrolação em 07/12/2023.",
@@ -196,7 +196,7 @@ const resumeData = {
             title: { br: "Programação Go para DevOps e SREs", en: "Go Programming for DevOps and SREs" },
             description: { br: "Focado na aplicação de Go para práticas de DevOps e SRE.", en: "Focused on applying Go to DevOps and SRE practices." },
             date: { br: "Concluído em 28/11/2023.", en: "Completed on 11/28/2023." },
-            image: "https://udemy-certificate.s3.amazonaws.com/image/UC-527f804e-176d-414b-a8f2-64628a4792d1.jpg",
+            image: "assets/img/certificates/thumb-cert-go-devops.webp",
             pdf: "https://udemy-certificate.s3.amazonaws.com/pdf/UC-527f804e-176d-414b-a8f2-64628a4792d1.pdf",
             longDescription: {
                 br: "O certificado acima atesta que Ricardo Martins de Oliveira concluiu com êxito o curso Programação Go para DevOps e SREs em 28/11/2023.",
@@ -207,7 +207,7 @@ const resumeData = {
             title: { br: "Go (Golang) - Do zero ao avançado", en: "Go (Golang) - From Zero to Advanced" },
             description: { br: "Curso completo de Go, incluindo testes de unidade.", en: "Complete Go course, including unit tests." },
             date: { br: "Concluído em 18/11/2023.", en: "Completed on 11/18/2023." },
-            image: "https://udemy-certificate.s3.amazonaws.com/image/UC-4b49ec2a-acc8-4b6a-befd-d51f3695e4cb.jpg",
+            image: "assets/img/certificates/thumb-cert-go-avancado.webp",
             pdf: "https://udemy-certificate.s3.amazonaws.com/pdf/UC-4b49ec2a-acc8-4b6a-befd-d51f3695e4cb.pdf",
             longDescription: {
                 br: "O certificado acima atesta que Ricardo Martins de Oliveira concluiu com êxito o curso Go (Golang) - Do zero ao avançado (com teste de unidade) em 18/11/2023.",
@@ -218,7 +218,7 @@ const resumeData = {
             title: { br: "Curso completo de PostgreSQL!", en: "Complete PostgreSQL Course!" },
             description: { br: "Curso completo de PostgreSQL, do básico ao avançado.", en: "Complete PostgreSQL course, from basic to advanced." },
             date: { br: "Concluído em 18/07/2023.", en: "Completed on 07/18/2023." },
-            image: "https://udemy-certificate.s3.amazonaws.com/image/UC-91686520-f529-4ab6-833d-c8eaa6337405.jpg",
+            image: "assets/img/certificates/thumb-cert-postgresql.webp",
             pdf: "https://udemy-certificate.s3.amazonaws.com/pdf/UC-91686520-f529-4ab6-833d-c8eaa6337405.pdf",
             longDescription: {
                 br: "O certificado acima atesta que Ricardo Martins de Oliveira concluiu com êxito o curso Curso completo de PostgreSQL! Do Básico ao Avançado v2025! em 18/07/2023.",
@@ -229,7 +229,7 @@ const resumeData = {
             title: { br: "DOCKER Completo do Zero ao Avançado", en: "DOCKER Complete from Zero to Advanced" },
             description: { br: "Curso completo sobre Docker, do básico ao avançado.", en: "Complete course on Docker, from basic to advanced." },
             date: { br: "Concluído em 13/03/2023.", en: "Completed on 03/13/2023." },
-            image: "https://udemy-certificate.s3.amazonaws.com/image/UC-4f212bba-5c77-48e4-9476-5cf1c2756d12.jpg",
+            image: "assets/img/certificates/thumb-cert-docker.webp",
             pdf: "https://udemy-certificate.s3.amazonaws.com/pdf/UC-4f212bba-5c77-48e4-9476-5cf1c2756d12.pdf",
             longDescription: {
                 br: "O certificado acima atesta que Ricardo Martins de Oliveira concluiu com êxito o curso DOCKER Completo do Zero ao Avançado em 13/03/2023.",
@@ -240,7 +240,7 @@ const resumeData = {
             title: { br: "Go (Golang): Explorando a Linguagem", en: "Go (Golang): Exploring the Language" },
             description: { br: "Curso para explorar os recursos da linguagem Go (Golang).", en: "Course to explore the features of the Go (Golang) language." },
             date: { br: "Concluído em 23/02/2023.", en: "Completed on 02/23/2023." },
-            image: "https://udemy-certificate.s3.amazonaws.com/image/UC-29210c82-4f0c-4d72-84d6-0ba10ab281a1.jpg",
+            image: "assets/img/certificates/thumb-cert-go-explorando.webp",
             pdf: "https://udemy-certificate.s3.amazonaws.com/pdf/UC-29210c82-4f0c-4d72-84d6-0ba10ab281a1.pdf",
             longDescription: {
                 br: "O certificado acima atesta que Ricardo Martins de Oliveira concluiu com êxito o curso Go (Golang): Explorando a Linguagem do Google em 23/02/2023.",
@@ -251,7 +251,7 @@ const resumeData = {
             title: { br: "Aprenda Golang do Zero!", en: "Learn Golang from Scratch!" },
             description: { br: "Este curso aborda o desenvolvimento de uma aplicação completa com Go, do zero.", en: "This course covers the development of a complete application with Go, from scratch." },
             date: { br: "Concluído em 22/02/2023.", en: "Completed on 02/22/2023." },
-            image: "https://udemy-certificate.s3.amazonaws.com/image/UC-5988ea38-875d-4c86-867b-c42186af6cd6.jpg",
+            image: "assets/img/certificates/thumb-cert-go-zero.webp",
             pdf: "https://udemy-certificate.s3.amazonaws.com/pdf/UC-5988ea38-875d-4c86-867b-c42186af6cd6.pdf",
             longDescription: {
                 br: "O certificado acima atesta que Ricardo Martins de Oliveira concluiu com êxito o curso Aprenda Golang do Zero! Desenvolva uma APLICAÇÃO COMPLETA! em 22/02/2023.",
@@ -262,7 +262,7 @@ const resumeData = {
             title: { br: "How to Build a Mobile app Prototype", en: "How to Build a Mobile app Prototype" },
             description: { br: "Aprenda a construir protótipos de aplicativos móveis de forma rápida e fácil.", en: "Learn to build mobile app prototypes quickly and easily." },
             date: { br: "Concluído em 20/02/2023.", en: "Completed on 02/20/2023." },
-            image: "https://udemy-certificate.s3.amazonaws.com/image/UC-f70f4d39-cffb-4146-a982-ed42e57bcda7.jpg",
+            image: "assets/img/certificates/thumb-cert-mobile-prototype.webp",
             pdf: "https://udemy-certificate.s3.amazonaws.com/pdf/UC-f70f4d39-cffb-4146-a982-ed42e57bcda7.pdf",
             longDescription: {
                 br: "O certificado acima atesta que Ricardo Martins de Oliveira concluiu com êxito o curso How to Build a Mobile app Prototype Fast and Easy em 20/02/2023.",
@@ -273,7 +273,7 @@ const resumeData = {
             title: { br: "Introduction To Graphic Design", en: "Introduction To Graphic Design" },
             description: { br: "Curso introdutório sobre os fundamentos do Design Gráfico.", en: "Introductory course on the fundamentals of Graphic Design." },
             date: { br: "Concluído em 20/02/2023.", en: "Completed on 02/20/2023." },
-            image: "https://udemy-certificate.s3.amazonaws.com/image/UC-f4e273f3-037b-4b2d-90e1-0f4a29cd7456.jpg",
+            image: "assets/img/certificates/thumb-cert-graphic-design.webp",
             pdf: "https://udemy-certificate.s3.amazonaws.com/pdf/UC-f4e273f3-037b-4b2d-90e1-0f4a29cd7456.pdf",
             longDescription: {
                 br: "O certificado acima atesta que Ricardo Martins de Oliveira concluiu com êxito o curso Introduction To Graphic Design em 20/02/2023.",
@@ -284,7 +284,7 @@ const resumeData = {
             title: { br: "Build NodeJS applications with Mongodb", en: "Build NodeJS applications with Mongodb" },
             description: { br: "Focado na construção de aplicações NodeJS com MongoDB.", en: "Focused on building NodeJS applications with MongoDB." },
             date: { br: "Concluído em 19/02/2023.", en: "Completed on 02/19/2023." },
-            image: "https://udemy-certificate.s3.amazonaws.com/image/UC-192d8cd6-031c-4901-9eff-b1611170959e.jpg",
+            image: "assets/img/certificates/thumb-cert-nodejs-mongo.webp",
             pdf: "https://udemy-certificate.s3.amazonaws.com/pdf/UC-192d8cd6-031c-4901-9eff-b1611170959e.pdf",
             longDescription: {
                 br: "O certificado acima atesta que Ricardo Martins de Oliveira concluiu com êxito o curso Build NodeJS applications with Mongodb em 19/02/2023.",
@@ -295,7 +295,7 @@ const resumeData = {
             title: { br: "LGPD - Lei Geral de Proteção de Dados", en: "LGPD - General Data Protection Law" },
             description: { br: "Curso sobre a Lei Geral de Proteção de Dados (LGPD).", en: "Course on the General Data Protection Law (LGPD)." },
             date: { br: "Concluído em 03/02/2023.", en: "Completed on 02/03/2023." },
-            image: "https://udemy-certificate.s3.amazonaws.com/image/UC-fc865835-49a1-44fc-9a1a-451a395e988e.jpg",
+            image: "assets/img/certificates/thumb-cert-lgpd.webp",
             pdf: "https://udemy-certificate.s3.amazonaws.com/pdf/UC-fc865835-49a1-44fc-9a1a-451a395e988e.pdf",
             longDescription: {
                 br: "O certificado acima atesta que Ricardo Martins de Oliveira concluiu com êxito o curso LGPD - Lei Geral de Proteção de Dados em 03/02/2023.",
