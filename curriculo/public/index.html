@@ -62,14 +62,12 @@
     }
     </script>
 
-    <!-- Dependencies -->
-
 
     <!-- CSS Loading Optimization -->
-    <link rel="preload" href="assets/css/style.min.css" as="style">
-    <link rel="stylesheet" href="assets/css/style.min.css" media="print" onload="this.media='all'">
+    <link rel="preload" href="assets/css/style.min.css?v=2" as="style">
+    <link rel="stylesheet" href="assets/css/style.min.css?v=2" media="print" onload="this.media='all'">
     <noscript>
-        <link rel="stylesheet" href="assets/css/style.min.css">
+        <link rel="stylesheet" href="assets/css/style.min.css?v=2">
     </noscript>
 </head>
 
@@ -77,7 +75,7 @@
     class="bg-slate-900 text-slate-200 leading-relaxed antialiased relative selection:bg-emerald-500 selection:text-white">
     <!-- Progress Bar -->
     <div id="progressBar"
-        class="fixed top-0 left-0 w-0 h-1 bg-gradient-to-r from-indigo-500 to-purple-500 z-50 rounded-r-full"></div>
+        class="fixed top-0 left-0 w-0 h-1 bg-gradient-to-r from-emerald-500 to-matrix-500 z-50 rounded-r-full"></div>
 
     <!-- Animated Background -->
     <div class="animated-background-shapes">
@@ -104,7 +102,7 @@
 
     <!-- Download PDF Button -->
     <button id="download-pdf-btn"
-        class="fixed bottom-5 right-5 z-50 bg-indigo-600 text-white p-4 rounded-full shadow-lg hover:bg-indigo-700 hover:scale-105 transition-all duration-300 flex items-center justify-center group"
+        class="fixed bottom-5 right-5 z-50 bg-emerald-600 text-white p-4 rounded-full shadow-lg hover:bg-emerald-700 hover:scale-105 transition-all duration-300 flex items-center justify-center group"
         aria-label="Download PDF">
         <i class="fas fa-file-pdf fa-lg group-hover:rotate-12 transition-transform"></i>
     </button>
@@ -116,15 +114,24 @@
             <aside class="lg:col-span-4 space-y-8">
                 <!-- Profile Card -->
                 <div id="profile-card" class="glass-panel p-8 rounded-3xl text-center fade-in">
-                    <div class="relative inline-block mb-6 group">
+                    <div class="relative inline-block mb-12 group">
+                        <!-- Ultra-Bright Neon Glow Background -->
                         <div
-                            class="absolute -inset-1 bg-gradient-to-r from-emerald-500 to-blue-600 rounded-full blur opacity-25 group-hover:opacity-75 transition duration-1000 group-hover:duration-200">
+                            class="absolute -inset-2 rounded-full blur-2xl opacity-20 group-hover:opacity-40 transition-opacity duration-700 bg-emerald-500 shadow-[0_0_30px_#10b981]">
                         </div>
+
+                        <!-- Photo with Neon Border -->
                         <img src="assets/img/perfil-160.webp" alt="Foto de Perfil" width="160" height="160"
-                            class="relative w-40 h-40 rounded-full mx-auto border-4 border-slate-800 shadow-2xl object-cover"
+                            class="relative w-40 h-40 rounded-full mx-auto object-cover z-10 profile-photo-matrix"
                             fetchpriority="high">
-                        <div
-                            class="absolute bottom-2 right-4 w-4 h-4 bg-emerald-500 rounded-full border-2 border-slate-800 animate-pulse">
+
+                        <!-- Matrix Status Badge -->
+                        <div id="status-badge"
+                            class="px-5 py-1.5 rounded-full flex items-center gap-3 z-20 min-w-[125px] justify-center transition-all duration-300 hover:scale-110 status-badge-matrix">
+                            <span id="status-dot"
+                                class="w-2.5 h-2.5 rounded-full animate-pulse bg-emerald-400 status-dot-matrix"></span>
+                            <span id="status-text"
+                                class="text-[12px] font-black uppercase tracking-[0.2em] font-mono text-emerald-400">CONNECTING</span>
                         </div>
                     </div>
                     <h1 class="text-3xl font-bold text-white mb-2 font-heading tracking-tight">Ricardo Martins de
@@ -133,7 +140,7 @@
                         class="text-emerald-400 text-sm font-mono mb-6 bg-emerald-500/10 inline-block px-3 py-1 rounded-full border border-emerald-500/20">
                         Software Engineer & Tech Lead</p>
                     <div class="flex justify-center gap-3 flex-wrap mt-4 pt-6 border-t border-slate-700/50">
-                        <!-- Social links will be injected by JS, less critical for LCP -->
+                        <!-- Social links will be injected by JS -->
                     </div>
                 </div>
 
@@ -193,7 +200,6 @@
                     <h2 id="summary-title"
                         class="text-2xl font-bold text-emerald-400 mb-4 border-b border-gray-700 pb-2 relative z-10">
                     </h2>
-                    <!-- Skeleton Content in case HTML loads before JS -->
                     <div id="summary-content"
                         class="text-gray-300 leading-relaxed text-lg animate-pulse min-h-[120px] relative z-10">
                         <div class="h-4 bg-slate-800 rounded w-full mb-3"></div>
@@ -203,62 +209,28 @@
                     </div>
                 </section>
 
-                <!-- Experience Skeleton -->
+                <!-- Experience -->
                 <section id="experience-section" class="fade-in">
                     <h2 id="experience-title" class="text-3xl font-bold text-white mb-6 flex items-center gap-3">
                         <span class="bg-emerald-500 w-2 h-8 rounded-full"></span> <span></span>
                     </h2>
-                    <div id="experience-container" class="space-y-6">
-                        <!-- Skeleton Card -->
-                        <div class="group relative pl-8 pb-8 border-l border-slate-800 animate-pulse">
-                            <div
-                                class="absolute left-0 top-0 -translate-x-1/2 w-4 h-4 rounded-full bg-slate-800 border-2 border-slate-700">
-                            </div>
-                            <div class="bg-slate-800/20 rounded-xl p-6 border border-slate-700/50">
-                                <div class="h-6 bg-slate-800 rounded w-1/3 mb-4"></div>
-                                <div class="h-4 bg-slate-800 rounded w-1/4 mb-4"></div>
-                                <div class="h-16 bg-slate-800 rounded w-full"></div>
-                            </div>
-                        </div>
-                        <div class="group relative pl-8 pb-8 border-l border-slate-800 animate-pulse">
-                            <div
-                                class="absolute left-0 top-0 -translate-x-1/2 w-4 h-4 rounded-full bg-slate-800 border-2 border-slate-700">
-                            </div>
-                            <div class="bg-slate-800/20 rounded-xl p-6 border border-slate-700/50">
-                                <div class="h-6 bg-slate-800 rounded w-1/3 mb-4"></div>
-                                <div class="h-4 bg-slate-800 rounded w-1/4 mb-4"></div>
-                                <div class="h-16 bg-slate-800 rounded w-full"></div>
-                            </div>
-                        </div>
-                    </div>
+                    <div id="experience-container" class="space-y-6"></div>
                 </section>
 
-                <!-- Education Skeleton -->
+                <!-- Education -->
                 <section id="education-section" class="fade-in">
                     <h2 id="education-title" class="text-3xl font-bold text-white mb-6 flex items-center gap-3">
                         <span class="bg-blue-500 w-2 h-8 rounded-full"></span> <span></span>
                     </h2>
-                    <div id="education-container" class="grid grid-cols-1 gap-6">
-                        <div
-                            class="bg-slate-800/30 p-5 rounded-xl border border-slate-700/50 flex gap-4 items-center animate-pulse">
-                            <div class="w-12 h-12 bg-slate-800 rounded-lg"></div>
-                            <div class="space-y-2 flex-1">
-                                <div class="h-4 bg-slate-800 rounded w-1/3"></div>
-                                <div class="h-3 bg-slate-800 rounded w-1/2"></div>
-                            </div>
-                        </div>
-                    </div>
+                    <div id="education-container" class="grid grid-cols-1 gap-6"></div>
                 </section>
 
-                <!-- Courses Skeleton -->
+                <!-- Courses -->
                 <section id="courses-section" class="fade-in">
                     <h2 id="courses-title" class="text-3xl font-bold text-white mb-6 flex items-center gap-3">
                         <span class="bg-purple-500 w-2 h-8 rounded-full"></span> <span></span>
                     </h2>
-                    <div id="courses-container" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="bg-slate-800/30 rounded-xl border border-slate-700/50 h-80 animate-pulse"></div>
-                        <div class="bg-slate-800/30 rounded-xl border border-slate-700/50 h-80 animate-pulse"></div>
-                    </div>
+                    <div id="courses-container" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
                 </section>
 
                 <!-- Footer -->
@@ -269,7 +241,7 @@
         </div>
     </div>
 
-    <!-- Experience Details Modal -->
+    <!-- Modals -->
     <div id="generalModal" class="modal-overlay">
         <div class="modal-content">
             <button class="modal-close-button" id="closeModal"><i class="fas fa-times"></i></button>
@@ -277,18 +249,13 @@
             <p id="modalSubTitle" class="text-emerald-400 text-sm font-mono mb-6"></p>
             <div id="modalDescription" class="text-gray-300 leading-relaxed text-lg mb-6"></div>
             <ul id="modalResponsibilities" class="list-disc list-inside text-gray-300 ml-4 mb-6 space-y-2"></ul>
-
             <div class="modal-actions">
-                <button id="modalCloseBtnAction" class="btn-secondary-modal">
-                    <span>Fechar</span>
-                </button>
-
+                <button id="modalCloseBtnAction" class="btn-secondary-modal"><span>Fechar</span></button>
             </div>
             <audio id="audioPlayer" src="" style="display: none;"></audio>
         </div>
     </div>
 
-    <!-- Certificate Modal -->
     <div id="certificateModal" class="modal-overlay">
         <div class="modal-content">
             <button class="modal-close-button" id="closeCertificateModal"><i class="fas fa-times"></i></button>
@@ -297,14 +264,10 @@
                     class="w-full h-auto object-contain max-h-[60vh] mx-auto rounded-lg mb-6 shadow-2xl">
             </div>
             <p id="certificateDescription" class="text-gray-300 text-sm leading-relaxed mb-6"></p>
-
             <div class="modal-actions">
-                <button id="certModalCloseBtnAction" class="btn-secondary-modal">
-                    <span>Fechar</span>
-                </button>
+                <button id="certModalCloseBtnAction" class="btn-secondary-modal"><span>Fechar</span></button>
                 <a id="certificatePdfLink" href="" target="_blank" class="btn-primary-modal w-auto">
-                    <i class="fas fa-file-pdf"></i>
-                    <span>Ver PDF</span>
+                    <i class="fas fa-file-pdf"></i><span>Ver PDF</span>
                 </a>
             </div>
         </div>
@@ -332,10 +295,10 @@
     </div>
 
     <!-- Scripts -->
-    <!-- html2pdf loaded dynamically for performance -->
-    <script src="assets/js/data.js" defer></script>
-    <script src="assets/js/pdf-generator.js" defer></script>
-    <script src="assets/js/script.js" defer></script>
+    <script src="assets/js/data.js?v=2" defer></script>
+    <script src="assets/js/pdf-generator.js?v=2" defer></script>
+    <script src="assets/js/matrix-egg.js?v=2" defer></script>
+    <script src="assets/js/script.js?v=2" defer></script>
 </body>
 
 </html>

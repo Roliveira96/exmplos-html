@@ -188,13 +188,13 @@ body::before {
     bottom: 20px;
     /* 
        Cycle Loop:
-       Total Duration: 50s
-       Move E->D: 6s
+       Total Duration: 450s (~7.5 min)
+       Move E->D: 6s (1.33%)
        Flip: instant
-       Move D->E: 6s
-       Pause: 38s
+       Move D->E: 6s (1.33%)
+       Pause: 438s (~7.3 min)
     */
-    animation: rabbit-cycle 50s infinite linear;
+    animation: rabbit-cycle 450s infinite linear;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -236,36 +236,30 @@ body::before {
     0% {
         left: -150px;
         transform: scale(0.65) scaleX(1);
-        /* Inicio E, olhando para D */
     }
 
-    12% {
+    1.33% {
         left: 110%;
-        /* Chegou na Direita (6s de 50s = 12%) */
         transform: scale(0.65) scaleX(1);
     }
 
-    12.01% {
+    1.34% {
         left: 110%;
         transform: scale(0.65) scaleX(-1);
-        /* Virou para E */
     }
 
-    24% {
+    2.67% {
         left: -150px;
-        /* Voltou para Esquerda (12% + 12% = 24%) */
         transform: scale(0.65) scaleX(-1);
     }
 
-    24.01% {
+    2.68% {
         left: -150px;
         transform: scale(0.65) scaleX(1);
-        /* Virou para D e espera */
     }
 
     100% {
         left: -150px;
-        /* Fica parado na Esquerda ate 50s */
         transform: scale(0.65) scaleX(1);
     }
 }
@@ -306,6 +300,67 @@ body::before {
     50% {
         transform: rotate(-10deg);
     }
+}
+
+/* Matrix Profile & Status - Custom Classes */
+.profile-photo-matrix {
+    border: 6px solid #10b981 !important;
+    /* Emerald-500 */
+    /* Multi-layered Neon Glow */
+    box-shadow:
+        0 0 5px #fff,
+        /* Core */
+        0 0 10px #10b981,
+        /* Inner Halo */
+        0 0 30px #10b981,
+        /* Middle Glow */
+        inset 0 0 15px rgba(16, 185, 129, 0.4) !important;
+    /* Inner */
+    transition: all 0.3s ease;
+}
+
+.status-badge-matrix {
+    background-color: #020617 !important;
+    border: 2px solid !important;
+    position: absolute;
+    bottom: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: all 0.3s ease;
+    z-index: 30;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* State: Online */
+.status-badge-matrix.online {
+    border-color: #10b981;
+    box-shadow: 0 0 15px rgba(16, 185, 129, 0.6);
+}
+
+.status-badge-matrix.online .status-dot-matrix {
+    background-color: #34d399;
+    box-shadow: 0 0 10px #10b981, 0 0 20px #10b981;
+}
+
+.status-badge-matrix.online .status-text-matrix {
+    color: #34d399;
+    text-shadow: 0 0 5px rgba(16, 185, 129, 0.8);
+}
+
+/* State: Offline */
+.status-badge-matrix.offline {
+    border-color: #eab308;
+    box-shadow: 0 0 10px rgba(234, 179, 8, 0.4);
+}
+
+.status-badge-matrix.offline .status-dot-matrix {
+    background-color: #facc15;
+    box-shadow: 0 0 8px #ca8a04;
+}
+
+.status-badge-matrix.offline .status-text-matrix {
+    color: #facc15;
+    text-shadow: 0 0 5px rgba(234, 179, 8, 0.5);
 }
 
 /* PDF Button */
