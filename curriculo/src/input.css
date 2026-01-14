@@ -82,7 +82,7 @@ body::before {
     -webkit-mask-image: radial-gradient(circle at top right, black 0%, transparent 70%);
 }
 
-/* Ensure content stays on top of matrix bg */
+/* Ensure content stays on top of matrix bg if ever re-enabled */
 .glass-panel>*,
 .experience-card>*,
 .education-card>* {
@@ -114,23 +114,23 @@ body::before {
     box-shadow: 0 4px 14px 0 rgba(16, 185, 129, 0.39);
 }
 
+/* Box Shadow Glow for dots */
+.box-shadow-glow {
+    box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+}
+
 /* Language Switcher - Sleek Top Bar */
 .language-switcher {
     position: fixed;
     top: 30px;
     right: 30px;
-    /* Removed vertical transform */
     z-index: 50;
     display: flex;
     flex-direction: row;
-    /* Horizontal Layout */
     gap: 16px;
     background: rgba(15, 23, 42, 0.6);
-    /* Very sheer dark */
     padding: 8px 12px;
-    /* Adjusted padding for horizontal */
     border-radius: 9999px;
-    /* Pill shape */
     border: 1px solid rgba(255, 255, 255, 0.08);
     backdrop-filter: blur(12px);
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);

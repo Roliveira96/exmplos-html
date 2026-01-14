@@ -125,7 +125,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
 
-        // Classes: experience-card (inside experience-container), education-card (we'll add this class)
+        // Classes: experience-card (inside experience-container), education-card
         document.querySelectorAll('.experience-card, .education-card').forEach(el => {
             if (!el.querySelector('.matrix-canvas')) {
                 new MatrixEffect(el);
@@ -134,9 +134,11 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     const render = {
-        profile: () => {
+        profile: (lang) => {
             const container = document.getElementById('profile-card');
             if (!container) return;
+            // REMOVE PULSE class if present
+            container.querySelector('.animate-pulse')?.classList.remove('animate-pulse');
 
             let socialHtml = resumeData.socialLinks.map(link => `
                 <a href="${link.url}" target="_blank" class="text-gray-400 hover:text-emerald-400 transition-all duration-300 transform hover:scale-110 p-2 bg-slate-800/50 rounded-full border border-slate-700 hover:border-emerald-500/50 flex items-center justify-center w-10 h-10" title="${link.name}">
@@ -147,7 +149,7 @@ document.addEventListener('DOMContentLoaded', function () {
             container.innerHTML = `
                 <div class="relative inline-block mb-6 group">
                     <div class="absolute -inset-1 bg-gradient-to-r from-emerald-500 to-blue-600 rounded-full blur opacity-25 group-hover:opacity-75 transition duration-1000 group-hover:duration-200"></div>
-                    <img src="${resumeData.profile.image}" alt="Foto de Perfil" width="160" height="160" class="relative w-40 h-40 rounded-full mx-auto border-4 border-slate-800 shadow-2xl object-cover" fetchpriority="high">
+                    <img src="${resumeData.profile.image}" alt="${resumeData.profile.name}" width="160" height="160" class="relative w-40 h-40 rounded-full mx-auto border-4 border-slate-800 shadow-2xl object-cover" fetchpriority="high">
                     <div class="absolute bottom-2 right-4 w-4 h-4 bg-emerald-500 rounded-full border-2 border-slate-800 animate-pulse"></div>
                 </div>
                 <h1 class="text-3xl font-bold text-white mb-2 font-heading tracking-tight">${resumeData.profile.name}</h1>
@@ -160,26 +162,30 @@ document.addEventListener('DOMContentLoaded', function () {
         contact: (lang) => {
             const container = document.getElementById('contact-card');
             if (!container) return;
+            // REMOVE PULSE from child div wrapper
+            const pulse = container.querySelector('.animate-pulse');
+            if (pulse) pulse.classList.remove('animate-pulse');
+
             container.innerHTML = `
-                <h2 class="text-sm font-bold text-gray-400 uppercase tracking-widest mb-6 flex items-center gap-2">
-                    <i class="fas fa-terminal text-emerald-500"></i> ${lang === 'br' ? 'Contato' : 'Contact'}
+                <h2 class="text-sm font-bold text-slate-200 uppercase tracking-widest mb-6 flex items-center gap-2">
+                    <i class="fas fa-terminal text-emerald-300"></i> ${lang === 'br' ? 'Contato' : 'Contact'}
                 </h2>
                  <div class="space-y-4">
-                    <a href="${resumeData.profile.contact.phone.link}" class="flex items-center gap-4 text-gray-300 hover:text-white group transition-all p-2 rounded-lg hover:bg-slate-800/50 -mx-2">
+                    <a href="${resumeData.profile.contact.phone.link}" class="flex items-center gap-4 text-slate-100 hover:text-white group transition-all p-2 rounded-lg hover:bg-slate-800/50 -mx-2">
                         <div class="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center border border-slate-700 group-hover:border-emerald-500/50 transition-colors">
-                            <i class="${resumeData.profile.contact.phone.icon} text-emerald-400"></i>
+                            <i class="${resumeData.profile.contact.phone.icon} text-emerald-300"></i>
                         </div>
                         <span class="text-sm font-mono">${resumeData.profile.contact.phone.display}</span>
                     </a>
-                    <a href="${resumeData.profile.contact.email.link}" class="flex items-center gap-4 text-gray-300 hover:text-white group transition-all p-2 rounded-lg hover:bg-slate-800/50 -mx-2">
+                    <a href="${resumeData.profile.contact.email.link}" class="flex items-center gap-4 text-slate-100 hover:text-white group transition-all p-2 rounded-lg hover:bg-slate-800/50 -mx-2">
                          <div class="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center border border-slate-700 group-hover:border-emerald-500/50 transition-colors">
-                            <i class="${resumeData.profile.contact.email.icon} text-emerald-400"></i>
+                            <i class="${resumeData.profile.contact.email.icon} text-emerald-300"></i>
                         </div>
                         <span class="text-sm truncate font-mono">${resumeData.profile.contact.email.display}</span>
                     </a>
-                    <div class="flex items-center gap-4 text-gray-300 p-2 rounded-lg -mx-2">
+                    <div class="flex items-center gap-4 text-slate-100 p-2 rounded-lg -mx-2">
                          <div class="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center border border-slate-700">
-                            <i class="fas fa-map-marker-alt text-emerald-400"></i>
+                            <i class="fas fa-map-marker-alt text-emerald-300"></i>
                         </div>
                         <span class="text-sm">${resumeData.profile.address}</span>
                     </div>
@@ -189,15 +195,18 @@ document.addEventListener('DOMContentLoaded', function () {
         summary: (lang) => {
             const container = document.querySelector('#summary-content');
             if (!container) return;
+            // CRITICAL: Remove animate-pulse from the container itself
+            container.classList.remove('animate-pulse');
+
             // Append the button after the text
             const buttonText = lang === 'br' ? 'Ouvir minha história' : 'Listen to my story';
 
             container.innerHTML = `
-                <p class="leading-relaxed text-slate-300 text-lg mb-6">${resumeData.summary[lang]}</p>
+                <p class="leading-relaxed text-slate-100 text-lg mb-6 shadow-black drop-shadow-md">${resumeData.summary[lang]}</p>
                 <div class="flex justify-start">
-                    <button id="btn-listen-story" class="flex items-center gap-3 px-5 py-2.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-lg transition-all group">
-                        <i class="fas fa-play text-sm group-hover:scale-110 transition-transform"></i>
-                        <span class="text-sm font-semibold tracking-wide">${buttonText}</span>
+                    <button id="btn-listen-story" class="flex items-center gap-3 px-5 py-2.5 bg-emerald-950/80 hover:bg-emerald-900 text-emerald-200 border border-emerald-500/50 rounded-lg transition-all group font-bold shadow-lg" aria-label="${buttonText}">
+                        <i class="fas fa-play text-sm group-hover:scale-110 transition-transform text-emerald-300"></i>
+                        <span class="text-sm tracking-wide shadow-black drop-shadow-sm">${buttonText}</span>
                     </button>
                     <!-- Visualizer placeholder could go here -->
                 </div>
@@ -279,21 +288,21 @@ document.addEventListener('DOMContentLoaded', function () {
             const container = document.getElementById('experience-container');
             if (!container) return;
             container.innerHTML = resumeData.experience.map(exp => `
-                <div class="group relative pl-8 pb-8 border-l border-slate-800 last:border-0 last:pb-0">
+                <div class="group relative pl-8 pb-8 border-l border-slate-700 last:border-0 last:pb-0">
                     <!-- Timeline Dot -->
-                    <div class="absolute left-0 top-0 -translate-x-1/2 w-4 h-4 rounded-full bg-slate-900 border-2 border-slate-700 group-hover:border-emerald-500 group-hover:scale-125 transition-all"></div>
+                    <div class="absolute left-0 top-0 -translate-x-1/2 w-4 h-4 rounded-full bg-slate-900 border-2 border-slate-600 group-hover:border-emerald-500 group-hover:scale-125 transition-all"></div>
                     
-                    <div class="bg-slate-800/20 rounded-xl p-6 border border-slate-700/50 hover:bg-slate-800/40 hover:border-emerald-500/30 transition-all experience-card cursor-pointer">
+                    <div class="bg-slate-800/40 rounded-xl p-6 border border-slate-700/60 hover:bg-slate-800/60 hover:border-emerald-500/30 transition-all experience-card cursor-pointer">
                         <div class="flex flex-col sm:flex-row sm:items-baseline justify-between mb-2">
-                            <h3 class="text-xl font-bold text-white group-hover:text-emerald-400 transition-colors exp-role font-heading">${exp.role[lang]}</h3>
-                            <span class="text-xs font-mono text-emerald-500 bg-emerald-500/10 px-2 py-1 rounded border border-emerald-500/20 mt-2 sm:mt-0 w-fit exp-duration">${exp.duration[lang]}</span>
+                            <h3 class="text-xl font-bold text-white group-hover:text-emerald-300 transition-colors exp-role font-heading">${exp.role[lang]}</h3>
+                            <span class="text-xs font-mono text-emerald-300 bg-emerald-950/30 px-2 py-1 rounded border border-emerald-500/30 mt-2 sm:mt-0 w-fit exp-duration">${exp.duration[lang]}</span>
                         </div>
                         
-                        <div class="text-lg text-slate-400 mb-4 font-medium exp-company flex items-center gap-2">
+                        <div class="text-lg text-slate-300 mb-4 font-medium exp-company flex items-center gap-2">
                             <i class="fas fa-building text-sm"></i> ${exp.company[lang]}
                         </div>
                         
-                        <p class="text-slate-400 text-sm mb-4 line-clamp-3 leading-relaxed exp-summary">${exp.summary[lang]}</p>
+                        <p class="text-slate-300 text-sm mb-4 line-clamp-3 leading-relaxed exp-summary">${exp.summary[lang]}</p>
                         
                         <!-- Hidden content -->
                         <div class="hidden exp-description">${exp.description[lang]}</div>
@@ -301,7 +310,7 @@ document.addEventListener('DOMContentLoaded', function () {
                              ${exp.responsibilities[lang].map(req => `<li>${req}</li>`).join('')}
                         </ul>
 
-                        <button class="text-sm text-emerald-400 font-semibold flex items-center gap-2 hover:gap-3 transition-all view-more-btn">
+                        <button class="text-sm text-emerald-400 font-bold flex items-center gap-2 hover:gap-3 transition-all view-more-btn" aria-label="${lang === 'br' ? 'Ver Mais detalhes sobre ' + exp.role[lang] : 'View More details about ' + exp.role[lang]}">
                              ${lang === 'br' ? 'Ver Mais' : 'View More'} <i class="fas fa-arrow-right"></i>
                         </button>
                     </div>
@@ -325,14 +334,14 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!container) return;
             // Added 'education-card' class for Matrix Targeting
             container.innerHTML = resumeData.education.map(edu => `
-                <div class="bg-slate-800/30 p-5 rounded-xl border border-slate-700/50 flex gap-4 items-center education-card">
-                    <div class="flex-shrink-0 w-12 h-12 bg-blue-500/10 text-blue-400 rounded-lg flex items-center justify-center border border-blue-500/20">
+                <div class="bg-slate-800/40 p-5 rounded-xl border border-slate-700/60 flex gap-4 items-center education-card">
+                    <div class="flex-shrink-0 w-12 h-12 bg-blue-900/20 text-blue-300 rounded-lg flex items-center justify-center border border-blue-500/30">
                         <i class="fas fa-graduation-cap fa-lg"></i>
                     </div>
                     <div>
                         <h4 class="text-base font-bold text-white font-heading">${edu.institution[lang]}</h4>
-                        <p class="text-sm text-slate-400">${edu.location}</p>
-                        <p class="text-sm font-medium text-slate-300 mt-1">${edu.course[lang]}</p>
+                        <p class="text-sm text-slate-300">${edu.location}</p>
+                        <p class="text-sm font-medium text-slate-200 mt-1">${edu.course[lang]}</p>
                     </div>
                 </div>
              `).join('');
@@ -341,22 +350,22 @@ document.addEventListener('DOMContentLoaded', function () {
             const container = document.getElementById('courses-container');
             if (!container) return;
             container.innerHTML = resumeData.courses.map(course => `
-                 <div class="group bg-slate-800/30 rounded-xl border border-slate-700/50 overflow-hidden hover:border-emerald-500/40 transition-all course-card flex flex-col h-full">
+                 <div class="group bg-slate-800/40 rounded-xl border border-slate-700/60 overflow-hidden hover:border-emerald-500/40 transition-all course-card flex flex-col h-full">
                     <!-- Image Container: Fixed height, White background, full width -->
                     <div class="h-56 bg-white w-full flex items-center justify-center relative border-b border-slate-700/50 overflow-hidden">
-                         <img src="${course.image}" alt="${course.title[lang]}" width="525" height="390" class="w-full h-full object-contain transform group-hover:scale-105 transition-all duration-300">
+                         <img src="${course.image}" alt="${course.title[lang]}" width="525" height="390" class="w-full h-full object-contain transform group-hover:scale-105 transition-all duration-300" loading="lazy">
                     </div>
                     
                     <div class="p-5 flex-grow flex flex-col">
                         <div class="mb-4">
-                            <h4 class="text-base font-bold text-white mb-2 leading-snug group-hover:text-emerald-400 transition-colors font-heading" title="${course.title[lang]}">${course.title[lang]}</h4>
+                            <h4 class="text-base font-bold text-white mb-2 leading-snug group-hover:text-emerald-300 transition-colors font-heading" title="${course.title[lang]}">${course.title[lang]}</h4>
                             <p class="text-xs font-mono text-slate-400 flex items-center gap-2">
                                 <i class="far fa-calendar-alt"></i> ${course.date[lang]}
                             </p>
                         </div>
                         
-                        <a href="#" class="certificate-link mt-auto w-full py-2.5 px-4 bg-slate-800 hover:bg-emerald-500/10 border border-slate-700 hover:border-emerald-500/50 text-slate-300 hover:text-emerald-400 text-sm font-medium rounded-lg transition-all flex items-center justify-center gap-2 group/btn"
-                           data-img-src="${course.image}" data-pdf-src="${course.pdf}">
+                        <a href="#" class="certificate-link mt-auto w-full py-2.5 px-4 bg-slate-800 hover:bg-emerald-950/30 border border-slate-700 hover:border-emerald-500/40 text-slate-200 hover:text-emerald-300 text-sm font-medium rounded-lg transition-all flex items-center justify-center gap-2 group/btn"
+                           data-img-src="${course.image}" data-pdf-src="${course.pdf}" aria-label="${lang === 'br' ? 'Ver Certificado de ' + course.title[lang] : 'View Certificate of ' + course.title[lang]}">
                             <i class="fas fa-certificate group-hover/btn:rotate-12 transition-transform"></i>
                             ${lang === 'br' ? 'Ver Certificado' : 'View Certificate'}
                         </a>
@@ -384,14 +393,14 @@ document.addEventListener('DOMContentLoaded', function () {
             skillsContainer.innerHTML = '';
             resumeData.skills[lang].forEach(group => {
                 let groupHtml = `<div class="mb-6 last:mb-0">
-                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-2">
-                        <span class="w-1 h-1 bg-emerald-500 rounded-full"></span> ${group.groupName}
+                    <h3 class="text-xs font-bold text-slate-200 uppercase tracking-widest mb-3 flex items-center gap-2 shadow-black drop-shadow-sm">
+                        <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full box-shadow-glow"></span> ${group.groupName}
                     </h3>
                     <div class="flex flex-wrap gap-2">`;
                 group.skills.forEach(skill => {
                     groupHtml += `
-                    <div class="px-3 py-1.5 bg-slate-800/80 border border-slate-700 text-slate-300 rounded-lg text-xs font-medium flex items-center gap-2 hover:border-emerald-500/50 hover:text-white transition-all cursor-default shadow-sm">
-                        <i class="${skill.icon}"></i>
+                    <div class="px-3 py-1.5 bg-slate-800 border border-slate-600 text-slate-100 rounded-lg text-xs font-semibold flex items-center gap-2 hover:border-emerald-400 hover:text-white transition-all cursor-default shadow-md">
+                        <i class="${skill.icon} text-emerald-300"></i>
                         <span>${skill.name}</span>
                     </div>`;
                 });
@@ -403,9 +412,9 @@ document.addEventListener('DOMContentLoaded', function () {
             const container = document.getElementById('languages-list');
             if (!container) return;
             container.innerHTML = resumeData.languages[lang].map(l => `
-                <li class="flex items-center justify-between p-3 rounded-lg bg-slate-800/50 border border-slate-700/50">
-                    <span class="text-sm font-medium text-slate-300">${l}</span>
-                    <i class="fas fa-check text-emerald-500 text-xs"></i>
+                <li class="flex items-center justify-between p-3 rounded-lg bg-slate-800/80 border border-slate-700">
+                    <span class="text-sm font-semibold text-slate-100">${l}</span>
+                    <i class="fas fa-check text-emerald-400 text-xs"></i>
                 </li>
              `).join('');
         },
@@ -415,7 +424,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const text = lang === 'br' ?
                 `&copy; ${resumeData.footerYear} Ricardo Martins de Oliveira.` :
                 `&copy; ${resumeData.footerYear} Ricardo Martins de Oliveira.`;
-            footer.innerHTML = `<span class="text-slate-500">${text}</span>`;
+            footer.innerHTML = `<span class="text-slate-400 font-medium">${text}</span>`;
         },
         sectionTitles: (lang) => {
             const titles = {
