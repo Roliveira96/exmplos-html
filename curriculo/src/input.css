@@ -48,6 +48,30 @@ h4,
     letter-spacing: -0.03em;
 }
 
+/* Typewriter Cursor */
+.typing-cursor {
+    border-right: 3px solid transparent;
+    padding-right: 2px;
+    white-space: pre-wrap;
+    /* Keeps text wrapping if needed, though typewriter usually single line */
+}
+
+.typing-cursor.idle {
+    animation: blinkCursor 0.8s step-end infinite;
+}
+
+@keyframes blinkCursor {
+
+    0%,
+    100% {
+        border-color: transparent
+    }
+
+    50% {
+        border-color: var(--color-emerald-400);
+    }
+}
+
 /* Background Effects */
 body::before {
     content: '';

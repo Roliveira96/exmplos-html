@@ -3,6 +3,20 @@ const resumeData = {
         name: "Ricardo Martins de Oliveira",
         image: "assets/img/perfil-160.webp",
         address: "Trav. Arlindo Antunes, Guarapuava, Paraná",
+        contactPhrases: {
+            br: [
+                "Olá, tudo bem?",
+                "Vamos construir algo incrível?",
+                "Entre em contato comigo!",
+                "Mande um WhatsApp ou E-mail."
+            ],
+            en: [
+                "Hello, how are you?",
+                "Let's build something awesome?",
+                "Get in touch with me!",
+                "Send me a WhatsApp or Email."
+            ]
+        },
         contact: {
             phone: {
                 display: "42 9 9948 6362",

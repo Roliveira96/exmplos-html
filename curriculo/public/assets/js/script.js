@@ -166,9 +166,12 @@ document.addEventListener('DOMContentLoaded', function () {
             const pulse = container.querySelector('.animate-pulse');
             if (pulse) pulse.classList.remove('animate-pulse');
 
+            const defaultTitle = lang === 'br' ? 'Contato' : 'Contact';
+
             container.innerHTML = `
                 <h2 class="text-sm font-bold text-slate-200 uppercase tracking-widest mb-6 flex items-center gap-2">
-                    <i class="fas fa-terminal text-emerald-300"></i> ${lang === 'br' ? 'Contato' : 'Contact'}
+                    <i class="fas fa-terminal text-emerald-300"></i> 
+                    <span id="contact-typewriter-target" class="typing-cursor idle">${defaultTitle}</span>
                 </h2>
                  <div class="space-y-4">
                     <a href="${resumeData.profile.contact.phone.link}" class="flex items-center gap-4 text-slate-100 hover:text-white group transition-all p-2 rounded-lg hover:bg-slate-800/50 -mx-2">
@@ -191,6 +194,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     </div>
                 </div>
              `;
+
+            // Initialize/Re-initialize Typewriter logic
+            setupContactTypewriter(lang);
         },
         summary: (lang) => {
             const container = document.querySelector('#summary-content');
@@ -447,6 +453,119 @@ document.addEventListener('DOMContentLoaded', function () {
                 else if (el) el.textContent = text[lang];
             }
         }
+    };
+
+    // Typewriter Logic for Contact Card
+    let typewriterController = null;
+
+    const setupContactTypewriter = (lang) => {
+        const card = document.getElementById('contact-card');
+        const target = document.getElementById('contact-typewriter-target');
+
+        if (!card || !target) return;
+
+        const newCard = card.cloneNode(true);
+        card.parentNode.replaceChild(newCard, card);
+
+        const currentCard = document.getElementById('contact-card');
+        const currentTarget = document.getElementById('contact-typewriter-target');
+
+        if (!currentCard || !currentTarget) return;
+
+        if (typewriterController) typewriterController.abort();
+        typewriterController = new AbortController();
+
+        const actualPhrases = resumeData.profile.contactPhrases?.[lang] || [
+            lang === 'br' ? "Olá, tudo bem?" : "Hello, how are you?"
+        ];
+        const defaultText = lang === 'br' ? 'Contato' : 'Contact';
+
+        let currentPhraseIndex = 0;
+        let rotationTimeout = null;
+
+        const sleep = (ms, signal) => new Promise((resolve, reject) => {
+            const timeout = setTimeout(resolve, ms);
+            signal?.addEventListener('abort', () => {
+                clearTimeout(timeout);
+                reject(new Error('aborted'));
+            });
+        });
+
+        const typeChar = async (char, signal) => {
+            if (!currentTarget) return;
+            currentTarget.textContent += char;
+            const delay = Math.random() * (90 - 40) + 40;
+            await sleep(delay, signal);
+        };
+
+        const backspace = async (count, signal) => {
+            if (!currentTarget) return;
+            for (let i = 0; i < count; i++) {
+                if (signal.aborted) return;
+                currentTarget.textContent = currentTarget.textContent.slice(0, -1);
+                await sleep(50, signal);
+            }
+        };
+
+        const typeHuman = async (text, signal) => {
+            for (let i = 0; i < text.length; i++) {
+                if (signal.aborted) return;
+                if (Math.random() < 0.15 && i < text.length - 1) {
+                    const wrongChar = String.fromCharCode(text.charCodeAt(i) + 1);
+                    await typeChar(wrongChar, signal);
+                    await sleep(250, signal);
+                    await backspace(1, signal);
+                    await sleep(100, signal);
+                }
+                await typeChar(text[i], signal);
+            }
+        };
+
+        const startSequence = async () => {
+            const signal = typewriterController.signal;
+            if (!currentTarget) return;
+
+            currentTarget.classList.remove('idle');
+
+            try {
+                await backspace(currentTarget.textContent.length, signal);
+                await sleep(400, signal);
+
+                if (currentPhraseIndex < actualPhrases.length) {
+                    const phrase = actualPhrases[currentPhraseIndex];
+                    await typeHuman(phrase, signal);
+                    currentTarget.classList.add('idle');
+                    currentPhraseIndex++;
+
+                    rotationTimeout = setTimeout(() => {
+                        if (!signal.aborted) startSequence();
+                    }, 5000);
+                } else {
+                    await typeHuman(defaultText, signal);
+                    currentTarget.classList.add('idle');
+                    currentPhraseIndex = 0;
+                }
+            } catch (e) {
+                if (e.message !== 'aborted') console.error(e);
+            }
+        };
+
+        currentCard.addEventListener('mouseenter', () => {
+            if (typewriterController) typewriterController.abort();
+            clearTimeout(rotationTimeout);
+            typewriterController = new AbortController();
+            currentPhraseIndex = 0;
+            startSequence();
+        });
+
+        currentCard.addEventListener('mouseleave', () => {
+            if (typewriterController) typewriterController.abort();
+            clearTimeout(rotationTimeout);
+            if (currentTarget) {
+                currentTarget.textContent = defaultText;
+                currentTarget.classList.add('idle');
+            }
+        });
     };
 
     // Fade in Logic
