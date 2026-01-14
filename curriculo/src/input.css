@@ -170,6 +170,144 @@ body::before {
     z-index: 0;
 }
 
+/* Matrix Rabbit Animation */
+.rabbit-scene {
+    position: fixed;
+    bottom: -20px;
+    left: 0;
+    width: 100%;
+    height: 150px;
+    pointer-events: none;
+    z-index: 40;
+    overflow: hidden;
+}
+
+.rabbit-mover {
+    position: absolute;
+    left: -150px;
+    bottom: 20px;
+    /* 
+       Cycle Loop:
+       Total Duration: 50s
+       Move E->D: 6s
+       Flip: instant
+       Move D->E: 6s
+       Pause: 38s
+    */
+    animation: rabbit-cycle 50s infinite linear;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transform: scale(0.65);
+    /* 35% menor */
+    transform-origin: bottom center;
+}
+
+.rabbit-body {
+    animation: rabbit-jump 0.6s infinite ease-in-out;
+    transform-origin: bottom center;
+    filter: drop-shadow(0 0 8px rgba(20, 184, 166, 0.8));
+}
+
+.rabbit-body svg {
+    fill: #f1f5f9;
+}
+
+.rabbit-body svg circle[fill="#000"] {
+    fill: #020617 !important;
+}
+
+.rabbit-shadow {
+    width: 60px;
+    height: 10px;
+    background: rgba(20, 184, 166, 0.3);
+    border-radius: 50%;
+    margin-top: -5px;
+    animation: rabbit-shadow-scale 0.6s infinite ease-in-out;
+    box-shadow: 0 0 15px rgba(20, 184, 166, 0.5);
+}
+
+.rabbit-ear {
+    animation: rabbit-ear-float 0.6s infinite ease-in-out;
+    transform-origin: 100px 50px;
+}
+
+@keyframes rabbit-cycle {
+    0% {
+        left: -150px;
+        transform: scale(0.65) scaleX(1);
+        /* Inicio E, olhando para D */
+    }
+
+    12% {
+        left: 110%;
+        /* Chegou na Direita (6s de 50s = 12%) */
+        transform: scale(0.65) scaleX(1);
+    }
+
+    12.01% {
+        left: 110%;
+        transform: scale(0.65) scaleX(-1);
+        /* Virou para E */
+    }
+
+    24% {
+        left: -150px;
+        /* Voltou para Esquerda (12% + 12% = 24%) */
+        transform: scale(0.65) scaleX(-1);
+    }
+
+    24.01% {
+        left: -150px;
+        transform: scale(0.65) scaleX(1);
+        /* Virou para D e espera */
+    }
+
+    100% {
+        left: -150px;
+        /* Fica parado na Esquerda ate 50s */
+        transform: scale(0.65) scaleX(1);
+    }
+}
+
+@keyframes rabbit-jump {
+
+    0%,
+    100% {
+        transform: translateY(0) scale(1.1, 0.9);
+    }
+
+    50% {
+        transform: translateY(-60px) scale(0.9, 1.1);
+    }
+}
+
+@keyframes rabbit-shadow-scale {
+
+    0%,
+    100% {
+        transform: scale(1.5);
+        opacity: 0.5;
+    }
+
+    50% {
+        transform: scale(0.5);
+        opacity: 0.2;
+    }
+}
+
+@keyframes rabbit-ear-float {
+
+    0%,
+    100% {
+        transform: rotate(10deg);
+    }
+
+    50% {
+        transform: rotate(-10deg);
+    }
+}
+
 /* PDF Button */
 #download-pdf-btn {
     box-shadow: 0 4px 14px 0 rgba(16, 185, 129, 0.39);
