@@ -33,14 +33,21 @@ class MatrixEffect {
         this.element.appendChild(this.canvas);
         this.ctx = this.canvas.getContext('2d');
 
-        this.resize();
-        this.init();
+        this.resizeObserver = new ResizeObserver((entries) => {
+            // Debounce resize to avoid trashing
+            if (this.resizeTimeout) clearTimeout(this.resizeTimeout);
+            this.resizeTimeout = setTimeout(() => {
+                this.resize();
+            }, 100);
+        });
+        this.resizeObserver.observe(this.element);
 
-        // Use ResizeObserver for more robust resizing
-        this.observer = new ResizeObserver(() => this.resize());
-        this.observer.observe(this.element);
-
-        this.animate();
+        // Defer initial resize to avoid forced reflow during initialization
+        requestAnimationFrame(() => {
+            this.resize();
+            this.init();
+            this.animate();
+        });
     }
 
     resize() {
@@ -105,6 +112,10 @@ class MatrixEffect {
 document.addEventListener('DOMContentLoaded', function () {
     // Helper to apply effect to eligible cards
     const applyMatrixToCards = () => {
+        // Check for mobile/low-power devices
+        const isMobile = window.matchMedia('(max-width: 768px)').matches;
+        if (isMobile) return; // Skip Matrix effect on mobile to save battery/CPU
+
         // IDs: profile-card, contact-card, skills-card, languages-card, summary-card
         const ids = ['profile-card', 'contact-card', 'skills-card', 'languages-card', 'summary-card'];
         ids.forEach(id => {

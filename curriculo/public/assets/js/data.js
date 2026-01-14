@@ -1,7 +1,7 @@
 const resumeData = {
     profile: {
         name: "Ricardo Martins de Oliveira",
-        image: "assets/img/perfil.webp",
+        image: "assets/img/perfil-160.webp",
         address: "Trav. Arlindo Antunes, Guarapuava, Paraná",
         contact: {
             phone: {

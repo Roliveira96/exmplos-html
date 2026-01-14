@@ -107,17 +107,26 @@
 
             <!-- Sidebar section with Skeletons -->
             <aside class="lg:col-span-4 space-y-8">
-                <!-- Profile Card Skeleton -->
+                <!-- Profile Card -->
                 <div id="profile-card" class="glass-panel p-8 rounded-3xl text-center fade-in">
-                    <div class="animate-pulse flex flex-col items-center">
-                        <div class="w-40 h-40 bg-slate-800 rounded-full mb-6 border-4 border-slate-700"></div>
-                        <div class="h-8 bg-slate-800 rounded w-3/4 mb-4"></div>
-                        <div class="h-6 bg-slate-800/50 rounded w-1/2 mb-6"></div>
-                        <div class="flex gap-2">
-                            <div class="w-10 h-10 bg-slate-800 rounded-full"></div>
-                            <div class="w-10 h-10 bg-slate-800 rounded-full"></div>
-                            <div class="w-10 h-10 bg-slate-800 rounded-full"></div>
+                    <div class="relative inline-block mb-6 group">
+                        <div
+                            class="absolute -inset-1 bg-gradient-to-r from-emerald-500 to-blue-600 rounded-full blur opacity-25 group-hover:opacity-75 transition duration-1000 group-hover:duration-200">
                         </div>
+                        <img src="assets/img/perfil-160.webp" alt="Foto de Perfil" width="160" height="160"
+                            class="relative w-40 h-40 rounded-full mx-auto border-4 border-slate-800 shadow-2xl object-cover"
+                            fetchpriority="high">
+                        <div
+                            class="absolute bottom-2 right-4 w-4 h-4 bg-emerald-500 rounded-full border-2 border-slate-800 animate-pulse">
+                        </div>
+                    </div>
+                    <h1 class="text-3xl font-bold text-white mb-2 font-heading tracking-tight">Ricardo Martins de
+                        Oliveira</h1>
+                    <p
+                        class="text-emerald-400 text-sm font-mono mb-6 bg-emerald-500/10 inline-block px-3 py-1 rounded-full border border-emerald-500/20">
+                        Software Engineer & Tech Lead</p>
+                    <div class="flex justify-center gap-3 flex-wrap mt-4 pt-6 border-t border-slate-700/50">
+                        <!-- Social links will be injected by JS, less critical for LCP -->
                     </div>
                 </div>
 
