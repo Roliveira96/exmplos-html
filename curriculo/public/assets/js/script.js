@@ -339,7 +339,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <i class="fas fa-graduation-cap fa-lg"></i>
                     </div>
                     <div>
-                        <h4 class="text-base font-bold text-white font-heading">${edu.institution[lang]}</h4>
+                        <h3 class="text-base font-bold text-white font-heading">${edu.institution[lang]}</h3>
                         <p class="text-sm text-slate-300">${edu.location}</p>
                         <p class="text-sm font-medium text-slate-200 mt-1">${edu.course[lang]}</p>
                     </div>
@@ -358,7 +358,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     
                     <div class="p-5 flex-grow flex flex-col">
                         <div class="mb-4">
-                            <h4 class="text-base font-bold text-white mb-2 leading-snug group-hover:text-emerald-300 transition-colors font-heading" title="${course.title[lang]}">${course.title[lang]}</h4>
+                            <h3 class="text-base font-bold text-white mb-2 leading-snug group-hover:text-emerald-300 transition-colors font-heading" title="${course.title[lang]}">${course.title[lang]}</h3>
                             <p class="text-xs font-mono text-slate-400 flex items-center gap-2">
                                 <i class="far fa-calendar-alt"></i> ${course.date[lang]}
                             </p>
@@ -455,20 +455,39 @@ document.addEventListener('DOMContentLoaded', function () {
     }, { root: null, rootMargin: '0px', threshold: 0.1 });
     sections.forEach(section => { observer.observe(section); });
 
+    const updateLanguageSwitcher = (lang) => {
+        const brBtn = document.getElementById('lang-br-btn');
+        const enBtn = document.getElementById('lang-en-btn');
+
+        // Ensure buttons exist before manipulating
+        if (brBtn) {
+            if (!brBtn.src.includes('w80')) brBtn.src = 'https://flagcdn.com/w80/br.png';
+            brBtn.classList.toggle('active', lang === 'br');
+            brBtn.setAttribute('aria-pressed', lang === 'br');
+        }
+
+        if (enBtn) {
+            if (!enBtn.src.includes('w80')) enBtn.src = 'https://flagcdn.com/w80/us.png';
+            enBtn.classList.toggle('active', lang === 'en');
+            enBtn.setAttribute('aria-pressed', lang === 'en');
+        }
+    };
+
     let currentLang = 'br';
-    const langPtButton = document.getElementById('lang-pt-btn');
+
+    // Correct IDs matching index.html
+    const langBrButton = document.getElementById('lang-br-btn');
     const langEnButton = document.getElementById('lang-en-btn');
 
-    function switchLanguage(lang) {
+    const setLanguage = (lang) => {
+        if (currentLang === lang) return;
         currentLang = lang;
         document.documentElement.lang = lang === 'br' ? 'pt-BR' : 'en';
 
-        if (langPtButton) langPtButton.classList.toggle('active', lang === 'br');
-        if (langEnButton) langEnButton.classList.toggle('active', lang === 'en');
+        updateLanguageSwitcher(lang);
 
         Object.values(render).forEach(fn => fn(lang));
-        applyMatrixToCards(); // Re-apply Matrix Effect after re-render
-
+        applyMatrixToCards();
         // Update Modal Button Texts
         const closeText = lang === 'br' ? 'Fechar' : 'Close';
 
@@ -477,10 +496,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const certModalCloseBtnAction = document.getElementById('certModalCloseBtnAction');
         if (certModalCloseBtnAction) certModalCloseBtnAction.querySelector('span').textContent = closeText;
+    };
+
+    if (langBrButton) {
+        langBrButton.addEventListener('click', () => setLanguage('br'));
     }
 
-    if (langPtButton) langPtButton.addEventListener('click', () => switchLanguage('br'));
-    if (langEnButton) langEnButton.addEventListener('click', () => switchLanguage('en'));
+    if (langEnButton) {
+        langEnButton.addEventListener('click', () => setLanguage('en'));
+    }
+
+    // Initialize
+    updateLanguageSwitcher(currentLang);
+    Object.values(render).forEach(fn => fn(currentLang));
+    applyMatrixToCards();
 
     // Modal Logic
     const generalModal = document.getElementById('generalModal');
