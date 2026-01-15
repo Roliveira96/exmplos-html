@@ -1,0 +1,574 @@
+@import "tailwindcss";
+@import "./fonts.css";
+@source "../public/**/*.{html,js}";
+
+@theme {
+    /* Matrix Palette */
+    --color-matrix-50: #e3fce9;
+    --color-matrix-100: #c1f7ce;
+    --color-matrix-200: #8eedaa;
+    --color-matrix-300: #4ade80;
+    /* Brilhante para texto (Terminal) */
+    --color-matrix-400: #22c55e;
+    --color-matrix-500: #146831;
+    /* SUA COR (Base) */
+    --color-matrix-600: #0f5228;
+    --color-matrix-700: #0b3d1d;
+    --color-matrix-800: #082d16;
+    --color-matrix-900: #020c06;
+
+    /* Override Emerald to use Matrix tones if desired, or keep separate */
+    /* --color-emerald-400: var(--color-matrix-300); */
+    /* Deixando emerald normal por enquanto para evitar site apagado, use 'text-matrix-500' se quiser a cor específica */
+
+    /* Mapeando emerald-400 para algo legível mas Matrix-like, já que é muito usado */
+    --color-emerald-400: #4ade80;
+    /* Matrix Green Bright (Subtitulo/Texto) */
+    --color-emerald-500: #146831;
+    /* Matrix Green Darker (Seu tom - Detalhes/Bordas) */
+    --color-emerald-600: #0f5228;
+}
+
+/* Reset & Base */
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #0b1120;
+    /* Deepest Navy/Black */
+    color: #e2e8f0;
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+h1,
+h2,
+h3,
+h4,
+.font-heading {
+    font-family: 'Space Grotesk', sans-serif;
+    letter-spacing: -0.03em;
+}
+
+/* Typewriter Cursor */
+.typing-cursor {
+    border-right: 3px solid transparent;
+    padding-right: 2px;
+    white-space: pre-wrap;
+    /* Keeps text wrapping if needed, though typewriter usually single line */
+}
+
+.typing-cursor.idle {
+    animation: blinkCursor 0.8s step-end infinite;
+}
+
+@keyframes blinkCursor {
+
+    0%,
+    100% {
+        border-color: transparent
+    }
+
+    50% {
+        border-color: var(--color-emerald-400);
+    }
+}
+
+/* Background Effects */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background:
+        radial-gradient(circle at 15% 50%, rgba(16, 185, 129, 0.08), transparent 25%),
+        radial-gradient(circle at 85% 30%, rgba(99, 102, 241, 0.08), transparent 25%);
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: #0b1120;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #334155;
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #475569;
+}
+
+/* Glassmorphism Panels */
+.glass-panel,
+.experience-card,
+.education-card {
+    position: relative;
+    overflow: hidden;
+    /* Standard overflow hidden, removed !important */
+    background: rgba(30, 41, 59, 0.7);
+    /* Slate 800 with opacity */
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.matrix-canvas {
+    position: absolute !important;
+    top: 0;
+    right: 0;
+    width: 40%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.37;
+    mask-image: radial-gradient(circle at top right, black 0%, transparent 70%);
+    -webkit-mask-image: radial-gradient(circle at top right, black 0%, transparent 70%);
+}
+
+/* Ensure content stays on top of matrix bg if ever re-enabled */
+.glass-panel>*,
+.experience-card>*,
+.education-card>* {
+    position: relative;
+    z-index: 10;
+}
+
+.glass-panel:hover {
+    border-color: rgba(16, 185, 129, 0.2);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.fade-in {
+    animation: fadeIn 0.8s ease-out forwards;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Force Absolute Position for Quote */
+.quote-bg {
+    position: absolute !important;
+    top: 0;
+    right: 0;
+    padding: 1rem;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Matrix Rabbit Animation */
+.rabbit-scene {
+    position: fixed;
+    bottom: -20px;
+    left: 0;
+    width: 100%;
+    height: 150px;
+    pointer-events: none;
+    z-index: 40;
+    overflow: hidden;
+}
+
+.rabbit-mover {
+    position: absolute;
+    left: -150px;
+    bottom: 20px;
+    /* 
+       Cycle Loop:
+       Total Duration: 450s (~7.5 min)
+       Move E->D: 6s (1.33%)
+       Flip: instant
+       Move D->E: 6s (1.33%)
+       Pause: 438s (~7.3 min)
+    */
+    animation: rabbit-cycle 450s infinite linear;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transform: scale(0.65);
+    /* 35% menor */
+    transform-origin: bottom center;
+}
+
+.rabbit-body {
+    animation: rabbit-jump 0.6s infinite ease-in-out;
+    transform-origin: bottom center;
+    filter: drop-shadow(0 0 8px rgba(20, 184, 166, 0.8));
+}
+
+.rabbit-body svg {
+    fill: #f1f5f9;
+}
+
+.rabbit-body svg circle[fill="#000"] {
+    fill: #020617 !important;
+}
+
+.rabbit-shadow {
+    width: 60px;
+    height: 10px;
+    background: rgba(20, 184, 166, 0.3);
+    border-radius: 50%;
+    margin-top: -5px;
+    animation: rabbit-shadow-scale 0.6s infinite ease-in-out;
+    box-shadow: 0 0 15px rgba(20, 184, 166, 0.5);
+}
+
+.rabbit-ear {
+    animation: rabbit-ear-float 0.6s infinite ease-in-out;
+    transform-origin: 100px 50px;
+}
+
+@keyframes rabbit-cycle {
+    0% {
+        left: -150px;
+        transform: scale(0.65) scaleX(1);
+    }
+
+    1.33% {
+        left: 110%;
+        transform: scale(0.65) scaleX(1);
+    }
+
+    1.34% {
+        left: 110%;
+        transform: scale(0.65) scaleX(-1);
+    }
+
+    2.67% {
+        left: -150px;
+        transform: scale(0.65) scaleX(-1);
+    }
+
+    2.68% {
+        left: -150px;
+        transform: scale(0.65) scaleX(1);
+    }
+
+    100% {
+        left: -150px;
+        transform: scale(0.65) scaleX(1);
+    }
+}
+
+@keyframes rabbit-jump {
+
+    0%,
+    100% {
+        transform: translateY(0) scale(1.1, 0.9);
+    }
+
+    50% {
+        transform: translateY(-60px) scale(0.9, 1.1);
+    }
+}
+
+@keyframes rabbit-shadow-scale {
+
+    0%,
+    100% {
+        transform: scale(1.5);
+        opacity: 0.5;
+    }
+
+    50% {
+        transform: scale(0.5);
+        opacity: 0.2;
+    }
+}
+
+@keyframes rabbit-ear-float {
+
+    0%,
+    100% {
+        transform: rotate(10deg);
+    }
+
+    50% {
+        transform: rotate(-10deg);
+    }
+}
+
+/* Matrix Profile & Status - Custom Classes */
+.profile-photo-matrix {
+    border: 6px solid #10b981 !important;
+    /* Emerald-500 */
+    /* Multi-layered Neon Glow */
+    box-shadow:
+        0 0 5px #fff,
+        /* Core */
+        0 0 10px #10b981,
+        /* Inner Halo */
+        0 0 30px #10b981,
+        /* Middle Glow */
+        inset 0 0 15px rgba(16, 185, 129, 0.4) !important;
+    /* Inner */
+    transition: all 0.3s ease;
+}
+
+.status-badge-matrix {
+    background-color: #020617 !important;
+    border: 2px solid !important;
+    position: absolute;
+    bottom: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: all 0.3s ease;
+    z-index: 30;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* State: Online */
+.status-badge-matrix.online {
+    border-color: #10b981;
+    box-shadow: 0 0 15px rgba(16, 185, 129, 0.6);
+}
+
+.status-badge-matrix.online .status-dot-matrix {
+    background-color: #34d399;
+    box-shadow: 0 0 10px #10b981, 0 0 20px #10b981;
+}
+
+.status-badge-matrix.online .status-text-matrix {
+    color: #34d399;
+    text-shadow: 0 0 5px rgba(16, 185, 129, 0.8);
+}
+
+/* State: Offline */
+.status-badge-matrix.offline {
+    border-color: #eab308;
+    box-shadow: 0 0 10px rgba(234, 179, 8, 0.4);
+}
+
+.status-badge-matrix.offline .status-dot-matrix {
+    background-color: #facc15;
+    box-shadow: 0 0 8px #ca8a04;
+}
+
+.status-badge-matrix.offline .status-text-matrix {
+    color: #facc15;
+    text-shadow: 0 0 5px rgba(234, 179, 8, 0.5);
+}
+
+/* PDF Button */
+#download-pdf-btn {
+    box-shadow: 0 4px 14px 0 rgba(16, 185, 129, 0.39);
+}
+
+/* Box Shadow Glow for dots */
+.box-shadow-glow {
+    box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+}
+
+/* Language Switcher - Sleek Top Bar */
+.language-switcher {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    z-index: 50;
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+    background: rgba(15, 23, 42, 0.85);
+    /* Darker background for contrast */
+    padding: 8px 12px;
+    border-radius: 9999px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(16px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    align-items: center;
+}
+
+.language-switcher:hover {
+    background: rgba(15, 23, 42, 0.95);
+    border-color: rgba(16, 185, 129, 0.4);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    transform: translateY(-2px);
+}
+
+.language-switcher button {
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 50%;
+    display: flex;
+    /* Remove line-height issues */
+}
+
+.language-switcher button img {
+    width: 32px;
+    height: 32px;
+    object-fit: cover;
+    border-radius: 50%;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0.5;
+    filter: grayscale(100%) brightness(0.8);
+    border: 2px solid transparent;
+    display: block;
+}
+
+.language-switcher button:hover img {
+    transform: scale(1.1);
+    opacity: 0.9;
+    filter: grayscale(0%) brightness(1);
+}
+
+.language-switcher button.active img {
+    opacity: 1;
+    filter: grayscale(0%) brightness(1.1);
+    border-color: #146831;
+    /* Emerald border */
+    box-shadow: 0 0 12px rgba(16, 185, 129, 0.5);
+    transform: scale(1.15);
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(11, 17, 32, 0.95);
+    backdrop-filter: blur(16px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    padding: 1rem;
+}
+
+.modal-overlay.open {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-content {
+    background: rgba(30, 41, 59, 0.6);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    box-shadow: 0 0 50px -12px rgba(16, 185, 129, 0.25);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    max-height: 85vh;
+    overflow-y: auto;
+    width: 100%;
+    max-width: 700px;
+    border-radius: 24px;
+    padding: 2.5rem;
+    position: relative;
+    transform: scale(0.95) translateY(20px);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Specific Style for Certificate Modal to avoid scroll */
+#certificateModal .modal-content {
+    overflow-y: hidden;
+    max-height: 95vh;
+    /* Increase height tolerance */
+}
+
+.modal-overlay.open .modal-content {
+    transform: scale(1) translateY(0);
+}
+
+.modal-close-button {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    width: 2.5rem;
+    height: 2.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #94a3b8;
+    border-radius: 50%;
+    font-size: 1.25rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    z-index: 10;
+}
+
+.modal-close-button:hover {
+    background: rgba(239, 68, 68, 0.2);
+    border-color: rgba(239, 68, 68, 0.5);
+    color: #fca5a5;
+    transform: rotate(90deg);
+}
+
+/* Modal Scrollbar */
+.modal-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+    background: rgba(16, 185, 129, 0.3);
+    border-radius: 10px;
+}
+
+/* Modal Actions */
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.btn-primary-modal,
+.btn-secondary-modal {
+    padding: 0.75rem 1.5rem;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    font-family: 'Space Grotesk', sans-serif;
+}
+
+.btn-primary-modal {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    border: none;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.btn-primary-modal:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+}
+
+.btn-secondary-modal {
+    background: rgba(255, 255, 255, 0.05);
+    color: #cbd5e1;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.btn-secondary-modal:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border-color: rgba(255, 255, 255, 0.2);
+}
