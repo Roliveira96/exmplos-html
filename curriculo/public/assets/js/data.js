@@ -63,8 +63,8 @@ const resumeData = {
         }
     ],
     summary: {
-        br: `<span class="font-semibold text-emerald-400">Engenheiro de Software e Tech Lead</span> com uma trajetória que evoluiu do suporte técnico à direção e, atualmente, à liderança em desenvolvimento. Especializado em <span class="font-semibold text-emerald-400">Go (Golang), PostgreSQL e Angular</span>, atuo no <span class="font-semibold text-emerald-400">design e implementação de Microserviços (Docker)</span> e na <span class="font-semibold text-emerald-400">integração de sistemas com Inteligência Artificial</span>. Além da minha expertise em desenvolvimento back-end, tenho experiência com <span class="font-semibold text-emerald-400">DevOps</span> e um amplo espectro de tecnologias web, garantindo soluções robustas e inovadoras.`,
-        en: `<span class="font-semibold text-emerald-400">Software Engineer and Tech Lead</span> with a career path that has evolved from technical support to management and, currently, to development leadership. Specializing in <span class="font-semibold text-emerald-400">Go (Golang), PostgreSQL, and Angular</span>, I work on the <span class="font-semibold text-emerald-400">design and implementation of Microservices (Docker)</span> and the <span class="font-semibold text-emerald-400">integration of systems with Artificial Intelligence</span>. In addition to my expertise in back-end development, I have experience with <span class="font-semibold text-emerald-400">DevOps</span> and a broad spectrum of web technologies, ensuring robust and innovative solutions.`
+        br: `<span class="font-semibold text-emerald-400">Engenheiro de Software e Tech Lead</span> especializado em <span class="font-semibold text-emerald-400">Desenvolvimento de Sistemas Personalizados</span>, <span class="font-semibold text-emerald-400">Golang</span> e <span class="font-semibold text-emerald-400">Arquitetura de Software</span>. Atuo na <span class="font-semibold text-emerald-400">criação de sites profissionais</span> e soluções digitais sob medida. Com experiência em microsserviços (Docker) e IA, ofereço consultoria técnica para empresas em <span class="font-semibold text-emerald-400">Guarapuava</span> e em todo o Brasil, garantindo sistemas escaláveis e de alta performance.`,
+        en: `<span class="font-semibold text-emerald-400">Software Engineer and Tech Lead</span> specialized in <span class="font-semibold text-emerald-400">Custom System Development</span>, <span class="font-semibold text-emerald-400">Golang</span>, and <span class="font-semibold text-emerald-400">Software Architecture</span>. I work on <span class="font-semibold text-emerald-400">creating professional websites</span> and tailored digital solutions. With experience in microservices (Docker) and AI, I offer technical consulting for companies in <span class="font-semibold text-emerald-400">Guarapuava</span> and throughout Brazil, ensuring scalable and high-performance systems.`
     },
     story: {
         br: "Desde pequeno, a curiosidade sempre foi meu combustível. Eu era aquela criança que desmontava todos os brinquedos não para quebrá-los, mas fascinada em descobrir o que havia dentro e entender como funcionavam. Essa busca pelo 'como funciona' me levou ao meu primeiro contato real com o código de uma forma inusitada: burlando contadores de tempo em sites de anime para acelerar meus downloads. Foi ali que percebi que podia controlar a tecnologia, e não apenas consumi-la. Decidi formalizar essa paixão no Colégio Estadual Floriano Peixoto, onde cursei Técnico em Informática e, logo em seguida, tive a honra de atuar como instrutor, compartilhando conhecimento sobre lógica e banco de dados. Minha trajetória profissional seguiu evoluindo, passando pela precisão técnica como Laboratorista Digital na Grafis. O grande salto aconteceu na K13 Agência Web, onde entrei no suporte e, movido pela mesma curiosidade da infância, migrei para o desenvolvimento Back-end com PHP e Laravel. Hoje, como Tech Lead e Engenheiro de Software na Grownt, lidero projetos complexos utilizando Go (Golang), Docker e Inteligência Artificial. Aquela vontade de 'desmontar para entender' evoluiu para 'arquitetar para construir', criando sistemas escaláveis e robustos.",
@@ -85,16 +85,16 @@ const resumeData = {
             },
             responsibilities: {
                 br: [
-                    "Liderança técnica na organização e análise de projetos, garantindo a entrega de soluções eficientes.",
-                    "Desenvolvimento e manutenção de sistemas web com Go, com foco em arquitetura de APIs e modelagem de banco de dados.",
-                    "Atuação na integração de sistemas com Inteligência Artificial e implementação de Microserviços (Docker).",
-                    "Colaboração com equipes multifuncionais para levantar requisitos e otimizar processos de desenvolvimento."
+                    "Liderança técnica em projetos de desenvolvimento de sistemas personalizados e arquitetura de software.",
+                    "Desenvolvimento backend de alta performance utilizando Golang (Go), com foco em microsserviços e APIs escaláveis.",
+                    "Integração de sistemas complexos com Inteligência Artificial e soluções em nuvem (Docker/AWS).",
+                    "Colaboração com equipes para criação de sistemas web robustos, atendendo demandas críticas de negócio."
                 ],
                 en: [
-                    "Technical leadership in project organization and analysis, ensuring the delivery of efficient solutions.",
-                    "Development and maintenance of web systems with Go, focusing on API architecture and database modeling.",
-                    "Integration of systems with Artificial Intelligence and implementation of Microservices (Docker).",
-                    "Collaboration with cross-functional teams to gather requirements and optimize development processes."
+                    "Technical leadership in custom system development projects and software architecture.",
+                    "High-performance backend development using Golang (Go), focusing on microservices and scalable APIs.",
+                    "Integration of complex systems with Artificial Intelligence and cloud solutions (Docker/AWS).",
+                    "Collaboration with teams to create robust web systems, meeting critical business demands."
                 ]
             }
         },
