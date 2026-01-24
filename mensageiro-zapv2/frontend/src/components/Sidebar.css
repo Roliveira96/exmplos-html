@@ -1,0 +1,49 @@
+.sidebar {
+    width: 400px;
+    background-color: var(--sidebar-bg);
+    /* Ensure it doesn't shrink */
+    flex-shrink: 0;
+}
+
+.search-input-wrapper {
+    background-color: #f0f2f5;
+    transition: all 0.3s;
+}
+
+.search-input-wrapper:focus-within {
+    box-shadow: 0 0 0 1px var(--primary-dark) inset;
+    background-color: #ffffff;
+}
+
+.tag-pill {
+    padding: 6px 12px;
+    border-radius: 20px;
+    background-color: #f0f2f5;
+    color: #54656f;
+    font-size: 0.8rem;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.tag-pill:hover {
+    background-color: #e9edef;
+}
+
+.tag-pill.active {
+    background-color: #e7f3ff;
+    color: var(--primary-color);
+}
+
+.contact-item:last-child .contact-info {
+    border-bottom: none;
+}
+
+.contact-item.active {
+    background-color: #f0f2f5;
+}
+
+/* Custom Scrollbar for list */
+.contact-list::-webkit-scrollbar {
+    width: 5px;
+}

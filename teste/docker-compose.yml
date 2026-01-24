@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  # Servidor Web (Apache + PHP)
+  web:
+    build: .
+    container_name: receitas_humor_app
+    ports:
+      - "9999:80"
+    volumes:
+      - ./dist:/var/www/html
+      - ./api:/var/www/html/api
+    working_dir: /var/www/html
+    environment:
+      - DB_HOST=db
+      - DB_NAME=receitas_db
+      - DB_USER=user
+      - DB_PASS=password
+    depends_on:
+      - db
+
+  # Banco de Dados MySQL
+  db:
+    image: mysql:8.0
+    container_name: receitas_humor_db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: receitas_db
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+  # Interface visual para o Banco (Opcional, mas útil)
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: receitas_humor_pma
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "8085:80"
+    depends_on:
+      - db
+
+volumes:
+  db_data:

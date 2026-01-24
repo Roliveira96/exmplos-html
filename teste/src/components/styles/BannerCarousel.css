@@ -1,0 +1,105 @@
+.banner-carousel {
+    width: 100%;
+    height: 85vh;
+    /* Almost full screen, leaves a peek for content below */
+    position: relative;
+}
+
+.swiper {
+    width: 100%;
+    height: 100%;
+}
+
+.swiper-slide {
+    background-position: center;
+    background-size: cover;
+    position: relative;
+    /* The swiper-slide itself is a flex container, but we also need the inner content to center */
+    display: flex;
+}
+
+.swiper-slide-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.banner-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.6));
+    z-index: 1;
+}
+
+.banner-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    color: var(--color-white);
+    padding: 0 1rem;
+    max-width: 800px;
+    /* Initial state for animation */
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 1s ease-out forwards 0.5s;
+}
+
+/* New animation for entry */
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.banner-title {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    font-family: var(--font-heading);
+}
+
+.banner-subtitle {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    background: rgba(224, 122, 95, 0.8);
+    /* Primary color with opacity */
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+}
+
+/* Customizing Swiper Pagination */
+.swiper-pagination-bullet {
+    background: var(--color-white);
+    opacity: 0.5;
+    width: 12px;
+    height: 12px;
+}
+
+.swiper-pagination-bullet-active {
+    opacity: 1;
+    background: var(--color-primary);
+}
+
+@media (max-width: 768px) {
+    .banner-carousel {
+        height: 60vh;
+    }
+
+    .banner-title {
+        font-size: 2.5rem;
+    }
+
+    .banner-subtitle {
+        font-size: 1.1rem;
+    }
+}

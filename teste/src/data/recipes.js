@@ -1,0 +1,46 @@
+export const recipes = [
+    {
+        id: 1,
+        title: "Miojo Gourmet da Desesperança",
+        description: "Para aqueles dias em que você quer se sentir um chef, mas só tem 3 reais e 3 minutos.",
+        image: "https://images.unsplash.com/photo-1612929633738-8fe44f7ec841?q=80&w=1000&auto=format&fit=crop",
+        prepTime: "3 min",
+        difficulty: "Inexistente",
+        funnyQuote: "Se ficar ruim, a culpa é do tempero pronto.",
+        ingredients: ["1 pacote de macarrão instantâneo", "300ml de água (ou lágrimas)", "1 ovo (opcional, se estiver rico)"],
+        likes: 42
+    },
+    {
+        id: 2,
+        title: "Sanduíche 'O que tiver na geladeira'",
+        description: "Uma experiência arqueológica em busca de ingredientes que ainda não venceram.",
+        image: "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?q=80&w=1000&auto=format&fit=crop",
+        prepTime: "10 min",
+        difficulty: "Sorte",
+        funnyQuote: "Pode conter traços de 'o que é isso no fundo do pote?'.",
+        ingredients: ["2 fatias de pão", "Queijo (ou algo amarelo)", "Alface murcha"],
+        likes: 128
+    },
+    {
+        id: 3,
+        title: "Arroz 'Unidos Venceremos'",
+        description: "Quando você erra a mão na água e o arroz vira um risoto não intencional.",
+        image: "https://images.unsplash.com/photo-1512058564366-18510be2db19?q=80&w=1000&auto=format&fit=crop",
+        prepTime: "25 min",
+        difficulty: "Média (requer atenção)",
+        funnyQuote: "É 'estilo japonês', confia.",
+        ingredients: ["1 xícara de arroz", "3 xícaras de água (o erro)", "Sal a gosto"],
+        likes: 315
+    },
+    {
+        id: 4,
+        title: "Brigadeiro de Panela (para comer chorando)",
+        description: "A cura oficial para corações partidos e boletos atrasados.",
+        image: "https://images.unsplash.com/photo-1579372786545-d24232daf58c?q=80&w=1000&auto=format&fit=crop",
+        prepTime: "15 min",
+        difficulty: "Fácil (difícil é parar de comer)",
+        funnyQuote: "Dieta começa segunda. (De que ano?)",
+        ingredients: ["1 lata de leite condensado", "3 colheres de chocolate", "1 colher de manteiga"],
+        likes: 999
+    }
+];
