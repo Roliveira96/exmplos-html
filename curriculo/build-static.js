@@ -40,9 +40,9 @@ async function processDirectory(src, dest) {
         const destPath = path.join(dest, item);
         const stats = fs.statSync(srcPath);
 
-        // EXCLUDE ADMIN & LOGIN PAGES
+        // EXCLUDE ADMIN & LOGIN & COMPONENTS PAGES
         const relativePath = path.relative(publicDir, srcPath).split(path.sep).join('/');
-        if (relativePath === 'pages/admin' || relativePath === 'pages/login') {
+        if (relativePath === 'pages/admin' || relativePath === 'pages/login' || relativePath === 'pages/components') {
             console.log(`🚫 Skipping excluded path: ${relativePath}`);
             continue;
         }
@@ -132,6 +132,58 @@ async function processDirectory(src, dest) {
                                     content = content.replace('</head>', `<meta name="theme-color" content="${seo.themeColor}">\n    </head>`);
                                 }
                             }
+                            if (seo.googleVerification) {
+                                if (content.includes('name="google-site-verification"')) {
+                                    content = content.replace(/<meta\s+name="google-site-verification"[\s\S]*?>/, `<meta name="google-site-verification" content="${seo.googleVerification}">`);
+                                } else {
+                                    content = content.replace('</head>', `<meta name="google-site-verification" content="${seo.googleVerification}">\n    </head>`);
+                                }
+                            }
+
+                            // DYNAMIC JSON-LD GENERATION
+                            try {
+                                const personSchema = {
+                                    "@context": "https://schema.org",
+                                    "@graph": [
+                                        {
+                                            "@type": "Person",
+                                            "@id": `${seo.canonicalUrl || 'https://rmo.dev.br/'}#person`,
+                                            "name": data.profile?.name || "Ricardo Martins",
+                                            "jobTitle": ["Software Engineer", "Tech Lead", "Desenvolvedor Golang"], // Could be dynamic from experience
+                                            "url": seo.canonicalUrl || "https://rmo.dev.br/",
+                                            "image": seo.ogImage || data.profile?.image,
+                                            "sameAs": (data.socialLinks || []).map(l => l.url),
+                                            "address": {
+                                                "@type": "PostalAddress",
+                                                "addressLocality": "Guarapuava",
+                                                "addressRegion": "Paraná",
+                                                "addressCountry": "BR"
+                                            }
+                                        }
+                                    ]
+                                };
+
+                                // MERGE CUSTOM JSON-LD
+                                const sCustomJSONLD = getVal(seo.customJSONLD);
+                                if (sCustomJSONLD) {
+                                    try {
+                                        const customData = JSON.parse(sCustomJSONLD);
+                                        if (Array.isArray(customData)) {
+                                            personSchema["@graph"].push(...customData);
+                                        } else {
+                                            personSchema["@graph"].push(customData);
+                                        }
+                                        console.log('✅ Custom JSON-LD merged successfully.');
+                                    } catch (e) {
+                                        console.error('❌ Invalid Custom JSON-LD:', e);
+                                    }
+                                }
+
+                                const jsonLdString = JSON.stringify(personSchema, null, 2);
+                                content = content.replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>/, `<script type="application/ld+json">\n${jsonLdString}\n</script>`);
+                            } catch (jsonErr) {
+                                console.warn('JSON-LD generation failed:', jsonErr);
+                            }
 
                         } catch (seoErr) {
                             console.warn('⚠️ SEO Injection failed:', seoErr.message);
@@ -163,6 +215,18 @@ async function processDirectory(src, dest) {
                 } catch (e) {
                     console.error(`Error minifying JS ${item}:`, e);
                     fs.copyFileSync(srcPath, destPath); // Fallback
+                }
+            } else if (item === 'sitemap.xml') {
+                // UPDATE SITEMAP DATE
+                try {
+                    let xmlContent = fs.readFileSync(srcPath, 'utf8');
+                    const today = new Date().toISOString().split('T')[0];
+                    xmlContent = xmlContent.replace(/<lastmod>.*?<\/lastmod>/, `<lastmod>${today}</lastmod>`);
+                    fs.writeFileSync(destPath, xmlContent);
+                    console.log(`🗺️  Updated sitemap.xml lastmod to ${today}`);
+                } catch (e) {
+                    console.error('Error updating sitemap:', e);
+                    fs.copyFileSync(srcPath, destPath);
                 }
             } else {
                 // Copy other files directly

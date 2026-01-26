@@ -209,6 +209,7 @@ function renderSeo() {
     const title = typeof s.title === 'string' ? { br: s.title, en: '' } : (s.title || { br: '', en: '' });
     const description = typeof s.description === 'string' ? { br: s.description, en: '' } : (s.description || { br: '', en: '' });
     const keywords = typeof s.keywords === 'string' ? { br: s.keywords, en: '' } : (s.keywords || { br: '', en: '' });
+    const customJSONLD = typeof s.customJSONLD === 'string' ? { br: s.customJSONLD, en: '' } : (s.customJSONLD || { br: '', en: '' });
 
     // Active Tab State (local var for redraw if needed, but we can just use simple CSS toggle for now to avoid complexity)
     // We will render both but toggle visibility with simple buttons
@@ -244,6 +245,13 @@ function renderSeo() {
                         placeholder="Ex: dev, go, api..."
                         class="w-full h-24 p-3 rounded-xl text-sm bg-[#0c0c0e] border border-zinc-800 focus:bg-zinc-900 resize-none">${(keywords.br || '').replace(/"/g, '&quot;')}</textarea>
                 </div>
+
+                <div class="pt-4 border-t border-zinc-800">
+                     <label class="block text-xs font-medium text-zinc-400 mb-1.5 uppercase tracking-wide">JSON-LD Customizado [PT] (Opcional)</label>
+                     <textarea onchange="updatePath('seo.customJSONLD.br', this.value)" 
+                        placeholder='Cole aqui objetos JSON adicionais para o @graph. Ex: { "@type": "ProfessionalService", ... }'
+                        class="w-full h-48 p-3 rounded-xl text-sm bg-[#0c0c0e] border border-zinc-800 focus:bg-zinc-900 resize-none font-mono text-xs">${(customJSONLD.br || '')}</textarea>
+                </div>
             </div>
 
             <!-- ENGLISH FIELDS -->
@@ -263,6 +271,13 @@ function renderSeo() {
                     <textarea onchange="updatePath('seo.keywords.en', this.value)" 
                         placeholder="Ex: dev, go, api..."
                         class="w-full h-24 p-3 rounded-xl text-sm bg-[#0c0c0e] border border-zinc-800 focus:bg-zinc-900 resize-none">${(keywords.en || '').replace(/"/g, '&quot;')}</textarea>
+                </div>
+
+                <div class="pt-4 border-t border-zinc-800">
+                     <label class="block text-xs font-medium text-zinc-400 mb-1.5 uppercase tracking-wide">Custom JSON-LD [EN] (Optional)</label>
+                     <textarea onchange="updatePath('seo.customJSONLD.en', this.value)" 
+                        placeholder='Paste here additional JSON objects for @graph. Ex: { "@type": "ProfessionalService", ... }'
+                        class="w-full h-48 p-3 rounded-xl text-sm bg-[#0c0c0e] border border-zinc-800 focus:bg-zinc-900 resize-none font-mono text-xs">${(customJSONLD.en || '')}</textarea>
                 </div>
             </div>
             

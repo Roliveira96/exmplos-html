@@ -96,6 +96,57 @@ app.get('/', (req, res) => {
                     content = content.replace('</head>', `<meta name="theme-color" content="${seo.themeColor}">\n    </head>`);
                 }
             }
+            if (seo.googleVerification) {
+                if (content.includes('name="google-site-verification"')) {
+                    content = content.replace(/<meta\s+name="google-site-verification"[\s\S]*?>/, `<meta name="google-site-verification" content="${seo.googleVerification}">`);
+                } else {
+                    content = content.replace('</head>', `<meta name="google-site-verification" content="${seo.googleVerification}">\n    </head>`);
+                }
+            }
+
+            // DYNAMIC JSON-LD GENERATION (Dev Mode)
+            try {
+                const personSchema = {
+                    "@context": "https://schema.org",
+                    "@graph": [
+                        {
+                            "@type": "Person",
+                            "@id": `${seo.canonicalUrl || 'https://rmo.dev.br/'}#person`,
+                            "name": data.profile?.name || "Ricardo Martins",
+                            "jobTitle": ["Software Engineer", "Tech Lead", "Desenvolvedor Golang"],
+                            "url": seo.canonicalUrl || "https://rmo.dev.br/",
+                            "image": seo.ogImage || data.profile?.image,
+                            "sameAs": (data.socialLinks || []).map(l => l.url),
+                            "address": {
+                                "@type": "PostalAddress",
+                                "addressLocality": "Guarapuava",
+                                "addressRegion": "Paraná",
+                                "addressCountry": "BR"
+                            }
+                        }
+                    ]
+                };
+
+                // MERGE CUSTOM JSON-LD
+                const sCustomJSONLD = getVal(seo.customJSONLD);
+                if (sCustomJSONLD) {
+                    try {
+                        const customData = JSON.parse(sCustomJSONLD);
+                        if (Array.isArray(customData)) {
+                            personSchema["@graph"].push(...customData);
+                        } else {
+                            personSchema["@graph"].push(customData);
+                        }
+                    } catch (e) {
+                        console.error('❌ Invalid Custom JSON-LD in Dev:', e);
+                    }
+                }
+
+                const jsonLdString = JSON.stringify(personSchema, null, 2);
+                content = content.replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>/, `<script type="application/ld+json">\n${jsonLdString}\n</script>`);
+            } catch (jsonErr) {
+                console.warn('JSON-LD dev generation failed:', jsonErr);
+            }
         }
         res.send(content);
     } catch (e) {

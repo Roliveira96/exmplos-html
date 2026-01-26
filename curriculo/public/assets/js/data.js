@@ -763,6 +763,10 @@ const resumeData = {
         "robots": "index, follow",
         "siteName": "RMO.DEV",
         "locale": "pt_BR",
-        "themeColor": "#10b981"
+        "themeColor": "#10b981",
+        "customJSONLD": {
+            "br": "{\n  \"@type\": \"ProfessionalService\",\n  \"@id\": \"https://rmo.dev.br/#service\",\n  \"url\": \"https://rmo.dev.br/\",\n  \"name\": \"Ricardo Martins - Desenvolvimento de Sistemas Personalizados\",\n  \"image\": \"https://rmo.dev.br/assets/img/perfil.webp\",\n  \"description\": \"Especialista em desenvolvimento de software sob medida, sistemas web escaláveis e consultoria em Golang. Atendimento em Guarapuava e todo o Brasil para criação de sites e sistemas.\",\n  \"address\": {\n    \"@type\": \"PostalAddress\",\n    \"addressLocality\": \"Guarapuava\",\n    \"addressRegion\": \"Paraná\",\n    \"addressCountry\": \"BR\"\n  },\n  \"priceRange\": \"$$$\",\n  \"telephone\": \"+55-42-99948-6362\",\n  \"areaServed\": [\n    \"Guarapuava\",\n    \"Paraná\",\n    \"Brasil\"\n  ],\n  \"founder\": {\n    \"@id\": \"https://rmo.dev.br/#person\"\n  }\n}",
+            "en": "{\n  \"@type\": \"ProfessionalService\",\n  \"@id\": \"https://rmo.dev.br/#service\",\n  \"url\": \"https://rmo.dev.br/\",\n  \"name\": \"Ricardo Martins - Custom Software Development\",\n  \"image\": \"https://rmo.dev.br/assets/img/perfil.webp\",\n  \"description\": \"Specialist in custom software development, scalable web systems, and Golang consulting. Serving clients in Guarapuava and worldwide for website and system creation.\",\n  \"address\": {\n    \"@type\": \"PostalAddress\",\n    \"addressLocality\": \"Guarapuava\",\n    \"addressRegion\": \"Paraná\",\n    \"addressCountry\": \"BR\"\n  },\n  \"priceRange\": \"$$$\",\n  \"telephone\": \"+55-42-99948-6362\",\n  \"areaServed\": [\n    \"Guarapuava\",\n    \"Paraná\",\n    \"Worldwide\"\n  ],\n  \"founder\": {\n    \"@id\": \"https://rmo.dev.br/#person\"\n  }\n}"
+        }
     }
 };
