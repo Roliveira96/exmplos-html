@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design System & Components</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../components/styles.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #09090b;
+            color: #e4e4e7;
+        }
+    </style>
+</head>
+
+<body class="p-10 max-w-4xl mx-auto space-y-12">
+
+    <header class="border-b border-zinc-800 pb-8">
+        <h1 class="text-3xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-500 bg-clip-text text-transparent">
+            Design System</h1>
+        <p class="text-zinc-500 mt-2">Reusable components for RMO Admin</p>
+    </header>
+
+    <!-- Icon Picker -->
+    <section class="space-y-4">
+        <div class="flex items-center gap-2 mb-4">
+            <span
+                class="w-8 h-8 rounded bg-emerald-500/10 text-emerald-500 flex items-center justify-center font-bold text-xs">01</span>
+            <h2 class="text-xl font-bold">Icon Picker</h2>
+        </div>
+
+        <div class="p-8 border border-zinc-800 rounded-xl bg-zinc-900/30">
+            <label class="block text-sm font-medium text-zinc-400 mb-2">Select Icon</label>
+            <!-- Placeholder for dynamic render -->
+            <div id="demo-icon-container"></div>
+        </div>
+        <p class="text-xs text-zinc-600 font-mono mt-2">Imports: components/pickers.js, components/styles.css</p>
+    </section>
+
+    <!-- Color Picker -->
+    <section class="space-y-4">
+        <div class="flex items-center gap-2 mb-4">
+            <span
+                class="w-8 h-8 rounded bg-pink-500/10 text-pink-500 flex items-center justify-center font-bold text-xs">02</span>
+            <h2 class="text-xl font-bold">Tailwind Color Picker</h2>
+        </div>
+
+        <div class="p-8 border border-zinc-800 rounded-xl bg-zinc-900/30">
+            <label class="block text-sm font-medium text-zinc-400 mb-2">Select Color Class</label>
+            <!-- Placeholder for dynamic render -->
+            <div id="demo-color-container"></div>
+        </div>
+    </section>
+
+    <script src="../../components/pickers.js"></script>
+    <script>
+        // Init Components for Demo
+        document.getElementById('demo-icon-container').innerHTML = renderIconPicker('demo-icon', 'fab fa-github');
+        document.getElementById('demo-color-container').innerHTML = renderColorPicker('demo-color', 'text-emerald-500');
+    </script>
+</body>
+
+</html>

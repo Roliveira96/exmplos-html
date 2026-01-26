@@ -1,0 +1,38 @@
+:root {
+    /* Food Theme Palette */
+    --color-primary: #e07a5f;
+    /* Terracotta */
+    --color-secondary: #81b29a;
+    /* Sage Green */
+    --color-accent: #f2cc8f;
+    /* Mustard */
+    --color-background: #f4f1de;
+    /* Eggshell/Cream */
+    --color-text-main: #3d405b;
+    /* Dark Blue-Grey */
+    --color-text-light: #f4f1de;
+    --color-white: #ffffff;
+    --color-card-bg: #ffffff;
+    --color-shadow: rgba(61, 64, 91, 0.1);
+
+    /* Spacing & Layout */
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 2rem;
+    --spacing-xl: 4rem;
+    --border-radius: 12px;
+    --container-width: 1200px;
+
+    /* Typography */
+    --font-heading: 'DM Serif Display', serif;
+    /* Modern Serif for headings */
+    --font-body: 'Inter', sans-serif;
+}
+
+[data-theme="dark"] {
+    --color-background: #1d1f2b;
+    --color-text-main: #f4f1de;
+    --color-card-bg: #2a2d3e;
+    --color-white: #2a2d3e;
+    --color-shadow: rgba(0, 0, 0, 0.3);
+}

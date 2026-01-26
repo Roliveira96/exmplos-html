@@ -1,0 +1,25 @@
+# Enable Rewrite Engine
+RewriteEngine On
+
+# Force HTTPS
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Block access to hidden files and directories (dotfiles) except for .well-known
+RewriteCond %{REQUEST_URI} "!(^|/)\.well-known/([^./]+./?)+$" [NC]
+RewriteCond %{SCRIPT_FILENAME} -d [OR]
+RewriteCond %{SCRIPT_FILENAME} -f
+RewriteRule "(^|/)\." - [F]
+
+# Block sensitive files specifically (just in case)
+<FilesMatch "^(\.env|\.git|package\.json|package-lock\.json|composer\.json|composer\.lock|server\.js)">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Disable directory browsing
+Options -Indexes
+
+# Custom Error Pages
+ErrorDocument 404 /index.html
+ErrorDocument 403 /index.html

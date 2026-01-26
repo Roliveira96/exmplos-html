@@ -1,0 +1,35 @@
+/* Font is handled by Tailwind config in HTML head */
+body {
+    background-color: #09090b;
+    font-family: 'Inter', sans-serif;
+}
+
+/* Glassmorphism */
+.glass {
+    background: rgba(24, 24, 27, 0.6);
+    /* zinc-950 with opacity */
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2), 0 20px 40px -10px rgba(0, 0, 0, 0.5);
+}
+
+/* Grid Pattern Background */
+.grid-bg {
+    background-size: 50px 50px;
+    background-image:
+        linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
+    -webkit-mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
+}
+
+/* Autofill Fix for Dark Mode */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px #18181b inset !important;
+    /* Match Input BG */
+    -webkit-text-fill-color: white !important;
+    transition: background-color 5000s ease-in-out 0s;
+    caret-color: white;
+}

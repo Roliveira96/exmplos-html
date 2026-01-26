@@ -1,0 +1,80 @@
+.bg-chat-pattern {
+    background-color: var(--chat-bg);
+    background-image: url("https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png");
+    background-repeat: repeat;
+    background-size: 400px;
+    background-blend-mode: soft-light;
+}
+
+.chat-footer {
+    background-color: #f0f2f5;
+    border-top: 1px solid var(--border-medium);
+}
+
+.message-bubble {
+    border-radius: 12px;
+    margin-bottom: 3px;
+    position: relative;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+    /* Softer shadow */
+}
+
+.message-in {
+    background-color: var(--message-in-bg);
+    color: var(--message-in-text);
+    align-self: flex-start;
+    border-top-left-radius: 0;
+}
+
+.message-out {
+    background-color: #d9fdd3;
+    /* Modern WhatsApp Greenish/Teal or we use Blue as requested */
+    /* User requested Blue Theme, so override with variables */
+    background-color: var(--message-out-bg);
+    color: var(--message-out-text);
+    align-self: flex-end;
+    border-top-right-radius: 0;
+}
+
+/* Tails */
+.message-in::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -8px;
+    width: 0;
+    height: 0;
+    border: 8px solid transparent;
+    border-top-color: var(--message-in-bg);
+    border-right: 0;
+    border-bottom: 0;
+}
+
+.message-out::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: -8px;
+    width: 0;
+    height: 0;
+    border: 8px solid transparent;
+    border-top-color: var(--message-out-bg);
+    border-left: 0;
+    border-bottom: 0;
+}
+
+.send-btn.bg-primary {
+    background-color: var(--primary-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Hover effects for footer icons */
+.icon-hover {
+    transition: color 0.2s;
+}
+
+.icon-hover:hover {
+    color: var(--primary-color);
+}
