@@ -744,13 +744,25 @@ const resumeData = {
     },
     "footerYear": 2026,
     "seo": {
-        "title": "Ricardo de Oliveira| Software Engineer",
-        "description": "Especialista em desenvolvimento de sistemas personalizados e software sob medida com Go (Golang). Consultoria em APIs, microsserviços e criação de sites profissionais em Guarapuava e Brasil.",
-        "keywords": "Desenvolvimento de sistemas personalizados, Programador Golang, Criação de sistemas web, Ricardo desenvolvedor de software, Desenvolvimento de programas de computador, Criador de sites, Desenvolvimento backend, Consultoria em arquitetura de sistemas, Especialista em APIs e microsserviços, suporte técnico em sites,\napi, criação de site, criação de sites, criação de sistemas,",
+        "title": {
+            "br": "Ricardo de Oliveira | Software Engineer",
+            "en": "Ricardo de Oliveira | Software Engineer"
+        },
+        "description": {
+            "br": "Especialista em desenvolvimento de sistemas personalizados e software sob medida com Go (Golang). Consultoria em APIs, microsserviços e criação de sites profissionais em Guarapuava e Brasil.",
+            "en": "Specialist in custom system development and tailored software with Go (Golang). Consulting on APIs, microservices, and professional website creation in Guarapuava and Brazil."
+        },
+        "keywords": {
+            "br": "Desenvolvimento de sistemas personalizados, Programador Golang, Criação de sistemas web, Ricardo desenvolvedor de software, Desenvolvimento de programas de computador, Criador de sites, Desenvolvimento backend, Consultoria em arquitetura de sistemas, Especialista em APIs e microsserviços, suporte técnico em sites,\napi, criação de site, criação de sites, criação de sistemas,",
+            "en": "Custom software development, Golang developer, Go programmer, Web application development, Software developer, Custom computer programming, Website creator, Web designer, Backend development, System architecture consulting, API and microservices specialist, Website technical support, API, Web development, System development"
+        },
         "author": "Ricardo Martins de Oliveira",
         "ogImage": "https://rmo.dev.br/assets/img/perfil.webp",
         "twitterHandle": "@ricardomartins",
         "canonicalUrl": "https://rmo.dev.br/",
-        "robots": "index, follow"
+        "robots": "index, follow",
+        "siteName": "RMO.DEV",
+        "locale": "pt_BR",
+        "themeColor": "#10b981"
     }
 };

@@ -42,19 +42,30 @@ app.get('/', (req, res) => {
             const data = JSON.parse(fs.readFileSync(dataPath, 'utf8'));
             const seo = data.seo || {};
 
+            // Helper to get localized or string content
+            const getVal = (val, lang = 'br') => {
+                if (!val) return '';
+                if (typeof val === 'string') return val;
+                return val[lang] || val['br'] || '';
+            };
+
+            const sTitle = getVal(seo.title);
+            const sDesc = getVal(seo.description);
+            const sKw = getVal(seo.keywords);
+
             // Simple Replacements (same logic as build-static.js)
-            if (seo.title) {
-                content = content.replace(/<title>[\s\S]*?<\/title>/, `<title>${seo.title}</title>`);
-                content = content.replace(/<meta\s+name="title"[\s\S]*?>/, `<meta name="title" content="${seo.title}">`);
-                content = content.replace(/<meta\s+property="og:title"[\s\S]*?>/, `<meta property="og:title" content="${seo.title}">`);
-                content = content.replace(/<meta\s+property="twitter:title"[\s\S]*?>/, `<meta property="twitter:title" content="${seo.title}">`);
+            if (sTitle) {
+                content = content.replace(/<title>[\s\S]*?<\/title>/, `<title>${sTitle}</title>`);
+                content = content.replace(/<meta\s+name="title"[\s\S]*?>/, `<meta name="title" content="${sTitle}">`);
+                content = content.replace(/<meta\s+property="og:title"[\s\S]*?>/, `<meta property="og:title" content="${sTitle}">`);
+                content = content.replace(/<meta\s+property="twitter:title"[\s\S]*?>/, `<meta property="twitter:title" content="${sTitle}">`);
             }
-            if (seo.description) {
-                content = content.replace(/<meta\s+name="description"[\s\S]*?>/, `<meta name="description" content="${seo.description}">`);
-                content = content.replace(/<meta\s+property="og:description"[\s\S]*?>/, `<meta property="og:description" content="${seo.description}">`);
-                content = content.replace(/<meta\s+property="twitter:description"[\s\S]*?>/, `<meta property="twitter:description" content="${seo.description}">`);
+            if (sDesc) {
+                content = content.replace(/<meta\s+name="description"[\s\S]*?>/, `<meta name="description" content="${sDesc}">`);
+                content = content.replace(/<meta\s+property="og:description"[\s\S]*?>/, `<meta property="og:description" content="${sDesc}">`);
+                content = content.replace(/<meta\s+property="twitter:description"[\s\S]*?>/, `<meta property="twitter:description" content="${sDesc}">`);
             }
-            if (seo.keywords) content = content.replace(/<meta\s+name="keywords"[\s\S]*?>/, `<meta name="keywords" content="${seo.keywords}">`);
+            if (sKw) content = content.replace(/<meta\s+name="keywords"[\s\S]*?>/, `<meta name="keywords" content="${sKw}">`);
             if (seo.author) content = content.replace(/<meta\s+name="author"[\s\S]*?>/, `<meta name="author" content="${seo.author}">`);
             if (seo.robots) content = content.replace(/<meta\s+name="robots"[\s\S]*?>/, `<meta name="robots" content="${seo.robots}">`);
             if (seo.ogImage) {

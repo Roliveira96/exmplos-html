@@ -205,35 +205,73 @@ function renderSeo() {
     const container = document.getElementById('section-seo');
     const s = fullData.seo || {};
 
+    // Ensure localized objects exist
+    const title = typeof s.title === 'string' ? { br: s.title, en: '' } : (s.title || { br: '', en: '' });
+    const description = typeof s.description === 'string' ? { br: s.description, en: '' } : (s.description || { br: '', en: '' });
+    const keywords = typeof s.keywords === 'string' ? { br: s.keywords, en: '' } : (s.keywords || { br: '', en: '' });
+
+    // Active Tab State (local var for redraw if needed, but we can just use simple CSS toggle for now to avoid complexity)
+    // We will render both but toggle visibility with simple buttons
+
     container.innerHTML = `
         <div class="card-panel p-6 space-y-5">
-            <div class="flex items-center gap-3 mb-2 border-b border-zinc-800 pb-2">
+            <div class="flex items-center justify-between mb-4 border-b border-zinc-800 pb-2">
+                <div class="flex items-center gap-3">
                     <i class="fas fa-search text-emerald-500"></i>
                     <h3 class="font-bold text-lg text-white">Meta Tags Principais</h3>
+                </div>
+                <div class="flex gap-2 bg-[#0c0c0e] p-1 rounded-lg border border-zinc-800">
+                    <button onclick="toggleSeoLang('br')" id="btn-seo-br" class="px-3 py-1 text-xs font-bold rounded bg-emerald-500 text-black transition-all">PT-BR 🇧🇷</button>
+                    <button onclick="toggleSeoLang('en')" id="btn-seo-en" class="px-3 py-1 text-xs font-bold rounded hover:bg-zinc-800 text-zinc-400 transition-all">EN-US 🇺🇸</button>
+                </div>
+            </div>
+
+            <!-- PORTUGUESE FIELDS -->
+            <div id="seo-fields-br" class="space-y-5 animate-fade-in">
+                ${createInput('Título da Página (Tag Title) [PT]', title.br, 'seo.title.br', 'Ex: Ricardo - Engenheiro')}
+                
+                <div>
+                    <label class="block text-xs font-medium text-zinc-400 mb-1.5 uppercase tracking-wide">Descrição (Meta Description) [PT]</label>
+                    <textarea onchange="updatePath('seo.description.br', this.value)" 
+                        placeholder="Ex: Especialista em GO..."
+                        class="w-full h-24 p-3 rounded-xl text-sm bg-[#0c0c0e] border border-zinc-800 focus:bg-zinc-900 resize-none">${(description.br || '').replace(/"/g, '&quot;')}</textarea>
+                    <p class="text-xs text-zinc-600 mt-1">Recomendado: 150-160 caracteres.</p>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-zinc-400 mb-1.5 uppercase tracking-wide">Palavras-Chave [PT]</label>
+                    <textarea onchange="updatePath('seo.keywords.br', this.value)" 
+                        placeholder="Ex: dev, go, api..."
+                        class="w-full h-24 p-3 rounded-xl text-sm bg-[#0c0c0e] border border-zinc-800 focus:bg-zinc-900 resize-none">${(keywords.br || '').replace(/"/g, '&quot;')}</textarea>
+                </div>
+            </div>
+
+            <!-- ENGLISH FIELDS -->
+            <div id="seo-fields-en" class="space-y-5 hidden">
+                ${createInput('Page Title (Tag Title) [EN]', title.en, 'seo.title.en', 'Ex: Ricardo - Software Engineer')}
+                
+                <div>
+                    <label class="block text-xs font-medium text-zinc-400 mb-1.5 uppercase tracking-wide">Meta Description [EN]</label>
+                    <textarea onchange="updatePath('seo.description.en', this.value)" 
+                        placeholder="Ex: Specialist in Go..."
+                        class="w-full h-24 p-3 rounded-xl text-sm bg-[#0c0c0e] border border-zinc-800 focus:bg-zinc-900 resize-none">${(description.en || '').replace(/"/g, '&quot;')}</textarea>
+                    <p class="text-xs text-zinc-600 mt-1">Recommended: 150-160 characters.</p>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-zinc-400 mb-1.5 uppercase tracking-wide">Keywords [EN]</label>
+                    <textarea onchange="updatePath('seo.keywords.en', this.value)" 
+                        placeholder="Ex: dev, go, api..."
+                        class="w-full h-24 p-3 rounded-xl text-sm bg-[#0c0c0e] border border-zinc-800 focus:bg-zinc-900 resize-none">${(keywords.en || '').replace(/"/g, '&quot;')}</textarea>
+                </div>
             </div>
             
-            ${createInput('Título da Página (Tag Title)', s.title, 'seo.title', 'Ex: Ricardo Martins - Engenheiro de Software')}
-            
-            <div>
-                <label class="block text-xs font-medium text-zinc-400 mb-1.5 uppercase tracking-wide">Descrição (Meta Description)</label>
-                <textarea onchange="updatePath('seo.description', this.value)" 
-                    placeholder="Ex: Especialista em desenvolvimento de sistemas com Go e Docker..."
-                    class="w-full h-24 p-3 rounded-xl text-sm bg-[#0c0c0e] border border-zinc-800 focus:bg-zinc-900 resize-none">${(s.description || '').replace(/"/g, '&quot;')}</textarea>
-                <p class="text-xs text-zinc-600 mt-1">Recomendado: 150-160 caracteres.</p>
+            <div class="border-t border-zinc-800 pt-4 mt-4">
+                ${createInput('Autor', s.author, 'seo.author', 'Ex: Ricardo Martins')}
+                ${createInput('Robots', s.robots || 'index, follow', 'seo.robots', 'Ex: index, follow')}
+                ${createInput('Nome do Site (og:site_name)', s.siteName || 'RMO.DEV', 'seo.siteName', 'Ex: RMO.DEV')}
+                ${createInput('Google Verification Code', s.googleVerification, 'seo.googleVerification', 'Ex: google-site-verification=...')}
             </div>
-            
-            <div>
-                <label class="block text-xs font-medium text-zinc-400 mb-1.5 uppercase tracking-wide">Palavras-Chave (Keywords)</label>
-                <textarea onchange="updatePath('seo.keywords', this.value)" 
-                    placeholder="Ex: desenvolvimento, golang, backend, api..."
-                    class="w-full h-24 p-3 rounded-xl text-sm bg-[#0c0c0e] border border-zinc-800 focus:bg-zinc-900 resize-none">${(s.keywords || '').replace(/"/g, '&quot;')}</textarea>
-                <p class="text-xs text-zinc-600 mt-1">Separe as palavras por vírgula.</p>
-            </div>
-            
-            ${createInput('Autor', s.author, 'seo.author', 'Ex: Ricardo Martins')}
-            ${createInput('Robots', s.robots || 'index, follow', 'seo.robots', 'Ex: index, follow')}
-            ${createInput('Nome do Site (og:site_name)', s.siteName || 'RMO.DEV', 'seo.siteName', 'Ex: RMO.DEV')}
-            ${createInput('Idioma (og:locale)', s.locale || 'pt_BR', 'seo.locale', 'Ex: pt_BR')}
         </div>
         
         <div class="card-panel p-6 space-y-5">
@@ -244,7 +282,7 @@ function renderSeo() {
             <p class="text-xs text-zinc-500 mb-4 bg-blue-500/10 p-3 rounded-lg border border-blue-500/20">
                 <i class="fas fa-info-circle mr-1"></i>
                 Esta seção controla como seu link aparece no <strong>WhatsApp, Facebook e LinkedIn</strong>.
-                <br>Certifique-se de usar uma imagem de alta qualidade (recomendado: 1200x630px).
+                Configurações globais (Imagem, URL, etc).
             </p>
             
             ${createInput('URL da Imagem de Capa (OG Image)', s.ogImage, 'seo.ogImage', 'Ex: https://meusite.com/assets/img/perfil.webp')}
@@ -261,11 +299,39 @@ function renderSeo() {
                         onchange="updatePath('seo.themeColor', this.value)"
                         class="flex-1 px-4 py-2.5 rounded-lg text-sm bg-[#0c0c0e] border border-zinc-800 focus:bg-zinc-900 font-mono" placeholder="#10b981">
                 </div>
-                <p class="text-xs text-zinc-600 mt-1">Define a cor da barra do navegador em celulares.</p>
             </div>
-
         </div>
     `;
+
+    // Inject the toggle function if not exists
+    if (!window.toggleSeoLang) {
+        window.toggleSeoLang = function (lang) {
+            const br = document.getElementById('seo-fields-br');
+            const en = document.getElementById('seo-fields-en');
+            const btnBr = document.getElementById('btn-seo-br');
+            const btnEn = document.getElementById('btn-seo-en');
+
+            if (lang === 'br') {
+                br.classList.remove('hidden');
+                en.classList.add('hidden');
+
+                btnBr.classList.add('bg-emerald-500', 'text-black');
+                btnBr.classList.remove('hover:bg-zinc-800', 'text-zinc-400');
+
+                btnEn.classList.remove('bg-emerald-500', 'text-black');
+                btnEn.classList.add('hover:bg-zinc-800', 'text-zinc-400');
+            } else {
+                en.classList.remove('hidden');
+                br.classList.add('hidden');
+
+                btnEn.classList.add('bg-emerald-500', 'text-black');
+                btnEn.classList.remove('hover:bg-zinc-800', 'text-zinc-400');
+
+                btnBr.classList.remove('bg-emerald-500', 'text-black');
+                btnBr.classList.add('hover:bg-zinc-800', 'text-zinc-400');
+            }
+        };
+    }
 }
 
 function renderList(tab) {
