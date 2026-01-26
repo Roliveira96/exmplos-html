@@ -1,4 +1,4 @@
-const resumeData = {
+{
     "profile": {
         "name": "Ricardo Martins de Oliveira",
         "image": "assets/img/perfil-160.webp",
@@ -753,4 +753,4 @@ const resumeData = {
         "canonicalUrl": "https://rmo.dev.br/",
         "robots": "index, follow"
     }
-};
+}

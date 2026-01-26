@@ -265,6 +265,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
                         if (!response.ok) throw new Error('Network response was not ok');
 
+                        const contentType = response.headers.get('content-type');
+                        if (!contentType || !contentType.includes('audio')) {
+                            throw new Error('Invalid content type: ' + contentType);
+                        }
+
                         const blob = await response.blob();
                         const url = URL.createObjectURL(blob);
 

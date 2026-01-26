@@ -40,6 +40,13 @@ async function processDirectory(src, dest) {
         const destPath = path.join(dest, item);
         const stats = fs.statSync(srcPath);
 
+        // EXCLUDE ADMIN & LOGIN PAGES
+        const relativePath = path.relative(publicDir, srcPath).split(path.sep).join('/');
+        if (relativePath === 'pages/admin' || relativePath === 'pages/login') {
+            console.log(`🚫 Skipping excluded path: ${relativePath}`);
+            continue;
+        }
+
         if (stats.isDirectory()) {
             await processDirectory(srcPath, destPath);
         } else {
@@ -47,7 +54,56 @@ async function processDirectory(src, dest) {
             if (item.endsWith('.html')) {
                 // Minify HTML
                 try {
-                    const content = fs.readFileSync(srcPath, 'utf8');
+                    let content = fs.readFileSync(srcPath, 'utf8');
+
+                    // INJECT SEO METADATA (Only for root index.html or logic specific files)
+                    if (item === 'index.html' && src === publicDir) {
+                        try {
+                            const data = JSON.parse(fs.readFileSync(path.join(__dirname, 'data.json'), 'utf8'));
+                            const seo = data.seo || {};
+
+                            console.log('✨ Injecting SEO Data into index.html...');
+
+                            // Replacements
+                            if (seo.title) {
+                                content = content.replace(/<title>[\s\S]*?<\/title>/, `<title>${seo.title}</title>`);
+                                content = content.replace(/<meta\s+name="title"[\s\S]*?>/, `<meta name="title" content="${seo.title}">`);
+                                content = content.replace(/<meta\s+property="og:title"[\s\S]*?>/, `<meta property="og:title" content="${seo.title}">`);
+                                content = content.replace(/<meta\s+property="twitter:title"[\s\S]*?>/, `<meta property="twitter:title" content="${seo.title}">`);
+                            }
+                            if (seo.description) {
+                                content = content.replace(/<meta\s+name="description"[\s\S]*?>/, `<meta name="description" content="${seo.description}">`);
+                                content = content.replace(/<meta\s+property="og:description"[\s\S]*?>/, `<meta property="og:description" content="${seo.description}">`);
+                                content = content.replace(/<meta\s+property="twitter:description"[\s\S]*?>/, `<meta property="twitter:description" content="${seo.description}">`);
+                            }
+                            if (seo.keywords) {
+                                content = content.replace(/<meta\s+name="keywords"[\s\S]*?>/, `<meta name="keywords" content="${seo.keywords}">`);
+                            }
+                            if (seo.author) {
+                                content = content.replace(/<meta\s+name="author"[\s\S]*?>/, `<meta name="author" content="${seo.author}">`);
+                            }
+                            if (seo.robots) {
+                                content = content.replace(/<meta\s+name="robots"[\s\S]*?>/, `<meta name="robots" content="${seo.robots}">`);
+                            }
+                            if (seo.ogImage) {
+                                content = content.replace(/<meta\s+property="og:image"[\s\S]*?>/, `<meta property="og:image" content="${seo.ogImage}">`);
+                                content = content.replace(/<meta\s+property="twitter:image"[\s\S]*?>/, `<meta property="twitter:image" content="${seo.ogImage}">`);
+                            }
+                            if (seo.canonicalUrl) {
+                                content = content.replace(/<link\s+rel="canonical"[\s\S]*?>/, `<link rel="canonical" href="${seo.canonicalUrl}">`);
+                            }
+                            if (seo.twitterHandle) {
+                                // Assuming twitter:site or similar if it exists, or adding it if we want. 
+                                // The template didn't have site/creator explicitly shown in snippets, but let's leave it or add if needed.
+                                // The user asked for "Twitter Handle" management.
+                                // Let's try to replace content of a meta tag if it existed, or just ignore if not present in template to avoid breaking.
+                            }
+
+                        } catch (seoErr) {
+                            console.warn('⚠️ SEO Injection failed:', seoErr.message);
+                        }
+                    }
+
                     const minified = await minifyHtml(content, {
                         collapseWhitespace: true,
                         removeComments: true,

@@ -1,0 +1,132 @@
+/* Component Styles (Icon & Color Picker) */
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* --- Icon Picker --- */
+.icon-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: #18181b;
+    border: 1px solid #27272a;
+    border-radius: 0.75rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+    z-index: 50;
+    display: none;
+    margin-top: 0.5rem;
+}
+
+.icon-dropdown.show {
+    display: block;
+    animation: fadeIn 0.15s ease-out;
+}
+
+.icon-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+    gap: 0.5rem;
+    padding: 0.75rem;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.icon-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid transparent;
+}
+
+.icon-option:hover {
+    background-color: #27272a;
+    border-color: #10b981;
+}
+
+.icon-option i {
+    font-size: 1.25rem;
+    color: #a1a1aa;
+}
+
+.icon-option:hover i {
+    color: #10b981;
+    transform: scale(1.1);
+}
+
+/* --- Color Picker --- */
+.color-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+.color-row {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.color-label {
+    width: 60px;
+    font-size: 0.7rem;
+    color: #71717a;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.color-options-row {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.color-circle {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid #27272a;
+    transition: transform 0.2s, border-color 0.2s;
+}
+
+.color-circle:hover {
+    transform: scale(1.2);
+    border-color: white;
+}
+
+/* Scrollbar for Dropdowns */
+.custom-scroll::-webkit-scrollbar {
+    width: 6px;
+}
+
+.custom-scroll::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb {
+    background: #3f3f46;
+    border-radius: 3px;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb:hover {
+    background: #52525b;
+}
