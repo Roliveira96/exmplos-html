@@ -751,6 +751,9 @@
         "ogImage": "https://rmo.dev.br/assets/img/perfil.webp",
         "twitterHandle": "@ricardomartins",
         "canonicalUrl": "https://rmo.dev.br/",
-        "robots": "index, follow"
+        "robots": "index, follow",
+        "siteName": "RMO.DEV",
+        "locale": "pt_BR",
+        "themeColor": "#10b981"
     }
 }

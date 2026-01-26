@@ -62,6 +62,29 @@ app.get('/', (req, res) => {
                 content = content.replace(/<meta\s+property="twitter:image"[\s\S]*?>/, `<meta property="twitter:image" content="${seo.ogImage}">`);
             }
             if (seo.canonicalUrl) content = content.replace(/<link\s+rel="canonical"[\s\S]*?>/, `<link rel="canonical" href="${seo.canonicalUrl}">`);
+
+            // New Fields Injection (Append if not exists)
+            if (seo.siteName) {
+                if (content.includes('property="og:site_name"')) {
+                    content = content.replace(/<meta\s+property="og:site_name"[\s\S]*?>/, `<meta property="og:site_name" content="${seo.siteName}">`);
+                } else {
+                    content = content.replace('</head>', `<meta property="og:site_name" content="${seo.siteName}">\n    </head>`);
+                }
+            }
+            if (seo.locale) {
+                if (content.includes('property="og:locale"')) {
+                    content = content.replace(/<meta\s+property="og:locale"[\s\S]*?>/, `<meta property="og:locale" content="${seo.locale}">`);
+                } else {
+                    content = content.replace('</head>', `<meta property="og:locale" content="${seo.locale}">\n    </head>`);
+                }
+            }
+            if (seo.themeColor) {
+                if (content.includes('name="theme-color"')) {
+                    content = content.replace(/<meta\s+name="theme-color"[\s\S]*?>/, `<meta name="theme-color" content="${seo.themeColor}">`);
+                } else {
+                    content = content.replace('</head>', `<meta name="theme-color" content="${seo.themeColor}">\n    </head>`);
+                }
+            }
         }
         res.send(content);
     } catch (e) {

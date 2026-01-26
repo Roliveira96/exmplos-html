@@ -93,10 +93,33 @@ async function processDirectory(src, dest) {
                                 content = content.replace(/<link\s+rel="canonical"[\s\S]*?>/, `<link rel="canonical" href="${seo.canonicalUrl}">`);
                             }
                             if (seo.twitterHandle) {
-                                // Assuming twitter:site or similar if it exists, or adding it if we want. 
-                                // The template didn't have site/creator explicitly shown in snippets, but let's leave it or add if needed.
-                                // The user asked for "Twitter Handle" management.
-                                // Let's try to replace content of a meta tag if it existed, or just ignore if not present in template to avoid breaking.
+                                // Assuming twitter:site or similar if it exists, but usually covered by card.
+                            }
+                            if (seo.siteName) {
+                                // Check if tag exists, else append to head end (simple approach: replace </head> with tag + </head> if not found, but we are replacing existing tags mainly. The template might not have these.)
+                                // Better strategy: Since they might not exist, we just APPEND them before </head> if we can't find a slot, OR replacing a comment placeholder if we added one.
+                                // But to be safe and avoid complex parsing, let's assume standard template structure or just use Regex to find a good injection point if replacements fail?
+                                // Actually, simpler: The user wants them. If they aren't in the HTML, regex replace won't work.
+                                // Let's try to find <meta property="og:site_name"> first.
+                                if (content.includes('property="og:site_name"')) {
+                                    content = content.replace(/<meta\s+property="og:site_name"[\s\S]*?>/, `<meta property="og:site_name" content="${seo.siteName}">`);
+                                } else {
+                                    content = content.replace('</head>', `<meta property="og:site_name" content="${seo.siteName}">\n    </head>`);
+                                }
+                            }
+                            if (seo.locale) {
+                                if (content.includes('property="og:locale"')) {
+                                    content = content.replace(/<meta\s+property="og:locale"[\s\S]*?>/, `<meta property="og:locale" content="${seo.locale}">`);
+                                } else {
+                                    content = content.replace('</head>', `<meta property="og:locale" content="${seo.locale}">\n    </head>`);
+                                }
+                            }
+                            if (seo.themeColor) {
+                                if (content.includes('name="theme-color"')) {
+                                    content = content.replace(/<meta\s+name="theme-color"[\s\S]*?>/, `<meta name="theme-color" content="${seo.themeColor}">`);
+                                } else {
+                                    content = content.replace('</head>', `<meta name="theme-color" content="${seo.themeColor}">\n    </head>`);
+                                }
                             }
 
                         } catch (seoErr) {

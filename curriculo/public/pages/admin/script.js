@@ -232,6 +232,8 @@ function renderSeo() {
             
             ${createInput('Autor', s.author, 'seo.author', 'Ex: Ricardo Martins')}
             ${createInput('Robots', s.robots || 'index, follow', 'seo.robots', 'Ex: index, follow')}
+            ${createInput('Nome do Site (og:site_name)', s.siteName || 'RMO.DEV', 'seo.siteName', 'Ex: RMO.DEV')}
+            ${createInput('Idioma (og:locale)', s.locale || 'pt_BR', 'seo.locale', 'Ex: pt_BR')}
         </div>
         
         <div class="card-panel p-6 space-y-5">
@@ -239,11 +241,29 @@ function renderSeo() {
                     <i class="fas fa-share-alt text-emerald-500"></i>
                     <h3 class="font-bold text-lg text-white">Social & Open Graph</h3>
             </div>
-            <p class="text-xs text-zinc-500 mb-4">Nota: O Título e Descrição do Facebook/Twitter são herdados automaticamente das configurações acima.</p>
+            <p class="text-xs text-zinc-500 mb-4 bg-blue-500/10 p-3 rounded-lg border border-blue-500/20">
+                <i class="fas fa-info-circle mr-1"></i>
+                Esta seção controla como seu link aparece no <strong>WhatsApp, Facebook e LinkedIn</strong>.
+                <br>Certifique-se de usar uma imagem de alta qualidade (recomendado: 1200x630px).
+            </p>
             
             ${createInput('URL da Imagem de Capa (OG Image)', s.ogImage, 'seo.ogImage', 'Ex: https://meusite.com/assets/img/perfil.webp')}
             ${createInput('URL Canônica', s.canonicalUrl, 'seo.canonicalUrl', 'Ex: https://meusite.com/')}
             ${createInput('Twitter Handle', s.twitterHandle, 'seo.twitterHandle', 'Ex: @ricardomartins')}
+            
+            <div class="pt-4 border-t border-zinc-800">
+                <label class="block text-xs font-medium text-zinc-400 mb-1.5 uppercase tracking-wide">Cor do Tema (Mobile Browser)</label>
+                <div class="flex gap-2">
+                    <input type="color" value="${s.themeColor || '#10b981'}" 
+                        onchange="updatePath('seo.themeColor', this.value); document.getElementById('theme-color-text').value = this.value"
+                        class="h-10 w-12 rounded bg-transparent cursor-pointer border-0 p-0">
+                    <input type="text" id="theme-color-text" value="${s.themeColor || '#10b981'}" 
+                        onchange="updatePath('seo.themeColor', this.value)"
+                        class="flex-1 px-4 py-2.5 rounded-lg text-sm bg-[#0c0c0e] border border-zinc-800 focus:bg-zinc-900 font-mono" placeholder="#10b981">
+                </div>
+                <p class="text-xs text-zinc-600 mt-1">Define a cor da barra do navegador em celulares.</p>
+            </div>
+
         </div>
     `;
 }
