@@ -193,21 +193,24 @@
 
             // 3: Vidro Cinza Metálico (Steel Glass)
             new THREE.MeshPhysicalMaterial({
-                color: 0x778899,
+                color: 0xffffff,
                 metalness: 0.8,
                 roughness: 0.1,
                 transmission: 0.9,
-                thickness: 1.0,
+                thickness: 11.0,
                 transparent: true,
                 opacity: 1.4
             }),
 
             // 4: Branco Perolizado Refletivo (Antique White)
             new THREE.MeshStandardMaterial({
-                color: 0xfaebd7,
-                opacity: 0.9,
+                color: 0xe5e7eb,
                 roughness: 0.1,
-                metalness: 1.0
+                metalness: 0.5,
+                emissive: 0xe5e7eb,
+                // Aumente este valor. Em 1.0 ou mais, ele começa a "branquear" 
+                // conforme a luz fica mais intensa que a cor base.
+                emissiveIntensity: .5,
             })
         ];
 
