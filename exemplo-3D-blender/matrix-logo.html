@@ -167,33 +167,33 @@
         const materials = [
             // 0: Cinza Padrão
             new THREE.MeshStandardMaterial({ color: 0x9ca3af, roughness: 0.3, metalness: 0.4 }),
-            // 1: Cinza Escuro
-            new THREE.MeshStandardMaterial({ color: 0x374151, roughness: 0.4, metalness: 0.5 }),
-            // 2: Laranja Padrão
+            // 1: Laranja Padrão
             new THREE.MeshStandardMaterial({ color: 0xf97316, roughness: 0.2, metalness: 0.3 }),
-            // 3: Glass / Vidro Transparente (Cinza Claro)
+            // 2: Glass / Vidro Transparente (Semi-translúcido)
             new THREE.MeshPhysicalMaterial({
                 color: 0xffffff,
-                metalness: 0.1,
-                roughness: 0.05,
-                transmission: 0.9,
-                thickness: 0.5,
-                transparent: true
+                metalness: 0.2,
+                roughness: 0.1,
+                transmission: 0.6, // Reduzido de 0.9 para ser mais "opaco"
+                thickness: 1.0,
+                transparent: true,
+                opacity: 0.7 // Aumentado para visibilidade
             }),
-            // 4: Glass / Vidro Laranja
+            // 3: Glass / Vidro Laranja (Semi-translúcido)
             new THREE.MeshPhysicalMaterial({
                 color: 0xf97316,
-                metalness: 0.1,
+                metalness: 0.2,
                 roughness: 0.1,
-                transmission: 0.85,
-                thickness: 0.5,
-                transparent: true
+                transmission: 0.6,
+                thickness: 1.0,
+                transparent: true,
+                opacity: 0.8
             }),
-            // 5: Laranja Semi-Transparente Refletivo
+            // 4: Laranja Refletivo
             new THREE.MeshStandardMaterial({
                 color: 0xea580c,
                 transparent: true,
-                opacity: 0.6,
+                opacity: 0.9,
                 roughness: 0.1,
                 metalness: 0.8
             })
@@ -268,9 +268,9 @@
                     const visibleHeight = 2 * distFromCam * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
                     const visibleWidth = visibleHeight * camera.aspect;
 
-                    // Spawn inicial
+                    // Spawn inicial - Fora da tela para evitar tremor
                     const xPos = (Math.random() * 1.0 - 0.1) * (visibleWidth / 2);
-                    const yPos = (Math.random() * 2 - 1) * (visibleHeight / 2);
+                    const yPos = (Math.random() * 2.5 - 1) * (visibleHeight / 2); // Espalha mais verticalmente
 
                     logo.position.set(xPos, yPos, planeZ);
                     logo.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
@@ -371,11 +371,14 @@
                 }
 
                 // Reset contínuo - volta ao topo quando atinge a base
-                if (logo.mesh.position.y < -logo.visibleHeight / 2 - 2) {
-                    logo.mesh.position.y = logo.visibleHeight / 2 + Math.random() * 10;
+                // Aumentado a margem para evitar sumiço brusco
+                const limit = logo.visibleHeight * 0.7;
+                if (logo.mesh.position.y < -limit) {
+                    logo.mesh.position.y = limit + Math.random() * 10;
 
-                    // Se o item reciclou, pode dar um novo valor de rotação inicial
-                    // logo.mesh.rotation.set(...) pode ser acrescentado aqui se desejar
+                    // Pequeno offset aleatório no X ao reciclar para evitar padrões repetitivos
+                    const visibleWidth = logo.visibleHeight * camera.aspect;
+                    logo.mesh.position.x = (Math.random() * 1.0 - 0.1) * (visibleWidth / 2);
                 }
             });
 
