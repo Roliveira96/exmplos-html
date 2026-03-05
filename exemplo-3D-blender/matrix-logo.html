@@ -371,14 +371,14 @@
                     const minDistance = logo.radius + other.radius;
 
                     if (distance < minDistance) {
-                        // Colisão detectada - Empurrar levemente para fora
+                        // Colisão detectada - Empurrar MUITO levemente para fora (suave)
                         const overlap = minDistance - distance;
-                        const nx = dx / distance;
-                        const ny = dy / distance;
+                        const nx = dx / (distance || 0.1);
+                        const ny = dy / (distance || 0.1);
 
-                        // Move os dois proporcionalmente (0.5 cada)
-                        const moveX = nx * overlap * 0.5;
-                        const moveY = ny * overlap * 0.5;
+                        // Fator de suavização: 0.025 (2.5% da correção por frame)
+                        const moveX = nx * overlap * 0.025;
+                        const moveY = ny * overlap * 0.025;
 
                         logo.mesh.position.x += moveX;
                         logo.mesh.position.y += moveY;
