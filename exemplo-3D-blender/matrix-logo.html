@@ -231,80 +231,78 @@
             // Requisito: Meio metro quadrado (0.5). Normalizamos a escala para 0.5 unidades.
             const baseScale = 0.5 / maxDim;
 
-            // Gerar 150+ instâncias do objeto
-            for (let i = 0; i < totalLogos; i++) {
-                const logo = originalMesh.clone();
+            // --- CONFIGURAÇÃO DE DISTRIBUIÇÃO PONDERADA ---
+            // Pesos: Menos logos no plano próximo (1m), mais nos planos de fundo
+            // Planos: 1m, 30m, 100m, 250m, 1000m, 1500m
+            const planeWeights = [0.03, 0.07, 0.15, 0.25, 0.25, 0.25];
+            let logoCount = 0;
 
-                // Aplicar um material aleatório para as malhas do logotipo
-                const randomMat = materials[Math.floor(Math.random() * materials.length)];
-                logo.traverse((child) => {
-                    if (child.isMesh) {
-                        child.material = randomMat;
-                    }
-                });
+            planeWeights.forEach((weight, pIndex) => {
+                const amountInPlane = Math.round(totalLogos * weight);
+                const planeZ = planesZ[pIndex];
 
-                // Selecionar o plano de profundidade aleatoriamente
-                const planeZ = planesZ[Math.floor(Math.random() * planesZ.length)];
+                for (let i = 0; i < amountInPlane; i++) {
+                    const logo = originalMesh.clone();
 
-                // Variáveis sobre a câmera dependendo do Z
-                const distFromCam = camera.position.z - planeZ;
+                    // Aplicar um material aleatório
+                    const randomMat = materials[Math.floor(Math.random() * materials.length)];
+                    logo.traverse((child) => {
+                        if (child.isMesh) {
+                            child.material = randomMat.clone(); // Clone para evitar propriedades compartilhadas indesejadas
+                        }
+                    });
 
-                // Exagero da escala para manter a estética - objetos muito distantes sumiriam na perspectiva
-                // Utilizamos uma elevação visual de escala para manter o visual matrix
-                const scaleExponent = 0.7; // Exponente para compensar tamanhos distantes
-                const scaleFactor = Math.pow(distFromCam / 1, scaleExponent);
-                const finalScale = baseScale * scaleFactor;
-                logo.scale.set(finalScale, finalScale, finalScale);
+                    // Variáveis sobre a câmera dependendo do Z
+                    const distFromCam = camera.position.z - planeZ;
 
-                // Calcular área visualmente contida pela câmera nessa distância Z
-                const visibleHeight = 2 * distFromCam * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
-                const visibleWidth = visibleHeight * camera.aspect;
+                    // Escala visual
+                    const scaleExponent = 0.7;
+                    const scaleFactor = Math.pow(distFromCam / 1, scaleExponent);
+                    const finalScale = baseScale * scaleFactor;
+                    logo.scale.set(finalScale, finalScale, finalScale);
 
-                // Definir posições de spawn aleatórias - O X deve focar do centro para a direita
-                // Intervalo de X: [-0.1 * width/2] a [+0.9 * width/2]
-                const xPos = (Math.random() * 1.0 - 0.1) * (visibleWidth / 2);
-                const yPos = (Math.random() * 2 - 1) * (visibleHeight / 2);
+                    // Raio de colisão aproximado baseado na escala (0.5 da dimensão max)
+                    const radius = (maxDim * finalScale) / 2;
 
-                logo.position.set(xPos, yPos, planeZ);
+                    // Calcular área visualmente contida pela câmera nessa distância Z
+                    const visibleHeight = 2 * distFromCam * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
+                    const visibleWidth = visibleHeight * camera.aspect;
 
-                // Rotacionar aleatoriamente no início
-                logo.rotation.set(
-                    Math.random() * Math.PI * 2,
-                    Math.random() * Math.PI * 2,
-                    Math.random() * Math.PI * 2
-                );
+                    // Spawn inicial
+                    const xPos = (Math.random() * 1.0 - 0.1) * (visibleWidth / 2);
+                    const yPos = (Math.random() * 2 - 1) * (visibleHeight / 2);
 
-                // Velocidade de rotação orbital para gerar um movimento "planeta"
-                const rotSpeed = {
-                    x: (Math.random() - 0.5) * 0.015,
-                    y: (Math.random() - 0.5) * 0.015,
-                    z: (Math.random() - 0.5) * 0.015
-                };
+                    logo.position.set(xPos, yPos, planeZ);
+                    logo.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
 
-                // Lógica de Paralax para a velocidade de queda baseada na distância
-                // Objetos mais pertos (índice 0 e 1) descem mais rápidos
-                const distanceIndex = planesZ.indexOf(planeZ);
-                let parallaxSpeed = 0.04 + Math.random() * 0.02;
+                    // Velocidade de rotação
+                    const rotSpeed = {
+                        x: (Math.random() - 0.5) * 0.01,
+                        y: (Math.random() - 0.5) * 0.01,
+                        z: (Math.random() - 0.5) * 0.01
+                    };
 
-                if (distanceIndex === 0) parallaxSpeed *= 1.8; // Z = 9 (1m)
-                if (distanceIndex === 1) parallaxSpeed *= 1.4; // Z = -20 (30m)
-                if (distanceIndex >= 4) parallaxSpeed *= 0.7;  // Fundão (1000m+)
+                    // Velocidade de queda baseada na distância (Paralax)
+                    let parallaxSpeed = 0.04 + Math.random() * 0.02;
+                    if (pIndex === 0) parallaxSpeed *= 2.0;
+                    if (pIndex === 1) parallaxSpeed *= 1.5;
+                    if (pIndex >= 4) parallaxSpeed *= 0.7;
 
-                // Escala a velocidade com o tamanho vertical da tela para cruzar uniformemente
-                // Dividimos pela visualização normal de uma profundidade média
-                const worldSpeed = parallaxSpeed * (visibleHeight / 30);
+                    const worldSpeed = parallaxSpeed * (visibleHeight / 30);
 
-                scene.add(logo);
+                    scene.add(logo);
 
-                logos.push({
-                    mesh: logo,
-                    planeZ: planeZ,
-                    distanceIndex: distanceIndex,
-                    rotSpeed: rotSpeed,
-                    baseSpeed: worldSpeed,
-                    visibleHeight: visibleHeight
-                });
-            }
+                    logos.push({
+                        mesh: logo,
+                        planeZ: planeZ,
+                        distanceIndex: pIndex,
+                        rotSpeed: rotSpeed,
+                        baseSpeed: worldSpeed,
+                        visibleHeight: visibleHeight,
+                        radius: radius
+                    });
+                }
+            });
 
             animate();
         }, undefined, (error) => {
@@ -341,6 +339,36 @@
 
                 // Translação (Queda) - "matrix effect"
                 logo.mesh.position.y -= speed;
+
+                // --- SISTEMA DE COLISÃO (Otimizado por Plano) ---
+                // Verifica colisões apenas com outros logos no mesmo plano
+                for (let j = 0; j < logos.length; j++) {
+                    const other = logos[j];
+                    if (logo === other || logo.planeZ !== other.planeZ) continue;
+
+                    // Distância 2D (X, Y) já que estão no mesmo Z
+                    const dx = logo.mesh.position.x - other.mesh.position.x;
+                    const dy = logo.mesh.position.y - other.mesh.position.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    const minDistance = logo.radius + other.radius;
+
+                    if (distance < minDistance) {
+                        // Colisão detectada - Empurrar levemente para fora
+                        const overlap = minDistance - distance;
+                        const nx = dx / distance;
+                        const ny = dy / distance;
+
+                        // Move os dois proporcionalmente (0.5 cada)
+                        const moveX = nx * overlap * 0.5;
+                        const moveY = ny * overlap * 0.5;
+
+                        logo.mesh.position.x += moveX;
+                        logo.mesh.position.y += moveY;
+                        other.mesh.position.x -= moveX;
+                        other.mesh.position.y -= moveY;
+                    }
+                }
 
                 // Reset contínuo - volta ao topo quando atinge a base
                 if (logo.mesh.position.y < -logo.visibleHeight / 2 - 2) {
