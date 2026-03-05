@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Efeito Matrix Logo 3D - Studio4You</title>
     <style>
-        /* Reset e background da página */
         body {
             margin: 0;
             padding: 0;
@@ -15,19 +14,16 @@
             justify-content: center;
             align-items: center;
             background-color: #e5e7eb;
-            /* Fundo cinza externo mais escuro para destacar o card */
             font-family: 'Arial', sans-serif;
             overflow: hidden;
         }
 
-        /* Card central - como pedido */
         .card {
             width: 1400px;
             height: 800px;
             max-width: 95vw;
             max-height: 90vh;
             background: #f8fafc;
-            /* Fundo cinza leve do card */
             border-radius: 24px;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
             position: relative;
@@ -36,7 +32,6 @@
             transition: all 0.3s ease;
         }
 
-        /* Área de conteúdo à esquerda */
         .card-content {
             flex: 0 0 45%;
             padding: 60px;
@@ -45,7 +40,6 @@
             flex-direction: column;
             justify-content: center;
             pointer-events: none;
-            /* Deixa os clicks passarem para caso precise */
         }
 
         .card-content h1 {
@@ -73,7 +67,6 @@
             font-weight: bold;
             cursor: pointer;
             pointer-events: auto;
-            /* Reativa o click no botão */
             align-self: flex-start;
             transition: background 0.3s;
         }
@@ -82,19 +75,16 @@
             background-color: #ea580c;
         }
 
-        /* Container do Canvas onde ocorre o efeito, concentrado à direita */
         .matrix-container {
             position: absolute;
             top: 0;
             right: 0;
             width: 60%;
-            /* Concentra à direita */
             height: 100%;
             z-index: 5;
             cursor: default;
         }
 
-        /* Componente de carregamento */
         .loading {
             position: absolute;
             top: 20px;
@@ -112,317 +102,197 @@
 </head>
 
 <body>
-
     <div class="card">
         <div class="card-content">
             <h1>Matrix<br>3D Concept</h1>
-            <p>Este efeito de chuva utiliza objetos 3D. Passe o mouse sobre a área da direita para ver os itens mais
-                próximos da tela pararem suavemente.</p>
+            <p>Este efeito de chuva utiliza objetos 3D. Passe o mouse sobre a área da direita para ver os itens pararem
+                suavemente sob o cursor.</p>
             <button class="btn-interact">Interagir</button>
         </div>
         <div id="loading" class="loading">Iniciando chuva 3D...</div>
-        <!-- O container limitará o evento de hover para o lado direito -->
         <div class="matrix-container" id="matrix-canvas"></div>
     </div>
 
-    <!-- Bibliotecas Three.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 
     <script>
-        const container = document.getElementById('matrix-canvas');
-        const loadingElement = document.getElementById('loading');
-
-        // Inicialização da Cena
-        const scene = new THREE.Scene();
-
-        // A câmera está posicionada em Z = 10 e "olha" para o centro
-        const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 3000);
-        camera.position.z = 10;
-
-        // Renderer
-        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-        renderer.setSize(container.clientWidth, container.clientHeight);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        container.appendChild(renderer.domElement);
-
-        // Sistema de Iluminação para destacar texturas (incluindo as de vidro)
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
-        scene.add(ambientLight);
-
-        const dirLight1 = new THREE.DirectionalLight(0xffffff, 1);
-        dirLight1.position.set(50, 100, 50);
-        scene.add(dirLight1);
-
-        const dirLight2 = new THREE.DirectionalLight(0xffa500, 0.5); // Luz de preenchimento laranja
-        dirLight2.position.set(-50, -50, 50);
-        scene.add(dirLight2);
-
-        const dirLight3 = new THREE.DirectionalLight(0xa0c0ff, 0.4); // Luz azulada fria de contraste
-        dirLight3.position.set(50, -50, -50);
-        scene.add(dirLight3);
-
-        // Definição dos Materiais Solicitados
-        // Cores: cinza, cinza escuro, laranja e variações de transparência e glass (vidro)
-        const materials = [
-            // 0: Cinza Médio (Cool Gray)
-            new THREE.MeshStandardMaterial(
-                {
-                    color: 0x9ca3af,
-                    roughness: 0.3,
-                    metalness: 0.4
-                }),
-
-            // 1: Laranja Vibrante
-            new THREE.MeshStandardMaterial({
-                color: 0xf97316,
-                roughness: 0.2,
-                metalness: 0.3
-            }),
-
-            // 2: Vidro Laranja Translúcido
-            new THREE.MeshPhysicalMaterial({
-                color: 0xf97316,
-                metalness: 0.3,
-                roughness: 0.8,
-                transmission: 0.6,
-                thickness: 11.0,
-                transparent: true,
-                opacity: 1.4
-            }),
-
-            // 3: Vidro Cinza Metálico (Steel Glass)
-            new THREE.MeshPhysicalMaterial({
-                color: 0xffd700,
-                metalness: 0.8,
-                roughness: 0.1,
-                transmission: 0.9,
-                thickness: 11.0,
-                transparent: true,
-                opacity: 1.4
-            }),
-
-            // 4: Branco Perolizado Refletivo (Antique White)
-            new THREE.MeshStandardMaterial({
-                color: 0xe5e7eb,
-                roughness: 0.1,
-                metalness: 0.5,
-                emissive: 0xe5e7eb,
-                // Aumente este valor. Em 1.0 ou mais, ele começa a "branquear" 
-                // conforme a luz fica mais intensa que a cor base.
-                emissiveIntensity: .5,
-            })
-        ];
-
-        // 6 Planos de Profundidade: 1m, 30m, 100m, 250m, 1000m, 1500m
-        // A câmera está em +10, então Z = 9 (d=1), Z = -20 (d=30), Z = -90 (d=100)...
+        let scene, camera, renderer, container, loadingElement;
+        let materials, logos = [];
+        const mouse = new THREE.Vector2(-10, -10);
+        const tempV3 = new THREE.Vector3();
         const planesZ = [9, -20, -90, -240, -1990, -2490];
+        const totalLogos = 190;
 
-        const totalLogos = 190; // no mínimo 150 conforme pedido
-        const logos = [];
+        init();
 
-        // Rastreamento de Mouse (NDC - Normalized Device Coordinates)
-        const mouse = new THREE.Vector2(-10, -10); // Inicia fora
+        function init() {
+            container = document.getElementById('matrix-canvas');
+            loadingElement = document.getElementById('loading');
+            initScene();
+            initLights();
+            initMaterials();
+            initEventListeners();
+            loadModel();
+        }
 
-        container.addEventListener('mousemove', (event) => {
-            const rect = container.getBoundingClientRect();
-            mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-            mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-        });
+        function initScene() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 3000);
+            camera.position.z = 10;
+            renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            container.appendChild(renderer.domElement);
+        }
 
-        // Limpar posição ao sair
-        container.addEventListener('mouseleave', () => {
-            mouse.set(-10, -10);
-        });
+        function initLights() {
+            scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+            addDirLight(0xffffff, 1, 50, 100, 50);
+            addDirLight(0xffa500, 0.5, -50, -50, 50);
+            addDirLight(0xa0c0ff, 0.4, 50, -50, -50);
+        }
 
-        // Suporte para touch
-        container.addEventListener('touchmove', (event) => {
-            const rect = container.getBoundingClientRect();
-            const touch = event.touches[0];
-            mouse.x = ((touch.clientX - rect.left) / rect.width) * 2 - 1;
-            mouse.y = -((touch.clientY - rect.top) / rect.height) * 2 + 1;
-        }, { passive: true });
+        function addDirLight(c, i, x, y, z) {
+            const l = new THREE.DirectionalLight(c, i);
+            l.position.set(x, y, z);
+            scene.add(l);
+        }
 
-        // Carregamento do Objeto 3D
-        const loader = new THREE.GLTFLoader();
-        loader.load('LOGO-STUDIO4YOU.glb', (gltf) => {
-            loadingElement.style.display = 'none';
+        function initMaterials() {
+            materials = [
+                new THREE.MeshStandardMaterial({ color: 0x9ca3af, roughness: 0.3, metalness: 0.4 }),
+                new THREE.MeshStandardMaterial({ color: 0xf97316, roughness: 0.2, metalness: 0.3 }),
+                new THREE.MeshPhysicalMaterial({ color: 0xf97316, metalness: 0.3, roughness: 0.8, transmission: 0.6, thickness: 11.0, transparent: true, opacity: 1.4 }),
+                new THREE.MeshPhysicalMaterial({ color: 0xffd700, metalness: 0.8, roughness: 0.1, transmission: 0.9, thickness: 11.0, transparent: true, opacity: 1.4 }),
+                new THREE.MeshStandardMaterial({ color: 0xe5e7eb, roughness: 0.1, metalness: 0.5, emissive: 0xe5e7eb, emissiveIntensity: .5 })
+            ];
+        }
 
-            const originalMesh = gltf.scene;
+        function initEventListeners() {
+            container.addEventListener('mousemove', (e) => updateMouse(e.clientX, e.clientY));
+            container.addEventListener('mouseleave', () => mouse.set(-10, -10));
+            container.addEventListener('touchmove', (e) => updateMouse(e.touches[0].clientX, e.touches[0].clientY), { passive: true });
+            window.addEventListener('resize', onResize);
+        }
 
-            // Determinar a escala original do objeto
-            const box = new THREE.Box3().setFromObject(originalMesh);
+        function updateMouse(x, y) {
+            const r = container.getBoundingClientRect();
+            mouse.x = ((x - r.left) / r.width) * 2 - 1;
+            mouse.y = -((y - r.top) / r.height) * 2 + 1;
+        }
+
+        function onResize() {
+            const r = container.getBoundingClientRect();
+            camera.aspect = r.width / r.height;
+            camera.updateProjectionMatrix();
+            renderer.setSize(r.width, r.height);
+        }
+
+        function loadModel() {
+            const loader = new THREE.GLTFLoader();
+            loader.load('LOGO-STUDIO4YOU.glb', (gltf) => {
+                loadingElement.style.display = 'none';
+                setupLogos(gltf.scene);
+                animate();
+            }, undefined, (err) => {
+                console.error(err);
+                loadingElement.innerText = "Erro ao carregar o logo.";
+            });
+        }
+
+        function setupLogos(mesh) {
+            const box = new THREE.Box3().setFromObject(mesh);
             const size = box.getSize(new THREE.Vector3());
             const maxDim = Math.max(size.x, size.y, size.z);
-
-            // Requisito: Meio metro quadrado (0.5). Normalizamos a escala para 0.5 unidades.
             const baseScale = 0.5 / maxDim;
+            const weights = [0.03, 0.07, 0.15, 0.25, 0.25, 0.25];
 
-            // --- CONFIGURAÇÃO DE DISTRIBUIÇÃO PONDERADA ---
-            // Pesos: Menos logos no plano próximo (1m), mais nos planos de fundo
-            // Planos: 1m, 30m, 100m, 250m, 1000m, 1500m
-            const planeWeights = [0.03, 0.07, 0.15, 0.25, 0.25, 0.25];
-            let logoCount = 0;
-
-            planeWeights.forEach((weight, pIndex) => {
-                const amountInPlane = Math.round(totalLogos * weight);
-                const planeZ = planesZ[pIndex];
-
-                for (let i = 0; i < amountInPlane; i++) {
-                    const logo = originalMesh.clone();
-
-                    // Aplicar um material aleatório
-                    const randomMat = materials[Math.floor(Math.random() * materials.length)];
-                    logo.traverse((child) => {
-                        if (child.isMesh) {
-                            child.material = randomMat.clone(); // Clone para evitar propriedades compartilhadas indesejadas
-                        }
-                    });
-
-                    // Variáveis sobre a câmera dependendo do Z
-                    const distFromCam = camera.position.z - planeZ;
-
-                    // Escala visual
-                    const scaleExponent = 0.7;
-                    const scaleFactor = Math.pow(distFromCam / 1, scaleExponent);
-                    const finalScale = baseScale * scaleFactor;
-                    logo.scale.set(finalScale, finalScale, finalScale);
-
-                    // Raio de colisão aproximado baseado na escala (0.5 da dimensão max)
-                    const radius = (maxDim * finalScale) / 2;
-
-                    // Calcular área visualmente contida pela câmera nessa distância Z
-                    const visibleHeight = 2 * distFromCam * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
-                    const visibleWidth = visibleHeight * camera.aspect;
-
-                    // Spawn inicial - Fora da tela para evitar tremor
-                    const xPos = (Math.random() * 1.0 - 0.1) * (visibleWidth / 2);
-                    const yPos = (Math.random() * 2.5 - 1) * (visibleHeight / 2); // Espalha mais verticalmente
-
-                    logo.position.set(xPos, yPos, planeZ);
-                    logo.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
-
-                    // Velocidade de rotação
-                    const rotSpeed = {
-                        x: (Math.random() - 0.5) * 0.01,
-                        y: (Math.random() - 0.5) * 0.01,
-                        z: (Math.random() - 0.5) * 0.01
-                    };
-
-                    // Velocidade de queda baseada na distância (Paralax)
-                    let parallaxSpeed = 0.04 + Math.random() * 0.02;
-                    if (pIndex === 0) parallaxSpeed *= 2.0;
-                    if (pIndex === 1) parallaxSpeed *= 1.5;
-                    if (pIndex >= 4) parallaxSpeed *= 0.7;
-
-                    const worldSpeed = parallaxSpeed * (visibleHeight / 30);
-
-                    scene.add(logo);
-
-                    logos.push({
-                        mesh: logo,
-                        planeZ: planeZ,
-                        distanceIndex: pIndex,
-                        rotSpeed: rotSpeed,
-                        baseSpeed: worldSpeed,
-                        visibleHeight: visibleHeight,
-                        radius: radius,
-                        vx: 0,
-                        vy: 0,
-                        localHoverMultiplier: 1.0 // Multiplicador individual
-                    });
+            weights.forEach((w, i) => {
+                const n = Math.round(totalLogos * w);
+                for (let j = 0; j < n; j++) {
+                    const l = createLogo(mesh, planesZ[i], i, baseScale, maxDim);
+                    logos.push(l);
+                    scene.add(l.mesh);
                 }
             });
+        }
 
-            animate();
-        }, undefined, (error) => {
-            console.error('Erro ao carregar o modelo 3D:', error);
-            loadingElement.innerText = "Erro ao carregar o logo.";
-        });
+        function createLogo(mesh, z, idx, scale, dim) {
+            const l = mesh.clone();
+            const mat = materials[Math.floor(Math.random() * materials.length)];
+            l.traverse((c) => { if (c.isMesh) c.material = mat.clone(); });
 
-        const tempV3 = new THREE.Vector3();
+            const d = camera.position.z - z;
+            const s = scale * Math.pow(d, 0.7);
+            l.scale.set(s, s, s);
+
+            const vH = 2 * d * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
+            const vW = vH * camera.aspect;
+
+            l.position.set((Math.random() * 1.0 - 0.1) * (vW / 2), (Math.random() * 2.5 - 1) * (vH / 2), z);
+            l.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
+
+            const sp = [2.0, 1.5, 1.0, 1.0, 0.7, 0.7];
+            const baseS = (0.04 + Math.random() * 0.02) * sp[idx] * (vH / 30);
+
+            return {
+                mesh: l,
+                planeZ: z,
+                rotS: { x: (Math.random() - 0.5) * 0.01, y: (Math.random() - 0.5) * 0.01, z: (Math.random() - 0.5) * 0.01 },
+                speed: baseS,
+                vH: vH,
+                radius: (dim * s) / 2,
+                hoverM: 1.0
+            };
+        }
 
         function animate() {
             requestAnimationFrame(animate);
-
-            logos.forEach(logo => {
-                // Cálculo de influência do mouse baseado na distância 2D projetada
-                tempV3.copy(logo.mesh.position).project(camera);
-                const dx = mouse.x - tempV3.x;
-                const dy = mouse.y - tempV3.y;
-                const distNDC = Math.sqrt(dx * dx + dy * dy);
-
-                // Zona de parada: se estiver a menos de 0.25 de distância NDC (~12% da tela)
-                let targetMultiplier = distNDC < 0.25 ? 0.0 : 1.0;
-
-                // Suavização individual (lerp)
-                logo.localHoverMultiplier += (targetMultiplier - logo.localHoverMultiplier) * 0.1;
-
-                let speed = logo.baseSpeed * logo.localHoverMultiplier;
-                let activeRotX = logo.rotSpeed.x * logo.localHoverMultiplier;
-                let activeRotY = logo.rotSpeed.y * logo.localHoverMultiplier;
-                let activeRotZ = logo.rotSpeed.z * logo.localHoverMultiplier;
-
-                // Rotação orbital
-                logo.mesh.rotation.x += activeRotX;
-                logo.mesh.rotation.y += activeRotY;
-                logo.mesh.rotation.z += activeRotZ;
-
-                // Translação (Queda) - "matrix effect"
-                logo.mesh.position.y -= speed;
-
-                // --- SISTEMA DE COLISÃO (Otimizado por Plano) ---
-                // Verifica colisões apenas com outros logos no mesmo plano
-                for (let j = 0; j < logos.length; j++) {
-                    const other = logos[j];
-                    if (logo === other || logo.planeZ !== other.planeZ) continue;
-
-                    // Distância 2D (X, Y) já que estão no mesmo Z
-                    const dx = logo.mesh.position.x - other.mesh.position.x;
-                    const dy = logo.mesh.position.y - other.mesh.position.y;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-
-                    const minDistance = logo.radius + other.radius;
-
-                    if (distance < minDistance) {
-                        // Colisão detectada - Empurrar MUITO levemente para fora (suave)
-                        const overlap = minDistance - distance;
-                        const nx = dx / (distance || 0.1);
-                        const ny = dy / (distance || 0.1);
-
-                        // Fator de suavização: 0.025 (2.5% da correção por frame)
-                        const moveX = nx * overlap * 0.025;
-                        const moveY = ny * overlap * 0.025;
-
-                        logo.mesh.position.x += moveX;
-                        logo.mesh.position.y += moveY;
-                        other.mesh.position.x -= moveX;
-                        other.mesh.position.y -= moveY;
-                    }
-                }
-
-                // Reset contínuo - volta ao topo quando atinge a base
-                // Aumentado a margem para evitar sumiço brusco
-                const limit = logo.visibleHeight * 0.7;
-                if (logo.mesh.position.y < -limit) {
-                    logo.mesh.position.y = limit + Math.random() * 10;
-
-                    // Pequeno offset aleatório no X ao reciclar para evitar padrões repetitivos
-                    const visibleWidth = logo.visibleHeight * camera.aspect;
-                    logo.mesh.position.x = (Math.random() * 1.0 - 0.1) * (visibleWidth / 2);
-                }
-            });
-
+            logos.forEach(updateLogo);
             renderer.render(scene, camera);
         }
 
-        // Resolução responsiva
-        window.addEventListener('resize', () => {
-            const rect = container.getBoundingClientRect();
-            camera.aspect = rect.width / rect.height;
-            camera.updateProjectionMatrix();
-            renderer.setSize(rect.width, rect.height);
-        });
+        function updateLogo(l) {
+            tempV3.copy(l.mesh.position).project(camera);
+            const dNDC = Math.sqrt(Math.pow(mouse.x - tempV3.x, 2) + Math.pow(mouse.y - tempV3.y, 2));
+            l.hoverM += ((dNDC < 0.25 ? 0.0 : 1.0) - l.hoverM) * 0.1;
+
+            l.mesh.rotation.x += l.rotS.x * l.hoverM;
+            l.mesh.rotation.y += l.rotS.y * l.hoverM;
+            l.mesh.rotation.z += l.rotS.z * l.hoverM;
+            l.mesh.position.y -= l.speed * l.hoverM;
+
+            resolveCollisions(l);
+            resetLogo(l);
+        }
+
+        function resolveCollisions(l) {
+            logos.forEach(o => {
+                if (l === o || l.planeZ !== o.planeZ) return;
+                const dx = l.mesh.position.x - o.mesh.position.x;
+                const dy = l.mesh.position.y - o.mesh.position.y;
+                const d = Math.sqrt(dx * dx + dy * dy);
+                const min = l.radius + o.radius;
+                if (d < min) {
+                    const overlap = min - d;
+                    const nx = dx / (d || 0.1);
+                    const ny = dy / (d || 0.1);
+                    l.mesh.position.x += nx * overlap * 0.025;
+                    l.mesh.position.y += ny * overlap * 0.025;
+                    o.mesh.position.x -= nx * overlap * 0.025;
+                    o.mesh.position.y -= ny * overlap * 0.025;
+                }
+            });
+        }
+
+        function resetLogo(l) {
+            const limit = l.vH * 0.7;
+            if (l.mesh.position.y < -limit) {
+                l.mesh.position.y = limit + Math.random() * 10;
+                l.mesh.position.x = (Math.random() * 1.0 - 0.1) * (l.vH * camera.aspect / 2);
+            }
+        }
     </script>
 </body>
 
