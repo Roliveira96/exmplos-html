@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="pt-pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liquid Gravity 3D - Gemini Edition</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --accent: #ff5e00;
+            --bg: #000;
+            --glass: rgba(255, 255, 255, 0.05);
+        }
+
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: var(--bg);
+            color: #fff;
+            font-family: 'Outfit', sans-serif;
+            user-select: none;
+            cursor: crosshair;
+        }
+
+        canvas {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        #ui {
+            position: fixed;
+            top: 40px;
+            left: 40px;
+            z-index: 10;
+            pointer-events: none;
+            max-width: 320px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            background: var(--accent);
+            color: #000;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-radius: 20px;
+            margin-bottom: 12px;
+        }
+
+        h1 {
+            font-size: 32px;
+            font-weight: 300;
+            margin: 0 0 16px 0;
+            letter-spacing: -1px;
+        }
+
+        h1 span {
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        .status-box {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 14px;
+            line-height: 1.6;
+            color: #ccc;
+        }
+
+        #timer-container {
+            position: fixed;
+            bottom: 40px;
+            left: 40px;
+            right: 40px;
+            z-index: 10;
+        }
+
+        .timer-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--accent);
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        #timer-bg {
+            height: 2px;
+            background: rgba(255, 255, 255, 0.1);
+            width: 100%;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        #timer-bar {
+            height: 100%;
+            background: #fff;
+            width: 100%;
+            transition: width 1s linear;
+        }
+
+        #loading {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            font-size: 12px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+        }
+
+        .crunch-warning {
+            color: #ff3300;
+            font-weight: 600;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="loading">Harmonizing Gravity Fields...</div>
+
+    <div id="ui">
+        <span class="badge">Molecular Physics v4.0</span>
+        <h1>Liquid <span>Gravity</span></h1>
+        <div class="status-box" id="status-content">
+            Aguardando interação molecular...
+        </div>
+    </div>
+
+    <div id="timer-container">
+        <span class="timer-label" id="timer-status">Gravitational Stability</span>
+        <div id="timer-bg">
+            <div id="timer-bar"></div>
+        </div>
+    </div>
+
+    <canvas id="canvas-3d"></canvas>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.161.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.161.0/examples/jsm/"
+            }
+        }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+        // --- CONSTANTS FROM USER LOGIC ---
+        const G = 0.45;
+        const CENTER_G = 0.25;
+        const CRUNCH_INTERVAL = 60000;
+        const MAX_BLOBS = 15;
+
+        let spheres = [];
+        let mouse3D = new THREE.Vector3();
+        let isCrunching = false;
+        let startTime = Date.now();
+
+        // --- THREE.JS SETUP ---
+        const canvas = document.querySelector('#canvas-3d');
+        const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 100);
+        camera.position.set(0, 0, 20);
+
+        const controls = new OrbitControls(camera, canvas);
+        controls.enableRotate = false;
+        controls.enablePan = false;
+        controls.enableDamping = true;
+        controls.zoomSpeed = 1.2;
+
+        // --- PREMIUM RAYMARCHING SHADER ---
+        const raymarchingMaterial = new THREE.ShaderMaterial({
+            uniforms: {
+                uTime: { value: 0 },
+                uCamPos: { value: camera.position },
+                uResolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
+                uBlobPos: { value: new Array(MAX_BLOBS).fill(new THREE.Vector3()) },
+                uBlobRad: { value: new Array(MAX_BLOBS).fill(0) },
+                uBlobsCount: { value: 1 },
+                uCrunch: { value: 0 }
+            },
+            vertexShader: `
+                varying vec2 vUv;
+                void main() { vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }
+            `,
+            fragmentShader: `
+                uniform float uTime;
+                uniform vec3 uCamPos;
+                uniform vec2 uResolution;
+                uniform vec3 uBlobPos[15];
+                uniform float uBlobRad[15];
+                uniform int uBlobsCount;
+                uniform float uCrunch;
+                varying vec2 vUv;
+
+                #define MAX_STEPS 80
+                #define SURF_DIST 0.005
+                #define MAX_DIST 50.0
+
+                float smin(float a, float b, float k) {
+                    float h = clamp(0.5 + 0.5 * (b - a) / k, 0.0, 1.0);
+                    return mix(b, a, h) - k * h * (1.0 - h);
+                }
+
+                float getDist(vec3 p) {
+                    float d = 100.0;
+                    for(int i = 0; i < 15; i++) {
+                        if(i >= uBlobsCount) break;
+                        float ball = length(p - uBlobPos[i]) - uBlobRad[i];
+                        if(i == 0) d = ball;
+                        else d = smin(d, ball, 1.0);
+                    }
+                    // Add some subtle liquid noise
+                    d += sin(p.x*2.0 + uTime)*sin(p.y*2.0 + uTime)*sin(p.z*2.0 + uTime)*0.03;
+                    return d;
+                }
+
+                vec3 getNormal(vec3 p) {
+                    float d = getDist(p);
+                    vec2 e = vec2(0.001, 0);
+                    return normalize(vec3(d-getDist(p-e.xyy), d-getDist(p-e.yxy), d-getDist(p-e.yyx)));
+                }
+
+                vec3 getSky(vec3 rd) {
+                    float skyline = smoothstep(-0.2, 0.2, rd.y);
+                    vec3 base = mix(vec3(0.01, 0.02, 0.05), vec3(0.05, 0.1, 0.2), skyline);
+                    float sun = pow(max(dot(rd, normalize(vec3(1,1,1))), 0.0), 32.0);
+                    return base + vec3(0.5, 0.3, 0.1) * sun;
+                }
+
+                void main() {
+                    vec2 uv = (gl_FragCoord.xy - 0.5 * uResolution.xy) / uResolution.y;
+                    vec3 ro = uCamPos;
+                    vec3 rd = normalize(vec3(uv, -1.8));
+                    
+                    float dO = 0.0;
+                    for(int i=0; i<MAX_STEPS; i++) {
+                        float dS = getDist(ro + rd * dO);
+                        dO += dS;
+                        if(dS < SURF_DIST || dO > MAX_DIST) break;
+                    }
+
+                    if(dO < MAX_DIST) {
+                        vec3 p = ro + rd * dO;
+                        vec3 n = getNormal(p);
+                        vec3 r = reflect(rd, n);
+                        
+                        // Metallic Shading
+                        float fresnel = pow(1.0 - max(dot(n, -rd), 0.0), 5.0);
+                        vec3 env = getSky(r);
+                        
+                        // Color palette (Silver to Orange based on crunch)
+                        vec3 silver = vec3(0.9, 0.95, 1.0);
+                        vec3 orange = vec3(1.0, 0.4, 0.0);
+                        vec3 baseColor = mix(silver, orange, uCrunch);
+                        
+                        vec3 col = baseColor * (0.1 + 0.9 * max(dot(n, normalize(vec3(1,2,3))), 0.0));
+                        col = mix(col, env, 0.5 + 0.5 * fresnel);
+                        
+                        // Highlights
+                        float spec = pow(max(dot(r, normalize(vec3(1,1,1))), 0.0), 64.0);
+                        col += vec3(1.0, 0.8, 0.5) * spec;
+
+                        gl_FragColor = vec4(col, 1.0);
+                    } else {
+                        discard;
+                    }
+                }
+            `
+        });
+
+        const quad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), raymarchingMaterial);
+        scene.add(quad);
+
+        // --- ADAPTED SPHERE CLASS (YOUR LOGIC IN 3D) ---
+        class Sphere {
+            constructor(x, y, z, mass, level, parent = null) {
+                this.x = x; this.y = y; this.z = z;
+                this.vx = 0; this.vy = 0; this.vz = 0;
+                this.mass = mass;
+                this.level = level;
+                // Based on your 2d radius = sqrt(mass)*12, we scale for Three.js units
+                this.radius = Math.sqrt(this.mass) * 0.15;
+                this.parent = parent;
+                this.renderPos = new THREE.Vector3(x, y, z);
+                this.totalRotation = 0;
+                this.orbits = 0;
+                this.lastAngle = parent ? Math.atan2(y - parent.y, x - parent.x) : 0;
+
+                if (parent) {
+                    // YOUR EXPEL LOGIC (3.5 INSTEAD OF 8 FOR 3D SCALE)
+                    const angle = Math.random() * Math.PI * 2;
+                    const orbitalDist = parent.radius + this.radius + 1.5;
+                    // vMag = sqrt(G * parent.mass / dist) * 2.2
+                    const vMag = Math.sqrt((G * parent.mass) / orbitalDist) * 2.2;
+
+                    const expelForce = 4.0;
+                    // Random spherical ejection
+                    const phi = Math.random() * Math.PI * 2;
+                    const theta = Math.random() * Math.PI;
+                    const dir = new THREE.Vector3(
+                        Math.sin(theta) * Math.cos(phi),
+                        Math.sin(theta) * Math.sin(phi),
+                        Math.cos(theta)
+                    ).normalize();
+
+                    // Orthogonal tangential orbit
+                    const tan = new THREE.Vector3().crossVectors(dir, new THREE.Vector3(0, 1, 0)).normalize();
+                    if (tan.length() < 0.1) tan.set(1, 0, 0);
+
+                    this.vx = parent.vx + tan.x * vMag + dir.x * expelForce;
+                    this.vy = parent.vy + tan.y * vMag + dir.y * expelForce;
+                    this.vz = parent.vz + tan.z * vMag + dir.z * expelForce;
+
+                    // Reaction force (your 0.3 factor)
+                    parent.vx -= dir.x * (expelForce * 0.3);
+                    parent.vy -= dir.y * (expelForce * 0.3);
+                    parent.vz -= dir.z * (expelForce * 0.3);
+
+                    this.x = parent.x + dir.x * orbitalDist;
+                    this.y = parent.y + dir.y * orbitalDist;
+                    this.z = parent.z + dir.z * orbitalDist;
+                }
+            }
+
+            update(dt) {
+                // DIST TO CENTER (0,0,0)
+                const dxCenter = -this.x;
+                const dyCenter = -this.y;
+                const dzCenter = -this.z;
+                const distCenter = Math.sqrt(dxCenter ** 2 + dyCenter ** 2 + dzCenter ** 2);
+
+                let gravityMult = isCrunching ? 40.0 : 1.0;
+                const forceCenter = (CENTER_G * gravityMult) / (distCenter * 0.1 + 1);
+
+                this.vx += (dxCenter / (distCenter + 0.1)) * forceCenter * dt * 60;
+                this.vy += (dyCenter / (distCenter + 0.1)) * forceCenter * dt * 60;
+                this.vz += (dzCenter / (distCenter + 0.1)) * forceCenter * dt * 60;
+
+                if (this.parent && !isCrunching) {
+                    const dxP = this.parent.x - this.x;
+                    const dyP = this.parent.y - this.y;
+                    const dzP = this.parent.z - this.z;
+                    const distP = Math.sqrt(dxP ** 2 + dyP ** 2 + dzP ** 2);
+
+                    if (distP > 0.1) {
+                        // ORBIT COUNT (RADIAN TRACKING IN XY DOMINANT PLANE)
+                        const currentAngle = Math.atan2(this.y - this.parent.y, this.x - this.parent.x);
+                        let diff = currentAngle - this.lastAngle;
+                        if (diff > Math.PI) diff -= Math.PI * 2;
+                        if (diff < -Math.PI) diff += Math.PI * 2;
+                        this.totalRotation += Math.abs(diff);
+                        this.lastAngle = currentAngle;
+                        this.orbits = Math.floor(this.totalRotation / (Math.PI * 2));
+
+                        // FATHER GRAVITY (G * parent.mass) / (distP^2 * 0.04 + 5)
+                        const fP = (G * this.parent.mass) / (distP * distP * 0.1 + 2);
+                        this.vx += (dxP / distP) * fP * dt * 60;
+                        this.vy += (dyP / distP) * fP * dt * 60;
+                        this.vz += (dzP / distP) * fP * dt * 60;
+
+                        // MERGING (your logic: orbits >= 10 && dist < sum_radius * 0.7)
+                        if (this.orbits >= 10 && distP < (this.parent.radius + this.radius) * 0.7) {
+                            this.parent.mass += this.mass;
+                            this.parent.radius = Math.sqrt(this.parent.mass) * 0.15;
+                            return false;
+                        }
+                    }
+                }
+
+                // DAMPING (your 0.998 / 0.99 logic)
+                const dmp = (this.parent && this.orbits < 10 && !isCrunching) ? 0.998 : 0.98;
+                const dmpExp = Math.pow(dmp, dt * 60);
+                this.vx *= dmpExp;
+                this.vy *= dmpExp;
+                this.vz *= dmpExp;
+
+                this.x += this.vx * dt * 1.5;
+                this.y += this.vy * dt * 1.5;
+                this.z += this.vz * dt * 1.5;
+
+                // VISUAL TIDAL PULL (your renderX/Y logicTS = 45)
+                this.renderPos.set(this.x, this.y, this.z);
+                const dM = mouse3D.distanceTo(this.renderPos);
+                if (dM < 10.0) {
+                    const tS = (1 - dM / 10.0) * 1.8;
+                    const push = mouse3D.clone().sub(this.renderPos).normalize().multiplyScalar(tS);
+                    this.renderPos.add(push);
+                }
+
+                return !(isCrunching && distCenter < 0.6);
+            }
+        }
+
+        // --- INTERACTION & LOOP ---
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+        const plane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
+        const clock = new THREE.Clock();
+
+        function resetSystem() {
+            spheres = [new Sphere(0, 0, 0, 160, 0)];
+            isCrunching = false;
+            startTime = Date.now();
+        }
+
+        function loop() {
+            requestAnimationFrame(loop);
+            const dt = Math.min(clock.getDelta(), 0.1);
+            const elapsed = Date.now() - startTime;
+            const remaining = Math.max(0, CRUNCH_INTERVAL - elapsed);
+
+            if (timerBar) timerBar.style.width = (remaining / CRUNCH_INTERVAL * 100) + '%';
+
+            const statusContent = document.getElementById('status-content');
+            const timerStatus = document.getElementById('timer-status');
+
+            if (elapsed > CRUNCH_INTERVAL) {
+                isCrunching = true;
+                timerStatus.innerHTML = "<span class='crunch-warning'>Gravitational Collapse</span>";
+                statusContent.innerHTML = "<strong style='color:#ff0000;'>CRUNCH EM CURSO:</strong> As moléculas estão sendo sugadas para o núcleo.";
+                if (timerBar) timerBar.style.background = '#ff3300';
+            } else {
+                timerStatus.innerText = "Gravitational Stability";
+                if (timerBar) timerBar.style.background = '#fff';
+
+                const activeSplit = spheres.find(s => s.parent);
+                const orbitInfo = activeSplit ? `<br><b>Órbitas da divisão:</b> ${activeSplit.orbits}/10` : "";
+                statusContent.innerHTML = `Clique em qualquer esfera para ejetar 10% da massa.${orbitInfo}<br><b>Próximo Colapso:</b> ${Math.ceil(remaining / 1000)}s`;
+            }
+
+            if (isCrunching && spheres.length === 0) resetSystem();
+
+            // MOUSE TO 3D PLANE
+            raycaster.setFromCamera(mouse, camera);
+            raycaster.ray.intersectPlane(plane, mouse3D);
+
+            // PHYSICS UPDATE
+            for (let i = spheres.length - 1; i >= 0; i--) {
+                if (i === 0) { spheres[i].x = spheres[i].y = spheres[i].z = 0; } // Core locked at 0
+                if (!spheres[i].update(dt)) {
+                    spheres.splice(i, 1);
+                }
+            }
+            if (spheres.length === 0 && isCrunching) resetSystem();
+
+            // SHADER UPDATE
+            const uPos = raymarchingMaterial.uniforms.uBlobPos.value;
+            const uRad = raymarchingMaterial.uniforms.uBlobRad.value;
+            spheres.forEach((s, i) => {
+                if (i < MAX_BLOBS) {
+                    uPos[i].copy(s.renderPos);
+                    uRad[i] = s.radius;
+                }
+            });
+            raymarchingMaterial.uniforms.uBlobsCount.value = Math.min(spheres.length, MAX_BLOBS);
+            raymarchingMaterial.uniforms.uCamPos.value.copy(camera.position);
+            raymarchingMaterial.uniforms.uTime.value = clock.getElapsedTime();
+            raymarchingMaterial.uniforms.uCrunch.value = isCrunching ? 1.0 : 0.0;
+            raymarchingMaterial.uniforms.uResolution.value.set(window.innerWidth, window.innerHeight);
+
+            document.getElementById('loading').style.display = 'none';
+            controls.update();
+            renderer.render(scene, camera);
+        }
+
+        window.addEventListener('mousemove', e => {
+            mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+        });
+
+        window.addEventListener('mousedown', e => {
+            raycaster.setFromCamera(mouse, camera);
+            let target = null;
+            let minDist = 1000;
+            spheres.forEach(s => {
+                const d = raycaster.ray.distanceToPoint(s.renderPos);
+                if (d < s.radius + 1.5 && d < minDist) {
+                    minDist = d;
+                    target = s;
+                }
+            });
+            if (target && spheres.length < MAX_BLOBS) {
+                if (target.mass > 10) {
+                    const lm = target.mass * 0.1;
+                    target.mass -= lm;
+                    target.radius = Math.sqrt(target.mass) * 0.15;
+                    spheres.push(new Sphere(target.x, target.y, target.z, lm, target.level + 1, target));
+                }
+            }
+        });
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        resetSystem();
+        loop();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Alpha Mask Showcase</title>
+    <!-- Modern Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-glow: rgba(99, 102, 241, 0.4);
+            --bg: #030712;
+            --card-bg: rgba(17, 24, 39, 0.8);
+            --border: rgba(255, 255, 255, 0.1);
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image:
+                radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 100% 100%, rgba(168, 85, 247, 0.1) 0%, transparent 50%);
+        }
+
+        .header {
+            padding: 4rem 2rem;
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            letter-spacing: -0.05em;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #fff 0%, #a5b4fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            color: var(--text-muted);
+            font-size: 1.25rem;
+            line-height: 1.6;
+        }
+
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem 8rem 2rem;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 4rem;
+        }
+
+        /* Video Showcase Card */
+        .showcase-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 32px;
+            overflow: hidden;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .video-viewport {
+            position: relative;
+            padding: 4rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 500px;
+            background-size: 30px 30px;
+            background-image:
+                linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            transition: background 0.3s ease;
+        }
+
+        .video-viewport.checkered {
+            background-image:
+                conic-gradient(rgba(255, 255, 255, 0.05) 90deg, transparent 90deg 180deg, rgba(255, 255, 255, 0.05) 180deg 270deg, transparent 270deg);
+            background-size: 40px 40px;
+        }
+
+        .video-viewport.gradient {
+            background: linear-gradient(45deg, #1e1b4b, #312e81, #1e1b4b);
+        }
+
+        .video-viewport.image {
+            background-image: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=1200');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .video-container {
+            width: 100%;
+            max-width: 500px;
+            border-radius: 20px;
+            z-index: 10;
+        }
+
+        video {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: inherit;
+            /* Efeito de Brilho (Glow) Sugerido */
+            filter: drop-shadow(0 0 15px var(--primary-glow));
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        video.frozen {
+            filter: drop-shadow(0 0 35px var(--primary)) brightness(1.2);
+            transform: scale(1.05);
+            cursor: pointer;
+        }
+
+        /* Time Range Controls Styling */
+        .range-controls {
+            width: 100%;
+            max-width: 600px;
+            margin: 2rem auto 0;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .range-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .range-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .range-header label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .time-value {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--primary);
+            font-size: 0.9rem;
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            outline: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            background: var(--primary);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 10px var(--primary-glow);
+            transition: transform 0.2s;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        /* Mode: Screen Hack */
+        .mode-screen {
+            mix-blend-mode: screen;
+        }
+
+        /* Controls */
+        .controls-panel {
+            padding: 2rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 0.6rem 1.2rem;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--text-muted);
+        }
+
+        .btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            box-shadow: 0 0 20px var(--primary-glow);
+        }
+
+        /* Info Section */
+        .doc-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .doc-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border);
+            padding: 2.5rem;
+            border-radius: 24px;
+            transition: transform 0.3s ease;
+        }
+
+        .doc-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+
+        .doc-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .doc-card p {
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 0.2rem 0.4rem;
+            border-radius: 6px;
+            font-size: 0.9em;
+            color: #fb7185;
+        }
+
+        .code-block {
+            background: #000;
+            padding: 1.5rem;
+            border-radius: 16px;
+            position: relative;
+            margin-top: 1rem;
+        }
+
+        pre {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: #10b981;
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 99px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+
+        .badge-green {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+        }
+
+        .badge-amber {
+            background: rgba(245, 158, 11, 0.1);
+            color: #f59e0b;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 3rem 1rem;
+            }
+
+            .video-viewport {
+                padding: 2rem;
+                min-height: 300px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="header">
+        <h1>Video Alpha & Masks</h1>
+        <p>Tutorial interativo para implementação de logos e vídeos sem fundo na web.</p>
+    </header>
+
+    <main class="main-content">
+        <!-- Live Demo -->
+        <section class="showcase-card">
+            <div class="video-viewport checkered" id="viewport">
+                <div class="video-container">
+                    <!-- data-stop define em qual segundo o vídeo deve parar -->
+                    <video id="mainVideo" autoplay muted playsinline data-stop="2.5">
+                        <source src="boomerang.webm" type="video/webm">
+                        <source src="output.webm" type="video/webm">
+                        Seu navegador não suporta este vídeo.
+                    </video>
+                </div>
+            </div>
+
+            <div class="controls-panel">
+                <div class="control-group">
+                    <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600;">MODO DE
+                        TRANSPARÊNCIA:</span>
+                    <button class="btn" id="btn-none" onclick="setMode('none')">Nenhum (Verde)</button>
+                    <button class="btn active" id="btn-chroma" onclick="setMode('chroma')">Chroma Key (CSS/SVG)</button>
+                    <button class="btn" id="btn-screen" onclick="setMode('screen')">Screen (Para fundo Preto)</button>
+                </div>
+
+                <div class="control-group">
+                    <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600;">FUNDO:</span>
+                    <button class="btn active" id="bg-grid" onclick="setBg('checkered')">Grid</button>
+                    <button class="btn" id="bg-grad" onclick="setBg('gradient')">Gradient</button>
+                    <button class="btn" id="bg-img" onclick="setBg('image')">Image</button>
+                </div>
+
+                <div class="range-controls">
+                    <div class="range-item">
+                        <div class="range-header">
+                            <label>Início da Animação</label>
+                            <span class="time-value" id="start-val">0.0s</span>
+                        </div>
+                        <input type="range" id="start-range" min="0" max="10" step="0.1" value="0">
+                    </div>
+                    <div class="range-item">
+                        <div class="range-header">
+                            <label>Final da Animação</label>
+                            <span class="time-value" id="end-val">2.5s</span>
+                        </div>
+                        <input type="range" id="end-range" min="0" max="10" step="0.1" value="2.5">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Documentation Grid -->
+        <div class="doc-section">
+            <article class="doc-card">
+                <div class="badge badge-amber">Método Rápido (Fundo Preto)</div>
+                <h3>Mix Blend Mode</h3>
+                <p>Se o vídeo tiver fundo <b>preto puro</b>, use <code>mix-blend-mode: screen</code>. <br><br>⚠️
+                    <b>Nota:</b> Este método não funciona para o seu vídeo atual porque ele está com <b>fundo verde</b>.
+                </p>
+                <div class="code-block">
+                    <pre>video {
+  mix-blend-mode: screen;
+}</pre>
+                </div>
+            </article>
+
+            <article class="doc-card">
+                <div class="badge badge-green">Ouro (Fundo Verde/Chroma)</div>
+                <h3>Remover Fundo Verde</h3>
+                <p>Para transformar o <b>fundo verde</b> em transparência real, o comando FFmpeg abaixo aplica um filtro
+                    de <i>chromakey</i> e exporta em WebM.</p>
+                <div class="code-block">
+                    <pre>ffmpeg -i input.mp4 -vf "chromakey=0x00FF00:0.1:0.2" -c:v libvpx-vp9 -crf 30 -b:v 0 -auto-alt-ref 0 -pix_fmt yuva420p output.webm</pre>
+                </div>
+            </article>
+
+            <article class="doc-card">
+                <h3>Por que está Verde?</h3>
+                <p>O arquivo <code>.mp4</code> foi exportado com fundo sólido (Chroma Key) porque o formato MP4 não
+                    suporta transparência nativa.</p>
+                <p><b>Solução:</b> Converta para <code>.webm</code> usando o comando acima ou use ferramentas como
+                    <b>Runway Gen-2</b> para exportar já com Alpha.
+                </p>
+            </article>
+        </div>
+
+    </main>
+
+    <script>
+        const viewport = document.getElementById('viewport');
+        const video = document.getElementById('mainVideo');
+
+        function setBg(type) {
+            viewport.className = 'video-viewport ' + type;
+            document.querySelectorAll('[id^="bg-"]').forEach(b => b.classList.remove('active'));
+            document.getElementById('bg-' + (type === 'checkered' ? 'grid' : type === 'gradient' ? 'grad' : 'img')).classList.add('active');
+        }
+
+        function setMode(mode) {
+            video.className = '';
+
+            document.querySelectorAll('.controls-panel .control-group:first-child .btn').forEach(b => b.classList.remove('active'));
+            const btnId = mode === 'none' ? 'btn-none' : (mode === 'chroma' ? 'btn-chroma' : 'btn-screen');
+            if (document.getElementById(btnId)) document.getElementById(btnId).classList.add('active');
+
+            if (mode === 'screen') {
+                video.classList.add('mode-screen');
+            } else if (mode === 'chroma') {
+                video.classList.add('mode-chroma');
+            }
+        }
+
+        // --- Lógica de Controle de Tempo Dinâmico ---
+        const startRange = document.getElementById('start-range');
+        const endRange = document.getElementById('end-range');
+        const startVal = document.getElementById('start-val');
+        const endVal = document.getElementById('end-val');
+
+        let startTime = 0;
+        let endTime = 2.5;
+
+        // Atualiza duração máxima quando o vídeo carrega
+        video.onloadedmetadata = function () {
+            startRange.max = video.duration;
+            endRange.max = video.duration;
+            if (endTime > video.duration) {
+                endTime = video.duration;
+                endRange.value = endTime;
+                endVal.innerText = endTime.toFixed(1) + 's';
+            }
+        };
+
+        startRange.oninput = function () {
+            startTime = parseFloat(this.value);
+            if (startTime >= endTime) {
+                endTime = startTime + 0.1;
+                endRange.value = endTime;
+                endVal.innerText = endTime.toFixed(1) + 's';
+            }
+            startVal.innerText = startTime.toFixed(1) + 's';
+            video.currentTime = startTime;
+        };
+
+        endRange.oninput = function () {
+            endTime = parseFloat(this.value);
+            if (endTime <= startTime) {
+                startTime = Math.max(0, endTime - 0.1);
+                startRange.value = startTime;
+                startVal.innerText = startTime.toFixed(1) + 's';
+            }
+            endVal.innerText = endTime.toFixed(1) + 's';
+        };
+
+        video.addEventListener('timeupdate', function () {
+            // Loop entre Start e End
+            if (this.currentTime >= endTime) {
+                this.currentTime = startTime;
+                this.play();
+            }
+            if (this.currentTime < startTime) {
+                this.currentTime = startTime;
+            }
+        });
+
+        // Resetar ao clicar
+        video.addEventListener('click', function () {
+            this.currentTime = startTime;
+            this.play();
+        });
+    </script>
+</body>
+
+</html>
