@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Efeito Matrix Logo 3D - Studio4You</title>
+    <style>
+        /* Reset e background da página */
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #e5e7eb;
+            /* Fundo cinza externo mais escuro para destacar o card */
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+        }
+
+        /* Card central - como pedido */
+        .card {
+            width: 1400px;
+            height: 800px;
+            max-width: 95vw;
+            max-height: 90vh;
+            background: #f8fafc;
+            /* Fundo cinza leve do card */
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            transition: all 0.3s ease;
+        }
+
+        /* Área de conteúdo à esquerda */
+        .card-content {
+            flex: 0 0 45%;
+            padding: 60px;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            pointer-events: none;
+            /* Deixa os clicks passarem para caso precise */
+        }
+
+        .card-content h1 {
+            color: #1f2937;
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            line-height: 1.1;
+        }
+
+        .card-content p {
+            color: #4b5563;
+            font-size: 1.25rem;
+            max-width: 450px;
+            line-height: 1.6;
+        }
+
+        .btn-interact {
+            margin-top: 30px;
+            padding: 15px 30px;
+            background-color: #f97316;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            pointer-events: auto;
+            /* Reativa o click no botão */
+            align-self: flex-start;
+            transition: background 0.3s;
+        }
+
+        .btn-interact:hover {
+            background-color: #ea580c;
+        }
+
+        /* Container do Canvas onde ocorre o efeito, concentrado à direita */
+        .matrix-container {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 60%;
+            /* Concentra à direita */
+            height: 100%;
+            z-index: 5;
+            cursor: default;
+        }
+
+        /* Componente de carregamento */
+        .loading {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 14px;
+            color: #6b7280;
+            z-index: 20;
+            font-weight: bold;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 8px 16px;
+            border-radius: 20px;
+            backdrop-filter: blur(5px);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="card">
+        <div class="card-content">
+            <h1>Matrix<br>3D Concept</h1>
+            <p>Este efeito de chuva utiliza objetos 3D. Passe o mouse sobre a área da direita para ver os itens mais
+                próximos da tela pararem suavemente.</p>
+            <button class="btn-interact">Interagir</button>
+        </div>
+        <div id="loading" class="loading">Iniciando chuva 3D...</div>
+        <!-- O container limitará o evento de hover para o lado direito -->
+        <div class="matrix-container" id="matrix-canvas"></div>
+    </div>
+
+    <!-- Bibliotecas Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+
+    <script>
+        const container = document.getElementById('matrix-canvas');
+        const loadingElement = document.getElementById('loading');
+
+        // Inicialização da Cena
+        const scene = new THREE.Scene();
+
+        // A câmera está posicionada em Z = 10 e "olha" para o centro
+        const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 3000);
+        camera.position.z = 10;
+
+        // Renderer
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        container.appendChild(renderer.domElement);
+
+        // Sistema de Iluminação para destacar texturas (incluindo as de vidro)
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+        scene.add(ambientLight);
+
+        const dirLight1 = new THREE.DirectionalLight(0xffffff, 1);
+        dirLight1.position.set(50, 100, 50);
+        scene.add(dirLight1);
+
+        const dirLight2 = new THREE.DirectionalLight(0xffa500, 0.5); // Luz de preenchimento laranja
+        dirLight2.position.set(-50, -50, 50);
+        scene.add(dirLight2);
+
+        const dirLight3 = new THREE.DirectionalLight(0xa0c0ff, 0.4); // Luz azulada fria de contraste
+        dirLight3.position.set(50, -50, -50);
+        scene.add(dirLight3);
+
+        // Definição dos Materiais Solicitados
+        // Cores: cinza, cinza escuro, laranja e variações de transparência e glass (vidro)
+        const materials = [
+            // 0: Cinza Padrão
+            new THREE.MeshStandardMaterial({ color: 0x9ca3af, roughness: 0.3, metalness: 0.4 }),
+            // 1: Cinza Escuro
+            new THREE.MeshStandardMaterial({ color: 0x374151, roughness: 0.4, metalness: 0.5 }),
+            // 2: Laranja Padrão
+            new THREE.MeshStandardMaterial({ color: 0xf97316, roughness: 0.2, metalness: 0.3 }),
+            // 3: Glass / Vidro Transparente (Cinza Claro)
+            new THREE.MeshPhysicalMaterial({
+                color: 0xffffff,
+                metalness: 0.1,
+                roughness: 0.05,
+                transmission: 0.9,
+                thickness: 0.5,
+                transparent: true
+            }),
+            // 4: Glass / Vidro Laranja
+            new THREE.MeshPhysicalMaterial({
+                color: 0xf97316,
+                metalness: 0.1,
+                roughness: 0.1,
+                transmission: 0.85,
+                thickness: 0.5,
+                transparent: true
+            }),
+            // 5: Laranja Semi-Transparente Refletivo
+            new THREE.MeshStandardMaterial({
+                color: 0xea580c,
+                transparent: true,
+                opacity: 0.6,
+                roughness: 0.1,
+                metalness: 0.8
+            })
+        ];
+
+        // 6 Planos de Profundidade: 1m, 30m, 100m, 250m, 1000m, 1500m
+        // A câmera está em +10, então Z = 9 (d=1), Z = -20 (d=30), Z = -90 (d=100)...
+        const planesZ = [9, -20, -90, -240, -990, -1490];
+
+        const totalLogos = 150; // no mínimo 150 conforme pedido
+        const logos = [];
+
+        let hoverTargetSpeedMultiplier = 1;
+        let currentHoverMultiplier = 1; // Para suavizar a transição do hover
+
+        // Interação com Mouse (apenas para o container direito)
+        container.addEventListener('mouseenter', () => { hoverTargetSpeedMultiplier = 0.0; });
+        container.addEventListener('mouseleave', () => { hoverTargetSpeedMultiplier = 1.0; });
+        // Suporte para mobile
+        container.addEventListener('touchstart', () => { hoverTargetSpeedMultiplier = 0.0; }, { passive: true });
+        container.addEventListener('touchend', () => { hoverTargetSpeedMultiplier = 1.0; });
+
+        // Carregamento do Objeto 3D
+        const loader = new THREE.GLTFLoader();
+        loader.load('LOGO-STUDIO4YOU.glb', (gltf) => {
+            loadingElement.style.display = 'none';
+
+            const originalMesh = gltf.scene;
+
+            // Determinar a escala original do objeto
+            const box = new THREE.Box3().setFromObject(originalMesh);
+            const size = box.getSize(new THREE.Vector3());
+            const maxDim = Math.max(size.x, size.y, size.z);
+
+            // Requisito: Meio metro quadrado (0.5). Normalizamos a escala para 0.5 unidades.
+            const baseScale = 0.5 / maxDim;
+
+            // Gerar 150+ instâncias do objeto
+            for (let i = 0; i < totalLogos; i++) {
+                const logo = originalMesh.clone();
+
+                // Aplicar um material aleatório para as malhas do logotipo
+                const randomMat = materials[Math.floor(Math.random() * materials.length)];
+                logo.traverse((child) => {
+                    if (child.isMesh) {
+                        child.material = randomMat;
+                    }
+                });
+
+                // Selecionar o plano de profundidade aleatoriamente
+                const planeZ = planesZ[Math.floor(Math.random() * planesZ.length)];
+
+                // Variáveis sobre a câmera dependendo do Z
+                const distFromCam = camera.position.z - planeZ;
+
+                // Exagero da escala para manter a estética - objetos muito distantes sumiriam na perspectiva
+                // Utilizamos uma elevação visual de escala para manter o visual matrix
+                const scaleExponent = 0.7; // Exponente para compensar tamanhos distantes
+                const scaleFactor = Math.pow(distFromCam / 1, scaleExponent);
+                const finalScale = baseScale * scaleFactor;
+                logo.scale.set(finalScale, finalScale, finalScale);
+
+                // Calcular área visualmente contida pela câmera nessa distância Z
+                const visibleHeight = 2 * distFromCam * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
+                const visibleWidth = visibleHeight * camera.aspect;
+
+                // Definir posições de spawn aleatórias - O X deve focar do centro para a direita
+                // Intervalo de X: [-0.1 * width/2] a [+0.9 * width/2]
+                const xPos = (Math.random() * 1.0 - 0.1) * (visibleWidth / 2);
+                const yPos = (Math.random() * 2 - 1) * (visibleHeight / 2);
+
+                logo.position.set(xPos, yPos, planeZ);
+
+                // Rotacionar aleatoriamente no início
+                logo.rotation.set(
+                    Math.random() * Math.PI * 2,
+                    Math.random() * Math.PI * 2,
+                    Math.random() * Math.PI * 2
+                );
+
+                // Velocidade de rotação orbital para gerar um movimento "planeta"
+                const rotSpeed = {
+                    x: (Math.random() - 0.5) * 0.015,
+                    y: (Math.random() - 0.5) * 0.015,
+                    z: (Math.random() - 0.5) * 0.015
+                };
+
+                // Lógica de Paralax para a velocidade de queda baseada na distância
+                // Objetos mais pertos (índice 0 e 1) descem mais rápidos
+                const distanceIndex = planesZ.indexOf(planeZ);
+                let parallaxSpeed = 0.04 + Math.random() * 0.02;
+
+                if (distanceIndex === 0) parallaxSpeed *= 1.8; // Z = 9 (1m)
+                if (distanceIndex === 1) parallaxSpeed *= 1.4; // Z = -20 (30m)
+                if (distanceIndex >= 4) parallaxSpeed *= 0.7;  // Fundão (1000m+)
+
+                // Escala a velocidade com o tamanho vertical da tela para cruzar uniformemente
+                // Dividimos pela visualização normal de uma profundidade média
+                const worldSpeed = parallaxSpeed * (visibleHeight / 30);
+
+                scene.add(logo);
+
+                logos.push({
+                    mesh: logo,
+                    planeZ: planeZ,
+                    distanceIndex: distanceIndex,
+                    rotSpeed: rotSpeed,
+                    baseSpeed: worldSpeed,
+                    visibleHeight: visibleHeight
+                });
+            }
+
+            animate();
+        }, undefined, (error) => {
+            console.error('Erro ao carregar o modelo 3D:', error);
+            loadingElement.innerText = "Erro ao carregar o logo.";
+        });
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Transição suave (lerp) para a parada no hover
+            currentHoverMultiplier += (hoverTargetSpeedMultiplier - currentHoverMultiplier) * 0.1;
+
+            logos.forEach(logo => {
+                let speed = logo.baseSpeed;
+                let activeRotX = logo.rotSpeed.x;
+                let activeRotY = logo.rotSpeed.y;
+                let activeRotZ = logo.rotSpeed.z;
+
+                // Ao passar o mouse, as logos nos primeiros planos (1m e 30m) param
+                if (logo.distanceIndex <= 1) {
+                    // Parada suave nas mais próximas
+                    speed *= (0.05 + 0.95 * currentHoverMultiplier);
+                    // Rotação também diminui
+                    activeRotX *= (0.1 + 0.9 * currentHoverMultiplier);
+                    activeRotY *= (0.1 + 0.9 * currentHoverMultiplier);
+                    activeRotZ *= (0.1 + 0.9 * currentHoverMultiplier);
+                }
+
+                // Rotação orbital
+                logo.mesh.rotation.x += activeRotX;
+                logo.mesh.rotation.y += activeRotY;
+                logo.mesh.rotation.z += activeRotZ;
+
+                // Translação (Queda) - "matrix effect"
+                logo.mesh.position.y -= speed;
+
+                // Reset contínuo - volta ao topo quando atinge a base
+                if (logo.mesh.position.y < -logo.visibleHeight / 2 - 2) {
+                    logo.mesh.position.y = logo.visibleHeight / 2 + Math.random() * 10;
+
+                    // Se o item reciclou, pode dar um novo valor de rotação inicial
+                    // logo.mesh.rotation.set(...) pode ser acrescentado aqui se desejar
+                }
+            });
+
+            renderer.render(scene, camera);
+        }
+
+        // Resolução responsiva
+        window.addEventListener('resize', () => {
+            const rect = container.getBoundingClientRect();
+            camera.aspect = rect.width / rect.height;
+            camera.updateProjectionMatrix();
+            renderer.setSize(rect.width, rect.height);
+        });
+    </script>
+</body>
+
+</html>
