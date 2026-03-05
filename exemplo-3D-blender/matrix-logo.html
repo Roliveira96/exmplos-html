@@ -221,15 +221,27 @@
         const totalLogos = 190; // no mínimo 150 conforme pedido
         const logos = [];
 
-        let hoverTargetSpeedMultiplier = 1;
-        let currentHoverMultiplier = 1; // Para suavizar a transição do hover
+        // Rastreamento de Mouse (NDC - Normalized Device Coordinates)
+        const mouse = new THREE.Vector2(-10, -10); // Inicia fora
 
-        // Interação com Mouse (apenas para o container direito)
-        container.addEventListener('mouseenter', () => { hoverTargetSpeedMultiplier = 0.0; });
-        container.addEventListener('mouseleave', () => { hoverTargetSpeedMultiplier = 1.0; });
-        // Suporte para mobile
-        container.addEventListener('touchstart', () => { hoverTargetSpeedMultiplier = 0.0; }, { passive: true });
-        container.addEventListener('touchend', () => { hoverTargetSpeedMultiplier = 1.0; });
+        container.addEventListener('mousemove', (event) => {
+            const rect = container.getBoundingClientRect();
+            mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+            mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+        });
+
+        // Limpar posição ao sair
+        container.addEventListener('mouseleave', () => {
+            mouse.set(-10, -10);
+        });
+
+        // Suporte para touch
+        container.addEventListener('touchmove', (event) => {
+            const rect = container.getBoundingClientRect();
+            const touch = event.touches[0];
+            mouse.x = ((touch.clientX - rect.left) / rect.width) * 2 - 1;
+            mouse.y = -((touch.clientY - rect.top) / rect.height) * 2 + 1;
+        }, { passive: true });
 
         // Carregamento do Objeto 3D
         const loader = new THREE.GLTFLoader();
@@ -315,8 +327,9 @@
                         baseSpeed: worldSpeed,
                         visibleHeight: visibleHeight,
                         radius: radius,
-                        vx: 0, // Velocidade horizontal inicial
-                        vy: 0  // Velocidade vertical extra (além da queda)
+                        vx: 0,
+                        vy: 0,
+                        localHoverMultiplier: 1.0 // Multiplicador individual
                     });
                 }
             });
@@ -327,27 +340,28 @@
             loadingElement.innerText = "Erro ao carregar o logo.";
         });
 
+        const tempV3 = new THREE.Vector3();
+
         function animate() {
             requestAnimationFrame(animate);
 
-            // Transição suave (lerp) para a parada no hover
-            currentHoverMultiplier += (hoverTargetSpeedMultiplier - currentHoverMultiplier) * 0.1;
-
             logos.forEach(logo => {
-                let speed = logo.baseSpeed;
-                let activeRotX = logo.rotSpeed.x;
-                let activeRotY = logo.rotSpeed.y;
-                let activeRotZ = logo.rotSpeed.z;
+                // Cálculo de influência do mouse baseado na distância 2D projetada
+                tempV3.copy(logo.mesh.position).project(camera);
+                const dx = mouse.x - tempV3.x;
+                const dy = mouse.y - tempV3.y;
+                const distNDC = Math.sqrt(dx * dx + dy * dy);
 
-                // Ao passar o mouse, as logos nos primeiros planos (1m e 30m) param
-                if (logo.distanceIndex <= 1) {
-                    // Parada suave nas mais próximas
-                    speed *= (0.05 + 0.95 * currentHoverMultiplier);
-                    // Rotação também diminui
-                    activeRotX *= (0.1 + 0.9 * currentHoverMultiplier);
-                    activeRotY *= (0.1 + 0.9 * currentHoverMultiplier);
-                    activeRotZ *= (0.1 + 0.9 * currentHoverMultiplier);
-                }
+                // Zona de parada: se estiver a menos de 0.25 de distância NDC (~12% da tela)
+                let targetMultiplier = distNDC < 0.25 ? 0.0 : 1.0;
+
+                // Suavização individual (lerp)
+                logo.localHoverMultiplier += (targetMultiplier - logo.localHoverMultiplier) * 0.1;
+
+                let speed = logo.baseSpeed * logo.localHoverMultiplier;
+                let activeRotX = logo.rotSpeed.x * logo.localHoverMultiplier;
+                let activeRotY = logo.rotSpeed.y * logo.localHoverMultiplier;
+                let activeRotZ = logo.rotSpeed.z * logo.localHoverMultiplier;
 
                 // Rotação orbital
                 logo.mesh.rotation.x += activeRotX;
