@@ -50,9 +50,15 @@
 
                     <!-- Abstract Shapes Composition -->
                     <div class="uxui-shapes relative h-[500px] w-[600px] hidden lg:block">
-                        <!-- Design Tool Coordinates -->
-                        <div class="absolute -top-10 -left-10 text-[10px] opacity-30 font-mono">X: 542px | Y: 120px</div>
-                        <div class="absolute -bottom-10 -right-10 text-[10px] opacity-30 font-mono">FRAME: 1920x1080</div>
+                        <!-- Design Tool Coordinates & Guides -->
+                        <div class="blueprint-tag top-left">
+                            <span class="text-[9px] opacity-40 font-mono">X: 542px | Y: 120px</span>
+                        </div>
+                        <div class="blueprint-tag bottom-right">
+                            <span class="text-[9px] opacity-40 font-mono" id="resDisplay">FRAME_01 | 1920x1080</span>
+                        </div>
+                        <div class="blueprint-corner tl"></div>
+                        <div class="blueprint-corner br"></div>
 
                         <div class="ux-shape s-rect gradient-purple"></div>
                         

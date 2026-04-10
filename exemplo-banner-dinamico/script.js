@@ -20,6 +20,12 @@ function init() {
             el.addEventListener('mouseleave', () => resumePortfolio());
         });
     });
+
+    // Dynamic Resolution Display
+    const resDisplay = document.getElementById('resDisplay');
+    if (resDisplay) {
+        resDisplay.innerText = `FRAME_01 | ${window.screen.width}x${window.screen.height}`;
+    }
     
     startProgress();
     animateSlideContent(slides[0]);

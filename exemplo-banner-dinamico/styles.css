@@ -127,6 +127,29 @@ body, html {
     perspective: 1000px;
 }
 
+/* BLUEPRINT ELEMENTS */
+.blueprint-tag {
+    position: absolute;
+    z-index: 2;
+    padding: 2px 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.top-left { top: 0; left: 0; border-radius: 0 0 8px 0; }
+.bottom-right { bottom: 0; right: 0; border-radius: 8px 0 0 0; }
+
+.blueprint-corner {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    z-index: 2;
+}
+
+.blueprint-corner.tl { top: -5px; left: -5px; border-right: none; border-bottom: none; }
+.blueprint-corner.br { bottom: -5px; right: -5px; border-left: none; border-top: none; }
+
 .ux-shape {
     position: absolute;
     transition: 0.5s cubic-bezier(0.16, 1, 0.3, 1);
