@@ -14,7 +14,19 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 
-<body>
+<body class="bg-black text-white">
+
+    <!-- NAVBAR -->
+    <nav class="fixed top-0 left-0 w-full z-[100] px-10 py-6 flex items-center justify-between backdrop-blur-md border-b border-white/5 bg-black/20">
+        <div class="logo font-black text-2xl tracking-tighter">ARUNA<span class="text-blue-500">.</span>AGENCY</div>
+        <div class="nav-links hidden md:flex items-center gap-10 text-sm font-bold uppercase tracking-widest opacity-70">
+            <a href="#" class="hover:text-blue-500 transition-colors">Cases</a>
+            <a href="#" class="hover:text-blue-500 transition-colors">Serviços</a>
+            <a href="#" class="hover:text-blue-500 transition-colors">Datacenter</a>
+            <a href="#" class="hover:text-blue-500 transition-colors">Sobre</a>
+        </div>
+        <button class="px-6 py-2 border border-white/20 rounded-full text-xs font-bold hover:bg-white hover:text-black transition-all">CONTATO</button>
+    </nav>
 
     <div class="carousel-container" id="mainCarousel">
         
@@ -193,7 +205,7 @@
                         <div class="text-center relative z-10 px-10">
                             <div class="badge-tech !bg-blue-600/20 !text-blue-400 mb-6 mx-auto">ENTERPRISE CLOUD</div>
                             <h2 class="hero-title !text-9xl !mb-4">CORE<br><span>DATA</span></h2>
-                            <p class="hero-desc">Utilizamos os melhores datacenters dos parceiros líderes no Brasil e no mundo.</p>
+                            <p class="hero-desc mx-auto">Utilizamos os melhores datacenters dos parceiros líderes no Brasil e no mundo.</p>
                             
                             <!-- Partners Floating Cloud -->
                             <div class="partners-cloud flex flex-wrap justify-center gap-4 mt-10">
@@ -209,24 +221,56 @@
                         </div>
                     </div>
 
-                    <!-- Panel 3: Security Tools -->
-                    <div class="v-panel p-12 flex flex-col justify-start gap-10 border-l border-white/10 hidden lg:flex">
+                    <!-- Panel 3: Security & Support (Shifted Down) -->
+                    <div class="v-panel p-12 flex flex-col justify-center pt-32 gap-6 border-l border-white/10 hidden lg:flex">
+                        <!-- Item 1: Security -->
                         <div class="security-chip flex items-center gap-4">
-                            <div class="w-14 h-14 rounded-lg bg-white/5 flex items-center justify-center border border-blue-500/30">
-                                <span class="text-blue-500 text-3xl">🛡️</span>
+                            <div class="w-12 h-12 rounded-lg bg-white/5 flex items-center justify-center border border-blue-500/30">
+                                <span class="text-blue-500 text-2xl">🛡️</span>
                             </div>
                             <div>
-                                <h4 class="text-sm font-bold uppercase">End-to-End</h4>
-                                <p class="text-[10px] opacity-40">SECURITY LAYER</p>
+                                <h4 class="text-[12px] font-bold uppercase">End-to-End</h4>
+                                <p class="text-[9px] opacity-40">SECURITY LAYER</p>
                             </div>
                         </div>
+                        <!-- Item 2: Backup -->
                         <div class="security-chip flex items-center gap-4">
-                            <div class="w-14 h-14 rounded-lg bg-white/5 flex items-center justify-center border border-blue-500/30">
-                                <span class="text-blue-500 text-3xl">💾</span>
+                            <div class="w-12 h-12 rounded-lg bg-white/5 flex items-center justify-center border border-blue-500/30">
+                                <span class="text-blue-500 text-2xl">💾</span>
                             </div>
                             <div>
-                                <h4 class="text-sm font-bold uppercase">Snapshot</h4>
-                                <p class="text-[10px] opacity-40">HOURLY BACKUPS</p>
+                                <h4 class="text-[12px] font-bold uppercase">Snapshot</h4>
+                                <p class="text-[9px] opacity-40">HOURLY BACKUPS</p>
+                            </div>
+                        </div>
+                        <!-- Item 3: Firewall -->
+                        <div class="security-chip flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-lg bg-white/5 flex items-center justify-center border border-orange-500/30">
+                                <span class="text-orange-500 text-2xl">🔥</span>
+                            </div>
+                            <div>
+                                <h4 class="text-[12px] font-bold uppercase">Firewall</h4>
+                                <p class="text-[9px] opacity-40">ACTIVE DEFENSE</p>
+                            </div>
+                        </div>
+                        <!-- Item 4: SSL -->
+                        <div class="security-chip flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-lg bg-white/5 flex items-center justify-center border border-green-500/30">
+                                <span class="text-green-500 text-2xl">🔒</span>
+                            </div>
+                            <div>
+                                <h4 class="text-[12px] font-bold uppercase">SSL Auth</h4>
+                                <p class="text-[9px] opacity-40">ENCRYPTED DATA</p>
+                            </div>
+                        </div>
+                        <!-- Item 5: Support -->
+                        <div class="security-chip flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-lg bg-white/5 flex items-center justify-center border border-purple-500/30">
+                                <span class="text-purple-500 text-2xl">🎧</span>
+                            </div>
+                            <div>
+                                <h4 class="text-[12px] font-bold uppercase">Support</h4>
+                                <p class="text-[9px] opacity-40">24/7 EXPERTS</p>
                             </div>
                         </div>
                     </div>
@@ -269,9 +313,56 @@
                     <h2 class="hero-title !text-white !text-7xl !leading-none">Retail<br><span>Revolution</span></h2>
                 </div>
             </div>
-
         </div>
     </div>
+
+    <!-- SECTION: SERVICES (5 BLOCKS) -->
+    <section class="py-32 px-10 bg-black relative">
+        <div class="max-w-7xl mx-auto">
+            <div class="mb-20">
+                <h3 class="text-blue-500 font-bold tracking-[0.3em] uppercase mb-4">Especialidades</h3>
+                <h2 class="text-6xl font-black">SOLUÇÕES DE<br>ALTA PERFORMANCE</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+                <!-- Block 1 -->
+                <div class="service-card-bottom glass-card p-10 flex flex-col gap-6 group hover:-translate-y-4 transition-all duration-500 border border-white/5">
+                    <div class="text-4xl">🛒</div>
+                    <h3 class="text-xl font-bold">E-commerce<br>High-Scale</h3>
+                    <p class="text-xs opacity-50 leading-relaxed">Plataformas robustas preparadas para milhões de acessos simultâneos.</p>
+                </div>
+                <!-- Block 2 -->
+                <div class="service-card-bottom glass-card p-10 flex flex-col gap-6 group hover:-translate-y-4 transition-all duration-500 border border-white/5">
+                    <div class="text-4xl">🚀</div>
+                    <h3 class="text-xl font-bold">SEO &<br>Performance</h3>
+                    <p class="text-xs opacity-50 leading-relaxed">Otimização técnica extrema para atingir o topo do Google organicamente.</p>
+                </div>
+                <!-- Block 3 -->
+                <div class="service-card-bottom glass-card p-10 flex flex-col gap-6 group hover:-translate-y-4 transition-all duration-500 border border-white/5">
+                    <div class="text-4xl">☁️</div>
+                    <h3 class="text-xl font-bold">Cloud<br>Infrastructure</h3>
+                    <p class="text-xs opacity-50 leading-relaxed">Arquitetura em nuvem escalável com parceiros líderes mundiais.</p>
+                </div>
+                <!-- Block 4 -->
+                <div class="service-card-bottom glass-card p-10 flex flex-col gap-6 group hover:-translate-y-4 transition-all duration-500 border border-white/5">
+                    <div class="text-4xl">📐</div>
+                    <h3 class="text-xl font-bold">UX | UI<br>Premium</h3>
+                    <p class="text-xs opacity-50 leading-relaxed">Design focado na conversão e na melhor experiência para o usuário.</p>
+                </div>
+                <!-- Block 5 -->
+                <div class="service-card-bottom glass-card p-10 flex flex-col gap-6 group hover:-translate-y-4 transition-all duration-500 border border-white/5">
+                    <div class="text-4xl">📱</div>
+                    <h3 class="text-xl font-bold">Mobile<br>Development</h3>
+                    <p class="text-xs opacity-50 leading-relaxed">Apps nativos e híbridos com alta fluidez e performance impecável.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER SIMPLE -->
+    <footer class="py-10 text-center border-t border-white/5 opacity-30 text-[10px] tracking-widest uppercase">
+        &copy; 2026 Aruna Agency - Todos os direitos reservados
+    </footer>
 
     <!-- Script de Inicialização -->
     <script src="script.js"></script>
