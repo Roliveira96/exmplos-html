@@ -107,6 +107,16 @@ function animateSlideContent(slide) {
             stagger: 0.2, 
             ease: "back.out(1.2)" 
         });
+        
+        // Extra float for UI fragments
+        gsap.to('.ui-fragment', {
+            y: "+=20",
+            duration: 3,
+            repeat: -1,
+            yoyo: true,
+            stagger: 0.5,
+            ease: "sine.inOut"
+        });
     }
 
     if (slide.classList.contains('slide-performance')) {
@@ -194,7 +204,7 @@ window.addEventListener('mousemove', (e) => {
     const y = (e.clientY / window.innerHeight - 0.5) * 30;
 
     const activeSlide = slides[currentIdx];
-    const shapes = activeSlide.querySelectorAll('.ux-shape, .performance-shape, .v-panel, .liquid-shape, .card, .slide-number');
+    const shapes = activeSlide.querySelectorAll('.ux-shape, .ui-fragment, .performance-shape, .v-panel, .liquid-shape, .card, .slide-number');
     
     shapes.forEach((s, i) => {
         const speed = s.classList.contains('slide-number') ? 0.1 : (i % 3 + 1) * 0.5;

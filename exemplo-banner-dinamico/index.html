@@ -49,10 +49,33 @@
                     </div>
 
                     <!-- Abstract Shapes Composition -->
-                    <div class="uxui-shapes relative h-[500px] w-[500px] hidden lg:block">
+                    <div class="uxui-shapes relative h-[500px] w-[600px] hidden lg:block">
+                        <!-- Design Tool Coordinates -->
+                        <div class="absolute -top-10 -left-10 text-[10px] opacity-30 font-mono">X: 542px | Y: 120px</div>
+                        <div class="absolute -bottom-10 -right-10 text-[10px] opacity-30 font-mono">FRAME: 1920x1080</div>
+
                         <div class="ux-shape s-rect gradient-purple"></div>
+                        
+                        <!-- Floating UI Fragment: Search Bar -->
+                        <div class="ux-shape ui-fragment search-bar backdrop-blur-3xl">
+                            <div class="flex items-center gap-3 px-6 h-full">
+                                <div class="w-4 h-4 rounded-full border border-white/40"></div>
+                                <div class="w-32 h-2 bg-white/20 rounded-full"></div>
+                                <div class="ml-auto w-8 h-4 bg-blue-500 rounded-full"></div>
+                            </div>
+                        </div>
+
                         <div class="ux-shape s-glass backdrop-blur-2xl"></div>
-                        <div class="ux-shape s-circle gradient-blue opacity-50"></div>
+                        <div class="ux-shape s-circle gradient-blue opacity-50 pulse-soft"></div>
+                        
+                        <!-- Floating UI Fragment: Toggle -->
+                        <div class="ux-shape ui-fragment toggle-action flex items-center gap-4 px-6">
+                            <div class="w-10 h-6 bg-green-500 rounded-full relative">
+                                <div class="absolute right-1 top-1 w-4 h-4 bg-white rounded-full"></div>
+                            </div>
+                            <div class="w-20 h-2 bg-white/30 rounded-full"></div>
+                        </div>
+
                         <div class="ux-shape s-border"></div>
                     </div>
                 </div>
