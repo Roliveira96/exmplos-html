@@ -9,15 +9,15 @@ let progressTween;
 function init() {
     slides.forEach((slide, i) => {
         const bg = slide.getAttribute('data-bg');
-        const bgLayer = slide.querySelector('.slide-bg');
-        if (bg && bgLayer) bgLayer.style.backgroundImage = `url(${bg})`;
+        if (bg) slide.style.backgroundImage = `url(${bg})`;
         spawnTechParticles(slide);
         
-        // Pause triggers
-        const cards = slide.querySelectorAll('.hero-panel, .glass-cyber-card, .glass-performance-card, .v-panel, .liquid-shape, .cards-container');
-        cards.forEach(card => {
-            card.addEventListener('mouseenter', () => pausePortfolio());
-            card.addEventListener('mouseleave', () => resumePortfolio());
+        // Pause triggers - Expanded to content containers for better UX
+        const pauseSelectors = '.uxui-composition, .performance-content-wrapper, .hero-panel, .v-panel, .liquid-shape, .cards-container, .glass-performance-card';
+        const pauseElements = slide.querySelectorAll(pauseSelectors);
+        pauseElements.forEach(el => {
+            el.addEventListener('mouseenter', () => pausePortfolio());
+            el.addEventListener('mouseleave', () => resumePortfolio());
         });
     });
     
@@ -98,9 +98,15 @@ function animateSlideContent(slide) {
     gsap.fromTo(desc, { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 1, stagger: 0.1, ease: "power2.out", delay: 0.6 });
 
     // Custom shape animations
-    if (slide.classList.contains('slide-layered')) {
-        gsap.fromTo('.rect-main', { x: -200, opacity: 0 }, { x: 0, opacity: 1, duration: 1.2, ease: "power4.out" });
-        gsap.fromTo('.circle-glass', { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: 1.5, ease: "back.out(1.7)", delay: 0.5 });
+    if (slide.classList.contains('slide-uxui')) {
+        gsap.fromTo('.ux-shape', { scale: 0, opacity: 0, rotation: -45 }, { 
+            scale: 1, 
+            opacity: 1, 
+            rotation: (i, t) => t.classList.contains('s-rect') ? -10 : 5, 
+            duration: 1.5, 
+            stagger: 0.2, 
+            ease: "back.out(1.2)" 
+        });
     }
 
     if (slide.classList.contains('slide-performance')) {
@@ -183,13 +189,12 @@ function prevSlide() {
     goToSlide((currentIdx - 1 + slides.length) % slides.length); 
 }
 
-// Parallax
 window.addEventListener('mousemove', (e) => {
     const x = (e.clientX / window.innerWidth - 0.5) * 30;
     const y = (e.clientY / window.innerHeight - 0.5) * 30;
 
     const activeSlide = slides[currentIdx];
-    const shapes = activeSlide.querySelectorAll('.shape, .portal-mask, .v-panel, .liquid-shape, .card, .slide-number');
+    const shapes = activeSlide.querySelectorAll('.ux-shape, .performance-shape, .v-panel, .liquid-shape, .card, .slide-number');
     
     shapes.forEach((s, i) => {
         const speed = s.classList.contains('slide-number') ? 0.1 : (i % 3 + 1) * 0.5;
