@@ -9,7 +9,8 @@ let progressTween;
 function init() {
     slides.forEach((slide, i) => {
         const bg = slide.getAttribute('data-bg');
-        if (bg) slide.style.backgroundImage = `url(${bg})`;
+        const bgLayer = slide.querySelector('.slide-bg');
+        if (bg && bgLayer) bgLayer.style.backgroundImage = `url(${bg})`;
         spawnTechParticles(slide);
         
         // Pause triggers

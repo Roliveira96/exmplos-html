@@ -39,8 +39,27 @@ body, html {
 
 .slide.active { opacity: 1; visibility: visible; }
 
-/* SLIDE NUMBER - ADJUSTED FOR VISIBILITY */
-.slide-number {
+/* BACKGROUND LAYER */
+.slide-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    z-index: 0;
+    transition: transform 10s linear;
+}
+
+.slide.active .slide-bg {
+    transform: scale(1.1);
+}
+
+/* SEO BANNER ISOLATION (Destaque para o texto) */
+.slide-performance .slide-bg {
+    filter: grayscale(1) blur(12px) brightness(0.2);
+    /* Neutralize the image to focus on the green card */
+}
     position: absolute;
     top: 50%;
     left: 50%;
