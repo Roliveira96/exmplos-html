@@ -4,480 +4,295 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Visualizador 3D Avançado - Customização Total</title>
-    <meta name="description" content="Controle avançado de materiais e ambiente para modelos 3D Blender.">
-
-    <!-- Model Viewer Library -->
-    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
-
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
-
+    <title>Efeito Matrix Logo 3D - Studio4You</title>
     <style>
-        :root {
-            --primary-bg: #030712;
-            --accent-color: #38bdf8;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --glass-bg: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --input-bg: rgba(255, 255, 255, 0.05);
-            --panel-width: 380px;
-        }
-
-        * {
+        body {
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-            font-family: 'Outfit', sans-serif;
-        }
-
-        body {
-            background-color: var(--primary-bg);
-            color: var(--text-main);
             height: 100vh;
-            overflow: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
-            background-image:
-                radial-gradient(circle at 10% 20%, rgba(56, 189, 248, 0.08) 0%, transparent 40%),
-                radial-gradient(circle at 90% 80%, rgba(56, 189, 248, 0.08) 0%, transparent 40%);
-        }
-
-        .main-layout {
-            width: 98%;
-            max-width: 1600px;
-            height: 95vh;
-            display: grid;
-            grid-template-columns: var(--panel-width) 1fr;
-            background: var(--glass-bg);
-            backdrop-filter: blur(40px);
-            border: 1px solid var(--glass-border);
-            border-radius: 40px;
+            background-color: #e5e7eb;
+            font-family: 'Arial', sans-serif;
             overflow: hidden;
-            box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.8);
         }
 
-        /* Painel de Controle Lateral */
-        .controls-panel {
-            padding: 2rem;
-            display: flex;
-            flex-direction: column;
-            border-right: 1px solid var(--glass-border);
-            overflow-y: auto;
-            background: rgba(0, 0, 0, 0.35);
-            scrollbar-width: thin;
-            scrollbar-color: var(--accent-color) transparent;
-        }
-
-        .controls-panel::-webkit-scrollbar {
-            width: 4px;
-        }
-
-        .controls-panel::-webkit-scrollbar-thumb {
-            background: var(--accent-color);
-            border-radius: 10px;
-        }
-
-        .header {
-            margin-bottom: 2rem;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 0.4rem 0.8rem;
-            background: rgba(56, 189, 248, 0.1);
-            color: var(--accent-color);
-            border-radius: 100px;
-            font-size: 0.65rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            margin-bottom: 1rem;
-        }
-
-        h1 {
-            font-size: 1.6rem;
-            font-weight: 600;
-            line-height: 1.2;
-        }
-
-        .section-title {
-            font-size: 0.75rem;
-            font-weight: 700;
-            color: var(--accent-color);
-            text-transform: uppercase;
-            letter-spacing: 0.15em;
-            margin: 1.5rem 0 1rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .section-title::after {
-            content: "";
-            flex: 1;
-            height: 1px;
-            background: var(--glass-border);
-        }
-
-        .control-group {
-            margin-bottom: 1.2rem;
-        }
-
-        .label-row {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.85rem;
-            color: var(--text-main);
-            margin-bottom: 0.6rem;
-        }
-
-        .label-row span {
-            color: var(--accent-color);
-            font-weight: 600;
-            font-family: monospace;
-        }
-
-        input[type="range"] {
-            width: 100%;
-            height: 5px;
-            background: var(--input-bg);
-            border-radius: 10px;
-            appearance: none;
-            outline: none;
-        }
-
-        input[type="range"]::-webkit-slider-thumb {
-            appearance: none;
-            width: 16px;
-            height: 16px;
-            background: var(--accent-color);
-            border-radius: 50%;
-            cursor: pointer;
-            box-shadow: 0 0 15px rgba(56, 189, 248, 0.5);
-            transition: transform 0.2s;
-        }
-
-        input[type="color"] {
-            width: 100%;
-            height: 35px;
-            background: var(--input-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: 8px;
-            cursor: pointer;
-            appearance: none;
-        }
-
-        .color-preset-group {
-            display: flex;
-            gap: 8px;
-            margin-top: 10px;
-        }
-
-        .color-preset {
-            width: 24px;
-            height: 24px;
-            border-radius: 6px;
-            cursor: pointer;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .toggle-group {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--input-bg);
-            padding: 0.8rem;
-            border-radius: 12px;
-            margin-bottom: 1rem;
-        }
-
-        /* Área do Visualizador */
-        .viewer-area {
+        .card {
+            width: 1400px;
+            height: 800px;
+            max-width: 95vw;
+            max-height: 90vh;
+            background: #f8fafc;
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
             position: relative;
+            overflow: hidden;
+            display: flex;
+            transition: all 0.3s ease;
+        }
+
+        .card-content {
+            flex: 0 0 45%;
+            padding: 60px;
+            z-index: 10;
             display: flex;
             flex-direction: column;
+            justify-content: center;
+            pointer-events: none;
         }
 
-        model-viewer {
-            width: 100%;
-            flex: 1;
-            --poster-color: transparent;
-            background-color: transparent;
+        .card-content h1 {
+            color: #1f2937;
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            line-height: 1.1;
         }
 
-        /* Dicas Flutuantes */
-        .floating-tips {
-            position: absolute;
-            bottom: 30px;
-            right: 30px;
-            display: flex;
-            gap: 15px;
+        .card-content p {
+            color: #4b5563;
+            font-size: 1.25rem;
+            max-width: 450px;
+            line-height: 1.6;
         }
 
-        .tip-card {
-            background: rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(10px);
-            padding: 0.8rem 1.2rem;
-            border-radius: 15px;
-            border: 1px solid var(--glass-border);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 0.8rem;
+        .btn-interact {
+            margin-top: 30px;
+            padding: 15px 30px;
+            background-color: #f97316;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            pointer-events: auto;
+            align-self: flex-start;
+            transition: background 0.3s;
         }
 
-        .update-bar {
+        .btn-interact:hover {
+            background-color: #ea580c;
+        }
+
+        .matrix-container {
             position: absolute;
             top: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: var(--accent-color);
-            transform-origin: left;
-            transition: transform 0.3s;
-            z-index: 10;
+            right: 0;
+            width: 60%;
+            height: 100%;
+            z-index: 5;
+            cursor: default;
         }
 
-        /* Responsive */
-        @media (max-width: 1100px) {
-            .main-layout {
-                grid-template-columns: 1fr;
-                height: auto;
-                min-height: 98vh;
-            }
-
-            .controls-panel {
-                order: 2;
-                height: auto;
-                border-right: none;
-                border-top: 1px solid var(--glass-border);
-            }
-
-            .viewer-area {
-                order: 1;
-                height: 500px;
-            }
-
-            .floating-tips {
-                display: none;
-            }
+        .loading {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 14px;
+            color: #6b7280;
+            z-index: 20;
+            font-weight: bold;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 8px 16px;
+            border-radius: 20px;
+            backdrop-filter: blur(5px);
         }
     </style>
 </head>
 
 <body>
-    <div class="update-bar" id="update-bar"></div>
+    <div class="card">
+        <div class="card-content">
+            <h1>Matrix<br>3D Concept</h1>
+            <p>Este efeito de chuva utiliza objetos 3D. Passe o mouse sobre a área da direita para ver os itens pararem
+                suavemente sob o cursor.</p>
+            <button class="btn-interact">Interagir</button>
+        </div>
+        <div id="loading" class="loading">Iniciando chuva 3D...</div>
+        <div class="matrix-container" id="matrix-canvas"></div>
+    </div>
 
-    <main class="main-layout">
-        <!-- PAINEL DE CONTROLE -->
-        <aside class="controls-panel">
-            <header class="header">
-                <span class="badge">Master 3D Editor</span>
-                <h1>Ajuste de Ativos</h1>
-            </header>
-
-            <!-- SEÇÃO: MATERIAL PRINCIPAL -->
-            <div class="section-title">Propriedades Físicas</div>
-
-            <div class="control-group">
-                <div class="label-row">Cor do Objeto <span id="color-hex">#ffffff</span></div>
-                <input type="color" id="baseColor" value="#ffffff">
-                <div class="color-preset-group">
-                    <div class="color-preset" style="background: #ffffff" onclick="setPresetColor('#ffffff')"></div>
-                    <div class="color-preset" style="background: #38bdf8" onclick="setPresetColor('#38bdf8')"></div>
-                    <div class="color-preset" style="background: #fbbf24" onclick="setPresetColor('#fbbf24')"></div>
-                    <div class="color-preset" style="background: #f472b6" onclick="setPresetColor('#f472b6')"></div>
-                </div>
-            </div>
-
-            <div class="control-group">
-                <div class="label-row">Alpha (Transparência) <span id="alpha-val">0.20</span></div>
-                <input type="range" id="alpha" min="0" max="1" step="0.01" value="0.2">
-            </div>
-
-            <div class="control-group">
-                <div class="label-row">Rugosidade (Blur) <span id="roughness-val">0.30</span></div>
-                <input type="range" id="roughness" min="0" max="1" step="0.01" value="0.3">
-            </div>
-
-            <div class="control-group">
-                <div class="label-row">Transmissão (Vidro) <span id="transmission-val">1.00</span></div>
-                <input type="range" id="transmission" min="0" max="1" step="0.01" value="1.0">
-            </div>
-
-            <div class="control-group">
-                <div class="label-row">Metálico (Reflexo) <span id="metallic-val">0.00</span></div>
-                <input type="range" id="metallic" min="0" max="1" step="0.01" value="0.0">
-            </div>
-
-            <!-- SEÇÃO: AMBIENTE E LUZ -->
-            <div class="section-title">Ambiente & Cena</div>
-
-            <div class="control-group">
-                <div class="label-row">Exposição Solar <span id="exposure-val">1.20</span></div>
-                <input type="range" id="exposure" min="0.1" max="4" step="0.1" value="1.2">
-            </div>
-
-            <div class="control-group">
-                <div class="label-row">Intensidade Sombras <span id="shadow-val">1.00</span></div>
-                <input type="range" id="shadow" min="0" max="5" step="0.1" value="1.0">
-            </div>
-
-            <div class="toggle-group">
-                <span style="font-size: 0.9rem;">Auto Rotação</span>
-                <input type="checkbox" id="autoRotate" checked style="width: 18px; height: 18px; cursor: pointer;">
-            </div>
-
-            <div class="control-group" id="speed-group">
-                <div class="label-row">Velocidade Rotação <span id="speed-val">30</span></div>
-                <input type="range" id="rotateSpeed" min="-100" max="100" step="1" value="30">
-            </div>
-
-            <button onclick="resetSettings()"
-                style="width: 100%; padding: 12px; background: rgba(255,50,50,0.1); border: 1px solid rgba(255,50,50,0.2); color: #ff5555; border-radius: 12px; cursor: pointer; font-weight: 600; margin-top: 1rem;">
-                Resetar Configurações
-            </button>
-        </aside>
-
-        <!-- ÁREA DO VISUALIZADOR -->
-        <section class="viewer-area">
-            <model-viewer id="model" src="LOGO-STUDIO4YOU.glb" alt="3D Interactive Experience" auto-rotate
-                camera-controls shadow-intensity="1" exposure="1.2" environment-image="neutral" touch-action="pan-y">
-            </model-viewer>
-
-            <div class="floating-tips">
-                <div class="tip-card"><span>🖱️</span> Botão Esquerdo: Girar</div>
-                <div class="tip-card"><span>🔘</span> Scroll: Zoom</div>
-                <div class="tip-card"><span>✋</span> Botão Direito: Mover</div>
-            </div>
-        </section>
-    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 
     <script>
-        const modelViewer = document.querySelector('#model');
-        const updateBar = document.getElementById('update-bar');
+        let scene, camera, renderer, container, loadingElement;
+        let materials, logos = [];
+        const mouse = new THREE.Vector2(-10, -10);
+        const tempV3 = new THREE.Vector3();
+        const planesZ = [9, -20, -90, -240, -1990, -2490];
+        const totalLogos = 190;
 
-        // Inputs DOM
-        const inputs = {
-            baseColor: document.getElementById('baseColor'),
-            alpha: document.getElementById('alpha'),
-            roughness: document.getElementById('roughness'),
-            transmission: document.getElementById('transmission'),
-            metallic: document.getElementById('metallic'),
-            exposure: document.getElementById('exposure'),
-            shadow: document.getElementById('shadow'),
-            autoRotate: document.getElementById('autoRotate'),
-            rotateSpeed: document.getElementById('rotateSpeed')
-        };
+        init();
 
-        // Labels DOM
-        const labels = {
-            color: document.getElementById('color-hex'),
-            alpha: document.getElementById('alpha-val'),
-            roughness: document.getElementById('roughness-val'),
-            transmission: document.getElementById('transmission-val'),
-            metallic: document.getElementById('metallic-val'),
-            exposure: document.getElementById('exposure-val'),
-            shadow: document.getElementById('shadow-val'),
-            speed: document.getElementById('speed-val')
-        };
-
-        function hexToRgb(hex) {
-            const r = parseInt(hex.slice(1, 3), 16) / 255;
-            const g = parseInt(hex.slice(3, 5), 16) / 255;
-            const b = parseInt(hex.slice(5, 7), 16) / 255;
-            return [r, g, b];
+        function init() {
+            container = document.getElementById('matrix-canvas');
+            loadingElement = document.getElementById('loading');
+            initScene();
+            initLights();
+            initMaterials();
+            initEventListeners();
+            loadModel();
         }
 
-        function setPresetColor(hex) {
-            inputs.baseColor.value = hex;
-            updateUI();
+        function initScene() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 3000);
+            camera.position.z = 10;
+            renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            container.appendChild(renderer.domElement);
         }
 
-        function updateUI() {
-            if (!modelViewer.model) return;
+        function initLights() {
+            scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+            addDirLight(0xffffff, 1, 50, 100, 50);
+            addDirLight(0xffa500, 0.5, -50, -50, 50);
+            addDirLight(0xa0c0ff, 0.4, 50, -50, -50);
+        }
 
-            const colorHex = inputs.baseColor.value;
-            const rgb = hexToRgb(colorHex);
-            const alpha = parseFloat(inputs.alpha.value);
-            const roughness = parseFloat(inputs.roughness.value);
-            const transmission = parseFloat(inputs.transmission.value);
-            const metallic = parseFloat(inputs.metallic.value);
-            const exposure = parseFloat(inputs.exposure.value);
-            const shadow = parseFloat(inputs.shadow.value);
-            const isAutoRotate = inputs.autoRotate.checked;
-            const speed = parseInt(inputs.rotateSpeed.value);
+        function addDirLight(c, i, x, y, z) {
+            const l = new THREE.DirectionalLight(c, i);
+            l.position.set(x, y, z);
+            scene.add(l);
+        }
 
-            // Atualizar Labels
-            labels.color.innerText = colorHex.toUpperCase();
-            labels.alpha.innerText = alpha.toFixed(2);
-            labels.roughness.innerText = roughness.toFixed(2);
-            labels.transmission.innerText = transmission.toFixed(2);
-            labels.metallic.innerText = metallic.toFixed(2);
-            labels.exposure.innerText = exposure.toFixed(2);
-            labels.shadow.innerText = shadow.toFixed(2);
-            labels.speed.innerText = speed;
+        function initMaterials() {
+            materials = [
+                new THREE.MeshStandardMaterial({ color: 0x9ca3af, roughness: 0.3, metalness: 0.4 }),
+                new THREE.MeshStandardMaterial({ color: 0xf97316, roughness: 0.2, metalness: 0.3 }),
+                new THREE.MeshPhysicalMaterial({ color: 0xf97316, metalness: 0.3, roughness: 0.8, transmission: 0.6, thickness: 11.0, transparent: true, opacity: 1.4 }),
+                new THREE.MeshPhysicalMaterial({ color: 0xffd700, metalness: 0.8, roughness: 0.1, transmission: 0.9, thickness: 11.0, transparent: true, opacity: 1.4 }),
+                new THREE.MeshStandardMaterial({ color: 0xe5e7eb, roughness: 0.1, metalness: 0.5, emissive: 0xe5e7eb, emissiveIntensity: .5 })
+            ];
+        }
 
-            // Atributos do Visualizador
-            modelViewer.exposure = exposure;
-            modelViewer.shadowIntensity = shadow;
-            if (isAutoRotate) {
-                modelViewer.setAttribute('auto-rotate', '');
-            } else {
-                modelViewer.removeAttribute('auto-rotate');
-            }
-            modelViewer.rotationSpeed = speed;
+        function initEventListeners() {
+            container.addEventListener('mousemove', (e) => updateMouse(e.clientX, e.clientY));
+            container.addEventListener('mouseleave', () => mouse.set(-10, -10));
+            container.addEventListener('touchmove', (e) => updateMouse(e.touches[0].clientX, e.touches[0].clientY), { passive: true });
+            window.addEventListener('resize', onResize);
+        }
 
-            // Aplicar nos materiais
-            const materials = modelViewer.model.materials;
-            materials.forEach(material => {
-                material.setAlphaMode('BLEND');
+        function updateMouse(x, y) {
+            const r = container.getBoundingClientRect();
+            mouse.x = ((x - r.left) / r.width) * 2 - 1;
+            mouse.y = -((y - r.top) / r.height) * 2 + 1;
+        }
 
-                if (material.pbrMetallicRoughness) {
-                    material.pbrMetallicRoughness.setBaseColorFactor([...rgb, alpha]);
-                    material.pbrMetallicRoughness.setRoughnessFactor(roughness);
-                    material.pbrMetallicRoughness.setMetallicFactor(metallic);
-                }
+        function onResize() {
+            const r = container.getBoundingClientRect();
+            camera.aspect = r.width / r.height;
+            camera.updateProjectionMatrix();
+            renderer.setSize(r.width, r.height);
+        }
 
-                if (material.setTransmissionFactor) {
-                    material.setTransmissionFactor(transmission);
-                    material.setThicknessFactor(1.0);
+        function loadModel() {
+            const loader = new THREE.GLTFLoader();
+            loader.load('LOGO-STUDIO4YOU.glb', (gltf) => {
+                loadingElement.style.display = 'none';
+                setupLogos(gltf.scene);
+                animate();
+            }, undefined, (err) => {
+                console.error(err);
+                loadingElement.innerText = "Erro ao carregar o logo.";
+            });
+        }
+
+        function setupLogos(mesh) {
+            const box = new THREE.Box3().setFromObject(mesh);
+            const size = box.getSize(new THREE.Vector3());
+            const maxDim = Math.max(size.x, size.y, size.z);
+            const baseScale = 0.5 / maxDim;
+            const weights = [0.03, 0.07, 0.15, 0.25, 0.25, 0.25];
+
+            weights.forEach((w, i) => {
+                const n = Math.round(totalLogos * w);
+                for (let j = 0; j < n; j++) {
+                    const l = createLogo(mesh, planesZ[i], i, baseScale, maxDim);
+                    logos.push(l);
+                    scene.add(l.mesh);
                 }
             });
         }
 
-        function resetSettings() {
-            inputs.baseColor.value = "#ffffff";
-            inputs.alpha.value = "0.2";
-            inputs.roughness.value = "0.3";
-            inputs.transmission.value = "1.0";
-            inputs.metallic.value = "0.0";
-            inputs.exposure.value = "1.2";
-            inputs.shadow.value = "1.0";
-            inputs.autoRotate.checked = true;
-            inputs.rotateSpeed.value = "30";
-            updateUI();
+        function createLogo(mesh, z, idx, scale, dim) {
+            const l = mesh.clone();
+            const mat = materials[Math.floor(Math.random() * materials.length)];
+            l.traverse((c) => { if (c.isMesh) c.material = mat.clone(); });
+
+            const d = camera.position.z - z;
+            const s = scale * Math.pow(d, 0.7);
+            l.scale.set(s, s, s);
+
+            const vH = 2 * d * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
+            const vW = vH * camera.aspect;
+
+            l.position.set((Math.random() * 1.0 - 0.1) * (vW / 2), (Math.random() * 2.5 - 1) * (vH / 2), z);
+            l.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
+
+            const sp = [2.0, 1.5, 1.0, 1.0, 0.7, 0.7];
+            const baseS = (0.04 + Math.random() * 0.02) * sp[idx] * (vH / 30);
+
+            return {
+                mesh: l,
+                planeZ: z,
+                rotS: { x: (Math.random() - 0.5) * 0.01, y: (Math.random() - 0.5) * 0.01, z: (Math.random() - 0.5) * 0.01 },
+                speed: baseS,
+                vH: vH,
+                radius: (dim * s) / 2,
+                hoverM: 1.0
+            };
         }
 
-        // Listeners
-        Object.values(inputs).forEach(input => {
-            input.addEventListener('input', updateUI);
-        });
+        function animate() {
+            requestAnimationFrame(animate);
+            logos.forEach(updateLogo);
+            renderer.render(scene, camera);
+        }
 
-        modelViewer.addEventListener('load', updateUI);
+        function updateLogo(l) {
+            tempV3.copy(l.mesh.position).project(camera);
+            const dNDC = Math.sqrt(Math.pow(mouse.x - tempV3.x, 2) + Math.pow(mouse.y - tempV3.y, 2));
+            l.hoverM += ((dNDC < 0.25 ? 0.0 : 1.0) - l.hoverM) * 0.1;
 
-        modelViewer.addEventListener('progress', (event) => {
-            const progress = event.detail.totalProgress;
-            updateBar.style.transform = `scaleX(${progress})`;
-            if (progress === 1) {
-                setTimeout(() => { updateBar.style.opacity = 0; }, 500);
+            l.mesh.rotation.x += l.rotS.x * l.hoverM;
+            l.mesh.rotation.y += l.rotS.y * l.hoverM;
+            l.mesh.rotation.z += l.rotS.z * l.hoverM;
+            l.mesh.position.y -= l.speed * l.hoverM;
+
+            resolveCollisions(l);
+            resetLogo(l);
+        }
+
+        function resolveCollisions(l) {
+            logos.forEach(o => {
+                if (l === o || l.planeZ !== o.planeZ) return;
+                const dx = l.mesh.position.x - o.mesh.position.x;
+                const dy = l.mesh.position.y - o.mesh.position.y;
+                const d = Math.sqrt(dx * dx + dy * dy);
+                const min = l.radius + o.radius;
+                if (d < min) {
+                    const overlap = min - d;
+                    const nx = dx / (d || 0.1);
+                    const ny = dy / (d || 0.1);
+                    l.mesh.position.x += nx * overlap * 0.025;
+                    l.mesh.position.y += ny * overlap * 0.025;
+                    o.mesh.position.x -= nx * overlap * 0.025;
+                    o.mesh.position.y -= ny * overlap * 0.025;
+                }
+            });
+        }
+
+        function resetLogo(l) {
+            const limit = l.vH * 0.7;
+            if (l.mesh.position.y < -limit) {
+                l.mesh.position.y = limit + Math.random() * 10;
+                l.mesh.position.x = (Math.random() * 1.0 - 0.1) * (l.vH * camera.aspect / 2);
             }
-        });
+        }
     </script>
 </body>
 
