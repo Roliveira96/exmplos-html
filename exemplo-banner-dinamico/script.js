@@ -29,16 +29,16 @@ function spawnTechParticles(slide) {
     container.className = 'absolute inset-0 pointer-events-none z-0 overflow-hidden';
     slide.appendChild(container);
 
-    for (let i = 0; i < 10; i++) {
+    const isPerformance = slide.classList.contains('slide-performance');
+    const localSymbols = isPerformance ? ['🚀', '⚡', '100', '●'] : ['+', '-', '#', '●', '■'];
+
+    for (let i = 0; i < 12; i++) {
         const p = document.createElement('div');
         p.className = 'zero-item';
-        const size = Math.random() * 20 + 5;
-        p.style.width = `${size}px`;
-        p.style.height = `${size}px`;
-        p.style.border = '1px solid white';
-        p.style.borderRadius = i % 2 === 0 ? '50%' : '2px';
+        p.innerHTML = localSymbols[Math.floor(Math.random() * localSymbols.length)];
         p.style.left = `${Math.random() * 100}%`;
         p.style.top = `${Math.random() * 100}%`;
+        p.style.fontSize = isPerformance ? '20px' : '10px';
         
         container.appendChild(p);
 

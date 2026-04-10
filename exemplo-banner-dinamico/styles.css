@@ -154,11 +154,40 @@ body, html {
 }
 
 .glass-performance-card {
-    background: rgba(10, 20, 10, 0.4);
+    background: rgba(10, 25, 15, 0.4);
     backdrop-filter: blur(40px);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 4rem;
-    max-width: 700px;
+    max-width: 900px; /* Increased size */
+}
+
+/* Tech Grid */
+.tech-grid {
+    background-image: 
+        linear-gradient(rgba(0, 255, 100, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 100, 0.05) 1px, transparent 1px);
+    background-size: 30px 30px;
+}
+
+/* Speed Streaks */
+.speed-streak {
+    position: absolute;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0, 255, 100, 0.5), transparent);
+    width: 200px;
+    z-index: 1;
+    opacity: 0.5;
+    animation: streakMove 3s infinite linear;
+}
+
+.s1 { top: 20%; left: -200px; animation-delay: 0s; }
+.s2 { top: 70%; left: -200px; animation-delay: 1.5s; }
+
+@keyframes streakMove {
+    0% { left: -200px; opacity: 0; }
+    30% { opacity: 1; }
+    70% { opacity: 1; }
+    100% { left: 100%; opacity: 0; }
 }
 
 .bar-fill {

@@ -54,68 +54,78 @@
                 <div class="performance-shape shape-glow gradient-green"></div>
                 <div class="performance-shape shape-glass backdrop-blur-3xl"></div>
 
-                <div class="performance-content-wrapper">
-                    <div class="glass-performance-card p-16">
-                        <div class="badge-tech mb-8 !bg-green-500/20 !text-green-400">PAGESPEED V10</div>
-                        <h2 class="hero-title !text-7xl !mb-8">Maximum<br><span>Speed</span></h2>
-                        <p class="hero-desc">Sites otimizados para atingir a nota máxima nos motores de busca e carregar em tempo recorde.</p>
+                    <div class="glass-performance-card p-16 relative overflow-hidden">
+                        <!-- Tech Grid Overlay -->
+                        <div class="tech-grid absolute inset-0 opacity-10 pointer-events-none"></div>
                         
-                        <!-- PageSpeed Lighthouse Gauges -->
-                        <div class="performance-gauges mt-12 flex justify-between gap-4">
+                        <div class="relative z-10">
+                            <div class="badge-tech mb-8 !bg-green-500/20 !text-green-400 flex items-center gap-2 w-fit">
+                                <span class="animate-pulse">●</span> CORE WEB VITALS
+                            </div>
+                            <h2 class="hero-title !text-7xl !mb-8">Turbocharged<br><span>SEO</span></h2>
+                            <p class="hero-desc">Sua presença online com a velocidade que o Google exige e a experiência que seu usuário merece.</p>
                             
-                            <!-- Gauge 1: Desempenho -->
-                            <div class="lh-gauge__wrapper" data-score="100" data-color="#00cc66">
-                                <div class="relative w-24 h-24">
-                                    <svg class="lh-gauge w-full h-full" viewBox="0 0 120 120">
-                                        <circle class="lh-gauge-base" r="56" cx="60" cy="60" stroke="#ffffff10" stroke-width="8" fill="none"></circle>
-                                        <circle class="lh-gauge-arc" r="56" cx="60" cy="60" stroke="#00cc66" stroke-width="8" fill="none" stroke-linecap="round" style="transform: rotate(-90deg); transform-origin: 50% 50%; stroke-dasharray: 0, 352;"></circle>
-                                    </svg>
-                                    <div class="absolute inset-0 flex items-center justify-center font-bold text-2xl lh-score">0</div>
+                            <!-- PageSpeed Lighthouse Gauges -->
+                            <div class="performance-gauges mt-12 grid grid-cols-2 lg:grid-cols-4 gap-8">
+                                
+                                <!-- Gauge 1 -->
+                                <div class="lh-gauge__wrapper group" data-score="100" data-color="#00cc66">
+                                    <div class="relative w-24 h-24 mx-auto transition-transform group-hover:scale-110">
+                                        <svg class="lh-gauge w-full h-full filter drop-shadow-[0_0_8px_rgba(0,255,100,0.3)]" viewBox="0 0 120 120">
+                                            <circle class="lh-gauge-base" r="56" cx="60" cy="60" stroke="#ffffff05" stroke-width="6" fill="none"></circle>
+                                            <circle class="lh-gauge-arc" r="56" cx="60" cy="60" stroke="#00cc66" stroke-width="10" fill="none" stroke-linecap="round" style="transform: rotate(-90deg); transform-origin: 50% 50%; stroke-dasharray: 0, 352;"></circle>
+                                        </svg>
+                                        <div class="absolute inset-0 flex items-center justify-center font-bold text-3xl lh-score text-green-400">0</div>
+                                    </div>
+                                    <div class="text-[10px] mt-4 font-bold uppercase tracking-widest text-center text-white/40">Performance</div>
                                 </div>
-                                <div class="text-[9px] mt-3 uppercase tracking-widest opacity-60 text-center">Desempenho</div>
-                            </div>
 
-                            <!-- Gauge 2: Acessibilidade -->
-                            <div class="lh-gauge__wrapper" data-score="100" data-color="#00cc66">
-                                <div class="relative w-24 h-24">
-                                    <svg class="lh-gauge w-full h-full" viewBox="0 0 120 120">
-                                        <circle class="lh-gauge-base" r="56" cx="60" cy="60" stroke="#ffffff10" stroke-width="8" fill="none"></circle>
-                                        <circle class="lh-gauge-arc" r="56" cx="60" cy="60" stroke="#00cc66" stroke-width="8" fill="none" stroke-linecap="round" style="transform: rotate(-90deg); transform-origin: 50% 50%; stroke-dasharray: 0, 352;"></circle>
-                                    </svg>
-                                    <div class="absolute inset-0 flex items-center justify-center font-bold text-2xl lh-score">0</div>
+                                <!-- Gauge 2 -->
+                                <div class="lh-gauge__wrapper group" data-score="98" data-color="#00cc66">
+                                    <div class="relative w-24 h-24 mx-auto transition-transform group-hover:scale-110">
+                                        <svg class="lh-gauge w-full h-full" viewBox="0 0 120 120">
+                                            <circle class="lh-gauge-base" r="56" cx="60" cy="60" stroke="#ffffff05" stroke-width="6" fill="none"></circle>
+                                            <circle class="lh-gauge-arc" r="56" cx="60" cy="60" stroke="#00cc66" stroke-width="10" fill="none" stroke-linecap="round" style="transform: rotate(-90deg); transform-origin: 50% 50%; stroke-dasharray: 0, 352;"></circle>
+                                        </svg>
+                                        <div class="absolute inset-0 flex items-center justify-center font-bold text-3xl lh-score text-green-400">0</div>
+                                    </div>
+                                    <div class="text-[10px] mt-4 font-bold uppercase tracking-widest text-center text-white/40">Acessibilidade</div>
                                 </div>
-                                <div class="text-[9px] mt-3 uppercase tracking-widest opacity-60 text-center">Acessibilidade</div>
-                            </div>
 
-                            <!-- Gauge 3: Práticas -->
-                            <div class="lh-gauge__wrapper" data-score="100" data-color="#00cc66">
-                                <div class="relative w-24 h-24">
-                                    <svg class="lh-gauge w-full h-full" viewBox="0 0 120 120">
-                                        <circle class="lh-gauge-base" r="56" cx="60" cy="60" stroke="#ffffff10" stroke-width="8" fill="none"></circle>
-                                        <circle class="lh-gauge-arc" r="56" cx="60" cy="60" stroke="#00cc66" stroke-width="8" fill="none" stroke-linecap="round" style="transform: rotate(-90deg); transform-origin: 50% 50%; stroke-dasharray: 0, 352;"></circle>
-                                    </svg>
-                                    <div class="absolute inset-0 flex items-center justify-center font-bold text-2xl lh-score">0</div>
+                                <!-- Gauge 3 -->
+                                <div class="lh-gauge__wrapper group" data-score="100" data-color="#00cc66">
+                                    <div class="relative w-24 h-24 mx-auto transition-transform group-hover:scale-110">
+                                        <svg class="lh-gauge w-full h-full" viewBox="0 0 120 120">
+                                            <circle class="lh-gauge-base" r="56" cx="60" cy="60" stroke="#ffffff05" stroke-width="6" fill="none"></circle>
+                                            <circle class="lh-gauge-arc" r="56" cx="60" cy="60" stroke="#00cc66" stroke-width="10" fill="none" stroke-linecap="round" style="transform: rotate(-90deg); transform-origin: 50% 50%; stroke-dasharray: 0, 352;"></circle>
+                                        </svg>
+                                        <div class="absolute inset-0 flex items-center justify-center font-bold text-3xl lh-score text-green-400">0</div>
+                                    </div>
+                                    <div class="text-[10px] mt-4 font-bold uppercase tracking-widest text-center text-white/40">Best Practices</div>
                                 </div>
-                                <div class="text-[9px] mt-3 uppercase tracking-widest opacity-60 text-center">Práticas</div>
-                            </div>
 
-                            <!-- Gauge 4: SEO -->
-                            <div class="lh-gauge__wrapper" data-score="100" data-color="#00cc66">
-                                <div class="relative w-24 h-24">
-                                    <svg class="lh-gauge w-full h-full" viewBox="0 0 120 120">
-                                        <circle class="lh-gauge-base" r="56" cx="60" cy="60" stroke="#ffffff10" stroke-width="8" fill="none"></circle>
-                                        <circle class="lh-gauge-arc" r="56" cx="60" cy="60" stroke="#00cc66" stroke-width="8" fill="none" stroke-linecap="round" style="transform: rotate(-90deg); transform-origin: 50% 50%; stroke-dasharray: 0, 352;"></circle>
-                                    </svg>
-                                    <div class="absolute inset-0 flex items-center justify-center font-bold text-2xl lh-score">0</div>
+                                <!-- Gauge 4 -->
+                                <div class="lh-gauge__wrapper group" data-score="100" data-color="#00cc66">
+                                    <div class="relative w-24 h-24 mx-auto transition-transform group-hover:scale-110">
+                                        <svg class="lh-gauge w-full h-full" viewBox="0 0 120 120">
+                                            <circle class="lh-gauge-base" r="56" cx="60" cy="60" stroke="#ffffff05" stroke-width="6" fill="none"></circle>
+                                            <circle class="lh-gauge-arc" r="56" cx="60" cy="60" stroke="#00cc66" stroke-width="10" fill="none" stroke-linecap="round" style="transform: rotate(-90deg); transform-origin: 50% 50%; stroke-dasharray: 0, 352;"></circle>
+                                        </svg>
+                                        <div class="absolute inset-0 flex items-center justify-center font-bold text-3xl lh-score text-green-400">0</div>
+                                    </div>
+                                    <div class="text-[10px] mt-4 font-bold uppercase tracking-widest text-center text-white/40">SEO</div>
                                 </div>
-                                <div class="text-[9px] mt-3 uppercase tracking-widest opacity-60 text-center">SEO</div>
                             </div>
-
+                            
+                            <button class="btn-primary mt-12 !bg-green-600 !text-white flex items-center gap-4">
+                                DECOLAR MEU SITE 🚀
+                            </button>
                         </div>
-                        
-                        <button class="btn-primary mt-12 !bg-green-600 !text-white">TURBINAR MEU SITE</button>
+
+                        <!-- Speed Streaks (Internal to card) -->
+                        <div class="speed-streak s1"></div>
+                        <div class="speed-streak s2"></div>
                     </div>
-                </div>
             </div>
 
             <!-- BANNER 3 -->
