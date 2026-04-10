@@ -3,12 +3,21 @@ const progressBar = document.getElementById('progressBar');
 let currentIdx = 0;
 let isAnimating = false;
 const slideInterval = 10000;
+let isPaused = false;
+let progressTween;
 
 function init() {
     slides.forEach((slide, i) => {
         const bg = slide.getAttribute('data-bg');
         if (bg) slide.style.backgroundImage = `url(${bg})`;
         spawnTechParticles(slide);
+        
+        // Pause triggers
+        const cards = slide.querySelectorAll('.hero-panel, .glass-cyber-card, .glass-performance-card, .v-panel, .liquid-shape, .cards-container');
+        cards.forEach(card => {
+            card.addEventListener('mouseenter', () => pausePortfolio());
+            card.addEventListener('mouseleave', () => resumePortfolio());
+        });
     });
     
     startProgress();
@@ -46,15 +55,33 @@ function spawnTechParticles(slide) {
 }
 
 function startProgress() {
+    if (isPaused) return;
+    
+    if (progressTween) progressTween.kill();
+    
     gsap.set(progressBar, { width: 0 });
-    gsap.to(progressBar, {
+    progressTween = gsap.to(progressBar, {
         width: '100%',
         duration: slideInterval / 1000,
         ease: "none",
         onComplete: () => {
-            nextSlide();
+            if (!isPaused) nextSlide();
         }
     });
+}
+
+function pausePortfolio() {
+    isPaused = true;
+    if (progressTween) progressTween.pause();
+}
+
+function resumePortfolio() {
+    isPaused = false;
+    if (progressTween) {
+        progressTween.play();
+    } else {
+        startProgress();
+    }
 }
 
 function animateSlideContent(slide) {
@@ -132,12 +159,12 @@ function goToSlide(idx) {
     isAnimating = true;
 
     const prevSlide = slides[currentIdx];
-    const nextSlide = slides[idx];
 
     gsap.to(prevSlide, { opacity: 0, duration: 0.8, onComplete: () => {
         prevSlide.classList.remove('active');
     }});
 
+    const nextSlide = slides[idx];
     currentIdx = idx;
     nextSlide.classList.add('active');
     
