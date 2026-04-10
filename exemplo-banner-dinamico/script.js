@@ -79,11 +79,40 @@ function animateSlideContent(slide) {
         gsap.fromTo('.performance-shape', { x: -300, opacity: 0 }, { x: 0, opacity: 1, duration: 1.5, ease: "power4.out" });
         gsap.fromTo('.glass-performance-card', { x: -100, opacity: 0 }, { x: 0, opacity: 1, duration: 1.2, ease: "power2.out", delay: 0.3 });
         
-        // Animate Bars to data-value
-        const bars = slide.querySelectorAll('.bar-fill');
-        bars.forEach((bar, i) => {
-            const val = bar.getAttribute('data-value');
-            gsap.fromTo(bar, { height: '0%' }, { height: `${val}%`, duration: 1.5, ease: "power4.out", delay: 0.8 + (i * 0.1) });
+        // Animate Lighthouse Gauges
+        const gauges = slide.querySelectorAll('.lh-gauge__wrapper');
+        gauges.forEach((gauge, i) => {
+            const score = parseInt(gauge.getAttribute('data-score'));
+            const color = gauge.getAttribute('data-color');
+            const circle = gauge.querySelector('.lh-gauge-arc');
+            const scoreNum = gauge.querySelector('.lh-score');
+            
+            // Total circumference of r=56 is ~351.85 (2 * PI * r)
+            const circumference = 2 * Math.PI * 56;
+            const offset = circumference - (score / 100) * circumference;
+
+            // Reset
+            gsap.set(circle, { strokeDasharray: `0, ${circumference}` });
+            
+            // Animate Arc
+            gsap.to(circle, {
+                strokeDasharray: `${circumference - offset}, ${circumference}`,
+                duration: 2,
+                ease: "power4.out",
+                delay: 0.8 + (i * 0.1)
+            });
+
+            // Animate Number
+            let count = { val: 0 };
+            gsap.to(count, {
+                val: score,
+                duration: 2,
+                ease: "power2.out",
+                delay: 0.8 + (i * 0.1),
+                onUpdate: () => {
+                    scoreNum.innerText = Math.floor(count.val);
+                }
+            });
         });
     }
 
