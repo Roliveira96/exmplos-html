@@ -169,20 +169,67 @@
                     </div>
             </div>
 
-            <!-- BANNER 3 -->
-            <div class="slide slide-split-glass" data-bg="https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1000">
-                <div class="slide-number !text-black/5">03</div>
-                <div class="v-panel panel-1 bg-white"></div>
-                <div class="v-panel panel-2 glass-tint flex items-center justify-center">
-                    <div class="center-text text-center">
-                        <h2 class="hero-title !text-black !text-9xl !tracking-tighter !mb-0">CORE</h2>
-                        <h2 class="hero-title !text-white !text-9xl !tracking-tighter">DATA</h2>
+            <!-- BANNER 3: CORE DATA (DATACENTER & CLOUD) -->
+            <div class="slide slide-datacenter" data-bg="https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1000">
+                <div class="force-bg-layer"></div>
+                <div class="slide-number !text-white/5">03</div>
+                
+                <div class="datacenter-panels w-full h-full flex relative z-10">
+                    <!-- Panel 1: Metrics -->
+                    <div class="v-panel p-12 flex flex-col justify-end gap-6 border-r border-white/10 hidden lg:flex">
+                        <div class="panel-stat">
+                            <span class="text-blue-500 font-bold block text-4xl">99.9%</span>
+                            <span class="text-[10px] opacity-40 uppercase tracking-widest">Uptime Garantido</span>
+                        </div>
+                        <div class="panel-stat">
+                            <span class="text-green-500 font-bold block text-4xl">15ms</span>
+                            <span class="text-[10px] opacity-40 uppercase tracking-widest">Latência Média</span>
+                        </div>
                     </div>
-                </div>
-                <div class="v-panel panel-3 glass-heavy"></div>
-                <div class="panel-info absolute bottom-20 left-20">
-                    <p class="text-black font-bold max-w-xs">Análise de dados estratégica e dashboards que guiam decisões.</p>
-                    <button class="mt-6 px-10 py-3 bg-black text-white font-bold rounded-sm">VER CASE STUDY</button>
+
+                    <!-- Panel 2: Main Branding -->
+                    <div class="v-panel-main flex-grow flex items-center justify-center relative overflow-hidden bg-black/40 backdrop-blur-md">
+                        <div class="hex-grid absolute inset-0 opacity-20 pointer-events-none"></div>
+                        <div class="text-center relative z-10 px-10">
+                            <div class="badge-tech !bg-blue-600/20 !text-blue-400 mb-6 mx-auto">ENTERPRISE CLOUD</div>
+                            <h2 class="hero-title !text-9xl !mb-4">CORE<br><span>DATA</span></h2>
+                            <p class="hero-desc">Utilizamos os melhores datacenters dos parceiros líderes no Brasil e no mundo.</p>
+                            
+                            <!-- Partners Floating Cloud -->
+                            <div class="partners-cloud flex flex-wrap justify-center gap-4 mt-10">
+                                <div class="partner-bubble">HostDime</div>
+                                <div class="partner-bubble">Hostinger</div>
+                                <div class="partner-bubble">AWS</div>
+                                <div class="partner-bubble">Google Cloud</div>
+                                <div class="partner-bubble">HostGator</div>
+                                <div class="partner-bubble">Locaweb</div>
+                            </div>
+
+                            <button class="btn-primary mt-12 !bg-blue-600">CONHECER INFRA</button>
+                        </div>
+                    </div>
+
+                    <!-- Panel 3: Security Tools -->
+                    <div class="v-panel p-12 flex flex-col justify-start gap-10 border-l border-white/10 hidden lg:flex">
+                        <div class="security-chip flex items-center gap-4">
+                            <div class="w-14 h-14 rounded-lg bg-white/5 flex items-center justify-center border border-blue-500/30">
+                                <span class="text-blue-500 text-3xl">🛡️</span>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-bold uppercase">End-to-End</h4>
+                                <p class="text-[10px] opacity-40">SECURITY LAYER</p>
+                            </div>
+                        </div>
+                        <div class="security-chip flex items-center gap-4">
+                            <div class="w-14 h-14 rounded-lg bg-white/5 flex items-center justify-center border border-blue-500/30">
+                                <span class="text-blue-500 text-3xl">💾</span>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-bold uppercase">Snapshot</h4>
+                                <p class="text-[10px] opacity-40">HOURLY BACKUPS</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 

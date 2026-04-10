@@ -9,15 +9,25 @@ let progressTween;
 function init() {
     slides.forEach((slide, i) => {
         const bg = slide.getAttribute('data-bg');
-        if (bg) slide.style.backgroundImage = `url(${bg})`;
+        const forceBg = slide.querySelector('.force-bg-layer');
+        if (bg) {
+            if (forceBg) forceBg.style.backgroundImage = `url(${bg})`;
+            else slide.style.backgroundImage = `url(${bg})`;
+        }
         spawnTechParticles(slide);
         
         // Pause triggers - Expanded to content containers for better UX
-        const pauseSelectors = '.uxui-composition, .performance-content-wrapper, .hero-panel, .v-panel, .liquid-shape, .cards-container, .glass-performance-card';
+        const pauseSelectors = '.uxui-composition, .datacenter-panels, .performance-content-wrapper, .hero-panel, .v-panel, .liquid-shape, .cards-container, .glass-performance-card';
         const pauseElements = slide.querySelectorAll(pauseSelectors);
         pauseElements.forEach(el => {
-            el.addEventListener('mouseenter', () => pausePortfolio());
-            el.addEventListener('mouseleave', () => resumePortfolio());
+            el.addEventListener('mouseenter', (e) => {
+                e.stopPropagation();
+                pausePortfolio();
+            });
+            el.addEventListener('mouseleave', (e) => {
+                e.stopPropagation();
+                resumePortfolio();
+            });
         });
     });
 
@@ -166,10 +176,10 @@ function animateSlideContent(slide) {
         });
     }
 
-    if (slide.classList.contains('slide-split-glass')) {
-        gsap.fromTo('.panel-1', { y: -1000 }, { y: 0, duration: 1.2, ease: "power4.out" });
-        gsap.fromTo('.panel-2', { y: 1000 }, { y: 0, duration: 1.2, ease: "power4.out", delay: 0.1 });
-        gsap.fromTo('.panel-3', { y: -1000 }, { y: 0, duration: 1.2, ease: "power4.out", delay: 0.2 });
+    if (slide.classList.contains('slide-datacenter')) {
+        gsap.fromTo('.v-panel', { width: 0, opacity: 0 }, { width: 320, opacity: 1, duration: 1.2, stagger: 0.3, ease: "power4.out" });
+        gsap.fromTo('.panel-stat, .security-chip', { x: (i, t) => i === 0 ? -50 : 50, opacity: 0 }, { x: 0, opacity: 1, duration: 1, stagger: 0.1, delay: 0.8 });
+        gsap.fromTo('.hex-grid', { opacity: 0 }, { opacity: 0.2, duration: 2, delay: 0.5 });
     }
 
     if (slide.classList.contains('slide-cards')) {
@@ -210,7 +220,7 @@ window.addEventListener('mousemove', (e) => {
     const y = (e.clientY / window.innerHeight - 0.5) * 30;
 
     const activeSlide = slides[currentIdx];
-    const shapes = activeSlide.querySelectorAll('.ux-shape, .ui-fragment, .performance-shape, .v-panel, .liquid-shape, .card, .slide-number');
+    const shapes = activeSlide.querySelectorAll('.ux-shape, .ui-fragment, .partner-bubble, .performance-shape, .v-panel, .liquid-shape, .card, .slide-number');
     
     shapes.forEach((s, i) => {
         const speed = s.classList.contains('slide-number') ? 0.1 : (i % 3 + 1) * 0.5;

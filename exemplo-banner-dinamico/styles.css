@@ -292,14 +292,89 @@ body, html {
     transition: height 2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* BANNER 3: SPLIT GLASS */
-.v-panel { height: 100%; position: absolute; transition: 1s cubic-bezier(0.16, 1, 0.3, 1); }
-.panel-1 { width: 33.33%; left: 0; z-index: 5; }
-.panel-2 { width: 33.33%; left: 33.33%; z-index: 10; }
-.panel-3 { width: 33.34%; left: 66.66%; z-index: 5; }
+/* BANNER 3: CORE DATA / DATACENTER (THE INFRASTRUCTURE) */
+.slide-datacenter {
+    background: transparent;
+}
 
-.glass-heavy { background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(40px); }
-.glass-tint { background: rgba(59, 130, 246, 0.3); backdrop-filter: blur(20px); }
+.force-bg-layer {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: 0;
+    opacity: 1;
+}
+
+.datacenter-panels {
+    height: 100%;
+    width: 100%;
+}
+
+.datacenter-panels .v-panel {
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(20px);
+    width: 320px;
+    z-index: 5;
+    transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.v-panel-main {
+    z-index: 10;
+}
+
+.hex-grid {
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='104' viewBox='0 0 60 104' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 104L0 86.6667V52L30 34.6667L60 52V86.6667L30 104ZM30 69.3333L15 60.6667V43.3333L30 34.6667L45 43.3333V60.6667L30 69.3333Z' fill='%233b82f6' fill-opacity='0.1'/%3E%3C/svg%3E");
+    background-size: 60px 104px;
+}
+
+.security-chip {
+    transition: transform 0.3s ease, background 0.3s ease;
+    cursor: default;
+    border-radius: 1rem;
+    padding: 1rem;
+}
+
+.security-chip:hover {
+    transform: translateX(10px);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.panel-stat {
+    border-left: 3px solid #3b82f6;
+    padding-left: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+/* PARTNERS CLOUD */
+.partner-bubble {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    padding: 0.5rem 1.5rem;
+    border-radius: 5rem;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 700;
+    color: rgba(255,255,255,0.7);
+    animation: floatBubble 4s infinite ease-in-out;
+}
+
+@keyframes floatBubble {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+/* Delay for each bubble for natural flow */
+.partner-bubble:nth-child(2) { animation-delay: 0.2s; }
+.partner-bubble:nth-child(3) { animation-delay: 0.4s; }
+.partner-bubble:nth-child(4) { animation-delay: 0.6s; }
+.partner-bubble:nth-child(5) { animation-delay: 0.8s; }
+.partner-bubble:nth-child(6) { animation-delay: 1.0s; }
 
 /* BANNER 4: LIQUID BLOB */
 .liquid-shape {
