@@ -250,13 +250,58 @@ body, html {
 }
 
 .glass-performance-card {
-    background: rgba(10, 25, 15, 0.6); /* Slightly more opaque for better focus */
+    background: rgba(10, 25, 15, 0.6);
     backdrop-filter: blur(40px);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 4rem;
     max-width: 900px;
     position: relative;
-    z-index: 20; /* Ensure card is above background mask */
+    z-index: 20;
+}
+
+/* MOBILE ADJUSTMENTS FOR SEO/PERFORMANCE */
+@media (max-width: 768px) {
+    .slide-performance {
+        padding: 0 !important;
+        margin: 0 !important;
+        justify-content: center !important;
+    }
+
+    .performance-content-wrapper {
+        width: 100% !important;
+        max-width: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .glass-performance-card {
+        width: 100vw !important;
+        height: 100vh !important;
+        max-width: none !important;
+        margin: 0 !important;
+        border-radius: 0 !important;
+        padding: 15% 5% !important;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background: rgba(10, 25, 15, 0.9) !important;
+    }
+
+    .performance-gauges {
+        width: 100%;
+        margin-top: 2rem !important;
+    }
+
+    .hero-title {
+        font-size: 3rem !important;
+        text-align: center;
+    }
+
+    .hero-desc {
+        text-align: center;
+        font-size: 1rem !important;
+    }
 }
 
 /* Tech Grid */
