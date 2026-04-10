@@ -39,6 +39,9 @@ function init() {
     
     startProgress();
     animateSlideContent(slides[0]);
+    initSmartCardsCycle();
+    generateDots();
+    updatePlayPauseUI();
 }
 
 function spawnTechParticles(slide) {
@@ -87,17 +90,53 @@ function startProgress() {
     });
 }
 
+function togglePlayPause() {
+    isPaused = !isPaused;
+    updatePlayPauseUI();
+    if (isPaused) {
+        if (progressTween) progressTween.pause();
+    } else {
+        startProgress();
+    }
+}
+
+function updatePlayPauseUI() {
+    const btn = document.getElementById('playPauseBtn');
+    if (isPaused) {
+        btn.classList.remove('is-playing');
+    } else {
+        btn.classList.add('is-playing');
+    }
+}
+
+function generateDots() {
+    const dotsContainer = document.getElementById('carouselDots');
+    dotsContainer.innerHTML = '';
+    slides.forEach((_, i) => {
+        const dot = document.createElement('div');
+        dot.className = `dot ${i === 0 ? 'active' : ''}`;
+        dot.onclick = () => goToSlide(i);
+        dotsContainer.appendChild(dot);
+    });
+}
+
+function updateDots() {
+    const dots = document.querySelectorAll('.dot');
+    dots.forEach((dot, i) => {
+        dot.classList.toggle('active', i === currentIdx);
+    });
+}
+
 function pausePortfolio() {
-    isPaused = true;
-    if (progressTween) progressTween.pause();
+    // We only pause temporarily on hover if we ARE playing
+    if (!isPaused && progressTween) progressTween.pause();
 }
 
 function resumePortfolio() {
-    isPaused = false;
-    if (progressTween) {
-        progressTween.play();
-    } else {
-        startProgress();
+    // We only resume on hover-out if we ARE NOT manually paused
+    if (!isPaused) {
+        if (progressTween) progressTween.play();
+        else startProgress();
     }
 }
 
@@ -203,10 +242,11 @@ function goToSlide(idx) {
     
     gsap.fromTo(nextSlide, { opacity: 0 }, { opacity: 1, duration: 0.8, onComplete: () => {
         isAnimating = false;
-        startProgress();
+        if (!isPaused) startProgress();
     }});
 
     animateSlideContent(nextSlide);
+    updateDots();
 }
 
 function nextSlide() { goToSlide((currentIdx + 1) % slides.length); }
@@ -215,12 +255,100 @@ function prevSlide() {
     goToSlide((currentIdx - 1 + slides.length) % slides.length); 
 }
 
+/* SMART CARDS CYCLE (BANNER 05) */
+const smartData = [
+    {
+        top: "Personalização", desc: "Design exclusivo sob medida.",
+        price: "A partir de", value: "R$ 4.000", badge: "OFERTA ESPECIAL",
+        bottomTitle: "Performance", bottomDesc: "PageSpeed 100 pontos."
+    },
+    {
+        top: "Sistema Web", desc: "Sistemas robustos e escaláveis.",
+        price: "A partir de", value: "R$ 5.000", badge: "TECNOLOGIA GO",
+        bottomTitle: "Infraestrutura", bottomDesc: "Otimizado para VPS."
+    },
+    {
+        top: "Aplicativo Mobile", desc: "Apps nativos Android e iOS.",
+        price: "A partir de", value: "R$ 3.000", badge: "CROSS PLATFORM",
+        bottomTitle: "Mobile Expert", bottomDesc: "Alta fluidez e UX premium."
+    }
+];
+
+let smartIdx = 0;
+function initSmartCardsCycle() {
+    setInterval(() => {
+        if (isAnimating) return;
+        smartIdx = (smartIdx + 1) % smartData.length;
+        const data = smartData[smartIdx];
+
+        const elements = [
+            '#cardTopTitle', '#cardTopDesc', '#priceText', '#priceValue', 
+            '#priceBadge', '#cardBottomTitle', '#cardBottomDesc'
+        ];
+
+        gsap.to('.card', { opacity: 0.5, scale: 0.95, duration: 0.5, onComplete: () => {
+            document.getElementById('cardTopTitle').innerText = data.top;
+            document.getElementById('cardTopDesc').innerText = data.desc;
+            document.getElementById('priceBadge').innerText = data.badge;
+            document.getElementById('priceValue').innerText = data.value;
+            document.getElementById('cardBottomTitle').innerText = data.bottomTitle;
+            document.getElementById('cardBottomDesc').innerText = data.bottomDesc;
+            
+            gsap.to('.card', { opacity: 1, scale: 1, duration: 0.5 });
+        }});
+    }, 4000);
+}
+
+/* 3D TILT EFFECT FOR BANNER 05 */
+const cardContainer = document.getElementById('smartCardsContainer');
+if (cardContainer) {
+    cardContainer.addEventListener('mousemove', (e) => {
+        const rect = cardContainer.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        
+        // Softened factor (dividing by 30 instead of 10)
+        const rotateX = (y - centerY) / 30;
+        const rotateY = (centerX - x) / 30;
+        
+        // Target all cards, but handle scale for the middle one
+        const cards = cardContainer.querySelectorAll('.card');
+        cards.forEach(c => {
+            const isHighlighted = c.classList.contains('card-2');
+            gsap.to(c, {
+                rotateX: rotateX + 10,
+                rotateY: rotateY - 20,
+                scale: isHighlighted ? 1.1 : 1, // Keep middle card larger
+                duration: 0.8,
+                ease: "power2.out"
+            });
+        });
+    });
+
+    cardContainer.addEventListener('mouseleave', () => {
+        const cards = cardContainer.querySelectorAll('.card');
+        cards.forEach(c => {
+            const isHighlighted = c.classList.contains('card-2');
+            gsap.to(c, {
+                rotateX: 10,
+                rotateY: -20,
+                scale: isHighlighted ? 1.1 : 1,
+                duration: 1.2,
+                ease: "elastic.out(1, 0.4)"
+            });
+        });
+    });
+}
+
 window.addEventListener('mousemove', (e) => {
     const x = (e.clientX / window.innerWidth - 0.5) * 30;
     const y = (e.clientY / window.innerHeight - 0.5) * 30;
 
     const activeSlide = slides[currentIdx];
-    const shapes = activeSlide.querySelectorAll('.ux-shape, .ui-fragment, .partner-bubble, .performance-shape, .v-panel, .liquid-shape, .card, .slide-number');
+    const shapes = activeSlide.querySelectorAll('.ux-shape, .ui-fragment, .partner-bubble, .performance-shape, .v-panel, .liquid-shape, .card, .slide-number, .cards-container');
     
     shapes.forEach((s, i) => {
         const speed = s.classList.contains('slide-number') ? 0.1 : (i % 3 + 1) * 0.5;
