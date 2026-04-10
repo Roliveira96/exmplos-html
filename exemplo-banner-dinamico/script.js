@@ -296,7 +296,7 @@ function initSmartCardsCycle() {
             
             gsap.to('.card', { opacity: 1, scale: 1, duration: 0.5 });
         }});
-    }, 4000);
+    }, 9000);
 }
 
 /* 3D TILT EFFECT FOR BANNER 05 */
