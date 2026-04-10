@@ -47,15 +47,15 @@ function spawnTechParticles(slide) {
     slide.appendChild(container);
 
     const isPerformance = slide.classList.contains('slide-performance');
-    const localSymbols = isPerformance ? ['🚀', '⚡', '100', '●'] : ['+', '-', '#', '●', '■'];
+    const symbols = ['+', '-', '■', '●', '▲', 'X', '#', '</>'];
 
-    for (let i = 0; i < 12; i++) {
+    for (let i = 0; i < 20; i++) {
         const p = document.createElement('div');
-        p.className = 'zero-item';
-        p.innerHTML = localSymbols[Math.floor(Math.random() * localSymbols.length)];
+        p.className = 'zero-item glass-geometry';
+        p.innerHTML = symbols[Math.floor(Math.random() * symbols.length)];
         p.style.left = `${Math.random() * 100}%`;
         p.style.top = `${Math.random() * 100}%`;
-        p.style.fontSize = isPerformance ? '20px' : '10px';
+        p.style.fontSize = 'clamp(12px, 2vw, 24px)';
         
         container.appendChild(p);
 
