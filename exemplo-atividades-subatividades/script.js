@@ -354,16 +354,16 @@ function renderActivitiesList(activities, phaseId, depth) {
         const teamInfo = TEAMS[teamName] || TEAMS['Sem equipe'];
         const cardBgColor = teamInfo.bg;
 
-        // Determinar cor da borda com base na prioridade
-        let cardBorderColor = 'rgba(100, 116, 139, 0.4)'; // Cinza para nenhuma prioridade
+        // Determinar cor do indicador da borda esquerda com base na prioridade
+        let cardBorderColor = '#475569'; // Cinza para nenhuma prioridade
         if (activity.priority === 'Baixa') {
-            cardBorderColor = 'rgba(16, 185, 129, 0.6)'; // Verde para baixa
+            cardBorderColor = '#10b981'; // Verde para baixa
         } else if (activity.priority === 'Média') {
-            cardBorderColor = 'rgba(59, 130, 246, 0.6)'; // Azul para média
+            cardBorderColor = '#3b82f6'; // Azul para média
         } else if (activity.priority === 'Alta') {
-            cardBorderColor = 'rgba(234, 179, 8, 0.6)'; // Amarela para alta
+            cardBorderColor = '#eab308'; // Amarela para alta
         } else if (activity.priority === 'Crítica' || activity.priority === 'Urgente') {
-            cardBorderColor = 'rgba(239, 68, 68, 0.7)'; // Vermelha para urgente
+            cardBorderColor = '#ef4444'; // Vermelha para urgente
         }
 
         const isCreatorActive = activeSubActivityCreatorId === activity.id;
@@ -378,10 +378,10 @@ function renderActivitiesList(activities, phaseId, depth) {
                      ondragend="handleDragEnd(event, '${activity.id}')"
                      ondrop="handleDrop(event, '${phaseId}', '${activity.id}')"
                      ondblclick="openEditModal('${phaseId}', '${activity.id}')" 
-                     class="tree-node flex flex-col sm:flex-row sm:items-center justify-between border rounded-xl p-4 gap-4 transition-all cursor-default select-none relative ${statusVal === 'Concluído' ? 'status-concluido' : ''}"
-                     style="background-color: ${cardBgColor}; border-color: ${cardBorderColor};">
+                     class="tree-node flex flex-col sm:flex-row sm:items-center justify-between border border-slate-800/80 rounded-xl p-4 gap-4 transition-all cursor-default select-none relative ${statusVal === 'Concluído' ? 'status-concluido' : ''}"
+                     style="background-color: ${cardBgColor};">
                     
-                    <div class="card-left-indicator pointer-events-none" style="background-color: ${getDepthColor(depth)}"></div>
+                    <div class="card-left-indicator pointer-events-none" style="background-color: ${cardBorderColor}"></div>
 
                     <!-- Ícone de Arrastar (Drag Handle) -->
                     <div class="flex items-center justify-center w-5 h-5 text-slate-500 hover:text-indigo-400 flex-shrink-0 cursor-grab active:cursor-grabbing transition-colors pl-1"

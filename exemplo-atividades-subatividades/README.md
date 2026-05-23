@@ -77,13 +77,13 @@ O card de cada atividade assume como cor de fundo a cor sutil (`bg` de opacidade
 > [!NOTE]
 > Se a atividade for atribuída a um usuário individual, ela herdará a cor de fundo correspondente ao time ao qual esse usuário pertence.
 
-### Cor de Borda (Baseada na Prioridade)
-A borda do card reflete o nível de prioridade definido para a atividade:
-- **Nenhuma prioridade** (ou sem valor definido): Cinza (`rgba(100, 116, 139, 0.4)`)
-- **Baixa**: Verde (`rgba(16, 185, 129, 0.6)`)
-- **Média**: Azul (`rgba(59, 130, 246, 0.6)`)
-- **Alta**: Amarela (`rgba(234, 179, 8, 0.6)`)
-- **Urgente (Crítica)**: Vermelha (`rgba(239, 68, 68, 0.7)`)
+### Cor do Indicador Lateral da Frente (Baseado na Prioridade)
+A barra vertical de destaque localizada na frente (borda esquerda) do card reflete o nível de prioridade definido para a atividade:
+- **Nenhuma prioridade** (ou sem valor definido): Cinza (`#475569`)
+- **Baixa**: Verde (`#10b981`)
+- **Média**: Azul (`#3b82f6`)
+- **Alta**: Amarela (`#eab308`)
+- **Urgente (Crítica)**: Vermelha (`#ef4444`)
 
 ---
 
