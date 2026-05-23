@@ -364,7 +364,7 @@ function renderActivitiesList(activities, phaseId, depth) {
         if (isThisTimerActive) {
             if (isTimerPaused) {
                 playBtnHtml = `
-                    <button onclick="togglePauseTimer(event)" class="p-1.5 bg-amber-600/30 hover:bg-amber-600 border border-amber-500/50 text-amber-300 hover:text-white rounded-lg transition-all flex items-center justify-center animate-pulse" title="Retomar cronômetro (Pausado)">
+                    <button onclick="togglePauseTimer(event)" class="p-1.5 bg-amber-600/30 hover:bg-amber-600 border border-amber-500/50 text-amber-300 hover:text-white rounded-lg transition-all flex items-center justify-center animate-pulse pointer-events-auto" title="Retomar cronômetro (Pausado)">
                         <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
@@ -372,7 +372,7 @@ function renderActivitiesList(activities, phaseId, depth) {
                 `;
             } else {
                 playBtnHtml = `
-                    <button onclick="togglePauseTimer(event)" class="p-1.5 bg-emerald-600/30 hover:bg-emerald-600 border border-emerald-500/50 text-emerald-300 hover:text-white rounded-lg transition-all flex items-center justify-center relative overflow-hidden" title="Pausar cronômetro (Ativo)">
+                    <button onclick="togglePauseTimer(event)" class="p-1.5 bg-emerald-600/30 hover:bg-emerald-600 border border-emerald-500/50 text-emerald-300 hover:text-white rounded-lg transition-all flex items-center justify-center relative overflow-hidden pointer-events-auto" title="Pausar cronômetro (Ativo)">
                         <span class="absolute inset-0 bg-emerald-500/20 animate-ping"></span>
                         <svg class="w-4.5 h-4.5 relative z-10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -382,7 +382,7 @@ function renderActivitiesList(activities, phaseId, depth) {
             }
         } else {
             playBtnHtml = `
-                <button onclick="startTimer('${activity.id}', event)" class="p-1.5 hover:bg-slate-800 text-slate-400 hover:text-emerald-400 rounded-lg transition-colors flex items-center justify-center" title="Iniciar cronômetro">
+                <button onclick="startTimer('${activity.id}', event)" class="p-1.5 hover:bg-slate-800 text-slate-400 hover:text-emerald-400 rounded-lg transition-colors flex items-center justify-center pointer-events-auto" title="Iniciar cronômetro">
                     <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
@@ -444,12 +444,12 @@ function renderActivitiesList(activities, phaseId, depth) {
                             </span>
 
                             ${activity.timeEstimate ? `<span class="text-[10px] font-medium bg-slate-800 text-slate-300 px-2 py-0.5 rounded-full flex items-center gap-1"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>${activity.timeEstimate}</span>` : ''}
+                            ${playBtnHtml}
                             ${commentsBadgeHtml}
                         </div>
                     </div>
 
                     <div class="flex flex-wrap items-center gap-2 ml-auto sm:ml-0" onclick="event.stopPropagation();">
-                        ${playBtnHtml}
                         <button onclick="toggleDetails('${activity.id}')" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-800 text-xs font-semibold text-indigo-300 hover:text-white transition-colors">
                             <span>Detalhes</span>
                             <svg class="w-3.5 h-3.5 transform transition-transform ${isExpanded ? 'rotate-180' : ''}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
