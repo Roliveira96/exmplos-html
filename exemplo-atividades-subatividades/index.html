@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aruna Planejador - Gerenciador de Atividades</title>
+    <!-- Tailwind CSS (utility classes) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Custom CSS (theme variables, tree connectors, animations) -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="text-slate-100 min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="border-b border-slate-800/80 bg-slate-950/60 backdrop-blur-md sticky top-0 z-40 px-6 py-4 flex justify-between items-center">
+        <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-lg bg-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-500/20">
+                <span class="font-bold text-white text-lg font-outfit">A</span>
+            </div>
+            <div>
+                <h1 class="text-lg font-bold tracking-tight text-white font-outfit">Aruna Planejador</h1>
+                <p class="text-xs text-slate-400">Estruturação de Fases & Atividades</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-3">
+            <button onclick="addPhase()" class="bg-indigo-600 hover:bg-indigo-500 active:scale-95 transition-all text-white text-sm font-semibold px-4 py-2 rounded-lg flex items-center gap-2 shadow-lg shadow-indigo-600/10">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                Adicionar Fase
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <div class="flex-1 flex flex-col lg:flex-row overflow-hidden">
+        
+        <!-- Sidebar Panel -->
+        <aside class="w-full lg:w-80 bg-slate-950/40 backdrop-blur-sm border-r border-slate-800/80 p-6 flex flex-col gap-6 overflow-y-auto">
+            <div>
+                <h2 class="text-xs font-semibold text-indigo-400 uppercase tracking-wider mb-3 font-outfit">Painel de Controle</h2>
+                <div class="bg-slate-900/40 rounded-xl p-4 border border-slate-800/50">
+                    <p class="text-sm text-slate-300 leading-relaxed">
+                        Este protótipo foi projetado para tornar a organização de demandas intuitiva, ágil e visualmente limpa.
+                    </p>
+                </div>
+            </div>
+
+            <div>
+                <h2 class="text-xs font-semibold text-indigo-400 uppercase tracking-wider mb-3 font-outfit">Documentação e Regras</h2>
+                <div class="flex flex-col gap-3">
+                    <div class="bg-slate-900/40 rounded-xl p-4 border border-slate-800/50 text-xs text-slate-300 space-y-3">
+                        <div class="flex gap-2">
+                            <span class="text-indigo-400 font-bold">1.</span>
+                            <p><strong>Configuração de Fase:</strong> Ao criar uma nova fase, defina seu nome e escolha um ícone identificador no seletor suspenso.</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <span class="text-indigo-400 font-bold">2.</span>
+                            <p><strong>Arrastar e Soltar:</strong> Arraste atividades para reordenar ou aninhar. A interface exibe guias azuis ou destaca os blocos ao passar o mouse.</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <span class="text-indigo-400 font-bold">3.</span>
+                            <p><strong>Abas de Detalhes:</strong> Abra a visualização expandida para alternar rapidamente entre Descrição, Anexos, Status e Prioridade.</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <span class="text-indigo-400 font-bold">4.</span>
+                            <p><strong>Regras de Hierarquia:</strong> Atividades que contêm sub-atividades não podem ser movidas para dentro de outras. O limite estrutural é de 7 níveis.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active indicator footer -->
+            <div class="mt-auto pt-4 border-t border-slate-800/60">
+                <div class="flex items-center gap-2 text-xs text-slate-400">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shadow-md shadow-emerald-500/50"></span>
+                    Protótipo Interativo Ativo
+                </div>
+            </div>
+        </aside>
+
+        <!-- Content Area -->
+        <main class="flex-1 p-6 lg:p-8 overflow-y-auto space-y-6">
+            <!-- Toast notification container -->
+            <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+            
+            <!-- Dynamic project-level statistics -->
+            <div id="stats-dashboard" class="animate-slide-in"></div>
+
+            <!-- Dynamic phases and activities -->
+            <div id="phases-list" class="space-y-8 max-w-5xl mx-auto"></div>
+        </main>
+    </div>
+
+    <!-- Edit Details Modal -->
+    <div id="detail-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800/80 rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl flex flex-col animate-slide-in">
+            <div class="px-6 py-4 border-b border-slate-800/60 flex justify-between items-center">
+                <h3 class="text-base font-semibold text-white flex items-center gap-2 font-outfit">
+                    <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                    Editar Detalhes
+                </h3>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-white transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            
+            <div class="p-6 space-y-4 overflow-y-auto max-h-[70vh]">
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5 font-outfit">Título da Atividade</label>
+                    <input type="text" id="modal-title" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-indigo-500 transition-colors">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5 font-outfit">Responsável (Equipe)</label>
+                        <select id="modal-team" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-indigo-500 transition-colors">
+                            <option value="Sem equipe">Sem equipe</option>
+                            <option value="Suporte técnico">Suporte técnico</option>
+                            <option value="Desenvolvimento">Desenvolvimento</option>
+                            <option value="Design UX/UI">Design UX/UI</option>
+                            <option value="Gerenciamento">Gerenciamento</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5 font-outfit">Prioridade</label>
+                        <select id="modal-priority" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-indigo-500 transition-colors">
+                            <option value="Baixa">Baixa</option>
+                            <option value="Média">Média</option>
+                            <option value="Alta">Alta</option>
+                            <option value="Crítica">Crítica</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5 font-outfit">Tempo Estimado</label>
+                        <input type="text" id="modal-time" placeholder="ex: 8h, 2 dias" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-indigo-500 transition-colors">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5 font-outfit">Tags (separadas por vírgula)</label>
+                        <input type="text" id="modal-tags" placeholder="ex: Bug, Sprint 1" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-indigo-500 transition-colors">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5 font-outfit">Descrição</label>
+                    <textarea id="modal-description" rows="3" placeholder="Insira os detalhes e objetivos desta tarefa..." class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-indigo-500 transition-colors resize-none"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5 font-outfit">Anexos</label>
+                    <div class="border border-dashed border-slate-800 rounded-lg p-4 text-center cursor-pointer hover:border-indigo-500 transition-colors bg-slate-950/40 relative">
+                        <input type="file" id="modal-file-input" onchange="handleMockUpload(event)" class="absolute inset-0 opacity-0 cursor-pointer">
+                        <svg class="w-8 h-8 mx-auto text-slate-500 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+                        <span class="text-xs text-slate-400 block">Clique para simular o upload de arquivos</span>
+                    </div>
+                    <div id="modal-attachments-list" class="mt-2 space-y-1.5"></div>
+                </div>
+            </div>
+
+            <div class="px-6 py-4 border-t border-slate-800 bg-slate-950/50 flex justify-end gap-3">
+                <button onclick="closeModal()" class="px-4 py-2 rounded-lg text-sm font-medium text-slate-400 hover:text-white transition-colors">
+                    Cancelar
+                </button>
+                <button onclick="saveModalChanges()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-sm font-semibold transition-colors">
+                    Salvar Alterações
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Select Popover -->
+    <div id="quick-select-popover" class="fixed hidden z-50 bg-slate-900 border border-slate-800 rounded-xl shadow-2xl p-1.5 min-w-[150px] glass-panel animate-slide-in"></div>
+
+    <!-- Core logic script -->
+    <script src="script.js" defer></script>
+</body>
+</html>
