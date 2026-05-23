@@ -374,7 +374,7 @@ function renderActivitiesList(activities, phaseId, depth) {
             if (isTimerPaused) {
                 playBtnHtml = `
                     <button onclick="togglePauseTimer(event)" class="p-1.5 bg-amber-600/30 hover:bg-amber-600 border border-amber-500/50 text-amber-300 hover:text-white rounded-lg transition-all flex items-center justify-center animate-pulse pointer-events-auto" title="Retomar cronômetro (Pausado)">
-                        <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                     </button>
@@ -383,7 +383,7 @@ function renderActivitiesList(activities, phaseId, depth) {
                 playBtnHtml = `
                     <button onclick="togglePauseTimer(event)" class="p-1.5 bg-emerald-600/30 hover:bg-emerald-600 border border-emerald-500/50 text-emerald-300 hover:text-white rounded-lg transition-all flex items-center justify-center relative overflow-hidden pointer-events-auto" title="Pausar cronômetro (Ativo)">
                         <span class="absolute inset-0 bg-emerald-500/20 animate-ping"></span>
-                        <svg class="w-4.5 h-4.5 relative z-10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <svg class="w-4 h-4 relative z-10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                     </button>
@@ -392,7 +392,7 @@ function renderActivitiesList(activities, phaseId, depth) {
         } else {
             playBtnHtml = `
                 <button onclick="startTimer('${activity.id}', event)" class="p-1.5 hover:bg-slate-800 text-slate-400 hover:text-emerald-400 rounded-lg transition-colors flex items-center justify-center pointer-events-auto" title="Iniciar cronômetro">
-                    <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                 </button>
@@ -464,7 +464,7 @@ function renderActivitiesList(activities, phaseId, depth) {
                         </button>
                         
                         <button onclick="toggleSubActivityCreator('${activity.id}')" class="p-1.5 hover:bg-slate-800 text-sky-400 hover:text-white rounded-lg transition-colors" title="Adicionar sub-atividade">
-                            <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                         </button>
                         
                         <button onclick="openEditModal('${phaseId}', '${activity.id}')" class="p-1.5 hover:bg-slate-800 text-slate-400 hover:text-white rounded-lg transition-colors" title="Editar campos">
@@ -1340,7 +1340,7 @@ function renderAssigneeBadge(assignee, phaseId, activityId) {
     
     if (assignee.type === 'team') {
         const teamInfo = TEAMS[assignee.name] || TEAMS['Sem equipe'];
-        iconHtml = `<div class="w-4.5 h-4.5 rounded-full flex items-center justify-center text-[9px] font-bold bg-slate-950/40 flex-shrink-0">${teamInfo.icon}</div>`;
+        iconHtml = `<div class="w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-bold bg-slate-950/40 flex-shrink-0">${teamInfo.icon}</div>`;
         teamName = assignee.name;
     } else {
         // User
@@ -1348,10 +1348,10 @@ function renderAssigneeBadge(assignee, phaseId, activityId) {
         teamName = user ? user.team : 'Sem equipe';
         
         if (user && user.avatar) {
-            iconHtml = `<img src="${user.avatar}" class="w-4.5 h-4.5 rounded-full flex-shrink-0 object-cover border border-slate-750/30">`;
+            iconHtml = `<img src="${user.avatar}" class="w-5 h-5 rounded-full flex-shrink-0 object-cover border border-slate-750/30">`;
         } else {
             const initials = user ? user.initials : '👤';
-            iconHtml = `<div class="w-4.5 h-4.5 rounded-full flex items-center justify-center text-[9px] font-bold bg-slate-950/40 flex-shrink-0">${initials}</div>`;
+            iconHtml = `<div class="w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-bold bg-slate-950/40 flex-shrink-0">${initials}</div>`;
         }
     }
     
