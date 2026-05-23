@@ -16,7 +16,8 @@ const MOCK_DATA = [
                 attachments: ['schema_diagram.pdf'],
                 comments: [
                     { id: 'c1', text: 'Estruturação das tabelas de Usuários e Atividades pronta. Falta definir sub-atividades.', author: 'Ana Silva', date: '23/05/2026 10:15' },
-                    { id: 'c2', text: 'Perfeito Ana! Vou começar a criar os scripts SQL.', author: 'Bruno Souza', date: '23/05/2026 10:30' }
+                    { id: 'c2', text: 'Perfeito Ana! Vou começar a criar os scripts SQL.', author: 'Bruno Souza', date: '23/05/2026 10:30' },
+                    { id: 'c10', text: 'Já realizei o desenho conceitual no dbdiagram.io, vou exportar a imagem para anexarmos.', author: 'Carlos Santos', date: '23/05/2026 10:45' }
                 ],
                 timeLogs: [
                     { id: 't1', time: '01:30:00', note: 'Reunião de alinhamento de banco', date: '23/05/2026 09:30' }
@@ -32,7 +33,9 @@ const MOCK_DATA = [
                         timeEstimate: '2h',
                         tags: ['SQL'],
                         attachments: [],
-                        comments: [],
+                        comments: [
+                            { id: 'c11', text: 'Vou criar a migration usando o Flyway.', author: 'Bruno Souza', date: '23/05/2026 11:10' }
+                        ],
                         timeLogs: [],
                         subActivities: []
                     }
@@ -49,7 +52,8 @@ const MOCK_DATA = [
                 tags: ['Figma', 'UI'],
                 attachments: [],
                 comments: [
-                    { id: 'c3', text: 'Protótipo no Figma iniciado. Usando a paleta Dark Mode.', author: 'Ana Silva', date: '23/05/2026 08:00' }
+                    { id: 'c3', text: 'Protótipo no Figma iniciado. Usando a paleta Dark Mode.', author: 'Ana Silva', date: '23/05/2026 08:00' },
+                    { id: 'c12', text: 'Preciso da validação das telas de listagem até as 16h.', author: 'Elisa Costa', date: '23/05/2026 09:00' }
                 ],
                 timeLogs: [],
                 subActivities: []
@@ -71,7 +75,10 @@ const MOCK_DATA = [
                 timeEstimate: '8h',
                 tags: ['React', 'CSS'],
                 attachments: [],
-                comments: [],
+                comments: [
+                    { id: 'c13', text: 'Componentes globais criados na pasta common.', author: 'Bruno Souza', date: '23/05/2026 09:10' },
+                    { id: 'c14', text: 'Ficaram muito limpos e bem estruturados, parabéns Bruno!', author: 'Ana Silva', date: '23/05/2026 09:30' }
+                ],
                 timeLogs: [],
                 subActivities: [
                     {
@@ -119,7 +126,8 @@ const MOCK_DATA = [
                 tags: ['API', 'Security'],
                 attachments: [],
                 comments: [
-                    { id: 'c5', text: 'O endpoint de login está retornando erro 504 no ambiente de testes.', author: 'Daniel Rocha', date: '23/05/2026 11:00' }
+                    { id: 'c5', text: 'O endpoint de login está retornando erro 504 no ambiente de testes.', author: 'Daniel Rocha', date: '23/05/2026 11:00' },
+                    { id: 'c15', text: 'Vou checar o pool de conexões do Gateway para ver se há congestionamento.', author: 'Bruno Souza', date: '23/05/2026 11:20' }
                 ],
                 timeLogs: [],
                 subActivities: []
