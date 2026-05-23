@@ -115,6 +115,28 @@ ou
 
 ---
 
-## 6. Regras para o Backend / Produção
+## 6. Comentários e Histórico de Tempo (Cronômetro)
+
+Para dar suporte a discussões e controle de esforço nas atividades, integramos recursos de logs de comentários e tempo de trabalho:
+
+### Lógica de Comentários
+- Cada atividade contém uma lista de comentários (`activity.comments: Array<{ id: string, text: string, author: string, date: string }>`).
+- Quando há comentários em uma atividade, o card exibe um ícone indicador `💬 [Número]` ao lado dos badges de status e prioridade.
+- Os comentários são listados na aba **"Comentários"** nos detalhes expandidos, onde novos itens podem ser inseridos.
+
+### Rastreamento de Tempo (Cronômetro Flutuante)
+- O cronômetro é ativado pelo botão de **Play** (`▶️`) no card.
+- Exibe uma janela flutuante no canto inferior que:
+  - Permite pausar (`⏸️`) e retomar (`▶️`) a contagem.
+  - Permite registrar tempo ("Contabilizar") adicionando uma nota de texto. O tempo é registrado no histórico (`activity.timeLogs: Array<{ id: string, time: string, note: string, date: string }>`) e o cronômetro zera.
+  - Permite redefinir ("Stop") zerando o tempo atual.
+  - Permite fechar ("X"): caso haja tempo ativo, abre um modal de confirmação dando a escolha de registrar o tempo atual ou descartá-lo antes de fechar.
+- O histórico de registros é listado na aba **"Registro de Tempo"** dentro do painel de detalhes da atividade correspondente.
+
+---
+
+## 7. Regras para o Backend / Produção
 1. **Integridade de Chaves**: Caso um usuário seja removido ou troque de time no banco de dados, o sistema deve atualizar o relacionamento de cores no card do planejador de forma dinâmica.
 2. **Atribuição Múltipla**: No futuro, o campo `assignee` pode ser alterado para um array para suportar múltiplos responsáveis no mesmo card.
+3. **Persistência de Logs**: O backend precisará estruturar tabelas de relacionamento 1-N para os logs de comentários e registros de tempo atrelados ao ID de cada atividade.
+

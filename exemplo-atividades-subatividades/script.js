@@ -19,6 +19,12 @@ const USERS = [
 let currentAssigneeTab = 'times';
 let assigneeSearchQuery = '';
 
+// Active timer tracking variables
+let activeTimerActivityId = null;
+let elapsedSeconds = 0;
+let timerInterval = null;
+let isTimerPaused = false;
+
 // Default initial state
 const DEFAULT_STATE = [
     {
@@ -36,6 +42,13 @@ const DEFAULT_STATE = [
                 timeEstimate: '6h',
                 tags: ['Database', 'Setup'],
                 attachments: ['schema_diagram.pdf'],
+                comments: [
+                    { id: 'c1', text: 'Estruturação das tabelas de Usuários e Atividades pronta. Falta definir sub-atividades.', author: 'Ana Silva', date: '23/05/2026 10:15' },
+                    { id: 'c2', text: 'Perfeito Ana! Vou começar a criar os scripts SQL.', author: 'Bruno Souza', date: '23/05/2026 10:30' }
+                ],
+                timeLogs: [
+                    { id: 't1', time: '01:30:00', note: 'Reunião de alinhamento de banco', date: '23/05/2026 09:30' }
+                ],
                 subActivities: [
                     {
                         id: 'act-1-sub-1',
@@ -47,6 +60,8 @@ const DEFAULT_STATE = [
                         timeEstimate: '2h',
                         tags: ['SQL'],
                         attachments: [],
+                        comments: [],
+                        timeLogs: [],
                         subActivities: []
                     }
                 ]
@@ -61,6 +76,10 @@ const DEFAULT_STATE = [
                 timeEstimate: '12h',
                 tags: ['Figma', 'UI'],
                 attachments: [],
+                comments: [
+                    { id: 'c3', text: 'Protótipo no Figma iniciado. Usando a paleta Dark Mode.', author: 'Ana Silva', date: '23/05/2026 08:00' }
+                ],
+                timeLogs: [],
                 subActivities: []
             }
         ]
@@ -99,6 +118,8 @@ function normalizeAssignee(activities) {
             }
         }
         delete act.team;
+        if (!act.comments) act.comments = [];
+        if (!act.timeLogs) act.timeLogs = [];
         if (act.subActivities && act.subActivities.length > 0) {
             normalizeAssignee(act.subActivities);
         }
@@ -418,10 +439,12 @@ function renderActivitiesList(activities, phaseId, depth) {
                             </span>
 
                             ${activity.timeEstimate ? `<span class="text-[10px] font-medium bg-slate-800 text-slate-300 px-2 py-0.5 rounded-full flex items-center gap-1"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>${activity.timeEstimate}</span>` : ''}
+                            ${commentsBadgeHtml}
                         </div>
                     </div>
 
                     <div class="flex flex-wrap items-center gap-2 ml-auto sm:ml-0" onclick="event.stopPropagation();">
+                        ${playBtnHtml}
                         <button onclick="toggleDetails('${activity.id}')" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-800 text-xs font-semibold text-indigo-300 hover:text-white transition-colors">
                             <span>Detalhes</span>
                             <svg class="w-3.5 h-3.5 transform transition-transform ${isExpanded ? 'rotate-180' : ''}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
@@ -444,10 +467,12 @@ function renderActivitiesList(activities, phaseId, depth) {
                 ${isExpanded ? `
                     <div class="bg-slate-900/50 border border-slate-800/60 rounded-xl p-5 mt-1.5 space-y-4 shadow-inner">
                         <div class="flex border-b border-slate-800 gap-1 overflow-x-auto">
-                            <button onclick="setActivityTab('${activity.id}', 'descricao')" class="pb-2 px-3 text-xs font-semibold border-b-2 transition-all ${currentTab === 'descricao' ? 'border-indigo-500 text-white' : 'border-transparent text-slate-400 hover:text-slate-200'}">Descrição</button>
-                            <button onclick="setActivityTab('${activity.id}', 'anexos')" class="pb-2 px-3 text-xs font-semibold border-b-2 transition-all ${currentTab === 'anexos' ? 'border-indigo-500 text-white' : 'border-transparent text-slate-400 hover:text-slate-200'}">Anexos (${activity.attachments ? activity.attachments.length : 0})</button>
-                            <button onclick="setActivityTab('${activity.id}', 'kanban')" class="pb-2 px-3 text-xs font-semibold border-b-2 transition-all ${currentTab === 'kanban' ? 'border-indigo-500 text-white' : 'border-transparent text-slate-400 hover:text-slate-200'}">Status/Kanban</button>
-                            <button onclick="setActivityTab('${activity.id}', 'prioridade')" class="pb-2 px-3 text-xs font-semibold border-b-2 transition-all ${currentTab === 'prioridade' ? 'border-indigo-500 text-white' : 'border-transparent text-slate-400 hover:text-slate-200'}">Prioridade</button>
+                            <button onclick="setActivityTab('${activity.id}', 'descricao')" class="pb-2 px-3 text-xs font-semibold border-b-2 transition-all ${currentTab === 'descricao' ? 'border-indigo-500 text-white' : 'border-transparent text-slate-400 hover:text-slate-200'} font-outfit">Descrição</button>
+                            <button onclick="setActivityTab('${activity.id}', 'anexos')" class="pb-2 px-3 text-xs font-semibold border-b-2 transition-all ${currentTab === 'anexos' ? 'border-indigo-500 text-white' : 'border-transparent text-slate-400 hover:text-slate-200'} font-outfit">Anexos (${activity.attachments ? activity.attachments.length : 0})</button>
+                            <button onclick="setActivityTab('${activity.id}', 'comentarios')" class="pb-2 px-3 text-xs font-semibold border-b-2 transition-all ${currentTab === 'comentarios' ? 'border-indigo-500 text-white' : 'border-transparent text-slate-400 hover:text-slate-200'} font-outfit">Comentários (${commentsCount})</button>
+                            <button onclick="setActivityTab('${activity.id}', 'tempo')" class="pb-2 px-3 text-xs font-semibold border-b-2 transition-all ${currentTab === 'tempo' ? 'border-indigo-500 text-white' : 'border-transparent text-slate-400 hover:text-slate-200'} font-outfit">Tempo (${totalLoggedTimeStr})</button>
+                            <button onclick="setActivityTab('${activity.id}', 'kanban')" class="pb-2 px-3 text-xs font-semibold border-b-2 transition-all ${currentTab === 'kanban' ? 'border-indigo-500 text-white' : 'border-transparent text-slate-400 hover:text-slate-200'} font-outfit">Status/Kanban</button>
+                            <button onclick="setActivityTab('${activity.id}', 'prioridade')" class="pb-2 px-3 text-xs font-semibold border-b-2 transition-all ${currentTab === 'prioridade' ? 'border-indigo-500 text-white' : 'border-transparent text-slate-400 hover:text-slate-200'} font-outfit">Prioridade</button>
                         </div>
 
                         <div class="pt-2">
@@ -479,6 +504,60 @@ function renderActivitiesList(activities, phaseId, depth) {
                                     <div class="border border-dashed border-slate-800 rounded-lg p-3 text-center cursor-pointer hover:border-indigo-500 transition-colors bg-slate-950/40 relative">
                                         <input type="file" onchange="uploadAttachmentFromTab(event, '${phaseId}', '${activity.id}')" class="absolute inset-0 opacity-0 cursor-pointer">
                                         <span class="text-xs text-slate-400 block">Clique para simular e adicionar novo anexo</span>
+                                    </div>
+                                </div>
+                            ` : ''}
+
+                            ${currentTab === 'comentarios' ? `
+                                <div class="space-y-4">
+                                    <div class="space-y-2.5 max-h-[220px] overflow-y-auto pr-1">
+                                        ${activity.comments && activity.comments.length > 0 ? activity.comments.map(c => `
+                                            <div class="bg-slate-950/50 border border-slate-850 p-3 rounded-xl text-xs space-y-1 relative group">
+                                                <div class="flex justify-between items-center text-[10px] text-slate-400">
+                                                    <span class="font-bold text-slate-350 font-outfit">${c.author}</span>
+                                                    <span>${c.date}</span>
+                                                </div>
+                                                <p class="text-slate-200 leading-relaxed">${c.text}</p>
+                                                <button onclick="deleteComment('${phaseId}', '${activity.id}', '${c.id}')" class="absolute top-2 right-2 text-slate-600 hover:text-rose-400 opacity-0 group-hover:opacity-100 transition-opacity p-0.5" title="Excluir comentário">
+                                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                                </button>
+                                            </div>
+                                        `).join('') : '<div class="text-center text-xs text-slate-500 py-4 italic select-none">Nenhum comentário cadastrado.</div>'}
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <input type="text" id="new-comment-input-${activity.id}" placeholder="Escreva um comentário..." class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500/80 transition-colors" onkeydown="handleCommentSubmitKey(event, '${phaseId}', '${activity.id}')">
+                                        <button onclick="addComment('${phaseId}', '${activity.id}')" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-xl text-xs font-semibold transition-all flex items-center gap-1 active:scale-95">
+                                            Enviar
+                                        </button>
+                                    </div>
+                                </div>
+                            ` : ''}
+
+                            ${currentTab === 'tempo' ? `
+                                <div class="space-y-4">
+                                    <div class="flex justify-between items-center bg-slate-950/40 border border-slate-850 p-4 rounded-xl">
+                                        <div>
+                                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block font-outfit">Tempo Total Registrado</span>
+                                            <span class="text-lg font-bold text-emerald-400 font-outfit mt-0.5 block">${totalLoggedTimeStr}</span>
+                                        </div>
+                                        <div class="text-right">
+                                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block font-outfit">Estimativa Original</span>
+                                            <span class="text-xs font-semibold text-slate-300 mt-1 block font-outfit">${activity.timeEstimate || 'Sem estimativa'}</span>
+                                        </div>
+                                    </div>
+                                    <div class="space-y-2 max-h-[180px] overflow-y-auto pr-1">
+                                        ${activity.timeLogs && activity.timeLogs.length > 0 ? activity.timeLogs.map((log, index) => `
+                                            <div class="bg-slate-950/50 border border-slate-850 p-3 rounded-xl text-xs space-y-1 relative group">
+                                                <div class="flex justify-between items-center text-[10px] text-slate-400">
+                                                    <span class="font-bold text-emerald-400 font-outfit">${formatSecondsToReadable(parseTimeToSeconds(log.time))}</span>
+                                                    <span>${log.date}</span>
+                                                </div>
+                                                <p class="text-slate-200">${log.note || '<span class="text-slate-500 italic">Sem notas informadas</span>'}</p>
+                                                <button onclick="deleteTimeLog('${phaseId}', '${activity.id}', '${log.id}')" class="absolute top-2 right-2 text-slate-600 hover:text-rose-400 opacity-0 group-hover:opacity-100 transition-opacity p-0.5" title="Remover registro de tempo">
+                                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                                </button>
+                                            </div>
+                                        `).join('') : '<div class="text-center text-xs text-slate-500 py-4 italic select-none">Nenhum registro de tempo. Clique no botão de Play no card da atividade para iniciar o cronômetro.</div>'}
                                     </div>
                                 </div>
                             ` : ''}
@@ -692,6 +771,8 @@ function addActivity(phaseId) {
             timeEstimate: '',
             tags: [],
             attachments: [],
+            comments: [],
+            timeLogs: [],
             subActivities: []
         };
         phase.activities.push(newActivity);
@@ -748,6 +829,8 @@ function saveSubActivity(phaseId, parentId, currentDepth) {
         timeEstimate: '',
         tags: [],
         attachments: [],
+        comments: [],
+        timeLogs: [],
         subActivities: []
     };
 
@@ -1598,3 +1681,293 @@ function selectQuickOption(phaseId, activityId, field, value) {
     }
     document.removeEventListener('click', closeQuickSelect);
 }
+
+// Comments functions
+function expandAndSwitchTab(activityId, tabName) {
+    expandedActivities.add(activityId);
+    activeTabs[activityId] = tabName;
+    saveAndRefresh();
+    setTimeout(() => {
+        const card = document.getElementById(`activity-card-${activityId}`);
+        if (card) {
+            card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }, 100);
+}
+
+function handleCommentSubmitKey(event, phaseId, activityId) {
+    if (event.key === 'Enter') {
+        addComment(phaseId, activityId);
+    }
+}
+
+function addComment(phaseId, activityId) {
+    const input = document.getElementById(`new-comment-input-${activityId}`);
+    if (!input) return;
+    const text = input.value.trim();
+    if (!text) {
+        showToast('Por favor, digite um comentário antes de enviar.', true);
+        return;
+    }
+
+    const phase = state.find(p => p.id === phaseId);
+    if (!phase) return;
+    const meta = findAndGetActivityWithMeta(phase.activities, activityId);
+    if (!meta) return;
+
+    const now = new Date();
+    const formattedDate = `${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+    const comment = {
+        id: 'comment-' + Date.now(),
+        text: text,
+        author: 'Você (Admin)',
+        date: formattedDate
+    };
+
+    if (!meta.activity.comments) {
+        meta.activity.comments = [];
+    }
+    meta.activity.comments.push(comment);
+    input.value = '';
+    saveAndRefresh();
+    showToast('Comentário enviado com sucesso!');
+}
+
+function deleteComment(phaseId, activityId, commentId) {
+    const phase = state.find(p => p.id === phaseId);
+    if (!phase) return;
+    const meta = findAndGetActivityWithMeta(phase.activities, activityId);
+    if (!meta || !meta.activity.comments) return;
+
+    meta.activity.comments = meta.activity.comments.filter(c => c.id !== commentId);
+    saveAndRefresh();
+    showToast('Comentário removido.');
+}
+
+// Time Logs helper functions
+function deleteTimeLog(phaseId, activityId, logId) {
+    const phase = state.find(p => p.id === phaseId);
+    if (!phase) return;
+    const meta = findAndGetActivityWithMeta(phase.activities, activityId);
+    if (!meta || !meta.activity.timeLogs) return;
+
+    meta.activity.timeLogs = meta.activity.timeLogs.filter(l => l.id !== logId);
+    saveAndRefresh();
+    showToast('Registro de tempo removido.');
+}
+
+function parseTimeToSeconds(timeStr) {
+    if (!timeStr) return 0;
+    const parts = timeStr.split(':').map(Number);
+    if (parts.length === 3) {
+        return parts[0] * 3600 + parts[1] * 60 + parts[2];
+    }
+    if (parts.length === 2) {
+        return parts[0] * 60 + parts[1];
+    }
+    return parseInt(timeStr) || 0;
+}
+
+function formatSecondsToReadable(totalSeconds) {
+    if (!totalSeconds || totalSeconds <= 0) return '0s';
+    const hrs = Math.floor(totalSeconds / 3600);
+    const mins = Math.floor((totalSeconds % 3600) / 60);
+    const secs = totalSeconds % 60;
+    
+    let parts = [];
+    if (hrs > 0) parts.push(`${hrs}h`);
+    if (mins > 0) parts.push(`${mins}m`);
+    if (secs > 0 || parts.length === 0) parts.push(`${secs}s`);
+    return parts.join(' ');
+}
+
+function formatSecondsToHMS(totalSeconds) {
+    const hrs = Math.floor(totalSeconds / 3600);
+    const mins = Math.floor((totalSeconds % 3600) / 60);
+    const secs = totalSeconds % 60;
+    return `${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+}
+
+// Timer Control functions
+function startTimer(activityId, event) {
+    if (event) {
+        event.stopPropagation();
+    }
+    
+    if (activeTimerActivityId && activeTimerActivityId !== activityId) {
+        showToast('Existe um cronômetro rodando para outra atividade. Encerre-o primeiro!', true);
+        return;
+    }
+    
+    activeTimerActivityId = activityId;
+    isTimerPaused = false;
+    elapsedSeconds = 0;
+    
+    // Show the widget
+    const widget = document.getElementById('floating-timer-widget');
+    if (widget) {
+        widget.classList.remove('hidden');
+        widget.classList.add('flex');
+        document.getElementById('timer-activity-title').innerText = getActivityTitle(activityId);
+        document.getElementById('timer-time-display').innerText = '00:00:00';
+        
+        // Show controls screen, hide log form screen
+        document.getElementById('timer-controls-screen').classList.remove('hidden');
+        document.getElementById('timer-log-screen').classList.add('hidden');
+    }
+    
+    clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+        if (!isTimerPaused) {
+            elapsedSeconds++;
+            const display = document.getElementById('timer-time-display');
+            if (display) {
+                display.innerText = formatSecondsToHMS(elapsedSeconds);
+            }
+        }
+    }, 1000);
+    
+    render(); // Re-render activities list to update Play button state
+    showToast('Cronômetro iniciado!');
+}
+
+function getActivityTitle(activityId) {
+    for (let phase of state) {
+        const meta = findAndGetActivityWithMeta(phase.activities, activityId);
+        if (meta) return meta.activity.title;
+    }
+    return 'Atividade';
+}
+
+function togglePauseTimer(event) {
+    if (event) event.stopPropagation();
+    isTimerPaused = !isTimerPaused;
+    
+    const pauseBtn = document.getElementById('timer-pause-btn');
+    if (pauseBtn) {
+        if (isTimerPaused) {
+            pauseBtn.innerHTML = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"></path></svg>`;
+            pauseBtn.title = 'Retomar';
+            showToast('Cronômetro pausado.');
+        } else {
+            pauseBtn.innerHTML = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"></path></svg>`;
+            pauseBtn.title = 'Pausar';
+            showToast('Cronômetro retomado.');
+        }
+    }
+    
+    render(); // Update Play button state on the card
+}
+
+function stopTimer(event) {
+    if (event) event.stopPropagation();
+    elapsedSeconds = 0;
+    const display = document.getElementById('timer-time-display');
+    if (display) {
+        display.innerText = '00:00:00';
+    }
+    showToast('Cronômetro zerado.');
+}
+
+function openContabilizarTimer(event) {
+    if (event) event.stopPropagation();
+    
+    // Switch to log note screen
+    document.getElementById('timer-controls-screen').classList.add('hidden');
+    document.getElementById('timer-log-screen').classList.remove('hidden');
+    document.getElementById('timer-log-note').value = '';
+    document.getElementById('timer-log-note').focus();
+}
+
+function cancelContabilizarTimer() {
+    // Switch back to controls screen
+    document.getElementById('timer-controls-screen').classList.remove('hidden');
+    document.getElementById('timer-log-screen').classList.add('hidden');
+}
+
+function saveContabilizarTimer() {
+    const noteInput = document.getElementById('timer-log-note');
+    const note = noteInput ? noteInput.value.trim() : '';
+    
+    if (elapsedSeconds <= 0) {
+        showToast('Nenhum tempo decorrido para registrar.', true);
+        return;
+    }
+    
+    const activityId = activeTimerActivityId;
+    let targetActivity = null;
+    
+    for (let phase of state) {
+        const meta = findAndGetActivityWithMeta(phase.activities, activityId);
+        if (meta) {
+            targetActivity = meta.activity;
+            break;
+        }
+    }
+    
+    if (!targetActivity) return;
+    
+    const now = new Date();
+    const formattedDate = `${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+    
+    const timeStr = formatSecondsToHMS(elapsedSeconds);
+    
+    const logEntry = {
+        id: 'time-' + Date.now(),
+        time: timeStr,
+        note: note,
+        date: formattedDate
+    };
+    
+    if (!targetActivity.timeLogs) {
+        targetActivity.timeLogs = [];
+    }
+    targetActivity.timeLogs.push(logEntry);
+    
+    // Reset timer
+    elapsedSeconds = 0;
+    clearInterval(timerInterval);
+    activeTimerActivityId = null;
+    
+    // Hide floating widget
+    document.getElementById('floating-timer-widget').classList.add('hidden');
+    
+    saveAndRefresh();
+    showToast('Tempo registrado com sucesso!');
+}
+
+function closeTimerWithCheck(event) {
+    if (event) event.stopPropagation();
+    
+    if (elapsedSeconds > 0) {
+        // Show confirmation modal
+        document.getElementById('timer-confirm-modal').classList.remove('hidden');
+    } else {
+        // Just close and reset
+        resetAndHideTimer();
+    }
+}
+
+function handleTimerModalAction(action) {
+    document.getElementById('timer-confirm-modal').classList.add('hidden');
+    
+    if (action === 'save') {
+        // Open the contabilizar screen to input text note and save
+        openContabilizarTimer();
+    } else if (action === 'discard') {
+        // Discard time and hide
+        resetAndHideTimer();
+        showToast('Registro de tempo descartado.');
+    }
+    // 'cancel' does nothing, just closes modal and keeps timer running
+}
+
+function resetAndHideTimer() {
+    elapsedSeconds = 0;
+    clearInterval(timerInterval);
+    activeTimerActivityId = null;
+    document.getElementById('floating-timer-widget').classList.add('hidden');
+    render();
+}
+
