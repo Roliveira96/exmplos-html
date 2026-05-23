@@ -62,7 +62,32 @@ Ao clicar no avatar de atribuição no card, deve abrir um menu suspenso (popove
 
 ---
 
-## 4. Estrutura de Dados da Atividade (JSON Schema)
+## 4. Cores Dinâmicas do Card (Background e Borda)
+
+Para facilitar a identificação visual rápida no fluxo de trabalho:
+
+### Cor de Fundo (Baseada no Time)
+O card de cada atividade assume como cor de fundo a cor sutil (`bg` de opacidade reduzida a `12%`) correspondente ao time atribuído:
+- **Desenvolvimento**: `rgba(16, 185, 129, 0.12)` (Verde)
+- **Design UX/UI**: `rgba(99, 102, 241, 0.12)` (Indigo/Roxo)
+- **Suporte técnico**: `rgba(14, 165, 233, 0.12)` (Azul Claro)
+- **Gerenciamento**: `rgba(245, 158, 11, 0.12)` (Laranja)
+- **Sem equipe**: `rgba(100, 116, 139, 0.12)` (Cinza)
+
+> [!NOTE]
+> Se a atividade for atribuída a um usuário individual, ela herdará a cor de fundo correspondente ao time ao qual esse usuário pertence.
+
+### Cor de Borda (Baseada na Prioridade)
+A borda do card reflete o nível de prioridade definido para a atividade:
+- **Nenhuma prioridade** (ou sem valor definido): Cinza (`rgba(100, 116, 139, 0.4)`)
+- **Baixa**: Verde (`rgba(16, 185, 129, 0.6)`)
+- **Média**: Azul (`rgba(59, 130, 246, 0.6)`)
+- **Alta**: Amarela (`rgba(234, 179, 8, 0.6)`)
+- **Urgente (Crítica)**: Vermelha (`rgba(239, 68, 68, 0.7)`)
+
+---
+
+## 5. Estrutura de Dados da Atividade (JSON Schema)
 
 Para suportar essa especificação em produção, o objeto da atividade deve ser atualizado para comportar tanto times quanto usuários como responsáveis:
 
@@ -90,6 +115,6 @@ ou
 
 ---
 
-## 5. Regras para o Backend / Produção
+## 6. Regras para o Backend / Produção
 1. **Integridade de Chaves**: Caso um usuário seja removido ou troque de time no banco de dados, o sistema deve atualizar o relacionamento de cores no card do planejador de forma dinâmica.
 2. **Atribuição Múltipla**: No futuro, o campo `assignee` pode ser alterado para um array para suportar múltiplos responsáveis no mesmo card.

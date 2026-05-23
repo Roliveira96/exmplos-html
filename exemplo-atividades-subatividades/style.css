@@ -177,3 +177,23 @@ h1, h2, h3, .font-outfit {
     max-width: 140px;
     margin-left: 6px;
 }
+
+/* Custom activity card hover brightness and completed status */
+.tree-node {
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tree-node:hover {
+    filter: brightness(1.15) contrast(1.02);
+    box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.4);
+    transform: translateY(-1px);
+}
+
+.status-concluido {
+    opacity: 0.55;
+}
+
+.status-concluido:hover {
+    opacity: 0.8;
+}
+

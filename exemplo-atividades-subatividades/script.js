@@ -340,9 +340,31 @@ function renderActivitiesList(activities, phaseId, depth) {
         if (statusVal === 'Impedimento') statusColor = 'bg-amber-950/50 border border-amber-900/50 text-amber-300';
         if (statusVal === 'Concluído') statusColor = 'bg-emerald-950/50 border border-emerald-900/50 text-emerald-300';
 
-        let cardBgClass = 'bg-slate-900/90';
-        if (statusVal === 'Concluído') cardBgClass = 'bg-slate-900/40 border-emerald-950/80';
-        if (statusVal === 'Impedimento') cardBgClass = 'bg-slate-900/90 border-amber-950/60';
+        // Obter time e cor de fundo correspondente
+        const assignee = activity.assignee || { type: 'team', name: 'Sem equipe' };
+        let teamName = 'Sem equipe';
+        if (assignee.type === 'team') {
+            teamName = assignee.name;
+        } else {
+            const user = USERS.find(u => u.name === assignee.name);
+            if (user) {
+                teamName = user.team;
+            }
+        }
+        const teamInfo = TEAMS[teamName] || TEAMS['Sem equipe'];
+        const cardBgColor = teamInfo.bg;
+
+        // Determinar cor da borda com base na prioridade
+        let cardBorderColor = 'rgba(100, 116, 139, 0.4)'; // Cinza para nenhuma prioridade
+        if (activity.priority === 'Baixa') {
+            cardBorderColor = 'rgba(16, 185, 129, 0.6)'; // Verde para baixa
+        } else if (activity.priority === 'Média') {
+            cardBorderColor = 'rgba(59, 130, 246, 0.6)'; // Azul para média
+        } else if (activity.priority === 'Alta') {
+            cardBorderColor = 'rgba(234, 179, 8, 0.6)'; // Amarela para alta
+        } else if (activity.priority === 'Crítica' || activity.priority === 'Urgente') {
+            cardBorderColor = 'rgba(239, 68, 68, 0.7)'; // Vermelha para urgente
+        }
 
         const isCreatorActive = activeSubActivityCreatorId === activity.id;
 
@@ -356,7 +378,8 @@ function renderActivitiesList(activities, phaseId, depth) {
                      ondragend="handleDragEnd(event, '${activity.id}')"
                      ondrop="handleDrop(event, '${phaseId}', '${activity.id}')"
                      ondblclick="openEditModal('${phaseId}', '${activity.id}')" 
-                     class="tree-node flex flex-col sm:flex-row sm:items-center justify-between border border-slate-800/80 rounded-xl p-4 gap-4 hover:border-slate-700 hover:bg-slate-900 transition-all cursor-default select-none relative ${cardBgClass}">
+                     class="tree-node flex flex-col sm:flex-row sm:items-center justify-between border rounded-xl p-4 gap-4 transition-all cursor-default select-none relative ${statusVal === 'Concluído' ? 'status-concluido' : ''}"
+                     style="background-color: ${cardBgColor}; border-color: ${cardBorderColor};">
                     
                     <div class="card-left-indicator pointer-events-none" style="background-color: ${getDepthColor(depth)}"></div>
 
