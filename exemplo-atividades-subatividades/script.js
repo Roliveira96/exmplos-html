@@ -358,28 +358,34 @@ function renderActivitiesList(activities, phaseId, depth) {
             </span>
         ` : '';
 
-        // Cronômetro
+        // Cronômetro (Botão de controle de tempo com ícone de relógio)
         const isThisTimerActive = (activeTimerActivityId === activity.id);
         let playBtnHtml = '';
         if (isThisTimerActive) {
             if (isTimerPaused) {
                 playBtnHtml = `
-                    <button onclick="togglePauseTimer(event)" class="p-1.5 bg-amber-600/30 hover:bg-amber-600 border border-amber-500/50 text-amber-300 hover:text-white rounded-lg transition-all flex items-center justify-center animate-pulse" title="Retomar cronômetro">
-                        <svg class="w-4.5 h-4.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"></path></svg>
+                    <button onclick="togglePauseTimer(event)" class="p-1.5 bg-amber-600/30 hover:bg-amber-600 border border-amber-500/50 text-amber-300 hover:text-white rounded-lg transition-all flex items-center justify-center animate-pulse" title="Retomar cronômetro (Pausado)">
+                        <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
                     </button>
                 `;
             } else {
                 playBtnHtml = `
-                    <button onclick="togglePauseTimer(event)" class="p-1.5 bg-emerald-600/30 hover:bg-emerald-600 border border-emerald-500/50 text-emerald-300 hover:text-white rounded-lg transition-all flex items-center justify-center relative overflow-hidden" title="Pausar cronômetro">
+                    <button onclick="togglePauseTimer(event)" class="p-1.5 bg-emerald-600/30 hover:bg-emerald-600 border border-emerald-500/50 text-emerald-300 hover:text-white rounded-lg transition-all flex items-center justify-center relative overflow-hidden" title="Pausar cronômetro (Ativo)">
                         <span class="absolute inset-0 bg-emerald-500/20 animate-ping"></span>
-                        <svg class="w-4.5 h-4.5 relative z-10" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"></path></svg>
+                        <svg class="w-4.5 h-4.5 relative z-10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
                     </button>
                 `;
             }
         } else {
             playBtnHtml = `
                 <button onclick="startTimer('${activity.id}', event)" class="p-1.5 hover:bg-slate-800 text-slate-400 hover:text-emerald-400 rounded-lg transition-colors flex items-center justify-center" title="Iniciar cronômetro">
-                    <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
                 </button>
             `;
         }
