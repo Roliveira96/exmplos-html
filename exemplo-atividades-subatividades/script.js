@@ -25,67 +25,6 @@ let elapsedSeconds = 0;
 let timerInterval = null;
 let isTimerPaused = false;
 
-// Default initial state
-const DEFAULT_STATE = [
-    {
-        id: 'phase-1',
-        name: 'Desenvolvimento Inicial',
-        icon: '🚀',
-        activities: [
-            {
-                id: 'act-1',
-                title: 'Planejar Arquitetura do Banco de Dados',
-                description: 'Estruturar tabelas, chaves primárias e relacionamentos primordiais do sistema.',
-                assignee: { type: 'team', name: 'Desenvolvimento' },
-                priority: 'Alta',
-                status: 'Em andamento',
-                timeEstimate: '6h',
-                tags: ['Database', 'Setup'],
-                attachments: ['schema_diagram.pdf'],
-                comments: [
-                    { id: 'c1', text: 'Estruturação das tabelas de Usuários e Atividades pronta. Falta definir sub-atividades.', author: 'Ana Silva', date: '23/05/2026 10:15' },
-                    { id: 'c2', text: 'Perfeito Ana! Vou começar a criar os scripts SQL.', author: 'Bruno Souza', date: '23/05/2026 10:30' }
-                ],
-                timeLogs: [
-                    { id: 't1', time: '01:30:00', note: 'Reunião de alinhamento de banco', date: '23/05/2026 09:30' }
-                ],
-                subActivities: [
-                    {
-                        id: 'act-1-sub-1',
-                        title: 'Criar Script de Migração Inicial',
-                        description: 'Escrever as queries DDL estruturadas em SQL para automação de ambiente.',
-                        assignee: { type: 'team', name: 'Desenvolvimento' },
-                        priority: 'Média',
-                        status: 'A fazer',
-                        timeEstimate: '2h',
-                        tags: ['SQL'],
-                        attachments: [],
-                        comments: [],
-                        timeLogs: [],
-                        subActivities: []
-                    }
-                ]
-            },
-            {
-                id: 'act-2',
-                title: 'Desenhar Mockups de Alta Fidelidade',
-                description: 'Prototipar telas utilizando as diretrizes do Design System corporativo.',
-                assignee: { type: 'team', name: 'Design UX/UI' },
-                priority: 'Média',
-                status: 'A fazer',
-                timeEstimate: '12h',
-                tags: ['Figma', 'UI'],
-                attachments: [],
-                comments: [
-                    { id: 'c3', text: 'Protótipo no Figma iniciado. Usando a paleta Dark Mode.', author: 'Ana Silva', date: '23/05/2026 08:00' }
-                ],
-                timeLogs: [],
-                subActivities: []
-            }
-        ]
-    }
-];
-
 let state = [];
 let expandedActivities = new Set();
 let activeTabs = {};
@@ -132,7 +71,7 @@ function loadState() {
         if (storedState) {
             state = JSON.parse(storedState);
         } else {
-            state = DEFAULT_STATE;
+            state = JSON.parse(JSON.stringify(MOCK_DATA));
         }
         state.forEach(p => normalizeAssignee(p.activities));
 
@@ -147,8 +86,27 @@ function loadState() {
         }
     } catch (e) {
         console.error("Erro ao carregar estado do localStorage:", e);
-        state = DEFAULT_STATE;
+        state = JSON.parse(JSON.stringify(MOCK_DATA));
     }
+}
+
+function restoreDefaultData() {
+    // Clear localStorage values
+    localStorage.removeItem('aruna_planejador_state');
+    localStorage.removeItem('aruna_expanded_activities');
+    localStorage.removeItem('aruna_active_tabs');
+    
+    // Clear running timer if active
+    if (typeof resetAndHideTimer === 'function') {
+        resetAndHideTimer();
+    }
+    
+    // Load state from MOCK_DATA
+    loadState();
+    updateStats();
+    render();
+    
+    showToast('Dados de exemplo restaurados com sucesso!');
 }
 
 function saveToLocalStorage() {
