@@ -201,4 +201,84 @@ h1, h2, h3, .font-outfit {
     z-index: 45;
 }
 
+/* Team-specific backgrounds, borders, and colors (separated from HTML) */
+
+/* 1. Cards bg */
+.team-card-sem-equipe {
+    background-color: rgba(100, 116, 139, 0.12);
+}
+.team-card-desenvolvimento {
+    background-color: rgba(16, 185, 129, 0.12);
+}
+.team-card-design-ux-ui {
+    background-color: rgba(99, 102, 241, 0.12);
+}
+.team-card-suporte-tecnico {
+    background-color: rgba(14, 165, 233, 0.12);
+}
+.team-card-gerenciamento {
+    background-color: rgba(245, 158, 11, 0.12);
+}
+
+/* 2. Assignee Badges (bg, border, text color) */
+.team-badge-sem-equipe {
+    background-color: rgba(100, 116, 139, 0.12);
+    border: 1px solid rgba(100, 116, 139, 0.22) !important;
+    color: #64748b !important;
+}
+.team-badge-desenvolvimento {
+    background-color: rgba(16, 185, 129, 0.12);
+    border: 1px solid rgba(16, 185, 129, 0.22) !important;
+    color: #10b981 !important;
+}
+.team-badge-design-ux-ui {
+    background-color: rgba(99, 102, 241, 0.12);
+    border: 1px solid rgba(99, 102, 241, 0.22) !important;
+    color: #6366f1 !important;
+}
+.team-badge-suporte-tecnico {
+    background-color: rgba(14, 165, 233, 0.12);
+    border: 1px solid rgba(14, 165, 233, 0.22) !important;
+    color: #0ea5e9 !important;
+}
+.team-badge-gerenciamento {
+    background-color: rgba(245, 158, 11, 0.12);
+    border: 1px solid rgba(245, 158, 11, 0.22) !important;
+    color: #f59e0b !important;
+}
+
+/* 3. Text colors for team icons/text in lists */
+.team-text-sem-equipe {
+    color: #64748b !important;
+}
+.team-text-desenvolvimento {
+    color: #10b981 !important;
+}
+.team-text-design-ux-ui {
+    color: #6366f1 !important;
+}
+.team-text-suporte-tecnico {
+    color: #0ea5e9 !important;
+}
+.team-text-gerenciamento {
+    color: #f59e0b !important;
+}
+
+/* 4. Priority Left Indicator colors */
+.priority-indicator-nenhuma {
+    background-color: #475569 !important;
+}
+.priority-indicator-baixa {
+    background-color: #10b981 !important;
+}
+.priority-indicator-media {
+    background-color: #3b82f6 !important;
+}
+.priority-indicator-alta {
+    background-color: #eab308 !important;
+}
+.priority-indicator-urgente {
+    background-color: #ef4444 !important;
+}
+
 

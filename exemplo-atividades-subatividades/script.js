@@ -1,12 +1,33 @@
 const ICONS_LIST = ['🚀', '🛠️', '🎯', '📊', '⚡', '✨', '🐛', '📝', '🔥', '💡'];
 
 const TEAMS = {
-    'Sem equipe': { icon: '👥', color: '#64748b', bg: 'rgba(100, 116, 139, 0.12)', border: 'rgba(100, 116, 139, 0.22)' },
-    'Desenvolvimento': { icon: '💻', color: '#10b981', bg: 'rgba(16, 185, 129, 0.12)', border: 'rgba(16, 185, 129, 0.22)' },
-    'Design UX/UI': { icon: '🎨', color: '#6366f1', bg: 'rgba(99, 102, 241, 0.12)', border: 'rgba(99, 102, 241, 0.22)' },
-    'Suporte técnico': { icon: '🛠️', color: '#0ea5e9', bg: 'rgba(14, 165, 233, 0.12)', border: 'rgba(14, 165, 233, 0.22)' },
-    'Gerenciamento': { icon: '📋', color: '#f59e0b', bg: 'rgba(245, 158, 11, 0.12)', border: 'rgba(245, 158, 11, 0.22)' }
+    'Sem equipe': { icon: '👥' },
+    'Desenvolvimento': { icon: '💻' },
+    'Design UX/UI': { icon: '🎨' },
+    'Suporte técnico': { icon: '🛠️' },
+    'Gerenciamento': { icon: '📋' }
 };
+
+function getTeamSlug(teamName) {
+    if (!teamName) return 'sem-equipe';
+    return teamName
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-z0-9]/g, '-')
+        .replace(/-+/g, '-')
+        .replace(/^-|-$/g, '');
+}
+
+function getPrioritySlug(priority) {
+    if (!priority) return 'nenhuma';
+    const p = priority.toLowerCase();
+    if (p === 'urgente' || p === 'crítica') return 'urgente';
+    if (p === 'alta') return 'alta';
+    if (p === 'média') return 'media';
+    if (p === 'baixa') return 'baixa';
+    return 'nenhuma';
+}
 
 const USERS = [
     { name: 'Ana Silva', team: 'Design UX/UI', initials: 'AS', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=80&h=80&q=80' },
@@ -319,7 +340,7 @@ function renderActivitiesList(activities, phaseId, depth) {
         if (statusVal === 'Impedimento') statusColor = 'bg-amber-950/50 border border-amber-900/50 text-amber-300';
         if (statusVal === 'Concluído') statusColor = 'bg-emerald-950/50 border border-emerald-900/50 text-emerald-300';
 
-        // Obter time e cor de fundo correspondente
+        // Obter time correspondente
         const assignee = activity.assignee || { type: 'team', name: 'Sem equipe' };
         let teamName = 'Sem equipe';
         if (assignee.type === 'team') {
@@ -330,20 +351,8 @@ function renderActivitiesList(activities, phaseId, depth) {
                 teamName = user.team;
             }
         }
-        const teamInfo = TEAMS[teamName] || TEAMS['Sem equipe'];
-        const cardBgColor = teamInfo.bg;
-
-        // Determinar cor do indicador da borda esquerda com base na prioridade
-        let cardBorderColor = '#475569'; // Cinza para nenhuma prioridade
-        if (activity.priority === 'Baixa') {
-            cardBorderColor = '#10b981'; // Verde para baixa
-        } else if (activity.priority === 'Média') {
-            cardBorderColor = '#3b82f6'; // Azul para média
-        } else if (activity.priority === 'Alta') {
-            cardBorderColor = '#eab308'; // Amarela para alta
-        } else if (activity.priority === 'Crítica' || activity.priority === 'Urgente') {
-            cardBorderColor = '#ef4444'; // Vermelha para urgente
-        }
+        const teamSlug = getTeamSlug(teamName);
+        const prioritySlug = getPrioritySlug(activity.priority);
 
         const isCreatorActive = activeSubActivityCreatorId === activity.id;
 
@@ -404,10 +413,9 @@ function renderActivitiesList(activities, phaseId, depth) {
                      ondragend="handleDragEnd(event, '${activity.id}')"
                      ondrop="handleDrop(event, '${phaseId}', '${activity.id}')"
                      ondblclick="openEditModal('${phaseId}', '${activity.id}')" 
-                     class="tree-node flex flex-col sm:flex-row sm:items-center justify-between border border-slate-800/80 rounded-xl p-4 gap-4 transition-all cursor-default select-none relative ${statusVal === 'Concluído' ? 'status-concluido' : ''}"
-                     style="background-color: ${cardBgColor};">
+                     class="tree-node flex flex-col sm:flex-row sm:items-center justify-between border border-slate-800/80 rounded-xl p-4 gap-4 transition-all cursor-default select-none relative team-card-${teamSlug} ${statusVal === 'Concluído' ? 'status-concluido' : ''}">
                     
-                    <div class="card-left-indicator pointer-events-none" style="background-color: ${cardBorderColor}"></div>
+                    <div class="card-left-indicator pointer-events-none priority-indicator-${prioritySlug}"></div>
 
                     <!-- Ícone de Arrastar (Drag Handle) -->
                     <div class="flex items-center justify-center w-5 h-5 text-slate-500 hover:text-indigo-400 flex-shrink-0 cursor-grab active:cursor-grabbing transition-colors pl-1"
@@ -1327,22 +1335,17 @@ function renderAssigneeBadge(assignee, phaseId, activityId) {
     if (!assignee) assignee = { type: 'team', name: 'Sem equipe' };
     
     let iconHtml = '';
-    let color = '';
-    let bg = '';
-    let border = '';
     let name = assignee.name;
+    let teamName = 'Sem equipe';
     
     if (assignee.type === 'team') {
         const teamInfo = TEAMS[assignee.name] || TEAMS['Sem equipe'];
         iconHtml = `<div class="w-4.5 h-4.5 rounded-full flex items-center justify-center text-[9px] font-bold bg-slate-950/40 flex-shrink-0">${teamInfo.icon}</div>`;
-        color = teamInfo.color;
-        bg = teamInfo.bg;
-        border = teamInfo.border;
+        teamName = assignee.name;
     } else {
         // User
         const user = USERS.find(u => u.name === assignee.name);
-        const teamName = user ? user.team : 'Sem equipe';
-        const teamInfo = TEAMS[teamName] || TEAMS['Sem equipe'];
+        teamName = user ? user.team : 'Sem equipe';
         
         if (user && user.avatar) {
             iconHtml = `<img src="${user.avatar}" class="w-4.5 h-4.5 rounded-full flex-shrink-0 object-cover border border-slate-750/30">`;
@@ -1350,15 +1353,13 @@ function renderAssigneeBadge(assignee, phaseId, activityId) {
             const initials = user ? user.initials : '👤';
             iconHtml = `<div class="w-4.5 h-4.5 rounded-full flex items-center justify-center text-[9px] font-bold bg-slate-950/40 flex-shrink-0">${initials}</div>`;
         }
-        color = teamInfo.color;
-        bg = teamInfo.bg;
-        border = teamInfo.border;
     }
+    
+    const teamSlug = getTeamSlug(teamName);
     
     return `
         <div onclick="openAssigneeQuickSelect(event, '${phaseId}', '${activityId}')"
-             class="assignee-badge-expandable flex items-center justify-start h-6 rounded-full border px-1 pointer-events-auto select-none group/badge"
-             style="background-color: ${bg}; border-color: ${border}; color: ${color};"
+             class="assignee-badge-expandable flex items-center justify-start h-6 rounded-full border px-1 pointer-events-auto select-none group/badge team-badge-${teamSlug}"
              title="Atribuído a: ${name}">
             ${iconHtml}
             <span class="assignee-badge-text text-[9px] font-semibold text-slate-300">
@@ -1454,10 +1455,11 @@ function renderAssigneePopoverContents(phaseId, activityId, keepFocus = false) {
             filteredTeams.forEach(teamName => {
                 const teamInfo = TEAMS[teamName];
                 const isSelected = currentAssignee.type === 'team' && currentAssignee.name === teamName;
+                const teamSlug = getTeamSlug(teamName);
                 html += `
                     <button onclick="selectAssignee('${phaseId}', '${activityId}', 'team', '${teamName}')" class="w-full text-left px-2 py-1.5 rounded-lg text-xs hover:bg-indigo-600/20 hover:text-white transition-all flex items-center justify-between text-slate-300 ${isSelected ? 'bg-indigo-600/10 text-indigo-400 font-semibold' : ''}">
                         <div class="flex items-center gap-2">
-                            <span class="text-xs" style="color: ${teamInfo.color}">${teamInfo.icon}</span>
+                            <span class="text-xs team-text-${teamSlug}">${teamInfo.icon}</span>
                             <span>${teamName}</span>
                         </div>
                         ${isSelected ? `<svg class="w-3.5 h-3.5 text-indigo-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>` : ''}
@@ -1472,18 +1474,17 @@ function renderAssigneePopoverContents(phaseId, activityId, keepFocus = false) {
             html += `<div class="text-[9px] font-bold text-slate-500 uppercase tracking-wider px-2 py-0.5 select-none mb-1 mt-1">Usuários</div>`;
             html += `<div class="space-y-0.5">`;
             filteredUsers.forEach(user => {
-                const teamInfo = TEAMS[user.team] || TEAMS['Sem equipe'];
                 const isSelected = currentAssignee.type === 'user' && currentAssignee.name === user.name;
+                const teamSlug = getTeamSlug(user.team);
                 html += `
                     <button onclick="selectAssignee('${phaseId}', '${activityId}', 'user', '${user.name}')" 
-                            class="w-full text-left px-2 py-1.5 rounded-lg text-xs transition-all flex items-center justify-between border hover:brightness-110 active:scale-[0.98] ${isSelected ? 'font-semibold ring-1 ring-indigo-500/50' : ''}"
-                            style="background-color: ${teamInfo.bg}; border-color: ${teamInfo.border}; color: ${teamInfo.color};"
+                            class="w-full text-left px-2 py-1.5 rounded-lg text-xs transition-all flex items-center justify-between border hover:brightness-110 active:scale-[0.98] team-badge-${teamSlug} ${isSelected ? 'font-semibold ring-1 ring-indigo-500/50' : ''}"
                             title="Equipe: ${user.team}">
                         <div class="flex items-center gap-2">
                             <img src="${user.avatar}" class="w-5 h-5 rounded-full flex-shrink-0 object-cover border border-slate-750/30">
                             <span class="text-slate-200 font-medium">${user.name}</span>
                         </div>
-                        ${isSelected ? `<svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: ${teamInfo.color}"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>` : ''}
+                        ${isSelected ? `<svg class="w-3.5 h-3.5 flex-shrink-0 team-text-${teamSlug}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>` : ''}
                     </button>
                 `;
             });
@@ -1510,30 +1511,30 @@ function renderAssigneePopoverContents(phaseId, activityId, keepFocus = false) {
             Object.keys(TEAMS).forEach(teamName => {
                 const teamInfo = TEAMS[teamName];
                 const isSelected = currentAssignee.type === 'team' && currentAssignee.name === teamName;
+                const teamSlug = getTeamSlug(teamName);
                 html += `
                     <button onclick="selectAssignee('${phaseId}', '${activityId}', 'team', '${teamName}')" class="w-full text-left px-2 py-1.5 rounded-lg text-xs hover:bg-indigo-600/20 hover:text-white transition-all flex items-center justify-between text-slate-300 ${isSelected ? 'bg-indigo-600/10 text-indigo-400 font-semibold' : ''}">
                         <div class="flex items-center gap-2">
-                            <span class="text-xs" style="color: ${teamInfo.color}">${teamInfo.icon}</span>
+                            <span class="text-xs team-text-${teamSlug}">${teamInfo.icon}</span>
                             <span>${teamName}</span>
                         </div>
-                        ${isSelected ? `<svg class="w-3.5 h-3.5 text-indigo-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>` : ''}
+                        ${isSelected ? `<svg class="w-3.5 h-3.5 text-indigo-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>` : ''}
                     </button>
                 `;
             });
         } else {
             USERS.forEach(user => {
-                const teamInfo = TEAMS[user.team] || TEAMS['Sem equipe'];
                 const isSelected = currentAssignee.type === 'user' && currentAssignee.name === user.name;
+                const teamSlug = getTeamSlug(user.team);
                 html += `
                     <button onclick="selectAssignee('${phaseId}', '${activityId}', 'user', '${user.name}')" 
-                            class="w-full text-left px-2 py-1.5 rounded-lg text-xs transition-all flex items-center justify-between border hover:brightness-110 active:scale-[0.98] ${isSelected ? 'font-semibold ring-1 ring-indigo-500/50' : ''}"
-                            style="background-color: ${teamInfo.bg}; border-color: ${teamInfo.border}; color: ${teamInfo.color};"
+                            class="w-full text-left px-2 py-1.5 rounded-lg text-xs transition-all flex items-center justify-between border hover:brightness-110 active:scale-[0.98] team-badge-${teamSlug} ${isSelected ? 'font-semibold ring-1 ring-indigo-500/50' : ''}"
                             title="Equipe: ${user.team}">
                         <div class="flex items-center gap-2">
                             <img src="${user.avatar}" class="w-5 h-5 rounded-full flex-shrink-0 object-cover border border-slate-750/30">
                             <span class="text-slate-200 font-medium">${user.name}</span>
                         </div>
-                        ${isSelected ? `<svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: ${teamInfo.color}"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>` : ''}
+                        ${isSelected ? `<svg class="w-3.5 h-3.5 flex-shrink-0 team-text-${teamSlug}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>` : ''}
                     </button>
                 `;
             });
