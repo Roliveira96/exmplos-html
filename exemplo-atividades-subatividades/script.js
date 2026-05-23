@@ -347,6 +347,47 @@ function renderActivitiesList(activities, phaseId, depth) {
 
         const isCreatorActive = activeSubActivityCreatorId === activity.id;
 
+        // Comentários
+        const commentsCount = activity.comments ? activity.comments.length : 0;
+        const commentsBadgeHtml = commentsCount > 0 ? `
+            <span onclick="event.stopPropagation(); expandAndSwitchTab('${activity.id}', 'comentarios')" 
+                  class="text-[10px] font-medium bg-slate-800 text-indigo-300 px-2 py-0.5 rounded-full flex items-center gap-1 hover:scale-105 transition-transform pointer-events-auto cursor-pointer" 
+                  title="Ver ${commentsCount} comentários">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                <span class="font-bold">${commentsCount}</span>
+            </span>
+        ` : '';
+
+        // Cronômetro
+        const isThisTimerActive = (activeTimerActivityId === activity.id);
+        let playBtnHtml = '';
+        if (isThisTimerActive) {
+            if (isTimerPaused) {
+                playBtnHtml = `
+                    <button onclick="togglePauseTimer(event)" class="p-1.5 bg-amber-600/30 hover:bg-amber-600 border border-amber-500/50 text-amber-300 hover:text-white rounded-lg transition-all flex items-center justify-center animate-pulse" title="Retomar cronômetro">
+                        <svg class="w-4.5 h-4.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"></path></svg>
+                    </button>
+                `;
+            } else {
+                playBtnHtml = `
+                    <button onclick="togglePauseTimer(event)" class="p-1.5 bg-emerald-600/30 hover:bg-emerald-600 border border-emerald-500/50 text-emerald-300 hover:text-white rounded-lg transition-all flex items-center justify-center relative overflow-hidden" title="Pausar cronômetro">
+                        <span class="absolute inset-0 bg-emerald-500/20 animate-ping"></span>
+                        <svg class="w-4.5 h-4.5 relative z-10" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"></path></svg>
+                    </button>
+                `;
+            }
+        } else {
+            playBtnHtml = `
+                <button onclick="startTimer('${activity.id}', event)" class="p-1.5 hover:bg-slate-800 text-slate-400 hover:text-emerald-400 rounded-lg transition-colors flex items-center justify-center" title="Iniciar cronômetro">
+                    <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </button>
+            `;
+        }
+
+        // Tempo total registrado
+        const totalSeconds = (activity.timeLogs || []).reduce((acc, log) => acc + parseTimeToSeconds(log.time), 0);
+        const totalLoggedTimeStr = formatSecondsToReadable(totalSeconds);
+
         return `
             <div class="tree-node-wrapper animate-slide-in">
                 <div draggable="true" 
